@@ -17,14 +17,14 @@ public class MemberController {
 	}
 
 	// 로그인 --> Spring Security에 의해 인터셉트
-	@PostMapping("/member/login")
+	@PostMapping("/login")
 	public void postLogin() {
 		
 	}
 
 	// 로그인 처리 --> Spring Security에 의한 로그인 진행 후 처리 할 부분
 	@ResponseBody
-	@PostMapping("/member/loginCheck")
+	@PostMapping("/loginCheck")
 	public String postLoginCheck() throws Exception {
 
 		return "{\"message\":\"good\"}";
