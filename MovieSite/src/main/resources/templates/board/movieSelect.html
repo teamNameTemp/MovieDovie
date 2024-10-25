@@ -1,11 +1,102 @@
 <!DOCTYPE html>
-<html>
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
 <meta charset="UTF-8">
-<title>Insert title here</title>
+<title>추천 장르 페이지</title>
+<link
+	href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+	rel="stylesheet"
+	integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
+	crossorigin="anonymous">
+<script
+	src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+	integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+	crossorigin="anonymous"></script>
+
+<style>
+body {
+	background-color: #36373b;
+	color: white;
+}
+
+h1 {
+	display: block;
+}
+
+.main {
+	text-align: center;
+	opacity: 0.5;
+	padding: 20px 20px;
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	opacity: 0.5;
+}
+
+.container {
+	background-color: black;
+	place-items: center;
+	padding: 20px;
+}
+
+.btn {
+	background-color: white;
+	margin: auto 20px;
+}
+
+a {
+	text-decoration: none;
+}
+</style>
+
 </head>
 <body>
-	<h1>추천 장르 고르기 사이트</h1>
 	<a href="/board/list">홈으로</a>
+	<div class="main">
+		<h1>취향 선택</h1>
+		<p>좋아하는 영화 장르, 분위기를 3개 선택해 주세요. 비슷한 취향의 영화를 추천해 드립니다.
+		<div class="container text-center">
+			<div class="row row-cols-7">
+				<div class="col">Column</div>
+				<div class="col">Column</div>
+				<div class="col">Column</div>
+				<div class="col">Column</div>
+				<div class="col">Column</div>
+				<div class="col">Column</div>
+				<div class="col">Column</div>
+				<div class="col">Column</div>
+				<div class="col">Column</div>
+				<div class="col">Column</div>
+				<div class="col">Column</div>
+				<div class="col">Column</div>
+				<div class="col">Column</div>
+				<div class="col">Column</div>
+				<div class="col">Column</div>
+				<div class="col">Column</div>
+				<div class="col">Column</div>
+				<div class="col">Column</div>
+				<div class="col">Column</div>
+				<div class="col">Column</div>
+				<div class="col">Column</div>
+				<div class="col">Column</div>
+				<div class="col">Column</div>
+				<div class="col">Column</div>
+				<div class="col">Column</div>
+				<div class="col">Column</div>
+				<div class="col">Column</div>
+				<div class="col">Column</div>
+				<div class="col">Column</div>
+				<div class="col">Column</div>
+				<div class="col">Column</div>
+			</div>
+		</div>
+		<br> <br>
+		<button class="btn">
+			<a href="/board/list">건너뛰기</a>
+		</button>
+		<button class="btn">저장하기</button>
+	</div>
+
 </body>
 </html>
