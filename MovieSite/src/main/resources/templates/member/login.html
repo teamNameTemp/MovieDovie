@@ -8,7 +8,7 @@
 
 //Spring Security가 진행하는 로그인
 const login = () => {
-	document.location.href="/master/memberManage";
+	document.location.href="/member/logout";
 	//document.loginForm.action = '/member/login';
 	//document.loginForm.submit();
 }
@@ -68,14 +68,24 @@ const press = () => {
 </script>
 
 <body>
-	<h1>로그인 창</h1>
+<div class="main" align="center">
+	<h1>로그인</h1>
 
 	<br>
 	<form name="loginForm" id="loginForm" method="POST">
-		<input type="text" name="email" id="email" class="input_field" placeholder="아이디를 입력하세요."> 
+		<input type="text" name="email" id="email" class="input_field" placeholder="아이디를 입력하세요."><br><br>
 		<input type="password" name="password" id="password" class="input_field" onkeydown="press()"
-			placeholder="암호를 입력하세요."> 
+			placeholder="8자 이상 입력하세요.">
+		<p id="msg" style="color:red; text-align:center"></p>
+		<br>
+		<input type="checkbox" id="rememberEmail" onclick="checkRememberEmail()">아이디 기억
+		<input type="checkbox" id="rememberPassword" onclick="checkRememberPassword()">패스워드 기억
+		<input type="checkbox" id="rememberMe" class="remember" name="remember-me" onclick="checkRememberMe()">자동 로그인
+		<br><br>
 		<input type="button" id="btn_login"	class="btn_login" value="로그인" onclick="login()">
+	<br><br>
+	<div class="bottomText"><a href="/member/signup">회원가입<br><br>
 	</form>
+</div>
 </body>
 </html>
