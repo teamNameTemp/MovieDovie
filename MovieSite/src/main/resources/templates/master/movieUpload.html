@@ -58,8 +58,8 @@
 
 </style>
 
-
 </head>
+
 <body class="p-3 m-0 border-0 bd-example m-0 border-0">
 
 <ul class="nav nav-pills">
@@ -77,24 +77,15 @@
   </li>
 </ul>
 
-
-<ul>
-	<li>영화 업로드
-		<ul>
-			<li><a class="upload" href="#">개별 업로드</a></li>
-			<li><a class="massupload" href="#">대량 업로드</a></li>
-		</ul>
-	</li>
-</ul>
-
+<br><br><br>
 <div class="main">
 
-<h3 style="text-align: center;">영화 대량 파일 업로드 시 여기를 클릭하세요</h3>
-
-<br><br><br>
-<h1 style="text-align: center;">영화 개별 업로드</h1>
+	<h5 style="text-align: center;">영화 대량 파일 업로드 시 <a class="massUpload" href="#">여기</a>를 클릭하세요</h5>
+	<br><br><br>
+	<h1 style="text-align: center;">영화 개별 업로드</h1>
+	<!-- 여기서 개별로 업로드한 영화 파일들은 tbl_movieUploadedByMaster 테이블에 업로드 예정. -->
+	
      <br>
-
      <div class="boardView">
     	<br>
         <input type="text" class="input_field" id="movieCd" name="movieCd" placeholder="영화 코드">
@@ -108,7 +99,7 @@
 		<input type="text" class="input_field" id="directors" name="directors" placeholder="감독">
 		<input type="text" class="input_field" id="companyNm" name="companyNm" placeholder="제작사">
 		<br>
-   		<input type="button" id="btnRegister" class="btn_write" value="여기를 클릭하세요.">	
+   		<input type="button" id="btnRegister" class="btn_write" value="업로드하기">	
    		
      </div>
      
