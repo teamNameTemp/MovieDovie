@@ -15,11 +15,44 @@
     <title>Movie Preference Selection</title>
     <link rel="stylesheet" href="/css/movieSelectStyles.css">
 </head>
+
+<script defer>
+window.onload = () => {
+    const genres = document.querySelectorAll(".genre");
+    
+    const clicked = (elem)=>{
+        const clickedGenres = document.querySelectorAll('.genre.clicked').length;
+        
+    	if(elem.classList.contains("clicked")){
+            elem.classList.remove("clicked");
+        }else{
+            if(clickedGenres>=3){
+                alert("선택 가능 갯수를 초과하였습니다.");
+                return;
+            }
+            elem.classList.toggle("clicked");
+        }
+    }
+    genres.forEach((genre) => {
+        genre.addEventListener("click", ()=>clicked(genre));
+    });
+    
+}
+
+//선택한 장르들을 저장해 서버로 보낸다.
+const saveToGenres =  ()=>{
+    alert("저장");
+    // fetch("/board/genreCheck",()=>{
+
+    // });
+    location.href="/board/list";
+}
+</script>
 <body>
 <div class="overlay">
     <h1>취향 선택</h1>
     <p>좋아하는 영화 장르, 분야를 3개 선택해 주세요. 비슷한 취향의 영화를 추천해 드립니다.</p>
-    <div class="genres"> <!-- db 들어어고 tymeleaf로 바꿔주자 th:each -->
+    <div class="genres"> <!-- db 들어오고 tymeleaf로 바꿔주자 th:each -->
         <div class="genre">수상작</div>
         <div class="genre">배신</div>
         <div class="genre">범죄</div>
@@ -52,9 +85,8 @@
         <div class="genre">모험</div>
     </div>
     <div class="buttons">
-        <button>건너뛰기</button>
-        
-        <button>저장하기</button>
+        <button onclick="location.href='/board/list'">건너뛰기</button>
+        <button onclick="saveToGenres()">저장하기</button>
     </div>
 </div>
 >>>>>>> Stashed changes
