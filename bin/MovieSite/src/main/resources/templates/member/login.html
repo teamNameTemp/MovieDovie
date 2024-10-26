@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>로그인</title>
+</head>
+<script defer>
+
+//Spring Security가 진행하는 로그인
+const login = () => {
+	document.location.href="/member/logout";
+	//document.loginForm.action = '/member/login';
+	//document.loginForm.submit();
+}
+
+//스프링 시큐리티에 의한 로그인 처리 전에 서버로 userid,password를 보내서 인증 처리를 해야 함 
+const loginCheck = async () => {
+	/* 
+	let userid = document.querySelector('#userid');
+	let password = document.querySelector('#password');
+	let rememberMe = document.querySelector('#rememberMe');
+	
+	//유효성 검사
+	if(userid.value == ''){
+		alert('아이디를 입력하세요.');
+		userid.focus();
+		return false;
+	}
+	if(password.value == ''){
+		alert('비밀번호를 입력하세요.');
+		password.focus();
+		return false;
+	} 
+
+
+*/	
+	let formData = new FormData();
+	formData.append("email", userid.value);
+	formData.append("password", password.value);
+	
+	await fetch('/member/loginCheck', {
+		method: 'POST',	
+		data:formData
+	}).then((response)=> response.json())
+      .then((data) => {
+		  if(data.message == 'good'){
+			  login();		  
+		  } else if(data.message == 'ID_NOT_FOUND') {
+			  msg.innerHTML = '존재하지 않는 아이디입니다.';
+		  } else if(data.message == 'PASSWORD_NOT_FOUND'){
+			  msg.innerHTML = '잘못된 패스워드입니다.';
+		  }	else {
+			  alert("시스템 장애로 로그인이 실패했습니다.");
+		  }	  
+	}).catch((error) => {
+		console.log("error = " + error);
+	});
+	
+}
+//패스워드 입력 후 엔터키를 누르면 바로 로그인이 되도록 하는 기능
+const press = () => {
+	//엔터키값 --> keyCode = 13
+	if(event.keyCode == 13){
+		loginCheck();
+	}
+}
+
+</script>
+
+<body>
+<div class="main" align="center">
+	<h1>로그인</h1>
+
+	<br>
+	<form name="loginForm" id="loginForm" method="POST">
+		<input type="text" name="email" id="email" class="input_field" placeholder="아이디를 입력하세요."><br><br>
+		<input type="password" name="password" id="password" class="input_field" onkeydown="press()"
+			placeholder="8자 이상 입력하세요.">
+		<p id="msg" style="color:red; text-align:center"></p>
+		<br>
+		<input type="checkbox" id="rememberEmail" onclick="checkRememberEmail()">아이디 기억
+		<input type="checkbox" id="rememberPassword" onclick="checkRememberPassword()">패스워드 기억
+		<input type="checkbox" id="rememberMe" class="remember" name="remember-me" onclick="checkRememberMe()">자동 로그인
+		<br><br>
+		<input type="button" id="btn_login"	class="btn_login" value="로그인" onclick="login()">
+	<br><br>
+	<div class="bottomText"><a href="/member/signup">회원가입<br><br>
+	</form>
+</div>
+</body>
+</html>
