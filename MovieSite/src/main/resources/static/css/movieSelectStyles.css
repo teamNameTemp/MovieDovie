@@ -5,7 +5,7 @@ body, html{
 }
 
 body {
-	 background-image: url("https://search.pstatic.net/common/?src=http%3A%2F%2Fpost.phinf.naver.net%2FMjAxODA4MjhfMTQ1%2FMDAxNTM1NDQ5OTg3MDMw.SNVcI4HpMP49MIte9nBbhYJiF_ZO_lYfA_shbQJa9x4g.BQoGk6kbe6Lac_E8Fkyke5_d9dgKiakxAYUW4YEmQmcg.JPEG%2FIrhQ7--gG8GdBc8BJXFJji4ANduc.jpg&type=sc960_832"); /* 배경 이미지 파일 경로를 지정하세요 */
+	background-image: url("https://search.pstatic.net/common/?src=http%3A%2F%2Fpost.phinf.naver.net%2FMjAxODA4MjhfMTQ1%2FMDAxNTM1NDQ5OTg3MDMw.SNVcI4HpMP49MIte9nBbhYJiF_ZO_lYfA_shbQJa9x4g.BQoGk6kbe6Lac_E8Fkyke5_d9dgKiakxAYUW4YEmQmcg.JPEG%2FIrhQ7--gG8GdBc8BJXFJji4ANduc.jpg&type=sc960_832"); /* 배경 이미지 파일 경로를 지정하세요 */
     background-color:rgba(0,0,0,0.5);
     background-repeat: no-repeat;
     background-size: cover;
@@ -59,6 +59,11 @@ p {
 
 .genre:hover{
     background-color:black;
+}
+
+.clicked{
+    background-color:white;
+    color:black;
 }
 
 .buttons {
