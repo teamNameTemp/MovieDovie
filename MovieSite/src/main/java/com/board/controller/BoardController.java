@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class BoardController {
 	
 	//추천 장르
-	@GetMapping("/movieSelect")
+	@GetMapping("/selectGenre")
 	public void getMovieSelect() {}
 	
 	@GetMapping("/list")
