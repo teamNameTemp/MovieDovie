@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="/css/movieListStyle.css">
+    <link rel="stylesheet" href="/css/movieDetailStyle.css">
     <link
         href="https://fonts.googleapis.com/css2?family=Roboto:wght@100;300;400;500;700;900&family=Sen:wght@400;700;800&display=swap"
         rel="stylesheet">
@@ -51,18 +51,18 @@
         <i class="left-menu-icon fas fa-hourglass-start"></i>
         <i class="left-menu-icon fas fa-shopping-cart"></i>
     </div>
-    <div class="main">
-        <div class=top><!--이미지/-->
-            <img src="#" class="topBanner"><br>
-            <div class="movie-info">
+    <div class="container">
+        <div class=content-container><!--이미지/-->
+            <img src="/img/6.jpg" class="topBanner" width=100%;><br>
+            <div class="featured-content" style="background: linear-gradient(to bottom, rgba(0,0,0,0), #151515)">
                 <h1 class="movieTitle">영화 제목</h1>
                 <p class="movie-rating">좋아요% vs 싫어요% </p> <!--좋아요 vs 싫어요 % ??-->
                 <p class="movie-engtitle-year">영화 영어 제목, 제작연도</p>
             </div>
             <div class="topButtons">
-                <button style="margin: auto";>좋아요</button>
-                <button style="margin: auto";>싫어요</button> <br>
-                <button style="margin: auto";>대여하기 | 가격</button> <!--가격 표시구매페이지,-->
+                <button class="featured-button">좋아요</button>
+                <button class="featured-button">싫어요</button> <br>
+                <button class="featured-button">대여하기 | 가격</button> <!--가격 표시구매페이지,-->
             </div>
         </div>
     </div> <br><br>
