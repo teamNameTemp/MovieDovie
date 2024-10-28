@@ -8,6 +8,62 @@
     <link href="https://getbootstrap.com/docs/5.3/assets/css/docs.css" rel="stylesheet">
     <title>Bootstrap Example</title>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+	<style>
+		 #wrap {width: 1000px; height: 1200px; font-size: 15px; text-align: center; margin : auto;}
+	 	.side {
+	 		display: flex;
+		 	float: left; width: 700px; height: 1000px; text-align: center; 
+		 	flex-direction: column; /* 세로 방향으로 정렬 */
+	    	justify-content: center; /* 수직 중앙 정렬 */
+	    	align-items: center; /* 수평 중앙 정렬 */
+	    }
+	    
+	    .content1 {
+		    display: flex; flex-direction: column; align-items: center; justify-content: space-between;
+		    align-items: center; /* 수직 중앙 정렬 */
+		    width: 300px;
+		    height: 250px; /* 고정 높이 유지 */
+		    text-align: center;
+		    text-align: center;
+		    float: left;
+		    margin: auto;
+		    min-height: 200px;
+		}
+
+	 	.content {
+            width: 90%; /* 부모 너비에 맞춤 */
+            height: 90%; /*부모 너비에 맞춤*/
+            text-align: center;
+            background-color: white;
+            padding: 1%; /* 패딩 10% */
+            border: 2px solid lightgray;
+            box-sizing: border-box; /* 패딩 포함한 크기 계산 */
+        }
+		.progress-bar {
+		    width: 100%;
+		    height: 30px;
+		    background-color: #dedede;
+		    font-weight: 600;
+		    font-size: .8rem;
+		}
+		
+		.progress-bar .progress {
+            height: 100%;
+            padding: 0;
+            text-align: center;
+            background-color: #4F98FF;
+            color: #111;
+        }
+	    .positive {
+            color: red; /* 방문자 수 증가 */
+        }
+        .negative {
+            color: blue; /* 방문자 수 감소 */
+        }
+	
+	</style>
+
+
 </head>
 <body class="p-3 m-0 border-0 bd-example m-0 border-0">
 
@@ -27,20 +83,181 @@
 </ul>
 
 <br>
+<!--  
 <ul>
-	<li>회원 활동 통계
-		<ul>
-			<li>회원 증감 수 확인</li>
-			<li>로그인/아웃 현황</li>
-			<li>시청 여부 현황</li>
-			<li>대여 현황</li>
-			<li>즐겨찾기 현황</li>
-			<li>좋아요 싫어요 현황</li>
-		</ul>
-	</li>
+	<li>회원 증감 수 확인</li>
+	<li>로그인/아웃 현황</li>
+	<li>시청 여부 현황</li>
+	<li>대여 현황</li>
+	<li>즐겨찾기 현황</li>
+	<li>좋아요 싫어요 현황</li>
 </ul>
+-->
 
+<div id="wrap">
 
+	<div class="side">
+		<div class="content"><b>대여 현황</b><br><br>
+				
+		[최근 일주일 간 대여 현황]<br>
+		<div>
+		  <canvas id="myChart"></canvas>
+		</div>
+		<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+		<script>
+		//DB와 맞물려서 데이터 가져오는 것 생각해보자..
+		  const ctx = document.getElementById('myChart');
+		
+		  new Chart(ctx, {
+		    type: 'bar',
+		    data: {
+		      labels: ['10/19', '10/20', '10/21', '10/22', '10/23', '10/24', '10/25'],
+		      datasets: [{
+		        label: '# of purchase',
+		        data: [5, 12, 19, 3, 5, 7, 3],
+		        borderWidth: 1
+		      }]
+		    },
+		    options: {
+		      scales: {
+		        y: {
+		          beginAtZero: true
+		        }
+		      }
+		    }
+		  });
+		</script>
+		
+		<br><br>
+		
+		[누적 대여 현황]<br>
+		<div>
+		  <canvas id="myChartt"></canvas>
+		</div>
+		<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+		<script>
+		//DB와 맞물려서 데이터 가져오는 것 생각해보자..
+		  const ctxx = document.getElementById('myChartt');
+		
+		  new Chart(ctxx, {
+		    type: 'line',
+		    data: {
+		      labels: ['10/19', '10/20', '10/21', '10/22', '10/23', '10/24', '10/25'],
+		      datasets: [{
+		        label: '# of total purchase',
+		        data: [5, 17, 36, 44, 49, 56, 59],
+		        borderWidth: 1
+		      }]
+		    },
+		    options: {
+		      scales: {
+		        y: {
+		          beginAtZero: true
+		        }
+		      }
+		    }
+		  });
+		</script>
+		
+		</div>
+	</div>
+	
+	
+	<div class="content1">
+		<div class="content">
+		회원 증감 수<br><br>
+		<p>오늘 가입한 회원 수 : nn 명 <span id="resultSignup"></span></p>
+		<p>전체 누적 회원 수 : nnn 명</p>
+		</div>
+	</div>
+	<div class="content1">
+		<div class="content">
+		전체 구매 전환률<br>  <!-- 구매 전환률 = 영화 대여 수 / 영화 상세페이지를 클릭한 횟수(hitno) * 100% -->
+			<div class="progress-bar">           
+			   <div class="progress" id="progress" style="width: 50%;">50%</div>
+			</div>
+	</div>
+	
+	<div class="content1">
+		<div class="content">
+			방문 현황<br><br>
+			<p>오늘 방문 횟수 : nn 명 </p>
+			<p>하루 평균 방문자 수 : nn 명 <span id="resultVisit"></span></p>
+			<p>전체 누적 방문자 수 : nnn 명</p>
+		</div>
+	</div>
+	
+	<div class="content1">
+		<div class="content">
+		대여 수 현황<br><br>
+		<p>1위 : 해리포터</p>
+		<p>2위 : 아이언맨</p>
+		<p>3위 : 스파이더맨</p>
+		</div>
+	</div>
+</div>
+
+</div>
+    
+<script>
+
+	//회원 구매 전환율 % 구하기
+    const updateProgressBar = async() => {
+	    await fetch('/master/conversionRate', { //향후 컨트롤러에 작성 필요
+	        method: 'GET',
+	        headers: { "content-type": "application/json" }
+	    })
+	    .then((response) => response.json())
+	    .then((data) => {
+	        // conversionRate 값을 사용하여 progress 바 업데이트
+	        const conversionRate = data.conversionRate; // 서버에서 받은 데이터 구조에 맞게 수정
+	        const progressElement = document.getElementById('progress');
+	
+	        // width와 텍스트 업데이트
+	        progressElement.style.width = conversionRate + '%';
+	        progressElement.textContent = conversionRate + '%';
+	    })
+	    .catch((error) => {
+	        console.error('============= Error :', error);
+	    });
+	}
+	updateProgressBar(); // 페이지 로드 시 프로그레스 바 업데이트
+    
+
+	//방문자 수 증감 색상 표시
+	const yesterdaySignup = 9; //임의로 작성, 서버로부터 가져오기 필요
+	const todaySignup = 6;		//임의로 작성, 서버로부터 가져오기 필요
+	
+	const differenceSignup = todaySignup - yesterdaySignup;
+	const resultDivSignup = document.getElementById('resultSignup');
+	
+	if (differenceSignup > 0) {
+	    resultDivSignup.innerHTML = `<span class="positive">▲ +${differenceSignup}</span>`;
+	} else if (differenceSignup < 0) {
+	    resultDivSignup.innerHTML = `<span class="negative">▼ ${differenceSignup}</span>`;
+	} else {
+	    resultDivSignup.innerHTML = '변화 X';
+	}
+	
+	
+	//방문자 수 증감 색상 표시
+	const yesterdayAvgVisitors = 5; //임의로 작성, 서버로부터 가져오기 필요
+	const todayAvgVisitors = 6;		//임의로 작성, 서버로부터 가져오기 필요
+	
+	const differenceVisit = todayAvgVisitors - yesterdayAvgVisitors;
+	const resultDivVisit = document.getElementById('resultVisit');
+	
+	if (differenceVisit > 0) {
+	    resultDivVisit.innerHTML = `<span class="positive">▲ +${differenceVisit}</span>`;
+	} else if (differenceVisit < 0) {
+	    resultDivVisit.innerHTML = `<span class="negative">▼ ${differenceVisit}</span>`;
+	} else {
+	    resultDivVisit.innerHTML = '변화 X';
+	}
+
+	
+    
+</script>
 
 </body>
 </html>
