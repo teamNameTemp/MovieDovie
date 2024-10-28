@@ -26,10 +26,15 @@ public class MemberController {
 	@ResponseBody
 	@PostMapping("/loginCheck")
 	public String postLoginCheck() throws Exception {
+		
 
 		return "{\"message\":\"good\"}";
 	}
 	
 	@GetMapping("/logout")
 	public void getLogout() {}
+	
+	@GetMapping("/signup")
+	public void getSignup() {}
+	
 }
