@@ -14,6 +14,7 @@ body {
   top: 0;
 }
 
+
 .navbar-container {
   display: flex;
   align-items: center;
@@ -111,6 +112,7 @@ body {
 }
 
 .container {
+  display: flex;
   background-color: #151515;
   min-height: calc(100vh - 50px);
   color: white;
@@ -121,7 +123,7 @@ body {
 }
 
 .featured-content {
-  height: 50vh;
+  height: 10vh;
   padding: 50px;
 }
 
@@ -132,7 +134,7 @@ body {
 .featured-desc {
   width: 500px;
   color: lightgray;
-  margin: 30px 0;
+  margin: 30px 50px;
 }
 
 .featured-button {
@@ -156,6 +158,7 @@ body {
 
 .movie-list {
   display: flex;
+  flex-direction: row;
   align-items: center;
   height: 300px;
   transform: translateX(0);
