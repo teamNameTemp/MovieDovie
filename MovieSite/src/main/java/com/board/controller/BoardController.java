@@ -15,6 +15,9 @@ public class BoardController {
 	
 	@GetMapping("/list")
 	public void getlist() {}
+	
+	@GetMapping("/movieDetail")
+	public void getmovieDetail() {}
 
 	//장르 필터
 	@PostMapping("/genreCheck")
