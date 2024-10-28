@@ -40,6 +40,10 @@ public class MovieController {
 	        list.add(map);
 	    }
 
+	    for(int i = 0; i<list.size(); i++) {
+	    	System.out.println(list.get(i));
+	    }
+	    
 	    // HTML 형식으로 데이터 변환
 	    String htmlContent = convertToHtmlFormat(list);
 
