@@ -1,6 +1,7 @@
 package com.board.controller;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -49,6 +50,39 @@ public class MovieController {
 	    // 뷰 이름 반환
 	    return "daily-box-office";
 	}
+<<<<<<< Updated upstream
+=======
+	
+	@GetMapping("/movie")
+	public String getMovieDetail(@RequestParam("movieCd") String movieCd, Model model) throws JsonMappingException, JsonProcessingException {
+		String result = service.getMovieDetail(movieCd);
+
+		System.out.println(result);
+		ObjectMapper mapper = new ObjectMapper();
+		JsonNode rootNode = mapper.readTree(result);
+		JsonNode movieInfo = rootNode.path("movieInfoResult").path("movieInfo");
+		
+		System.out.println("movieInfo");
+		Map<String, Object> movieInfoMap = new HashMap<>();
+		for (JsonNode d : movieInfo) {
+			Map<String, Object> map = mapper.convertValue(d, new TypeReference<Map<String, Object>>() {
+			});
+			movieInfoMap = map;
+		}
+
+		for(Object info : movieInfo) {
+			System.out.println(info);
+		}
+		  
+		  // HTML 형식으로 데이터 변환 String htmlContent = convertToHtmlFormat(list);
+		  
+		  // 모델에 데이터 추가 model.addAttribute("htmlContent", htmlContent);
+		 
+
+	    // 뷰 이름 반환
+	    return "movieDetail";
+	}
+>>>>>>> Stashed changes
 
 	// HTML 형식으로 변환하는 메서드
 	private String convertToHtmlFormat(List<Map<String, Object>> data) {
