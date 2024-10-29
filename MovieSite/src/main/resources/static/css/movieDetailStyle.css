@@ -142,7 +142,7 @@ body {
   color: white;
   padding: 10px 10px;
   border-radius: none;
-  border: none;
+  border: auto;
   outline: none;
   font-weight: bold;
 }
@@ -158,7 +158,6 @@ body {
 
 .movie-list {
   display: flex;
-  flex-direction: row;
   align-items: center;
   height: 300px;
   transform: translateX(0);
