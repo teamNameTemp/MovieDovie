@@ -3,7 +3,91 @@
 <head>
 <meta charset="UTF-8">
 <title>로그인</title>
-</head>
+<style>
+	body {
+	    background-color: rgba(20, 20, 20, 0.8); /* 배경을 투명하게 설정 */
+	    color: white;
+	    display: flex;
+	    justify-content: center;
+	    align-items: center;
+	    height: 100vh;
+	    margin: 0;
+	}
+
+	.main {
+	    text-align: center;
+	}
+	.WriteForm {
+	    background-color: rgba(34, 34, 34, 0.9); /* 투명한 배경색 */
+	    padding: 4px 70px;
+	    border-radius: 5px;
+	    border: 2px solid transparent; /* 테두리를 투명하게 설정 */
+	    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+	    margin: 0 auto; /* 중앙 정렬 */
+		text-align: center;
+	}
+	
+	.input_field {
+	    width: 100%;
+		box-sizing: border-box;
+	    padding: 24px 16px ;
+	    margin-bottom: 15px;
+	    border: 1px solid white;
+	    border-radius: 3px;
+	    background-color: #333;
+	    color: white;
+		
+	}
+
+	.input_field:focus {
+	    border: 1px solid #e50914; /* 포커스 시 강조 색상 */
+	}
+
+	.btn_login {
+	    width: 100%;
+	    padding: 10px;
+	    background-color: #4dbf00 ; /* 로그인 버튼 색상 */
+	    border: none;
+	    border-radius: 3px;
+	    color: white;
+	    font-size: 16px;
+	    cursor: pointer;
+	}
+
+	.btn_login:hover {
+	    background-color: #f40612; /* 버튼 호버 시 색상 */
+	}
+
+	.bottomText {
+	    margin-top: 10px;
+	    color: white;
+		font-size: 25px;
+	}
+	
+	.bottomText1 {
+		margin-top: 10px;
+		color: white;
+		font-size: 18px;
+	}
+	
+	h1 {
+		font-size: 50px;
+		color: white;
+		margin-bottom: 20px;
+	}
+	
+	a {
+		color: white;
+	}
+
+	.input_field::placeholder {
+	    font-size: 16px; /* 글씨 크기 조정 */
+	    color: #bbb; /* 색상 조정 (진하게 하려면 어두운 색으로) */
+	    font-weight: normal; /* 글씨를 진하게 설정 */
+	}
+
+</style>
+
 <script defer>
 
 //Spring Security가 진행하는 로그인
@@ -34,8 +118,16 @@ const loginCheck = async () => {
 
 
 */	
+}
+const login2 = () => {
+	document.location.href="/member/searchEmail";
+	}
+const login3 = async () => {
+	//document.location.href="/member/searchPassword";
+	
+	
 	let formData = new FormData();
-	formData.append("email", userid.value);
+	formData.append("email", email.value);
 	formData.append("password", password.value);
 	
 	await fetch('/member/loginCheck', {
@@ -66,26 +158,34 @@ const press = () => {
 }
 
 </script>
+</head>
 
 <body>
 <div class="main" align="center">
-	<h1>로그인</h1>
-
-	<br>
+	<div class="WriteForm">
+		<h1>로그인</h1><br><br>
 	<form name="loginForm" id="loginForm" method="POST">
-		<input type="text" name="email" id="email" class="input_field" placeholder="아이디를 입력하세요."><br><br>
+		<input type="text" name="email" id="email" class="input_field" placeholder="이메일을 입력하세요." 
+				onfocus="this.placeholder='';" onblur="if(this.value === '') this.placeholder='이메일을 입력하세요.';"><br><br>
 		<input type="password" name="password" id="password" class="input_field" onkeydown="press()"
-			placeholder="8자 이상 입력하세요.">
+			placeholder="비밀번호 8자 이상 입력하세요." onfocus="this.placeholder='';" onblur="if(this.value === '') this.placeholder='비밀번호 8자 이상 입력하세요.';">
 		<p id="msg" style="color:red; text-align:center"></p>
 		<br>
-		<input type="checkbox" id="rememberEmail" onclick="checkRememberEmail()">아이디 기억
-		<input type="checkbox" id="rememberPassword" onclick="checkRememberPassword()">패스워드 기억
+		<input type="checkbox" id="rememberEmail" onclick="checkRememberEmail()">이메일 기억
+		<input type="checkbox" id="rememberPassword" onclick="checkRememberPassword()">비밀번호 기억
 		<input type="checkbox" id="rememberMe" class="remember" name="remember-me" onclick="checkRememberMe()">자동 로그인
 		<br><br>
-		<input type="button" id="btn_login"	class="btn_login" value="로그인" onclick="login()">
-	<br><br>
-	<div class="bottomText"><a href="/member/signup">회원가입<br><br>
+		<input type="button" id="btn_login"	class="btn_login" value="로그인" onclick="login3()"><br><br><br><br>
+	
+	<div class="bottomText"><a href="/member/signup">회원가입<br><br></div>
+		<div class="bottomText1">
+		[<a href="/member/searchEmail" onmouseover="this.style.textDecoration='underline';"
+					onmouseout="this.style.textDecoration='none';">이메일</a> | 
+		 <a href="/member/searchPassword" onmouseover="this.style.textDecoration='underline';"
+					onmouseout="this.style.textDecoration='none';">비밀번호</a> 찾기] <br><br>
+		</div>
 	</form>
+	</div>
 </div>
 </body>
 </html>
