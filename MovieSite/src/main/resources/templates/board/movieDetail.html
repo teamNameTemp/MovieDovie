@@ -9,6 +9,120 @@
     <th:block th:replace="/fragments/header::header">
 
     <title>영화 상세</title>
+    
+<!-- 
+<script>
+
+	//화면 렌더링 이후 발생할 이벤트에서 사용될 광역 변수 설정
+	var number = 1;
+	var totalPrice = parseInt('[[${view.p_price}]]');
+	var price = parseInt('[[${view.p_price}]]');
+	
+	//로그아웃 처리
+	const logout = () => {
+		if(!confirm("로그아웃 하시겠습니까?")) return;
+		document.location.href='/member/logout';		
+	}
+	
+	//장바구니에 담을 상품 갯수 및 가격 구하기
+	const count = (type) =>  {
+		  
+		  number = parseInt(document.getElementById('quantity').innerHTML);
+		  if(type === 'plus') {
+		    number ++;
+		    totalPrice += price;
+		  }else if(type === 'minus' && number !==1 )  {
+		    number --;
+		    totalPrice -= price;
+		  }
+		  document.getElementById('quantity').innerHTML = number;
+		  document.getElementById('total_price').innerHTML = totalPrice.toLocaleString('ko-KR');
+	}
+	
+	//장바구니에 상품 담기
+	const cart = async (email,p_id,pCartQuantity) => {
+
+		number += pCartQuantity; //선택한 상품 갯수에다가 기존 장바구니에 담겨져 있는 이 상품의 갯수를 더한다 
+		
+		if(email === '' || email === null) {
+			alert("로그인 이후 이용할 수 있는 서비스입니다.");
+			return;
+		}
+
+		await fetch('/shop/pCart',{
+			  method: "POST",
+			  headers: {
+			    "Content-Type": "application/json",
+			  },
+			  body: JSON.stringify({
+					cart_email: email,
+					p_id: p_id,
+					cart_quantity: number
+			  }),				
+			}).then((response)=> response.text())
+				.then((data) => {
+					if(data != '' || data != null || data != 0){
+						alert("장바구니에 상품을 넣어 두었습니다.");
+						document.getElementById('pCartCount').innerHTML = data;
+					} else {
+						alert("시스템 장애로 장바구니 담기가 실패했습니다.");		
+					}
+			}).catch((error)=> {				
+				console.log("error = " + error);
+			});
+		
+	}
+	
+	//관심상품 
+	const likeCheck = async (type,email) => {
+		
+		//재고가 0이면 장바구니 담기 버튼 비활성화 -> 관심상품 관리와 상관 없음
+		const stock = parseInt('[[${view.p_stock}]]');
+		const btnCart = document.getElementById('btn_cart');  
+		
+		if(stock < 1) {
+			btnCart.disabled = true; //관련상품 버튼 비활성화
+			btnCart.style.background = 'gray'; //관련상품 버튼 색상변화
+		}
+		///////////////////////////////////////////////////////
+		
+		if(email === '' || email === null) {
+			alert("로그인 이후 이용할 수 있는 서비스입니다.");
+			return;
+		}
+				
+		await fetch('/shop/likeManage?type=' + type,{
+			  method: "POST",
+			  headers: {
+			    "Content-Type": "application/json",
+			  },
+			  body: JSON.stringify({
+				    like_email: '[[${session.email}]]',
+					p_id: parseInt('[[${view.p_id}]]'),					
+			  }),				
+			}).then((response)=> response.text())
+				.then((data) => {
+					if(data == 'good'){
+						const btnLike = document.getElementById('btn_like');
+						btnLike.style.border = 'solid, red';
+						btnLike.style.background = 'red';
+						btnLike.style.color = 'white';
+						
+					} else {
+						const btnLike = document.getElementById('btn_like');
+						btnLike.style.border = 'solid, #168';
+						btnLike.style.background = 'white';
+						btnLike.style.color = 'black';	
+					}
+			}).catch((error)=> {				
+				console.log("error = " + error);
+			});
+		
+		
+	}
+	
+</script>
+-->
 </head>
 <body>
    	<div th:replace="/fragments/nav/menubar::menubar"></div>
@@ -22,10 +136,13 @@
 	               <p class="#" style="text-align: right;">좋아요% vs 싫어요% </p> <!--좋아요 vs 싫어요 % ??-->	               
 	        	</div>
 	            <div> <br> 
-	               <button  class="featured-button">
-	               		<img width="28" height="28" src="#" alt="cart" data-v-4ae13823="">
-	               		<span>대여하기 | 가격</span>
-	               </button>
+	            
+	            	<button class="featured-button"> <!-- th:onclick="cart([[${session.email}]],[[${view.p_id}]],[[${pCartQuantity}]])" p_id:프로덕트아이디--> 
+					    <img src="img/cart-icon.png" alt="cartIcon" style="width: 20px; height: 20px; vertical-align: middle; margin-right: 5px;">
+					    장바구니 담기 | 가격
+					</button>
+
+	               
 	            </div>
 			</div>
 				<br><br><br><br><br><br><br><br><br><br>

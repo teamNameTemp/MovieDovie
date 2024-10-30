@@ -21,7 +21,7 @@ public class BoardController {
 	public String postGenreCheck() {
 		return null;
 	}
-	
+	//영화상세
 	@GetMapping("/movieDetail")
 	public void getMovieDetail() {
 		
