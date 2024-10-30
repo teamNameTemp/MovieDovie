@@ -64,9 +64,9 @@
 <div th:replace = "/fragments/nav::sidebar"></div>
  <div class="navbar">
      <div class="navbar-container">
-         <div class="logo-container">
+
              <h1 class="logo">Admin Page</h1>
-         </div>
+
          <div class="menu-container">
              <ul class="menu-list">
                  <li class="menu-list-item">
@@ -100,10 +100,8 @@
 <br><br><br>
 <div class="main">
 
-	<h3 style="text-align: center;">영화 대량 파일 업로드 시 <a class="massUpload" href="#">여기</a>를 클릭하세요</h3>
-	<br><br><br>
+	<br>
 	<h1 style="text-align: center;">영화 개별 업로드</h1>
-	<!-- 여기서 개별로 업로드한 영화 파일들은 tbl_movieUploadedByMaster 테이블에 업로드 예정. -->
 	
      <br>
      <div class="boardView">
@@ -119,6 +117,7 @@
 		<input type="text" class="input_field" id="directors" name="directors" placeholder="감독">
 		<input type="text" class="input_field" id="companyNm" name="companyNm" placeholder="제작사">
 		<br>
+		<input type="hidden" class="input_field" id="uploadcheck" name="uploadcheck" value="Y">
    		<input type="button" id="btnRegister" class="btn_write" value="업로드하기">	
    		
      </div>

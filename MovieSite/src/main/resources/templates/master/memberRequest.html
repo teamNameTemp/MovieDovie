@@ -51,12 +51,12 @@
 		
 		th:nth-child(3),
 		td:nth-child(3) {
-		  width: 10%;
+		  width: 12%;
 		}
 		
 		th:nth-child(4),
 		td:nth-child(4) {
-		  width: 25%;
+		  width: 23%;
 		}
 		
 		th:nth-child(5),
@@ -69,15 +69,25 @@
 		}
 		
 	</style>
+	<script>
+		const search = () => {
+			const keyword = document.querySelector('#keyword');
+			document.location.href='/memberRequest/list?page=1&keyword=' + keyword.value;
+		}
+	
+		const press = () => {
+			if(event.keyCode == 13) search();
+		}
+	</script>
 </head>
 <body class="p-3 m-0 border-0 bd-example m-0 border-0">
 
 <div th:replace = "/fragments/nav::sidebar"></div>
  <div class="navbar">
      <div class="navbar-container">
-         <div class="logo-container">
+
              <h1 class="logo">Admin Page</h1>
-         </div>
+
          <div class="menu-container">
              <ul class="menu-list">
                  <li class="menu-list-item">
@@ -114,7 +124,14 @@
 	<h3>회원 요청 사항</h3>
 	
 	<br>
-	
+	<input type="text" name="keyword" id="keyword" 
+         		style="width:35%;height:28px;border:2px solid #4dbf00;font-size: 15px;border-radius:10px"
+         		placeholder=" 검색할 제목, 작성자이름 및 내용을 입력하세요." onkeydown="press()"> &nbsp;
+    <input type="button" value="검색" 
+             style="width:5%;height:33px;background:#4dbf00;color:white; border-radius:10px;border:none;font-weight:bold;cursor:pointer;"
+             	onclick="search()">		
+	<br><br>
+		 
 	<table class="table table-sm">
 	  <thead class="table-light">
 	    <tr>
@@ -122,7 +139,7 @@
 	      <th scope="col">제목</th>
 	      <th scope="col">작성자</th>
 	      <th scope="col">작성일</th>
-	      <th scope="col">댓글 수</th>
+	      <th scope="col">처리 상태</th>
 	    </tr>
 	  </thead>
 	  <tbody>
@@ -131,21 +148,21 @@
 	      <td><a href="/master/memberRequestView">어벤져스 올려주세요..</a></td>
 	      <td>지호</td>
 	      <td>2023-10-08</td>
-	      <td>0</td>
+	      <td>처리 중</td>
 	    </tr>
 	    <tr>
 	      <th scope="row">2</th>
 	      <td>영화 더 많이</td>
 	      <td>지후</td>
 	      <td>2023-12-25</td>
-	      <td>0</td>
+	      <td>처리 중</td>
 	    </tr>
 	    <tr>
 	      <th scope="row">3</th>
 	      <td>왜 이건 없어요?</td>
 	      <td>지현</td>
 	      <td>2024-01-25</td>
-	      <td>0</td>
+	      <td>처리 중</td>
 	    </tr>
 	  </tbody>
 	</table>

@@ -8,10 +8,10 @@
 	<link rel="stylesheet" th:href="@{/css/styles.css}">
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css">
 	<style>
-		 #wrap {width: 1000px; height: 1200px; font-size: 15px; text-align: center; margin : auto;}
+		 #wrap {width: 1200px; height: 1000px; font-size: 15px; text-align: center; margin : auto;}
 	 	.side {
 	 		display: flex;
-		 	float: left; width: 700px; height: 1000px; text-align: center; 
+		 	float: left; width: 700px; height: 902px; text-align: center; 
 		 	flex-direction: column; /* 세로 방향으로 정렬 */
 	    	justify-content: center; /* 수직 중앙 정렬 */
 	    	align-items: center; /* 수평 중앙 정렬 */
@@ -20,8 +20,20 @@
 	    .content1 {
 		    display: flex; flex-direction: column; align-items: center; justify-content: space-between;
 		    align-items: center; /* 수직 중앙 정렬 */
-		    width: 300px;
-		    height: 250px; /* 고정 높이 유지 */
+		    width: 500px;
+		    height: 280px; /* 고정 높이 유지 */
+		    text-align: center;
+		    text-align: center;
+		    float: left;
+		    margin: auto;
+		    min-height: 200px;
+		}
+		
+		.content2 {
+		    display: flex; flex-direction: column; align-items: center; justify-content: space-between;
+		    align-items: center; /* 수직 중앙 정렬 */
+		    width: 500px;
+		    height: 400px; /* 고정 높이 유지 */
 		    text-align: center;
 		    text-align: center;
 		    float: left;
@@ -30,20 +42,34 @@
 		}
 
 	 	.content {
-            width: 90%; /* 부모 너비에 맞춤 */
-            height: 90%; /*부모 너비에 맞춤*/
+            width: 100%; /* 부모 너비에 맞춤 */
+            height: 100%; /*부모 너비에 맞춤*/
             text-align: center;
             background-color: white;
-            padding: 1%; /* 패딩 10% */
-            border: 2px solid lightgray;
+            padding: 3%; /* 패딩 10% */
+            border: 1.8px solid lightgray;
             box-sizing: border-box; /* 패딩 포함한 크기 계산 */
         }
+        
+        .horicontent {
+            display: flex;  
+   			justify-content: space-between; /* 양쪽으로 배치 */
+            width: 100%; /* 부모 너비에 맞춤 */
+            height: 100%; /*부모 너비에 맞춤*/
+            text-align: center;
+        }
+        
+		        
+		.left-div, .right-div {
+		    width: 48%; /* 여백을 고려하여 너비 설정 */
+		    box-sizing: border-box;
+		}
+        
 		.progress-bar {
 		    width: 100%;
 		    height: 30px;
 		    background-color: #dedede;
 		    font-weight: 600;
-		    font-size: .8rem;
 		}
 		
 		.progress-bar .progress {
@@ -53,6 +79,7 @@
             background-color:#4dbf00;
             color: white;
         }
+        
 	    .positive {
             color: red; /* 방문자 수 증가 */
         }
@@ -68,9 +95,9 @@
 <div th:replace = "/fragments/nav::sidebar"></div>
  <div class="navbar">
      <div class="navbar-container">
-         <div class="logo-container">
-             <h1 class="logo">Admin Page</h1>
-         </div>
+         <!--  <div class="logo-container">-->
+             <h6 class="logo">Admin Page</h6>
+         <!--</div>-->
          <div class="menu-container">
              <ul class="menu-list">
                  <li class="menu-list-item active">
@@ -101,7 +128,7 @@
          </div>
      </div>
  </div>
-<br>
+<br><br><br>
 <!--  
 <ul>
 	<li>회원 증감 수 확인</li>
@@ -116,16 +143,16 @@
 <div id="wrap">
 
 	<div class="side">
-		<div class="content"><b>대여 현황</b><br><br>
+		<div class="content"><b>대여 현황</b><br><br><br>
 				
-		[최근 일주일 간 대여 현황]<br>
+		[최근 일주일 간 대여 현황]<br><br>
 		<div>
-		  <canvas id="myChart"></canvas>
+		  <canvas id="weeklyRentStatus"></canvas>
 		</div>
 		<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 		<script>
 		//DB와 맞물려서 데이터 가져오는 것 생각해보자..
-		  const ctx = document.getElementById('myChart');
+		  const ctx = document.getElementById('weeklyRentStatus');
 		
 		  new Chart(ctx, {
 		    type: 'bar',
@@ -149,16 +176,16 @@
 		  });
 		</script>
 		
-		<br><br>
+		<br><br><br>
 		
 		[누적 대여 현황]<br>
 		<div>
-		  <canvas id="myChartt"></canvas>
+		  <canvas id="weeklyRentCumulative"></canvas>
 		</div>
 		<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 		<script>
 		//DB와 맞물려서 데이터 가져오는 것 생각해보자..
-		  const ctxx = document.getElementById('myChartt');
+		  const ctxx = document.getElementById('weeklyRentCumulative');
 		
 		  new Chart(ctxx, {
 		    type: 'line',
@@ -185,6 +212,79 @@
 		</div>
 	</div>
 	
+	<div class="content2">
+		<div class="content">
+			<b>대여 파이프라인</b>
+			<div class="horicontent">
+				<div class="left-div">
+		        	<br><br>[대여 중 / 대여종료 비율]<br><br><br>
+					<div>
+					  <canvas id="RentPercent" width="230"></canvas>
+					</div>
+					<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+					<script>
+					  const ctxz = document.getElementById('RentPercent');
+					
+					  new Chart(ctxz, {
+					    type: 'doughnut',
+					    data: {
+					      labels: ['대여 중', '대여 종료'],
+					      datasets: [{
+					        label: '# of Rentals',
+					        data: [40, 60],
+					        backgroundColor: ['#4dbf00', '#d2d2d2'],
+					        hoverOffset: 4,
+							borderRadius : 5,
+							spacing : 3
+					      }]
+					    },
+					    options: {
+					    	responsive: false,
+					    	cutout: 60
+					    }
+					  });
+					</script>
+				</div>
+				
+	        	<div class="right-div">
+	        		<br><br>[회원의 대여 현황 여부]<br><br>
+					<div>
+					  <canvas id="MemberRentPercent" width="250"></canvas>
+					</div>
+					<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+					<script>
+					  const ctxzx = document.getElementById('MemberRentPercent');
+					
+					  new Chart(ctxzx, {
+					    type: 'doughnut',
+					    data: {
+					      labels: ['현재 대여 중인 회원', '대여 중이지 않은 회원'],
+					      datasets: [{
+					        label: '# of Members',
+					        data: [30, 70],
+					        backgroundColor: ['#4dbf00', '#d2d2d2'],
+					        hoverOffset: 4,
+							borderRadius : 5,
+							spacing : 3
+					      }]
+					    },
+					    options: {
+					    	responsive: false,
+					    	cutout: 60
+					    }
+					  });
+					</script>
+	        	</div>	
+			</div>
+		</div>
+	</div>
+	<div class="content1">
+		<div class="content">
+		전체 구매 전환률<br><br>  <!-- 구매 전환률 (Conversion Rate) = 영화 대여 수 / 영화 상세페이지를 클릭한 횟수(hitno) * 100% -->
+			<p><div class="progress-bar">           
+			   <div class="progress" id="progress" style="width: 60%;">60%</div><br><br>
+			</div></p>
+	</div>
 	
 	<div class="content1">
 		<div class="content">
@@ -193,13 +293,7 @@
 		<p>전체 누적 회원 수 : nnn 명</p>
 		</div>
 	</div>
-	<div class="content1">
-		<div class="content">
-		전체 구매 전환률<br>  <!-- 구매 전환률 = 영화 대여 수 / 영화 상세페이지를 클릭한 횟수(hitno) * 100% -->
-			<div class="progress-bar">           
-			   <div class="progress" id="progress" style="width: 50%;">50%</div>
-			</div>
-	</div>
+	
 	
 	<div class="content1">
 		<div class="content">
@@ -210,14 +304,7 @@
 		</div>
 	</div>
 	
-	<div class="content1">
-		<div class="content">
-		대여 수 현황<br><br>
-		<p>1위 : 해리포터</p>
-		<p>2위 : 아이언맨</p>
-		<p>3위 : 스파이더맨</p>
-		</div>
-	</div>
+	
 </div>
 
 </div>
