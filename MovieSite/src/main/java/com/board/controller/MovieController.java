@@ -30,6 +30,7 @@ public class MovieController {
 	public String getDailyBoxOffice(@RequestParam("targetDt") String targetDate, Model model) throws JsonMappingException, JsonProcessingException {
 	    String result = service.getDailyBoxOffice(targetDate);
 
+	    System.out.println(result);
 	    ObjectMapper mapper = new ObjectMapper();
 	    JsonNode rootNode = mapper.readTree(result);
 	    JsonNode dailyList = rootNode.path("boxOfficeResult").path("dailyBoxOfficeList");
@@ -40,6 +41,10 @@ public class MovieController {
 	        list.add(map);
 	    }
 
+	    for(int i = 0; i<list.size(); i++) {
+	    	System.out.println(list.get(i));
+	    }
+	    
 	    // HTML 형식으로 데이터 변환
 	    String htmlContent = convertToHtmlFormat(list);
 
@@ -48,6 +53,36 @@ public class MovieController {
 
 	    // 뷰 이름 반환
 	    return "daily-box-office";
+	}
+	
+	@GetMapping("/movie")
+	public String getMovieDetail(@RequestParam("movieCd") String movieCd, Model model) throws JsonMappingException, JsonProcessingException {
+		String result = service.getMovieDetail(movieCd);
+
+		System.out.println(result);
+		ObjectMapper mapper = new ObjectMapper();
+		JsonNode rootNode = mapper.readTree(result);
+		JsonNode movieInfo = rootNode.path("movieInfoResult").path("movieInfo");
+		
+		System.out.println("movieInfo");
+//		List<Map<String, Object>> list = new ArrayList<>();
+//		for (JsonNode d : movieInfo) {
+//			Map<String, Object> map = mapper.convertValue(d, new TypeReference<Map<String, Object>>() {
+//			});
+//			list.add(map);
+//		}
+//
+//		for (int i = 0; i < list.size(); i++) {
+//			System.out.println(list.get(i));
+//		}
+//		  
+//		  // HTML 형식으로 데이터 변환 String htmlContent = convertToHtmlFormat(list);
+//		  
+//		  // 모델에 데이터 추가 model.addAttribute("htmlContent", htmlContent);
+//		 
+
+	    // 뷰 이름 반환
+	    return "movieDetail";
 	}
 
 	// HTML 형식으로 변환하는 메서드
