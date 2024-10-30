@@ -57,7 +57,7 @@ public class MovieController {
 	}
 	@GetMapping("/movie")
 	public String getMovieDetail(@RequestParam("movieCd") String movieCd, Model model) throws JsonMappingException, JsonProcessingException {
-		String result = service.getMovieDetail(movieCd);
+		String result = service.getMovieInfo(movieCd);
 
 		System.out.println(result);
 		ObjectMapper mapper = new ObjectMapper();
@@ -98,6 +98,46 @@ public class MovieController {
 
 	    // 뷰 이름 반환
 	    return "movieDetail";
+	}
+	
+	@GetMapping("/actor")
+	public String getActorInfo(@RequestParam("peopleCd") String peopleCd, Model model) throws JsonMappingException, JsonProcessingException {
+		String result = service.getActorInfo(peopleCd);
+
+		System.out.println(result);
+		
+		ObjectMapper mapper = new ObjectMapper();
+		JsonNode rootNode = mapper.readTree(result);
+		JsonNode movieInfo = rootNode.path("movieInfoResult").path("movieInfo");
+		
+		System.out.println("movieInfo");
+//		List<Map<String, Object>> list = new ArrayList<>();
+//		for (JsonNode d : movieInfo) {
+//			Map<String, Object> map = mapper.convertValue(d, new TypeReference<Map<String, Object>>() {
+//			});
+//			list.add(map);
+//		}
+//
+//		for (int i = 0; i < list.size(); i++) {
+//			System.out.println(list.get(i));
+//		}
+//		  
+//		  // HTML 형식으로 데이터 변환 String htmlContent = convertToHtmlFormat(list);
+//		  
+//		  // 모델에 데이터 추가 model.addAttribute("htmlContent", htmlContent);
+//		 
+
+	    // 뷰 이름 반환
+	    return "actorInfo";
+	}
+
+	@GetMapping("/weekly")
+	public String getWeeklyBoxOffice(@RequestParam("targetDt") String targetDt, @RequestParam("weekGb") String weekGb) {
+		String result = service.getWeeklyBoxOffice(targetDt,weekGb);
+		
+		System.out.println(result);
+		
+		return "weeklyBoxOffice";
 	}
 	// HTML 형식으로 변환하는 메서드
 	private String convertToHtmlFormat(List<Map<String, Object>> data) {
