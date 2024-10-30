@@ -22,12 +22,29 @@ public class KobisAPIService {
 		 return restTemplate.getForObject(url, String.class);
 	}
 	
-	public String getMovieDetail(String movieCd) {
+	public String getMovieInfo(String movieCd) {
 		 String url = "http://www.kobis.or.kr/kobisopenapi/webservice/rest/movie/searchMovieInfo.json" +
                 "?key=" + apiKey +
                 "&movieCd=" + movieCd;
    
 		 return restTemplate.getForObject(url, String.class);
+	}
+	
+	public String getActorInfo(String peopleCd) {
+		 String url = "http://www.kobis.or.kr/kobisopenapi/webservice/rest/people/searchPeopleInfo.json" +
+               "?key=" + apiKey +
+               "&peopleCd=" + peopleCd;
+  
+		 return restTemplate.getForObject(url, String.class);
+	}
+	
+	public String getWeeklyBoxOffice(String targetDt,String weekGb) {
+		String url = "http://www.kobis.or.kr/kobisopenapi/webservice/rest/boxoffice/searchWeeklyBoxOfficeList.json"
+				+ "?key=" + apiKey + 
+				"&targetDt=" + targetDt +
+				"&weekGb=" + weekGb;
+
+		return restTemplate.getForObject(url, String.class);
 	}
 
 }
