@@ -21,5 +21,13 @@ public class KobisAPIService {
     
 		 return restTemplate.getForObject(url, String.class);
 	}
+	
+	public String getMovieDetail(String movieCd) {
+		 String url = "http://www.kobis.or.kr/kobisopenapi/webservice/rest/movie/searchMovieInfo.json" +
+                "?key=" + apiKey +
+                "&movieCd=" + movieCd;
+   
+		 return restTemplate.getForObject(url, String.class);
+	}
 
 }
