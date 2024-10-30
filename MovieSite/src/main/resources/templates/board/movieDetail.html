@@ -6,52 +6,13 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="/css/movieDetailStyle.css">
-    <link
-        href="https://fonts.googleapis.com/css2?family=Roboto:wght@100;300;400;500;700;900&family=Sen:wght@400;700;800&display=swap"
-        rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css">
+    <th:block th:replace="/fragments/header::header">
+
     <title>영화 상세</title>
 </head>
 <body>
-	<div class="navbar">
-        <div class="navbar-container">
-            <div class="logo-container">
-                <h1 class="logo">Movie</h1>
-            </div>
-            <div class="menu-container">
-                <ul class="menu-list">
-                    <li class="menu-list-item active">홈</li>
-                    <li class="menu-list-item">추천 영화</li>
-                    <li class="menu-list-item">장르</li>
-                    <li class="menu-list-item">인기 영화</li>
-                    <li class="menu-list-item">최신 영화</li>
-                </ul>
-            </div>
-            <div class="profile-container">
-                <img class="profile-picture" src="/img/profile.jpg" alt="">
-                <div class="profile-text-container">
-                    <span class="profile-text">프로필</span>
-                    <i class="fas fa-caret-down"></i>
-                </div>
-                <div class="toggle">
-                    <i class="fas fa-moon toggle-icon"></i>
-                    <i class="fas fa-sun toggle-icon"></i>
-                    <div class="toggle-ball"></div>
-                </div>
-            </div>
-        </div>
-    </div>
-    
-    <div class="sidebar">
-        <i class="left-menu-icon fas fa-search"></i>
-        <i class="left-menu-icon fas fa-home"></i>
-        <i class="left-menu-icon fas fa-users"></i>
-        <i class="left-menu-icon fas fa-bookmark"></i>
-        <i class="left-menu-icon fas fa-tv"></i>
-        <i class="left-menu-icon fas fa-hourglass-start"></i>
-        <i class="left-menu-icon fas fa-shopping-cart"></i>
-    </div>
-    
+   	<div th:replace="/fragments/nav/menubar::menubar"></div>
+   	<div th:replace="/fragments/nav/sidebar::sidebar"></div>
 	<div class="container">
 		<div class="content-container">
 		    <div class="featured-content" style="background: linear-gradient(to bottom, rgba(0,0,0,0), #151515), url('/img/6.jpg');">
