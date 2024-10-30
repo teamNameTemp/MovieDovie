@@ -1,17 +1,28 @@
 package com.board.controller;
 
-import javax.swing.text.Document;
+import java.util.HashMap;
+import java.util.Map;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+
+
+
+
 
 
 @Controller
 @RequestMapping("/member")
 public class MemberController {
+
+	
 	@GetMapping("/login")
 	public void getLogin() {
 	}
@@ -31,10 +42,35 @@ public class MemberController {
 		return "{\"message\":\"good\"}";
 	}
 	
+	//로그아웃
 	@GetMapping("/logout")
 	public void getLogout() {}
 	
+	//회원가입
 	@GetMapping("/signup")
 	public void getSignup() {}
+	
+	
+	//회원가입 --> 로그인페이지(DTO필요)
+	@ResponseBody
+	@PostMapping("/signup")
+	public Map<String,Object> postSignup() throws Exception {
+		Map<String,Object> map = new HashMap<>();
+		map.put("message", "good");
+		return map;
+	}
+	
+
+
+	
+	//이메일 찾기 화면 보기
+	@GetMapping("/searchEmail")
+	public void getSearchEmail() {}
+	
+
+	
+	//비밀번호 찾기
+	@GetMapping("/searchPassword")
+	public void getSearchPassword() {}
 	
 }
