@@ -47,16 +47,275 @@
   border:4px solid gray;
   border-radius: 20px;
 }
-	
+
+
+.status {
+	padding: 10px 10px;
+	text-align: center;
+	text-decoration: none;
+	border: solid 1px #a0a0a0;
+	display: inline-block;
+	background-color: #d2d2d2;
+	border-radius: 50px;
+}
+
 </style>
+
+<script>
+
+window.onload = () => {
+	
+	const status = '[[${status}]]';
+
+	if(status == "PENDING") document.querySelector('.status').style.backgroundColor = '#d2d2d2';
+	else if(status == "COMPLETED") document.querySelector('.status').style.backgroundColor = '#4dbf00';
+	
+	if(status == "PENDING") statusText.innerHTML = '회원 요청 사항 확인 및 처리 필요';
+	else if(status == "COMPLETED") statusText.innerHTML = '회원 요청 사항 처리 완료';
+		
+	startupPage(); // 페이지가 로드될 때 댓글 목록을 가져옴
+	replyList(); //댓글 수정하고 그런 이후에 댓글 목록 가져옴
+}
+
+
+//회원 요청 사항에 대한 상태 변경 처리 (PENDING or COMPLETED)
+const statusChange = () => { 
+	if(status == "PENDING") {
+		alert ("요청 상태를 '완료'로 변경합니다.");
+		status = "COMPLETED";
+		sendDataToServer(status);
+		document.querySelector('.status').style.backgroundColor = '#4dbf00';
+	} else if (status == "COMPLETED") {
+		alert ("요청 상태를 '처리 중'으로 변경합니다.");
+		status = "PENDING"
+		sendDataToServer(status);
+		document.querySelector('.status').style.backgroundColor = '#d2d2d2'
+	}
+	
+	if(status == "COMPLETED") statusText.innerHTML = '회원 요청 사항 처리 완료';
+	else if(status == "PENDING") statusText.innerHTML = '회원 요청 사항 확인 및 처리 필요';
+}
+
+
+//요청 사항 상태 값 비동기 서버 전송
+const sendDataToServer = async (status) => {
+	
+	const status = status;
+	
+	const queryString = {
+			seqno: parseInt('[[${view.seqno}]]'),
+			email: '[[${session.email}]]',
+			status: status
+	};
+	
+	await fetch('/master/memberReqeustViewStatus', {
+		method: 'POST',
+		headers: {"content-type":"application/json"},
+		body: JSON.stringify(queryString)		
+	}).then((response) => response.json())
+	  .then((data)=>{	
+			statusText.innerHTML = data.likeCnt;
+			dislike.innerHTML = data.dislikeCnt;
+	}).catch((error)=> {
+		console.log("error = " + error);
+	});
+	
+}
+
+//댓글 등록
+const replyRegister = async () => {
+
+	const replycontent = document.querySelector('#replycontent');
+	
+	if(replycontent.value === ''){
+		alert('댓글을 입력하세요.');
+		replycontent.focus();
+		return false;
+	}
+	
+	let formData = new FormData(replyForm)
+	await fetch('/master/memberRequestViewreply?kind=I',{
+		method: 'POST',
+		body: formData
+	}).then((response)=> response.json())
+		.then((data)=> {
+			replyList(data);
+			console.log(data);
+	}).catch((error) => {
+			console.log("error = " + error);
+			alert("시스템 장애로 댓글 등록이 실패했습니다.");
+    });
+	
+	replycontent.value = '';
+}
+
+//댓글 목록 가져 오기
+const replyList = (data) => {
+	
+	var session_email = '[[${session.email}]]';
+	const jsonInfo = data;
+	
+	let replyList = document.querySelector('#replyList');
+	replyList.innerHTML = '';
+	
+	var result = '';
+	for(const i in jsonInfo){
+		
+		let elm = document.createElement('div'); //<div id='s3' style='font-size:0.8em'></div>
+		elm.setAttribute('id','s' + jsonInfo[i].replyseqno);
+		elm.setAttribute('style','font-size:0.8em');
+		
+		let result = "";
+		result += "작성자 : " + jsonInfo[i].replywriter;
+		
+		if(jsonInfo[i].email === session_email){
+			result += "[<a href=" + "'javascript:replyModify(" + jsonInfo[i].replyseqno + ")' style='cursor:pointer'>수정</a> | ";
+			result += "<a href=" + "'javascript:replyDelete(" + jsonInfo[i].replyseqno + ")' style='cursor:pointer'>삭제</a>]"; 
+		}
+		
+		let date = new Date(jsonInfo[i].replyregdate);
+		let year = date.getFullYear();  //연도
+		let month = date.getMonth() + 1;  //월.0 ~11로 표현 
+		let day = date.getDate();  //일 * day: 요일 --> 0 ~ 6 : 
+		let hour = date.getHours();
+		let minute = date.getMinutes();
+
+		month = month >= 10 ? month : '0' + month;
+		day = day >= 10 ? day : '0' + day;
+		hour = hour >= 10 ? hour : '0' + hour;
+		minute = minute >= 10 ? minute : '0' + minute;	
+
+	
+		let regdate = year + "-" + month + "-" + day + "-" + " " + hour + ":" + minute; 	
+			
+		result += "&nbsp;&nbsp;" + jsonInfo[i].replyregdate;
+		result += "&nbsp;&nbsp;";
+		result += "<div style='width:90%; height: auto; border-top: 1px solid gray; overflow: auto;'>";
+		result += "<pre id='c" + jsonInfo[i].replyseqno + "'>" + jsonInfo[i].replycontent + "</pre>";
+		result += "</div><br>";
+		
+		elm.innerHTML = result;
+		replyList.appendChild(elm);
+		//console.log(replyList.outerHTML);
+		
+	}
+	
+}
+
+//페이지 시작할 때 댓글 목록 가져 오기
+const startupPage = async () => {
+
+	let formData = new FormData();
+	formData.append("seqno", "[[${view.seqno}]]")
+	await fetch('/master/memberRequestViewreply?kind=L',{
+		method: 'POST',
+		body: formData
+	}).then((response) => response.json())
+		.then((data) => replyList(data))
+		.catch((error) => {
+			console.log("error = " + error);
+			alert("시스템 장애로 댓글 가져 오기가 실패했습니다.")
+	});
+}
+
+//댓글 삭제
+const replyDelete = async(replyseqno) => {
+	if(confirm("정말로 삭제하시겠습니까?")) {
+		let formData = new FormData();
+		formData.append("replyseqno", replyseqno);
+		
+		await fetch('/master/memberRequestViewreply?kind=D',{
+			
+			method: 'POST',
+			body: formData			
+		}).then((response) => response.json())
+		  .then((data) => replyList(data))
+		  .catch((error) => {
+			  console.log("error =" + error);
+			  alert("서버 장애로 댓글 삭제가 실패했습니다.");
+	   });	
+	}
+}
+
+//댓글 수정하기
+const replyModify = (replyseqno) => {
+	
+	//댓글 내용 임시 저장
+	const modifyReplyContent = document.querySelector('#c' + replyseqno);
+	
+	var strReplyList = "작성자 : [[${session.username}]]&nbsp;"
+						+ "<input type='button' id='btn_replyModify' value='수정'>"
+						+ "<input type='button' id='btn_replyModifyCancel' value='취소'>"
+						+ "<input type='hidden' name='replyseqno' value='" + replyseqno + "'>"
+						+ "<input type='hidden' name='seqno' value='[[${view.seqno}]]'>"
+						+ "<input type='hidden' id='replywriter' name='replywriter' value='[[${session.username}]]'>"
+						+ "<input type='hidden' id='email' name='email' value='[[${session.email}]]'><br>"
+						+ "<textarea id='modify_replycontent' name='replycontent' cols='80' rows='5' maxlength='150' placeholder='글자수:150자 이내'>" 
+						+ modifyReplyContent.innerHTML + "</textarea><br>";
+	
+	let elm = document.createElement('div'); //<div></div>
+	elm.innerHTML = strReplyList;
+	
+	//개별 댓글 목록을 둘러 싸고 있는 div
+	let parentDiv = document.querySelector('#s' + replyseqno).parentNode;
+	parentDiv.insertBefore(elm,document.querySelector('#s' + replyseqno));
+	document.querySelector('#s' + replyseqno).style.display = 'none';
+	
+	const btnReplyModify = document.querySelector('#btn_replyModify');
+	const btnReplyModifyCancel = document.querySelector('#btn_replyModifyCancel');
+	const modify_replycontent = document.querySelector('#modify_replycontent');
+	
+	
+	btnReplyModify.addEventListener('click', async ()=> {
+		
+		let formData = new FormData();
+		formData.append("replyseqno", replyseqno);
+		formData.append("replycontent", modify_replycontent.value);
+		
+		
+		await fetch('/master/memberRequestViewreply?kind=U',{
+			
+			method: 'POST',
+			body: formData
+		}).catch((error) => {
+			console.log("error = " + error);
+			alert("서버 장애로 댓글 수정이 실패했습니다.");
+		});
+		
+		document.querySelector('#replyList').innerHTML = '';
+		startupPage();				
+		
+	});
+	
+	btnReplyModifyCancel.addEventListener('click',()=> {
+		if(confirm('정말로 취소하시겠습니까?')==true){
+			document.querySelector('#replyList').innerHTML = '';
+			startupPage();
+		}
+	});	
+}
+
+//댓글 등록 취소
+const replyCancel = () => {
+	if(confirm('정말로 취소하시겠습니까?')==true){
+		replycontent.value = '';
+		replycontent.focus();
+	}
+	
+}
+
+
+</script>
+
+
 </head>
 <body>
 <div th:replace = "/fragments/nav::sidebar"></div>
  <div class="navbar">
      <div class="navbar-container">
-         <div class="logo-container">
+
              <h1 class="logo">Admin Page</h1>
-         </div>
+
          <div class="menu-container">
              <ul class="menu-list">
                  <li class="menu-list-item">
@@ -98,19 +357,23 @@
             <div class="field">날짜 : </div>
             <div class="content"></div>
 			
-			<br>
+			<br><br>
+			
+			<p>
+				<a href='javascript:statusChange()' id="status" class="status"><b>√</b></a>
+				<span id='statusText' style='text-align:center; color:#4dbf00'></span>
+			</p>
       
         </div>
 		 <br>
-        <div class="bottom_menu">
-      		<a class="preseqno" href="#">이전 ▼</a>&nbsp;&nbsp;
-      		<a class="requestlist" href="/master/memberRequest">목록가기</a>&nbsp;&nbsp;
-      		<a class="afterseqno" href="#">다음 ▲</a>
-      		<input type="button" id="preseqno" name="preseqno" value="다음 ▲">
+        <div id="bottom_menu">
+      		<input type="button" id="preseqno" name="preseqno" value="이전 ▼" onclick="location.href='#'">&nbsp;&nbsp;
+      		<input type="button" id="requestlist" name="requestlist" value="목록가기" onclick="location.href='/master/memberRequest'">&nbsp;&nbsp;
+      		<input type="button" id="afterseqno" name="afterseqno" value="다음 ▲" onclick="location.href='#'">
         </div>
         <br>
-		 <div class="replyDiv" style="width:60%;height:300px;margin:auto;text-align:left;">
-			<p id="replyNotice">댓글을 작성해 주세요.</p>
+		<div class="replyDiv" style="width:60%;height:300px;margin:auto;text-align:left;">
+			<br><p id="replyNotice">댓글을 작성해 주세요.</p><br>
 			<form id="replyForm" name="replyForm" method="POST">
 				작성자 : <input type="text" id="replywriter" name="replywriter" value="${session.username}" readonly><br>
 				<textarea id="replycontent" name="replycontent" cols="80" rows="5" maxlength="150" placeholder="글자수:150자 이내">댓글 작성 부분!</textarea><br>
