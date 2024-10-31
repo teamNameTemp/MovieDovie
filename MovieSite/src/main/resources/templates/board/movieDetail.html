@@ -1,6 +1,5 @@
-<html lang="en">
-
-
+<html lang="ko" xmlns:th="http://www.thymeleaf.org"
+				xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -9,14 +8,13 @@
     <th:block th:replace="/fragments/header::header">
 
     <title>영화 상세</title>
-    
-<!-- 
+
 <script>
 
 	//화면 렌더링 이후 발생할 이벤트에서 사용될 광역 변수 설정
-	var number = 1;
-	var totalPrice = parseInt('[[${view.p_price}]]');
-	var price = parseInt('[[${view.p_price}]]');
+	//var number = 1;
+	//var totalPrice = parseInt('[[${view.p_price}]]'); //가격 아직 없음
+	//var price = parseInt('[[${view.p_price}]]');
 	
 	//로그아웃 처리
 	const logout = () => {
@@ -25,45 +23,34 @@
 	}
 	
 	//장바구니에 담을 상품 갯수 및 가격 구하기
-	const count = (type) =>  {
+/*	const count = (type) =>  {
 		  
-		  number = parseInt(document.getElementById('quantity').innerHTML);
-		  if(type === 'plus') {
-		    number ++;
-		    totalPrice += price;
-		  }else if(type === 'minus' && number !==1 )  {
-		    number --;
-		    totalPrice -= price;
-		  }
-		  document.getElementById('quantity').innerHTML = number;
 		  document.getElementById('total_price').innerHTML = totalPrice.toLocaleString('ko-KR');
 	}
-	
+*/	
 	//장바구니에 상품 담기
-	const cart = async (email,p_id,pCartQuantity) => {
+	const cart = async (email, seqno) => { //? movieseqno from tbl_rent
 
-		number += pCartQuantity; //선택한 상품 갯수에다가 기존 장바구니에 담겨져 있는 이 상품의 갯수를 더한다 
+		//number += pCartQuantity; //선택한 상품 갯수에다가 기존 장바구니에 담겨져 있는 이 상품의 갯수를 더한다 
 		
-		if(email === '' || email === null) {
+		if(email === '' || email === null) { //논리적 or, 둘중하나만 참이면..true
 			alert("로그인 이후 이용할 수 있는 서비스입니다.");
 			return;
 		}
 
-		await fetch('/shop/pCart',{
+		await fetch('/board/Cart',{
 			  method: "POST",
 			  headers: {
-			    "Content-Type": "application/json",
+			    "Content-Type": "application/json", //JSON 형식의 데이터를 보낸다는 것을 서버에 알립
 			  },
-			  body: JSON.stringify({
-					cart_email: email,
-					p_id: p_id,
-					cart_quantity: number
+			  body: JSON.stringify({ // 장바구니에 추가할 상품에 대한 정보를 JSON 형식으로 포함
+					cart_email: email, //from TBL_RENT
+					seqno: seqno, //from TBL_MOVIE
 			  }),				
 			}).then((response)=> response.text())
 				.then((data) => {
-					if(data != '' || data != null || data != 0){
+					if(data != '' || data != null){
 						alert("장바구니에 상품을 넣어 두었습니다.");
-						document.getElementById('pCartCount').innerHTML = data;
 					} else {
 						alert("시스템 장애로 장바구니 담기가 실패했습니다.");		
 					}
@@ -72,11 +59,12 @@
 			});
 		
 	}
-	
+
+	/*
 	//관심상품 
 	const likeCheck = async (type,email) => {
 		
-		//재고가 0이면 장바구니 담기 버튼 비활성화 -> 관심상품 관리와 상관 없음
+		//재고가 0이면 장바구니 담기 버튼 비활성화 --> 관심상품 관리와 상관 없음
 		const stock = parseInt('[[${view.p_stock}]]');
 		const btnCart = document.getElementById('btn_cart');  
 		
@@ -119,30 +107,34 @@
 			});
 		
 		
-	}
+	} */
 	
 </script>
--->
+
+<script src="/js/logout.js"></script>
+
 </head>
-<body>
-   	<div th:replace="/fragments/nav/menubar::menubar"></div>
+
+<body> <!-- likeCheck -->
+   	<div th:replace="/fragments/nav/menubar::menubar"></div> <!--replace 특정 템플릿 조각(프래그먼트)을 다른 위치에 삽입할 때 사용 -->
    	<div th:replace="/fragments/nav/sidebar::sidebar"></div>
 	<div class="container">
 		<div class="content-container">
-		    <div class="featured-content" style="background: linear-gradient(to bottom, rgba(0,0,0,0), #151515), url('/img/6.jpg');">
+		    <div class="featured-content" style="background: linear-gradient(to bottom, rgba(0,0,0,0), #151515), url('/img/6.jpg');"> <!-- 영화 포스터 받아오기 -->
 	        	<div class="featured-desc">
 	               <h1 class="featured-title">영화 제목</h1>
 	               <p class="#">eng title, yyyy</p>
 	               <p class="#" style="text-align: right;">좋아요% vs 싫어요% </p> <!--좋아요 vs 싫어요 % ??-->	               
 	        	</div>
-	            <div> <br> 
-	            
+	        	
+	            <div> 
+	            	<input type="button" class="featured-button" value="장바구니 담기 | 가격" th:onclick="cart([[${session.email]],[[${view.seqno}]])">
+	            	
 	            	<button class="featured-button"> 
 					    <img src="img/cart-icon.png" alt="cartIcon" style="width: 20px; height: 20px; vertical-align: middle; margin-right: 5px;">
 					    장바구니 담기 | 가격
 					</button>
 
-	               
 	            </div>
 			</div>
 				<br><br><br><br><br><br><br><br><br><br>
