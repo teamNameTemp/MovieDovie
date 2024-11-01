@@ -92,7 +92,7 @@
 
 </head>
 <body class="p-3 m-0 border-0 bd-example m-0 border-0">
-<div th:replace = "/fragments/nav::sidebar"></div>
+<div th:replace = "/fragments/nav/sidebar::sidebar"></div>
  <div class="navbar">
      <div class="navbar-container">
          <!--  <div class="logo-container">-->
@@ -159,7 +159,7 @@
 		    data: {
 		      labels: ['10/19', '10/20', '10/21', '10/22', '10/23', '10/24', '10/25'],
 		      datasets: [{
-		        label: '# of purchase',
+		        label: '대여 수',
 		        data: [5, 12, 19, 3, 5, 7, 3],
 		        borderWidth: 1,
 		        borderColor: '#4dbf00',
@@ -192,7 +192,7 @@
 		    data: {
 		      labels: ['10/19', '10/20', '10/21', '10/22', '10/23', '10/24', '10/25'],
 		      datasets: [{
-		        label: '# of total purchase',
+		        label: '누적 대여 수',
 		        data: [5, 17, 36, 44, 49, 56, 59],
 		        borderWidth: 1,
 		        borderColor: '#4dbf00',
@@ -230,8 +230,8 @@
 					    data: {
 					      labels: ['대여 중', '대여 종료'],
 					      datasets: [{
-					        label: '# of Rentals',
-					        data: [40, 60],
+					        label: '대여 건수',
+					        data: [47, 91],
 					        backgroundColor: ['#4dbf00', '#d2d2d2'],
 					        hoverOffset: 4,
 							borderRadius : 5,
@@ -260,8 +260,8 @@
 					    data: {
 					      labels: ['현재 대여 중인 회원', '대여 중이지 않은 회원'],
 					      datasets: [{
-					        label: '# of Members',
-					        data: [30, 70],
+					        label: '회원 수',
+					        data: [55, 79],
 					        backgroundColor: ['#4dbf00', '#d2d2d2'],
 					        hoverOffset: 4,
 							borderRadius : 5,

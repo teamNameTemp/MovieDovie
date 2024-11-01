@@ -1,5 +1,9 @@
 package com.board.entity.repository;
 
-public interface LikeRepository {
+import org.springframework.data.jpa.repository.JpaRepository;
+
+import com.board.entity.LikeEntity;
+
+public interface LikeRepository extends JpaRepository<LikeEntity, Long>{
 
 }

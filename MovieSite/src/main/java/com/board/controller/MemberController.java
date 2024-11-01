@@ -1,17 +1,23 @@
 package com.board.controller;
 
-import javax.swing.text.Document;
-
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.board.service.MemberService;
+
+import lombok.AllArgsConstructor;
+
 
 @Controller
+@AllArgsConstructor
 @RequestMapping("/member")
 public class MemberController {
+	
+	private final MemberService service;
+	
 	@GetMapping("/login")
 	public void getLogin() {
 	}
@@ -36,5 +42,8 @@ public class MemberController {
 	
 	@GetMapping("/signup")
 	public void getSignup() {}
+	
+	
+
 	
 }

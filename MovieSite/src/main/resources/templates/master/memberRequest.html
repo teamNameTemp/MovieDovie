@@ -72,7 +72,7 @@
 	<script>
 		const search = () => {
 			const keyword = document.querySelector('#keyword');
-			document.location.href='/memberRequest/list?page=1&keyword=' + keyword.value;
+			document.location.href='/master/memberRequest?page=1&keyword=' + keyword.value;
 		}
 	
 		const press = () => {
@@ -82,7 +82,7 @@
 </head>
 <body class="p-3 m-0 border-0 bd-example m-0 border-0">
 
-<div th:replace = "/fragments/nav::sidebar"></div>
+<div th:replace = "/fragments/nav/sidebar::sidebar"></div>
  <div class="navbar">
      <div class="navbar-container">
 
@@ -126,7 +126,7 @@
 	<br>
 	<input type="text" name="keyword" id="keyword" 
          		style="width:35%;height:28px;border:2px solid #4dbf00;font-size: 15px;border-radius:10px"
-         		placeholder=" 검색할 제목, 작성자이름 및 내용을 입력하세요." onkeydown="press()"> &nbsp;
+         		placeholder=" 검색할 제목 혹은 내용을 입력하세요." onkeydown="press()"> &nbsp;
     <input type="button" value="검색" 
              style="width:5%;height:33px;background:#4dbf00;color:white; border-radius:10px;border:none;font-weight:bold;cursor:pointer;"
              	onclick="search()">		
@@ -143,30 +143,33 @@
 	    </tr>
 	  </thead>
 	  <tbody>
-	    <tr>
-	      <th scope="row">1</th>
-	      <td><a href="/master/memberRequestView">어벤져스 올려주세요..</a></td>
-	      <td>지호</td>
-	      <td>2023-10-08</td>
-	      <td>처리 중</td>
-	    </tr>
-	    <tr>
-	      <th scope="row">2</th>
-	      <td>영화 더 많이</td>
-	      <td>지후</td>
-	      <td>2023-12-25</td>
-	      <td>처리 중</td>
-	    </tr>
-	    <tr>
-	      <th scope="row">3</th>
-	      <td>왜 이건 없어요?</td>
-	      <td>지현</td>
-	      <td>2024-01-25</td>
-	      <td>처리 중</td>
-	    </tr>
+	    <th:block th:if="${#strings.equals(listIsEmpty, 'N')}">     
+	            <tr th:each="list,index:${list}">
+	                <td th:text="${totalElement - (page-1)*postNum - index.count + 1}"></td>
+	                <td style="text-align: center;">
+	                	<a th:href="@{'/master/memberRequestView?seqno=' + ${list.seqno} + '&page=' + 
+	                			${page} + '&keyword=' + ${keyword}}" 
+	                   		onMouseover="this.style.textDecoration='underline'" 
+	                   		onMouseout="this.style.textDecoration='none'">
+	                   		<span th:text="${list.title}"></span>
+	                   	</a>
+	                </td>
+	                <td th:text="${list.email}"></td>
+	                <td th:text="${#temporals.format(list.reqdate,'yyyy-MM-dd HH:mm:ss')}"></td>	                	
+	                <td th:text="${list.status}"></td>
+	            </tr>
+			</th:block>
+			<th:block th:if="${#strings.equals(listIsEmpty, 'Y')}">
+				<td colspan="5">등록된 게시물이 없습니다.</td>
+			</th:block>
+	    
+	    
+	    
+	    
 	  </tbody>
 	</table>
 	
+	<div>[(${pageList})]</div>
 	
 </div>
 
