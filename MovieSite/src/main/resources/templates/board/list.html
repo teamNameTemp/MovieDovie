@@ -98,10 +98,9 @@
                 <div class="movie-list-wrapper">
                     <div class="movie-list">
                         <div class="movie-list-item" th:each="movie : ${dailyMovies}">
-                            <span class="movie-list-item-title">[[${movie.movieNm}]]</span>
+                            <img class="movie-list-item-img" th:src="${movie.posterPath}" alt="">
+                            <span class="movie-list-item-title" th:text="${movie.movieNm}"></span>
                             <p class="movie-list-item-desc" th:text="${movie.overview}"></p>
-                            <button class="featured-button">대여</button>
-                			<button class="featured-button">찜</button>
                         </div>
                     </div>
                     <i class="fas fa-chevron-right arrow"></i>

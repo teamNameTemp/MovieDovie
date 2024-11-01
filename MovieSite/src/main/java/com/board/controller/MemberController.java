@@ -54,13 +54,13 @@ public class MemberController {
 	
 	
 	//회원가입 --> 로그인페이지(DTO필요)
-	@ResponseBody
-	@PostMapping("/signup")
-	public Map<String,Object> postSignup() throws Exception {
-		Map<String,Object> map = new HashMap<>();
-		map.put("message", "good");
-		return map;
-	}
+//	@ResponseBody
+//	@PostMapping("/signup")
+//	public Map<String,Object> postSignup() throws Exception {
+//		Map<String,Object> map = new HashMap<>();
+//		map.put("message", "good");
+//		return map;
+//	}
 	
 
 
