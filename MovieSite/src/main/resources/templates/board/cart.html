@@ -66,8 +66,33 @@
 var email = '[[${session.email}]]';
 var totalItemAmount = 0;
 
+//장바구니 내 전체 상품 가격 계산
+const cal_totalAmount = () => {
+	
+	let tCart = 0;
+	let totalCartAmount = document.querySelectorAll('.cartAmount');
+	for(let amount of totalCartAmount){
+		
+		tCart += parseInt(amount.innerHTML.replace(/,/g, ""));
+	}
 
+	document.querySelector('#totalAmount').innerHTML = tCart.toLocaleString('ko-KR');
+	return tCart;
+}
 
+//항목별 체크박스 클릭/언클릭 시(onchange) 장바구니 내 선택 상품 가격 계산
+const cal_selectedAmount = (itemAmountId) => {
+	
+	let amount = parseInt(document.getElementById(itemAmountId).innerHTML.replace(/,/g, ""));
+	
+	if(event.target.checked) totalItemAmount += amount; //체크했으면 totalItemAmount에 amount를 더한다
+		else { //언체크 하면 ...
+			document.getElementById('allCheck').checked = false; //1. 전체 선택 해제
+			totalItemAmount -= amount; //2. totalItemAmount에서 amount를 뺀다.
+		}
+	document.getElementById('selectedAmount').innerHTML = totalItemAmount.toLocaleString('ko-KR');
+	
+}
 
 //상품 전체 선택/해제
 const selectAll = (selectAll) => {
@@ -79,6 +104,74 @@ const selectAll = (selectAll) => {
 	});
 }
 
+//선택된 상품 장바구니에서 삭제/구매 --> 비동기 방식
+const cartManage = async (type) => {
+	
+      const checkboxArray = document.querySelectorAll(".cartItems:checked");
+      
+      let message = '';
+      let invoice = '';
+      let page;
+      let keyword;
+      
+      const cartIds = [];
+      
+      if(type === 'delete') message = '삭제';
+      	else if(type === 'deleteAll') message = '장바구니 비우기';
+      		else if(type === 'register') message = '주문서 작성';
+
+      if(type !== 'deleteAll'){
+          page = document.cartList.page.value;
+          keyword = document.cartList.keyword.value;
+	      
+	      //invoice 생성을 위하여 6자리 난수를 발생
+	      for (let i = 0; i < 6; i++) 
+	    		invoice += Math.floor(Math.random() * 10);
+
+	      //체크한 항목이 없을 경우 알림창 열기 
+	      if(checkboxArray.length == 0) {
+	    	  alert(`${message}할 항목을 선택하세요.`);
+	    	  return; //함수 실행을 종료
+	      }
+	      
+	      //선택 항목 실행 여부 확인
+	      if(!confirm(`선택한 항목을 ${message} 하시겠습니까?`)) return;	      
+	      
+	      //cartIds에 체크된 cart_id 값 넣기
+	      for (let i = 0; i < checkboxArray.length; i++) {
+	    	    cartIds.push(checkboxArray[i].value)
+	      }	
+	      
+      } 
+      
+      if(type === 'deleteAll'){	    	  
+    	  if(!confirm(`${message}를 실행 하시겠습니까?`)) return false;	    	  
+      }
+      	      
+      //체크한 항목에 대해 삭제 또는 등록 실행
+      await fetch('/shop/pCartManage',{
+       		method: "POST",
+       		headers: {
+       		    "Content-Type": "application/json",
+       		},
+       		  body: JSON.stringify({
+       			  	invoice: invoice,
+       				cartIds: cartIds,
+       				type: type
+       		}),				
+      }).then((response)=> response.text())
+        .then((data) => {
+        	if(data == 'good'){
+	        	if(type === 'register') 
+	    			document.location.href='/shop/pCartInvoice?page=' + page + '&keyword=' + keyword + '&invoice=' + invoice;		        		
+	       		if(type === 'delete' || type === 'deleteAll') window.location.reload();        	
+        	} else alert(`시스템 장애로 ${message} 하기가 실패했습니다.`); 	
+      }).catch((error)=> { 
+       		console.log("error = " + error);	       		
+      });
+         
+}
+
 
 </script>
 
@@ -86,10 +179,12 @@ const selectAll = (selectAll) => {
 	
 </head>
 <body onload = "cal_totalAmount()">
+   	<div th:replace="/fragments/nav/menubar::menubar"></div> <!--replace 특정 템플릿 조각(프래그먼트)을 다른 위치에 삽입할 때 사용 -->
+   	<div th:replace="/fragments/nav/sidebar::sidebar"></div>
 
 <!-- 로그인 여부 확인 -->
 <script>
-	//let email = '[[${session.email}]]';
+	let email = '[[${session.email}]]';
 	if(email == '' || email == null || email == undefined)
 		document.location.href = '/member/login';
 </script>
@@ -103,13 +198,13 @@ const selectAll = (selectAll) => {
 	<div class="main_shop">
 	
 		<div class="tableDiv">
-			<h1>장바구니</h1> 
+			<h1>[[${session.nickname}]]님의 장바구니</h1> 
 			<form name="cartList" method="post">
 				<input type="hidden" name="page" value="page">
 				<input type="hidden" name="keyword" value="keyword">
 				<table class="InfoTable">
 			  		<tr>
-			  			<th><input type="checkbox" id="allCheck" onclick="" onchange=""></th>
+			  			<th><input type="checkbox" id="allCheck" onclick="selectAll(this)" onchange="cal_allSelectedAmount()"></th>
 			   			<th>상품이미지</th>
 			   			<th>상품명</th>
 			   			<th>제조사</th>
