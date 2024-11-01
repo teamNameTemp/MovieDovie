@@ -275,6 +275,12 @@ public class MasterServiceImpl implements MasterService{
             bookmarkRepository.save(bookmark);
 		}
 	}
+
+	@Override
+	public void createDummyMembers(int count) {
+		// TODO Auto-generated method stub
+		
+	}
 	
 	
 }
