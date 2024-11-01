@@ -272,3 +272,36 @@ body {
         display: none;
     }
 }
+
+.search-bar {
+  width: 220px;
+  height: 27px;
+  border-radius: 30%;
+
+  display: flex;
+  justify-content: left;
+  align-items: left;
+  z-index: 1;
+  opacity: 1;
+}
+.search-bar__input {
+  width: 220px;
+  border: none;
+  -webkit-appearance: none;
+  text-align: left;
+  margin-left: 10px;
+  overflow: auto;
+  z-index: -1;
+  font-size: 15px;
+}
+
+
+.search-bar__input:focus {
+  outline: none;
+  width: 300px;
+  text-align: left;
+}
+
+.fa-search {
+  font-size: 15px;
+}
