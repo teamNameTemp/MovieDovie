@@ -2,13 +2,13 @@ package com.board.dto;
 
 import java.time.LocalDateTime;
 
-import lombok.Builder;
+import com.board.entity.MemberEntity;
+
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
-@Builder
 public class MemberDTO {
 	private String email;
 	private String password;
@@ -23,7 +23,12 @@ public class MemberDTO {
 	private String role;
 	
 	//Entity -> DTO
-
-	//DTO -> Entity
+	public MemberDTO(MemberEntity entity) {
+		this.email = entity.getEmail();
+	}
 	
+	//DTO -> Entity
+//	public MemberEntity dtoToEntity(MemberDTO dto)
+//	{
+//	}
 }
