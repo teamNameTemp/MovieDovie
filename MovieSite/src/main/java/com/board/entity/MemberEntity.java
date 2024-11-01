@@ -1,7 +1,5 @@
 package com.board.entity;
 
-import java.time.LocalDateTime;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -19,6 +17,7 @@ public class MemberEntity {
 	@Id
 	@Column(name="email", length=320, nullable=false)
 	private String email;
+	
 	
 
 }

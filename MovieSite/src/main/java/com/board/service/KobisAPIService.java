@@ -2,49 +2,54 @@ package com.board.service;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
+import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Mono;
 
 @Service
 public class KobisAPIService {
-	@Value("${kobis.api.key}")
-	private String apiKey;
-	
-	private final RestTemplate restTemplate;
-	public KobisAPIService(RestTemplate restTemplate) {
-		this.restTemplate = restTemplate;
-	}
-	
-	public String getDailyBoxOffice(String targetDate) {
-		 String url = "http://www.kobis.or.kr/kobisopenapi/webservice/rest/boxoffice/searchDailyBoxOfficeList.json" +
-                 "?key=" + apiKey +
-                 "&targetDt=" + targetDate;
-    
-		 return restTemplate.getForObject(url, String.class);
-	}
-	
-	public String getMovieInfo(String movieCd) {
-		 String url = "http://www.kobis.or.kr/kobisopenapi/webservice/rest/movie/searchMovieInfo.json" +
-                "?key=" + apiKey +
-                "&movieCd=" + movieCd;
-   
-		 return restTemplate.getForObject(url, String.class);
-	}
-	
-	public String getActorInfo(String peopleCd) {
-		 String url = "http://www.kobis.or.kr/kobisopenapi/webservice/rest/people/searchPeopleInfo.json" +
-               "?key=" + apiKey +
-               "&peopleCd=" + peopleCd;
-  
-		 return restTemplate.getForObject(url, String.class);
-	}
-	
-	public String getWeeklyBoxOffice(String targetDt,String weekGb) {
-		String url = "http://www.kobis.or.kr/kobisopenapi/webservice/rest/boxoffice/searchWeeklyBoxOfficeList.json"
-				+ "?key=" + apiKey + 
-				"&targetDt=" + targetDt +
-				"&weekGb=" + weekGb;
+    @Value("${kobis.api.key}")
+    private String apiKey;
 
-		return restTemplate.getForObject(url, String.class);
-	}
+    @Value("${kobis.api.base-url}")
+    private String baseUrl;
+
+    private final WebClient webClient;
+
+    public KobisAPIService(WebClient.Builder webClientBuilder) {
+        this.webClient = webClientBuilder.baseUrl(baseUrl).build();
+    }
+
+    public Mono<String> getDailyBoxOffice(String targetDate) {
+        return webClient.get()
+                .uri(uriBuilder -> uriBuilder
+                        .path("/boxoffice/searchDailyBoxOfficeList.json")
+                        .queryParam("key", apiKey)
+                        .queryParam("targetDt", targetDate)
+                        .build())
+                .retrieve()
+                .bodyToMono(String.class);
+    }
+
+    public Mono<String> getMovieInfo(String movieCd) {
+        return webClient.get()
+                .uri(uriBuilder -> uriBuilder
+                        .path("/movie/searchMovieInfo.json")
+                        .queryParam("key", apiKey)
+                        .queryParam("movieCd", movieCd)
+                        .build())
+                .retrieve()
+                .bodyToMono(String.class);
+    }
+
+    public Mono<String> getActorInfo(String peopleCd) {
+        return webClient.get()
+                .uri(uriBuilder -> uriBuilder
+                        .path("/people/searchPeopleInfo.json")
+                        .queryParam("key", apiKey)
+                        .queryParam("peopleCd", peopleCd)
+                        .build())
+                .retrieve()
+                .bodyToMono(String.class);
+    }
 
 }
