@@ -107,10 +107,14 @@ public class MasterServiceImpl implements MasterService{
 	}	
 	
 	
+	/*
 	//dummy 회원 대량으로 만들기
 	@Override
     @Transactional
     public void createDummyMembers(int count) {
+		
+		Random random = new Random(); // Random 초기화
+		
         for (int i = 1; i <= count; i++) {
         	MemberEntity member = new MemberEntity();
             member.setEmail("user" + i + "@example.com");
@@ -124,11 +128,18 @@ public class MasterServiceImpl implements MasterService{
             long maxDay = LocalDateTime.of(2020, 12, 31, 23, 59).atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
             long randomTime = minDay + (long)(random.nextDouble() * (maxDay - minDay));
             LocalDateTime birth = LocalDateTime.ofInstant(new Date(randomTime).toInstant(), ZoneId.systemDefault());
-            
             member.setBirth(birth); // 생일 설정
             
             member.setTelno("010-" + (random.nextInt(9000) + 1000) + "-" + (random.nextInt(9000) + 1000));
-            member.setRegdate(LocalDateTime.now());
+            
+            // 2022년 1월 1일부터 2024년 10월 31일 사이의 랜덤 회원 가입일 생성
+            long regminDay = LocalDateTime.of(2022, 1, 1, 0, 0).atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
+            long regmaxDay = LocalDateTime.of(2024, 10, 31, 23, 59).atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
+            long regrandomTime = regminDay + (long)(random.nextDouble() * (regmaxDay - regminDay));
+            LocalDateTime regdate = LocalDateTime.ofInstant(new Date(regrandomTime).toInstant(), ZoneId.systemDefault());
+            member.setRegdate(regdate); // 회원 가입일 설정
+            
+            
             member.setRole(ROLES[random.nextInt(ROLES.length)]);
             member.setLogseqno((long) i);
             member.setGenreseqno((long) i);
@@ -136,6 +147,7 @@ public class MasterServiceImpl implements MasterService{
             memberRepository.save(member);
         }
     }
+    */
 	
 	
 	

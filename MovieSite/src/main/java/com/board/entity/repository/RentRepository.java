@@ -1,5 +1,8 @@
 package com.board.entity.repository;
 
+import java.time.LocalDateTime;
+import java.util.List;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -15,16 +18,27 @@ public interface RentRepository extends JpaRepository<RentEntity, Long>{
 	               "VALUES (SYSDATE, SYSDATE + 14, " +
 	               "CASE WHEN SYSDATE + 14 > SYSDATE THEN 'Y' ELSE 'N' END, :email, :movieseqno)",
 	               nativeQuery = true)
-	void rentMovie(@Param("email") String email, @Param("movieseqno") Long movieseqno);
+	public void rentMovie(@Param("email") String email, @Param("movieseqno") Long movieseqno);
 	
 	
 	//대여 상태 자동 변경
 	@Modifying
-	@Query(value = "UPDATE Rent r SET r.status = " +
+	@Query(value = "UPDATE rent r SET r.status = " +
 	               "CASE WHEN r.returndate > SYSDATE THEN 'Y' " +
 	               "ELSE 'N' END " +
 	               "WHERE r.email = :email AND r.movieseqno = :movieseqno",
 	               nativeQuery = true)
-	void updateStatus(@Param("email") String email, @Param("movieseqno") Long movieseqno);
+	public void updateStatus(@Param("email") String email, @Param("movieseqno") Long movieseqno);
 	
+	
+	//관리자 페이지 - 통계 : 대여 수 확인 (startDate에 원하는 날짜, endDate에 원하는 날짜 넣으면 그 사이의 값들이 나옴)
+	@Query(value = "SELECT TRUNC(r.rentdate) AS rent_date, COUNT(*) " +
+            "FROM tbl_rent r " +
+            "WHERE r.rentdate BETWEEN :startDate AND :endDate " +
+            "GROUP BY TRUNC(r.rentdate) " +
+            "ORDER BY TRUNC(r.rentdate)", nativeQuery = true)
+	public List<Object[]> RentCount(@Param("startDate") LocalDateTime startDate, @Param("endDate") LocalDateTime endDate);
+
+	
+
 }

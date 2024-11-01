@@ -31,7 +31,7 @@ const memberMaker = async () => {
     }).then(response => {
         return response.text(); // 메시지로 반환
     }).then(data => {
-    	memberResult.textContent = data;
+    	result.textContent = data; 
     }).catch(error => console.error("Error:", error));
 }
 
@@ -44,7 +44,7 @@ const rentMaker = async () => {
     }).then(response => {
         return response.text(); // 메시지로 반환
     }).then(data => {
-    	rentResult.textContent = data;
+    	result.textContent = data; 
     }).catch(error => console.error("Error:", error));
 }
 
@@ -57,7 +57,7 @@ const likeMaker = async () => {
     }).then(response => {
         return response.text(); // 메시지로 반환
     }).then(data => {
-    	likeResult.textContent = data;
+    	result.textContent = data; 
     }).catch(error => console.error("Error:", error));
 }
 
@@ -70,7 +70,7 @@ const logMaker = async () => {
     }).then(response => {
         return response.text(); // 메시지로 반환
     }).then(data => {
-    	logResult.textContent = data;
+    	result.textContent = data; 
     }).catch(error => console.error("Error:", error));
 }
 
@@ -83,7 +83,7 @@ const watchMaker = async () => {
     }).then(response => {
         return response.text(); // 메시지로 반환
     }).then(data => {
-    	watchResult.textContent = data;
+    	result.textContent = data; 
     }).catch(error => console.error("Error:", error));
 }
 
@@ -96,7 +96,7 @@ const bookmarkMaker = async () => {
     }).then(response => {
         return response.text(); // 메시지로 반환
     }).then(data => {
-    	bookmarkResult.textContent = data;
+    	result.textContent = data; 
     }).catch(error => console.error("Error:", error));
 }
 </script>

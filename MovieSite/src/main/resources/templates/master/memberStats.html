@@ -147,66 +147,91 @@
 				
 		[최근 일주일 간 대여 현황]<br><br>
 		<div>
-		  <canvas id="weeklyRentStatus"></canvas>
+		  <canvas id="weeklyRent"></canvas>
 		</div>
 		<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 		<script>
-		//DB와 맞물려서 데이터 가져오는 것 생각해보자..
-		  const ctx = document.getElementById('weeklyRentStatus');
-		
-		  new Chart(ctx, {
-		    type: 'bar',
-		    data: {
-		      labels: ['10/19', '10/20', '10/21', '10/22', '10/23', '10/24', '10/25'],
-		      datasets: [{
-		        label: '대여 수',
-		        data: [5, 12, 19, 3, 5, 7, 3],
-		        borderWidth: 1,
-		        borderColor: '#4dbf00',
-		        backgroundColor: '#4dbf0090'
-		      }]
-		    },
-		    options: {
-		      scales: {
-		        y: {
-		          beginAtZero: true
-		        }
-		      }
-		    }
-		  });
+		  fetch('/master/weeklyRent')
+		  	.then(response => response.json())
+		  	.then(data => {
+		  		 const labels = data.map(item => {
+		  			 const date = new Date(item.date);
+		  			 return (date.getMonth() + 1) + '/' + date.getDate(); // MM/DD 형식으로 변환
+		  		  });
+		  		  const rentData = data.map(item => item.count); //대여수 생성
+		  	
+		  		  const ctx = document.getElementById('weeklyRent');
+				  new Chart(ctx, {
+				    type: 'bar',
+				    data: {
+				      labels: labels,
+				      datasets: [{
+				        label: '대여 수',
+				        data: rentData,
+				        borderWidth: 1,
+				        borderColor: '#4dbf00',
+				        backgroundColor: '#4dbf0090'
+				      }]
+				    },
+				    options: {
+					      scales: {
+					        y: {
+					          beginAtZero: true
+					        }
+					      }
+					    }
+					  });
+			  	})
+			  	.catch(error => console.error('Error fetching data:', error));
 		</script>
 		
 		<br><br><br>
 		
 		[누적 대여 현황]<br>
 		<div>
-		  <canvas id="weeklyRentCumulative"></canvas>
+		  <canvas id="RentCumulative"></canvas>
 		</div>
 		<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 		<script>
-		//DB와 맞물려서 데이터 가져오는 것 생각해보자..
-		  const ctxx = document.getElementById('weeklyRentCumulative');
-		
-		  new Chart(ctxx, {
-		    type: 'line',
-		    data: {
-		      labels: ['10/19', '10/20', '10/21', '10/22', '10/23', '10/24', '10/25'],
-		      datasets: [{
-		        label: '누적 대여 수',
-		        data: [5, 17, 36, 44, 49, 56, 59],
-		        borderWidth: 1,
-		        borderColor: '#4dbf00',
-		        backgroundColor: '#4dbf0090'
-		      }]
-		    },
-		    options: {
-		      scales: {
-		        y: {
-		          beginAtZero: true
-		        }
-		      }
-		    }
-		  });
+		  fetch('/master/RentCumulative')
+		  	.then(response => response.json())
+		  	.then(data => {
+		  		 // 0이 아닌 누적 대여 수만 포함하도록 필터링
+		         const filteredData = data.filter(item => item.count > 0);
+
+		  		  const labels = filteredData.map(item => {
+		  			 const date = new Date(item.date);
+		  			 return (date.getMonth() + 1) + '/' + date.getDate(); // MM/DD 형식으로 변환
+		  		  });
+		  		  const cumulativeData = filteredData.map(item => item.count);
+		  	
+		  	
+				  const ctxx = document.getElementById('RentCumulative');
+				
+				  new Chart(ctxx, {
+				    type: 'line',
+				    data: {
+				      labels: labels,
+				      datasets: [
+				    	 {
+					        label: '누적 대여 수',
+					        data: cumulativeData,
+					        borderWidth: 1,
+					        borderColor: '#4dbf00',
+					        backgroundColor: '#4dbf0090'
+				         }
+				      ]
+				    },
+				    options: {
+				      scales: {
+				        y: {
+				          beginAtZero: true
+				        }
+				      }
+				    }
+				  });
+		  	})
+		  	.catch(error => console.error('Error fetching data:', error));
 		</script>
 		
 		</div>
