@@ -214,7 +214,7 @@ const cartManage = async (type) => {
 			  		</tr>
 			
 			 		<tbody>
-						<tr th:each="list : ${list}">
+						<tr th:each="list : ${list}"> <!-- ${list}에서 가져온 각 요소에 대해 반복하여 <tr> 태그를 생성 -->
 							<td><input type="checkbox" th:id="${'c' + list.cart_id}" class="cartItems" name="cartItems" th:value="${list.cart_id}" 
 								th:onchange='cal_selectedAmount([[${"a" + list.cart_id}]])' th:disabled="${list.p_stock} lt 1"></td>
 			  				<td><img class="p_image" th:src="@{'/p_img/' + ${list.p_stored_image}}" style="width:200px; height: auto"></td>
