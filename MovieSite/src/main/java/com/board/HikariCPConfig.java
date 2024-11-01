@@ -1,5 +1,6 @@
 package com.board;
 
+
 import javax.sql.DataSource;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -9,6 +10,7 @@ import org.springframework.context.annotation.PropertySource;
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
+
 
 @Configuration
 @PropertySource("classpath:/application.properties")
