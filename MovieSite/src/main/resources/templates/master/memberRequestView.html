@@ -53,75 +53,113 @@
 	padding: 10px 10px;
 	text-align: center;
 	text-decoration: none;
-	border: solid 1px #a0a0a0;
+	color: white;
 	display: inline-block;
 	background-color: #d2d2d2;
 	border-radius: 50px;
 }
 
+.statusBox {
+    display: flex;
+    justify-content: center; /* 수평 가운데 */
+    align-items: center; /* 수직 가운데 */
+}
+
+.button {
+    display: inline-block;
+    padding: 10px 15px;
+    margin: 5px;
+   	font-size: 14px;
+    background-color: #4dbf00; /* 버튼 배경색 */
+    color: white; /* 글자색 */
+    text-align: center;
+    text-decoration: none;
+    border-radius: 10px; /* 모서리 둥글게 */
+    transition: background-color 0.3s;
+}
+
+.button:hover {
+    background-color: black; /* 마우스 오버 시 색상 변경 */
+}
+
 </style>
 
+
 <script>
+let status = '[[${status}]]';
 
 window.onload = () => {
-	
-	const status = '[[${status}]]';
 
 	if(status == "PENDING") document.querySelector('.status').style.backgroundColor = '#d2d2d2';
 	else if(status == "COMPLETED") document.querySelector('.status').style.backgroundColor = '#4dbf00';
 	
-	if(status == "PENDING") statusText.innerHTML = '회원 요청 사항 확인 및 처리 필요';
-	else if(status == "COMPLETED") statusText.innerHTML = '회원 요청 사항 처리 완료';
-		
-	startupPage(); // 페이지가 로드될 때 댓글 목록을 가져옴
-	replyList(); //댓글 수정하고 그런 이후에 댓글 목록 가져옴
-}
-
-
-//회원 요청 사항에 대한 상태 변경 처리 (PENDING or COMPLETED)
-const statusChange = () => { 
 	if(status == "PENDING") {
-		alert ("요청 상태를 '완료'로 변경합니다.");
-		status = "COMPLETED";
-		sendDataToServer(status);
-		document.querySelector('.status').style.backgroundColor = '#4dbf00';
-	} else if (status == "COMPLETED") {
-		alert ("요청 상태를 '처리 중'으로 변경합니다.");
-		status = "PENDING"
-		sendDataToServer(status);
-		document.querySelector('.status').style.backgroundColor = '#d2d2d2'
+		statusText.innerHTML = '회원 요청 사항 처리 필요'; statusText.style.color = 'red';
 	}
-	
-	if(status == "COMPLETED") statusText.innerHTML = '회원 요청 사항 처리 완료';
-	else if(status == "PENDING") statusText.innerHTML = '회원 요청 사항 확인 및 처리 필요';
+	else if(status == "COMPLETED") {
+		statusText.innerHTML = '처리 완료'; statusText.style.color = '#4dbf00';
+	}
+		
+	//startupPage(); // 페이지가 로드될 때 댓글 목록을 가져옴
+	//replyList(); //댓글 수정하고 그런 이후에 댓글 목록 가져옴
 }
 
 
 //요청 사항 상태 값 비동기 서버 전송
 const sendDataToServer = async (status) => {
 	
-	const status = status;
-	
 	const queryString = {
-			seqno: parseInt('[[${view.seqno}]]'),
-			email: '[[${session.email}]]',
-			status: status
+		seqno: Number('[[${view.seqno}]]'),
+		status: status
 	};
 	
-	await fetch('/master/memberReqeustViewStatus', {
-		method: 'POST',
-		headers: {"content-type":"application/json"},
-		body: JSON.stringify(queryString)		
-	}).then((response) => response.json())
-	  .then((data)=>{	
-			statusText.innerHTML = data.likeCnt;
-			dislike.innerHTML = data.dislikeCnt;
-	}).catch((error)=> {
-		console.log("error = " + error);
-	});
-	
+	 try {
+	        const response = await fetch('/master/updateStatus', {
+	            method: 'POST',
+	            headers: { "Content-Type": "application/json" },
+	            body: JSON.stringify(queryString)
+	        });
+
+	        if (!response.ok) {
+	            throw new Error(`HTTP error! status: ${response.status}`);
+	        }
+	        
+	        // 필요시 응답 처리
+	        const data = await response.json();
+	        console.log(data);
+	    } catch (error) {
+	        console.log("error = " + error);
+	    }
 }
 
+
+//회원 요청 사항에 대한 상태 변경 처리 (PENDING or COMPLETED)
+const statusChange = () => {
+	if (status === "PENDING") {
+		alert("요청 상태를 '완료'로 변경합니다.");
+		status = "COMPLETED";
+		sendDataToServer(status);
+		document.querySelector('.status').style.backgroundColor = '#4dbf00';
+		statusText.innerHTML = '처리 완료';
+		statusText.style.color = '#4dbf00'; // 색상 변경
+	} else if (status === "COMPLETED") {
+		alert("요청 상태를 '처리 중'으로 변경합니다.");
+		status = "PENDING";
+		sendDataToServer(status);
+		document.querySelector('.status').style.backgroundColor = '#d2d2d2';
+		statusText.innerHTML = '회원 요청 사항 처리 필요';
+		statusText.style.color = 'red'; // 폰트 색상 빨간색
+	}
+}
+
+
+//게시물 삭제
+const boardDelete = () => {
+    if(confirm("정말 삭제 하시겠습니까?")==true) 
+    	document.location.href='/master/memberRequestDelete?seqno=[[${view.seqno}]]';
+}
+
+/*
 //댓글 등록
 const replyRegister = async () => {
 
@@ -303,14 +341,13 @@ const replyCancel = () => {
 	}
 	
 }
-
+*/
 
 </script>
 
-
 </head>
 <body>
-<div th:replace = "/fragments/nav::sidebar"></div>
+<div th:replace = "/fragments/nav/sidebar::sidebar"></div>
  <div class="navbar">
      <div class="navbar-container">
 
@@ -347,30 +384,37 @@ const replyCancel = () => {
      </div>
  </div>
 <div class="main">
-        
-        <h1 style="text-align: center;">게시물 내용 보기</h1>
-        <br>
+        <br><br><br>
+        <h2 style="text-align: center;">요청 사항 보기</h2>
+        <br><br>
 
         <div class="boardView">
-            <div class="field">글쓴이 : </div>
-            <div class="field">제목 : </div>
-            <div class="field">날짜 : </div>
-            <div class="content"></div>
+            <div class="field">글쓴이 : [[${view.email}]]</div>
+            <div class="field">제목 : [[${view.title}]]</div>
+            <div class="field">날짜 : [[${#temporals.format(view.reqdate,'yyyy-MM-dd HH:mm:ss')}]]</div>
+            <div class="content"><pre th:text="${view.content}"></pre></div>
+
 			
 			<br><br>
 			
-			<p>
-				<a href='javascript:statusChange()' id="status" class="status"><b>√</b></a>
-				<span id='statusText' style='text-align:center; color:#4dbf00'></span>
-			</p>
-      
+			<div class="statusBox">
+				<a href='javascript:statusChange()' id="status" class="status"><b>&nbsp;√&nbsp;</b></a>
+			</div>
+			<div class="statusBox">
+				<br><b><span id='statusText' style='text-align:center; color:#4dbf00'></span></b><br><br><br><br>
+      		</div>
         </div>
 		 <br>
         <div id="bottom_menu">
-      		<input type="button" id="preseqno" name="preseqno" value="이전 ▼" onclick="location.href='#'">&nbsp;&nbsp;
-      		<input type="button" id="requestlist" name="requestlist" value="목록가기" onclick="location.href='/master/memberRequest'">&nbsp;&nbsp;
-      		<input type="button" id="afterseqno" name="afterseqno" value="다음 ▲" onclick="location.href='#'">
-        </div>
+		    <th:block th:if="${pre_seqno != 0}">
+		        <a th:href="@{'/master/memberRequestView?seqno=' + ${pre_seqno} + '&page=' + ${page} + '&keyword=' + ${keyword}}" class="button">이전 ▼</a>
+		    </th:block>
+		    <a th:href="@{'/master/memberRequest?page=' + ${page} + '&keyword=' + ${keyword}}" class="button">목록가기</a>
+		    <th:block th:if="${next_seqno != 0}">    
+		        <a th:href="@{'/master/memberRequestView?seqno=' + ${next_seqno} + '&page=' + ${page} + '&keyword=' + ${keyword}}" class="button">다음 ▲</a>
+		    </th:block>
+		    <a href="javascript:boardDelete()" class="button">글 삭제</a>
+		</div>
         <br>
 		<div class="replyDiv" style="width:60%;height:300px;margin:auto;text-align:left;">
 			<br><p id="replyNotice">댓글을 작성해 주세요.</p><br>

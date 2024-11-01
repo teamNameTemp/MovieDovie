@@ -1,5 +1,10 @@
 package com.board.entity.repository;
 
-public interface BookmarkRepository {
+import org.springframework.data.jpa.repository.JpaRepository;
+
+import com.board.entity.BookmarkEntity;
+
+
+public interface BookmarkRepository  extends JpaRepository<BookmarkEntity, Long>{
 
 }
