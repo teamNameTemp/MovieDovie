@@ -4,6 +4,7 @@ import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -28,6 +29,7 @@ import com.board.entity.RequestEntity;
 import com.board.entity.repository.MemberRepository;
 import com.board.entity.repository.RentRepository;
 import com.board.service.MasterService;
+import com.board.service.RentService;
 import com.board.util.PageUtil;
 
 import jakarta.servlet.http.HttpSession;
@@ -40,6 +42,7 @@ import lombok.AllArgsConstructor;
 public class MasterController {
 
 	private final MasterService service;
+	private final RentService rentService;
 
 	
 	//회원의 요청 목록 보기
@@ -105,6 +108,47 @@ public class MasterController {
 	@GetMapping("/memberStats")
 	public void getMemberStats() {
 	}
+	
+	
+	// 관리자 페이지 - 통계 : 최근 일주일 간 대여 수 확인
+    @GetMapping("/weeklyRent")
+    @ResponseBody
+    public List<Map<String, Object>> getWeeklyRent() {
+        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime sevenDaysAgo = now.minusDays(7);
+        
+        List<Object[]> results = rentService.RentCount(sevenDaysAgo, now);
+        List<Map<String, Object>> response = new ArrayList<>();
+        
+        for (Object[] result : results) {
+            Map<String, Object> map = new HashMap<>();
+            map.put("date", result[0]); // 대여 날짜
+            map.put("count", result[1]); // 대여 수
+            response.add(map);
+        }
+        
+        return response; // JSON 형태로 반환
+    }
+	
+	
+	//관리자 페이지 - 통계 : 이번 연도 누적! 대여 수 확인 
+	@GetMapping("/RentCumulative")
+	@ResponseBody
+	public List<Map<String, Object>> getRentCumulative() {
+		List<Object[]> cumulativeRents = rentService.RentCumulative();
+        List<Map<String, Object>> response = new ArrayList<>();
+
+        for (Object[] result : cumulativeRents) {
+            Map<String, Object> map = new HashMap<>();
+            map.put("date", result[0]); // 대여 날짜
+            map.put("count", result[1]); // 누적 대여 수
+            response.add(map);
+        }
+        
+        return response; // JSON 형태로 반환
+    }
+	
+	
 	
 	@GetMapping("/movieStats")
 	public void getMovieStats() {
