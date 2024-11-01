@@ -1,5 +1,54 @@
 package com.board.entity.repository;
 
-public interface RequestRepository {
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+import org.springframework.transaction.annotation.Transactional;
 
+import com.board.entity.RequestEntity;
+
+public interface RequestRepository extends JpaRepository<RequestEntity, Long>{ // JpaRepository<xxxEntity, 기본기타입>{
+
+	//게시물 목록 보기
+	public Page<RequestEntity> findByTitleContainingOrContentContaining
+		(String keyword1, String keyword2, Pageable pageable);
+	
+	//게시물 이전 보기 --> JPQL
+	@Query("select max(r.seqno) from request r " 
+			+ "where r.seqno < :seqno and "
+			+ "(r.title like %:keyword1% or r.content like %:keyword2%)")
+	public Long pre_seqno(@Param("seqno") Long seqno, 
+			@Param("keyword1") String keyword1, 
+			@Param("keyword2") String keyword2);
+
+	//게시물 다음 보기 --> JPQL
+	@Query("select min(r.seqno) from request r "
+			+ "where r.seqno > :seqno and "
+			+ "(r.title like %:keyword1% or r.content like %:keyword2%)")
+	public Long next_seqno(@Param("seqno") Long seqno,
+			@Param("keyword1") String keyword1, 
+			@Param("keyword2") String keyword2);
+	
+	//max Seqno 구하기 --> Native SQL
+	@Query(value="select max(seqno) from tbl_request where email = :email",
+			nativeQuery = true)
+	public Long getMaxSeqno(@Param("email") String email);
+
+	//처리 완료 여부 확인하기
+	@Query("select r.status from request r where r.seqno = :seqno")
+	public String findStatusBySeqno(@Param("seqno") Long seqno);
+	
+	//처리 상태 업데이트하기
+	@Modifying
+	@Query("UPDATE request r SET r.status = :status WHERE r.seqno = :seqno")
+	public void updateStatusBySeqno(@Param("seqno") Long seqno, @Param("status") String status);
+	
+	//요청 게시물 삭제하기
+	@Modifying
+	@Transactional
+	@Query("delete from request r where r.seqno = :seqno")
+	public void deleteBySeqno(@Param("seqno") Long seqno);
 }
