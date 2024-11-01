@@ -1,8 +1,8 @@
 package com.board.service;
 
+import java.util.List;
 import java.util.Map;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -23,7 +23,7 @@ public class TmdbAPIService {
     private WebClient webClient;
     public TmdbAPIService(WebClient.Builder webClientBuilder) {
         this.webClient = webClientBuilder
-            .baseUrl(baseUrl)
+            .baseUrl("https://api.themoviedb.org/3")
             .defaultHeader("accept", "application/json")
             .defaultHeader("Accept-Language", "ko-KR")
             .build();
@@ -44,14 +44,15 @@ public class TmdbAPIService {
     }
    
 
-    public Mono<Map> getTrendingMovies() {
+    public Mono<String> getTrendingMovies() {
         return webClient.get()
             .uri(uriBuilder -> uriBuilder
                 .path("/trending/movie/day")
                 .queryParam("api_key", token)
+                .queryParam("language", "ko-KR")
                 .build())
             .retrieve()
-            .bodyToMono(Map.class);
+            .bodyToMono(String.class);
     }
 
     public Mono<Map> getMovieDetails(String movieId) {
@@ -75,4 +76,22 @@ public class TmdbAPIService {
             .retrieve()
             .bodyToMono(ActorDetailDTO.class);
     }
+
+    public Mono<Map<String, Object>> searchTmdbMovie(String title,String year) {
+        return webClient.get()
+                .uri(uriBuilder -> uriBuilder
+                        .path("/search/movie")
+                        .queryParam("api_key", token)
+                        .queryParam("query", title)
+                        .queryParam("year",year)
+                        .queryParam("language", "ko-KR")
+                        .build())
+                .retrieve()
+                .bodyToMono(Map.class)
+                .flatMap(response -> {
+                    List<Map<String, Object>> results = (List<Map<String, Object>>) response.get("results");
+                    return results.isEmpty() ? Mono.empty() : Mono.just(results.get(0));
+                });
+    }
+
 }

@@ -1,5 +1,7 @@
 package com.board.controller;
 
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
@@ -33,9 +35,37 @@ public class BoardController {
 	}
 
 	@GetMapping("/list")
-	public void getlist() {
-	}
+	public void getMovieDetails(Model model, @RequestParam("targetDt") String targetDt) {
+	    String posterOriginPath = "https://image.tmdb.org/t/p/original";
+	    try {
+	        List<Map<String, Object>> dailyList = getDailyBoxOfficeList(targetDt);
+	        if (!dailyList.isEmpty()) {
+	            List<Map<String, Object>> movieDetailsList = new ArrayList<>();
 
+	            for (Map<String, Object> movie : dailyList) {
+	                String movieNm = (String) movie.get("movieNm");
+	                String prdtYear = (String) movie.get("prdtYear");
+	                
+	                // TMDB API를 사용하여 영화 정보 검색
+	                Mono<Map<String, Object>> tmdbInfo = tmdb.searchTmdbMovie(movieNm, prdtYear);
+	                tmdbInfo.subscribe(info -> {
+	                    movie.put("posterPath", posterOriginPath + info.get("poster_path"));
+	                    movie.put("overview", info.get("overview"));
+	                    System.out.println(movie);
+	                    movieDetailsList.add(movie);
+	                });
+
+	            }
+	            model.addAttribute("dailyMovies", movieDetailsList);
+	            
+	        } else {
+	            model.addAttribute("error", "영화 목록을 찾지 못했습니다.");
+	        }
+	    } catch (Exception e) {
+	        // 예외 로깅
+	        model.addAttribute("error", "요청을 처리하는 동안 오류가 발생했습니다.");
+	    }
+	}
 	// 장르 필터
 	@PostMapping("/genreCheck")
 	public String postGenreCheck() {
@@ -44,11 +74,6 @@ public class BoardController {
 
 	@GetMapping("/movieDetail")
 	public void getMovieDetail() {
-
-	}
-
-	@GetMapping("/movieDisplay")
-	public void getMovieDisplay() {
 
 	}
 
@@ -67,42 +92,13 @@ public class BoardController {
 		model.addAttribute("image",posterOriginPath+mono.block().get("poster_path"));
 		model.addAttribute("image",posterOriginPath+actors.block().getProfile_path());;
 	}
-	
-	@GetMapping("/trending")
-	public Mono<Map> getTrendingMovies() {
-		return tmdb.getTrendingMovies();
+
+
+	private List<Map<String, Object>> getDailyBoxOfficeList(String targetDate) throws JsonProcessingException {
+		Mono<String> result = kobis.getDailyBoxOffice(targetDate);
+		return convertToMapper.getDailyBoxOffice(result.block());
 	}
 
-	@GetMapping("/{movieId}")
-	public Mono<Map> getMovieDetails(@PathVariable String movieId) {
-		return tmdb.getMovieDetails(movieId);
-	}
-
-//	@GetMapping("/daily")
-//	public void getDaily(@RequestParam("targetDt") String targetDate, Model model) {
-//		try {
-//			List<Map<String, Object>> dailyList = getDailyBoxOfficeList(targetDate);
-//			if (!dailyList.isEmpty()) {
-//				String movieCd = (String) dailyList.get(0).get("movieCd");
-//				Map<String, Object> movieInfo = getMovieInfo(movieCd);
-//				System.out.println(movieInfo);
-//				model.addAttribute("movies", dailyList);
-//				model.addAttribute("movieInfo", movieInfo);
-//			} else {
-//				// 적절한 오류 처리
-//				model.addAttribute("error", "영화 목록을 찾지 못했습니다.");
-//			}
-//		} catch (Exception e) {
-//			// 예외 로깅
-//			model.addAttribute("error", "An error occurred while processing your request");
-//		}
-//	}
-
-//	private List<Map<String, Object>> getDailyBoxOfficeList(String targetDate) throws JsonProcessingException {
-//		String result = kobis.getDailyBoxOffice(targetDate);
-//		return convertToMapper.getDailyBoxOffice(result);
-//	}
-//
 //	private Map<String, Object> getMovieInfo(String movieCd) throws JsonProcessingException {
 //		String movieInfoResult = kobis.getMovieInfo(movieCd);
 //		return convertToMapper.getMovieInfo(movieInfoResult);
