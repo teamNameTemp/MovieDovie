@@ -1,18 +1,22 @@
 package com.board.service;
 
+
 import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import com.board.dto.movie.ActorDetailDTO;
 
 import jakarta.annotation.PostConstruct;
+import lombok.extern.log4j.Log4j2;
 import reactor.core.publisher.Mono;
 
 @Service
+@Log4j2
 public class TmdbAPIService {
 	@Value("${tmdb.api.base-url}")
 	private String baseUrl;
@@ -77,20 +81,26 @@ public class TmdbAPIService {
             .bodyToMono(ActorDetailDTO.class);
     }
 
-    public Mono<Map<String, Object>> searchTmdbMovie(String title,String year) {
+    public Mono<Map<String, Object>> searchTmdbMovie(String movieNm, String year) {
         return webClient.get()
                 .uri(uriBuilder -> uriBuilder
                         .path("/search/movie")
                         .queryParam("api_key", token)
-                        .queryParam("query", title)
-                        .queryParam("year",year)
+                        .queryParam("query", movieNm)
+                        .queryParam("year", year)
                         .queryParam("language", "ko-KR")
                         .build())
                 .retrieve()
-                .bodyToMono(Map.class)
+                .bodyToMono(new ParameterizedTypeReference<Map<String, Object>>() {})
                 .flatMap(response -> {
                     List<Map<String, Object>> results = (List<Map<String, Object>>) response.get("results");
-                    return results.isEmpty() ? Mono.empty() : Mono.just(results.get(0));
+                    return results != null && !results.isEmpty() ? 
+                        Mono.just(results.get(0)) : 
+                        Mono.empty();
+                })
+                .onErrorResume(e -> {
+                    log.error("Error searching TMDB movie: ", e);
+                    return Mono.empty();
                 });
     }
 

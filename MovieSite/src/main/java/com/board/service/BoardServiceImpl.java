@@ -52,34 +52,34 @@ public class BoardServiceImpl implements BoardService {
 	//좋아요/싫어요 신규 등록
 	@Override
 	public void likeCheckRegistry(Long seqno, String email, String mylikeCheck, String mydislikeCheck, String likeDate,String dislikeDate) throws Exception {
-	  MovieEntity movieEntity = movieRepository.findById(seqno).get();
-	  MemberEntity memberEntity = memberRepository.findById(email).get();
-	
-	  LikeEntity likeEntity = LikeEntity.builder()
-										.seqno(movieEntity)
-										.email(memberEntity)
-										.mylikecheck(mylikeCheck)
-										.mydislikecheck(mydislikeCheck)
-										.likedate(likeDate)
-										.dislikedate(dislikeDate)
-										.build();
-		likeRepository.save(likeEntity);		
+//	  MovieEntity movieEntity = movieRepository.findById(seqno).get();
+//	  MemberEntity memberEntity = memberRepository.findById(email).get();
+//	
+//	  LikeEntity likeEntity = LikeEntity.builder()
+//										.seqno(movieEntity)
+//										.email(memberEntity)
+//										.mylikecheck(mylikeCheck)
+//										.mydislikecheck(mydislikeCheck)
+//										.likedate(likeDate)
+//										.dislikedate(dislikeDate)
+//										.build();
+//		likeRepository.save(likeEntity);		
 	}
 	
 	//좋아요/싫어요 수정
 	@Override  //email > nickname??
 	public void likeCheckUpdate(Long seqno, String email, String mylikeCheck,
 			String mydislikeCheck, String likeDate, String dislikeDate) throws Exception{
-		MovieEntity movieEntity = movieRepository.findById(seqno).get();
-		MemberEntity memberEntity = memberRepository.findById(email).get();
-		
-		LikeEntity likeEntity = likeRepository
-				.findBySeqnoAndEmail(movieEntity, memberEntity);
-		likeEntity.setMylikecheck(mylikeCheck);
-		likeEntity.setMydislikecheck(mydislikeCheck);
-		likeEntity.setLikedate(likeDate);	
-		likeEntity.setDislikedate(dislikeDate);	
-		likeRepository.save(likeEntity);
+//		MovieEntity movieEntity = movieRepository.findById(seqno).get();
+//		MemberEntity memberEntity = memberRepository.findById(email).get();
+//		
+//		LikeEntity likeEntity = likeRepository
+//				.findBySeqnoAndEmail(movieEntity, memberEntity);
+//		likeEntity.setMylikecheck(mylikeCheck);
+//		likeEntity.setMydislikecheck(mydislikeCheck);
+//		likeEntity.setLikedate(likeDate);	
+//		likeEntity.setDislikedate(dislikeDate);	
+//		likeRepository.save(likeEntity);
 	}
 	
 	@Override

@@ -60,7 +60,6 @@
 		
 	}
 
-	/*
 	//관심상품 
 	const likeCheck = async (type,email) => {
 		
@@ -107,7 +106,7 @@
 			});
 		
 		
-	} */
+	}
 	
 </script>
 
@@ -135,41 +134,41 @@
 			</div>
 				<br><br><br><br><br><br><br><br><br><br>
 
-	        <div class="featured-desc">
-	            <h2 style="text-align: left;">작품정보</h2> <br>
-	            <p style="text-align: left;"> 줄[[${v거iew.}]]리 </p>
-	            <hr><br>
-	            <div class="row">
-	                <div class="col">
-						<th><b>감독</b></th>
-	                    <td>[[${view.directors}]]</td>
-	                </div>
-	                <div class="col">	                    						
-	                	<th><b>장르</b></th>
-	                    <td>[[${view.genres}]]</td>
-	                </div>
-	                <div class="col">
-	                    <th><b>개봉일</b></th>
-	                    <td>[[${view.titleen}]]</td>
-	                </div>
-	                <div class="col">
-	                    <th><b>연령등급</b></th>
-	                    <td>[[${view.genres}]]</td>
-	                </div>
-	                <div class="col">
-	                    <th><b>러닝타임</b></th>
-	                    <td>[[${view.showtime}]]</td>
-	                </div>
-	                <div class="col">
-	                    <th><b>제작 국가</b></th>
-	                    <td>[[${view.nationalt}]]</td>
-	                </div>
-	                <div class="col">
-	                    <th><b>제작연도</b></th>
-	                    <td>[[${view.prodtyear}]]</td>
-	                </div>
-	            </div>
-	        </div>
+	       <div class="featured-desc">
+    <h2>작품정보</h2>
+    <p>줄거리</p>
+    <hr>
+    <div class="movie-details">
+        <div class="detail-row">
+            <span class="detail-label">감독:</span>
+            <span class="detail-value" th:text="${view.directors}"></span>
+        </div>
+        <div class="detail-row">
+            <span class="detail-label">장르:</span>
+            <span class="detail-value" th:text="${view.genres}"></span>
+        </div>
+        <div class="detail-row">
+            <span class="detail-label">개봉일:</span>
+            <span class="detail-value" th:text="${view.titleen}"></span>
+        </div>
+        <div class="detail-row">
+            <span class="detail-label">연령등급:</span>
+            <span class="detail-value" th:text="${view.ageRating}"></span>
+        </div>
+        <div class="detail-row">
+            <span class="detail-label">러닝타임:</span>
+            <span class="detail-value" th:text="${view.showtime}"></span>
+        </div>
+        <div class="detail-row">
+            <span class="detail-label">제작 국가:</span>
+            <span class="detail-value" th:text="${view.nationalt}"></span>
+        </div>
+        <div class="detail-row">
+            <span class="detail-label">제작연도:</span>
+            <span class="detail-value" th:text="${view.prodtyear}"></span>
+        </div>
+    </div>
+</div>
 	        <br><br>
 	
 	        <div>

@@ -1,17 +1,10 @@
 package com.board.controller;
 
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,42 +12,29 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-
-import com.board.dto.movie.ActorDetailDTO;
-import com.board.service.KobisAPIService;
-import com.board.service.MovieAPIService;
-import com.board.service.TmdbAPIService;
-import com.board.util.convertToMapper;
-import com.fasterxml.jackson.core.JsonProcessingException;
-
-import lombok.RequiredArgsConstructor;
-import reactor.core.publisher.Mono;
-
-@Controller
-@RequestMapping("/board")
-@RequiredArgsConstructor
-public class BoardController {
-	private final MovieAPIService service;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.board.dto.MovieDTO;
 import com.board.dto.ReplyInterface;
 import com.board.entity.LikeEntity;
 import com.board.service.BoardService;
+import com.board.service.MovieAPIService;
 
 import jakarta.servlet.http.HttpSession;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 
 @Controller
 @RequestMapping("/board")
-public class BoardController { 
-	
+public class BoardController {
+	private final MovieAPIService movieService;
 	private final BoardService service;
 	
-	@Autowired
-	public BoardController(BoardService service) {
-		this.service = service;
+	public BoardController(MovieAPIService movie, BoardService board) {
+		this.movieService = movie;
+		this.service=board;
 	}
-	
 	// 추천 장르
 	@GetMapping("/selectGenre")
 	public void getMovieSelect() {
@@ -62,7 +42,7 @@ public class BoardController {
 
 	@GetMapping("/list")
 	public void getList(Model model) {
-		model.addAttribute("dailyMovies",service.getDailyBoxOffice());
+		model.addAttribute("dailyMovies",movieService.getDailyBoxOffice());
 	
 	}
 	// 장르 필터
@@ -70,10 +50,7 @@ public class BoardController {
 	public String postGenreCheck() {
 		return null;
 	}
-
-	@GetMapping("/movieDetail")
-	public void getMovieDetail() {
-
+	
 	
 	//영화상세
 	@GetMapping("/movieDetail")
@@ -82,23 +59,23 @@ public class BoardController {
 			Model model, HttpSession session) throws Exception {
 
 		//세션 email값 가져 오기
-		String sessionEmail = (String)session.getAttribute("email");
+//		String sessionEmail = (String)session.getAttribute("email");
+//		
+//		//좋아요/싫어요 처리
+//		LikeEntity likeCheckView = service.likeCheckView(seqno,sessionEmail);
+//		
+//		//초기에 좋아요/싫어요 등록이 안되어져 있을 경우 "N"으로 초기화
+//		if(likeCheckView == null) {
+//			model.addAttribute("myLikeCheck", "N");
+//			model.addAttribute("myDislikeCheck", "N");
+//		} else if(likeCheckView != null) {
+//			model.addAttribute("myLikeCheck", likeCheckView.getLikecheck());
+//			model.addAttribute("myDislikeCheck", likeCheckView.getDislikecheck()); 
+//		}
 		
-		//좋아요/싫어요 처리
-		LikeEntity likeCheckView = service.likeCheckView(seqno,sessionEmail);
-		
-		//초기에 좋아요/싫어요 등록이 안되어져 있을 경우 "N"으로 초기화
-		if(likeCheckView == null) {
-			model.addAttribute("myLikeCheck", "N");
-			model.addAttribute("myDislikeCheck", "N");
-		} else if(likeCheckView != null) {
-			model.addAttribute("myLikeCheck", likeCheckView.getMylikecheck());
-			model.addAttribute("myDislikeCheck", likeCheckView.getMydislikecheck()); 
-		}
-		
-		model.addAttribute("view", service.view(seqno));
-		model.addAttribute("page", pageNum);
-		model.addAttribute("keyword", keyword);	
+//		model.addAttribute("view", service.view(seqno));
+//		model.addAttribute("page", pageNum);
+//		model.addAttribute("keyword", keyword);	
 	}
 	
 

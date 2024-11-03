@@ -17,6 +17,7 @@ import com.board.entity.DailyMovieEntity;
 import com.board.entity.repository.DailyBoxOfficeRepository;
 import com.board.util.convertToMapper;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -65,8 +66,10 @@ public class MovieAPIService {
 	    for (DailyMovieEntity movie : daily.getMovies()) {
 	        Map<String, Object> movieMap = new HashMap<>();
 	        movieMap.put("rank", movie.getRank());
+	        movieMap.put("movieCd", movie.getMovieCd());
 	        movieMap.put("movieNm", movie.getMovieNm());
-	        movieMap.put("prdtYear", movie.getPrdtYear());
+	        movieMap.put("prdtYear", movie.getOpenDt());
+	        movieMap.put("showtime", movie.getShowtime());
 	        movieMap.put("posterPath", posterOriginPath + movie.getPosterPath());
 	        movieMap.put("overview", movie.getOverview());
 	        movieMap.put("tmdbId", movie.getTmdbId());
@@ -90,6 +93,8 @@ public class MovieAPIService {
 	                movie.put("tmdbId", tmdbInfo.get("id"));
 	                System.out.println("Updated movie info: " + movie);
 	            }
+	            
+				movie.put("showTm", getMovieInfo((String) movie.get("movieCd")).get("showTm"));
 	        } catch (Exception e) {
 	            log.error("Error fetching TMDB info for movie: " + movieNm, e);
 	        }
@@ -105,8 +110,10 @@ public class MovieAPIService {
 	    List<DailyMovieEntity> movieEntities = movieList.stream().map(movie -> {
 	    	DailyMovieEntity entity = new DailyMovieEntity();
 	        entity.setRank((String) movie.get("rank"));
+	        entity.setMovieCd((String) movie.get("movieCd"));
 	        entity.setMovieNm((String) movie.get("movieNm"));
-	        entity.setPrdtYear((String) movie.get("prdtYear"));
+	        entity.setOpenDt((String) movie.get("openDt"));
+	        entity.setShowtime((String)movie.get("showTm"));
 	        entity.setPosterPath((String) movie.get("posterPath"));
 	        entity.setOverview((String) movie.get("overview"));
 	        entity.setTmdbId((Integer) movie.get("tmdbId"));
@@ -126,6 +133,11 @@ public class MovieAPIService {
 	private List<Map<String, Object>> getDailyBoxOfficeList(String targetDate) throws JsonProcessingException {
 		Mono<String> result = kobis.getDailyBoxOffice(targetDate);
 		return convertToMapper.getDailyBoxOffice(result.block());
+	}
+	
+	private Map<String,Object> getMovieInfo(String movieCd) throws JsonMappingException, JsonProcessingException{
+		Mono<String> result = kobis.getMovieInfo(movieCd);
+		return convertToMapper.getMovieInfo(result.block());
 	}
 
 }

@@ -7,7 +7,7 @@ import com.board.entity.LikeEntityID;
 import com.board.entity.MemberEntity;
 import com.board.entity.MovieEntity;
 
-public interface LikeRepository extends JpaRepository<LikeEntity, LikeEntityID> {
+public interface LikeRepository extends JpaRepository<LikeEntity, Long> {
 
 	//select * from jpa_like where seqno = :seqno and email=:email
 	public LikeEntity findBySeqnoAndEmail(MovieEntity board, MemberEntity member);
