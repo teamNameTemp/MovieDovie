@@ -98,6 +98,11 @@
                 <div class="movie-list-wrapper">
                     <div class="movie-list">
                         <div class="movie-list-item" th:each="movie : ${dailyMovies}">
+                        <!-- 
+                        이미지 클릭 시 상세 페이지로 JS 작성 onclick="javescript()"
+                        controller에서 post로 응답받고 RequestParam 영화이름이나 ID값 받아서 DailyMovieEntity 값 연동
+                        그 후 상세정보 나열
+                         -->
                             <img class="movie-list-item-img" th:src="${movie.posterPath}" alt="">
                             <span class="movie-list-item-title" th:text="${movie.movieNm}"></span>
                             <p class="movie-list-item-desc" th:text="${movie.overview}"></p>

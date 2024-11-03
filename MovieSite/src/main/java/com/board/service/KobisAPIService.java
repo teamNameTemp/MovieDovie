@@ -54,5 +54,15 @@ public class KobisAPIService {
                 .retrieve()
                 .bodyToMono(String.class);
     }
-
+    
+    public Mono<String> getMoviesByGenre(String genreCd){
+    	return webClient.get()
+    			.uri(uriBuilder -> uriBuilder
+    					.path("/movie/searchMovieList.json")
+    					.queryParam("key", apiKey)
+    					.queryParam("genreAlt",genreCd)
+    					.build())
+    			.retrieve()
+    			.bodyToMono(String.class);
+    }
 }
