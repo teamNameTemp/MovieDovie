@@ -1,5 +1,7 @@
 package com.board.entity.repository;
 
+import java.util.Optional;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.board.entity.MemberEntity;
@@ -8,4 +10,7 @@ import com.board.entity.MemberEntity;
 public interface MemberRepository extends JpaRepository<MemberEntity, String>{
 	//쿼리문 구현
 	//JPA 구문(ORM) , native sql 등
+	
+	public Optional<MemberEntity> findByUsernameAndTelno(String username, String telno);
+	public Optional<MemberEntity> findByEmailAndUsername(String email, String username);
 }
