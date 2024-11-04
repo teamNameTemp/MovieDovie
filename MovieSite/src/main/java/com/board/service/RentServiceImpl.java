@@ -29,14 +29,19 @@ public class RentServiceImpl implements RentService{
     }
 	
 	
-	// 관리자 페이지 - 통계 : 대여 수 확인 (startDate에 원하는 날짜, endDate에 원하는 날짜 넣으면 그 사이의 값들이 나옴)
+	//관리자페이지 - 통계 : 대여 수 확인 (startDate에 원하는 날짜, endDate에 원하는 날짜 넣으면 그 사이의 값들이 나옴)
 	@Override
     public List<Object[]> RentCount(LocalDateTime startDate, LocalDateTime endDate){
     	 return rentRepository.RentCount(startDate, endDate);
     }
 	
+
+	//관리자페이지 - 통계 : 월별 대여 수 확인
+	public List<Object[]> RentCountByMonth(int year){
+		return rentRepository.RentCountByMonth(year);
+	}
 	
-	
+	/*
 	//관리자페이지 - 이번 연도 대여 누적 수 확인
 	@Override
 	public List<Object[]> RentCumulative() {
@@ -87,4 +92,8 @@ public class RentServiceImpl implements RentService{
 
 	    return cumulativeRents;
 	}
+	*/
+	
+	
+	
 }

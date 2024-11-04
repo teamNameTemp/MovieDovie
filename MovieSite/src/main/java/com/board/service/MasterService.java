@@ -31,6 +31,9 @@ public interface MasterService {
 	//처리 상태 업데이트하기
 	public void updateStatus(Long seqno, String status);
 	
+	//영화 중복 체크
+	public void movieCheck(String movieNm);
+	
 	//Dummy Members 만들기
 	public void createDummyMembers(int count);
 	
