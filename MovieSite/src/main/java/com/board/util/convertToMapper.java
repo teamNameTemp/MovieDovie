@@ -4,13 +4,19 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
+import com.board.entity.movie.ActorEntity;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import lombok.extern.log4j.Log4j2;
+
+@Log4j2
 public class convertToMapper {
 	public static List<Map<String,Object>> getDailyBoxOffice(String result) throws JsonMappingException, JsonProcessingException{
 		ObjectMapper mapper = new ObjectMapper();
@@ -115,4 +121,65 @@ public class convertToMapper {
 
 	    return movieInfoMap;
 	}
+	
+	public static List<ActorEntity> getActorList(List<Map<String,Object>> data){
+		if(data == null) {
+			return new ArrayList<>();
+		}
+		
+		List<ActorEntity> actorList = data.stream().map(d->{
+			log.info("data : " + d);
+			ActorEntity actor = new ActorEntity(d);
+			return actor;
+		}).collect(Collectors.toList());
+		
+		return actorList;
+	}
+	
+	public static <T> List<T> getEntityList(List<Map<String, Object>> data, Function<Map<String, Object>, T> constructor) {
+	    if (data == null) {
+	        return new ArrayList<>();
+	    }
+	    
+	    List<T> entityList = data.stream()
+	        .map(d -> {
+	            log.info("data : " + d);
+	            return constructor.apply(d);
+	        })
+	        .collect(Collectors.toList());
+	    
+	    return entityList;
+	}
+	
+//	public static <T> List<T> getEntityList(List<String> data)
+//	{
+//		if(data== null)
+//		{
+//			return new ArrayList<>();
+//		}
+//		
+//		List<T> entityList = data.stream().map(String::pars
+//                }).collect(Collectors.toList());
+//	}
+	
+//	public static <T extends IEntity> List<T> getEntityList(List<Map<String, Object>> data, Class<T> entityClass){
+//		if(data==null) {
+//			log.error("data NULL");
+//			return new ArrayList<>();
+//		}
+//		
+//		List<T> tEntity = data.stream().map(d ->{
+//			 try {
+//		            T entity = entityClass.getDeclaredConstructor().newInstance();
+//		            entity.setMapData(d);
+//		            return entity;
+//		        } catch (Exception e) {
+//		            throw new RuntimeException("Error creating entity instance", e);
+//		        }
+//		}).collect(Collectors.toList());
+//		
+//		return tEntity;
+//		
+//	}
+
 }

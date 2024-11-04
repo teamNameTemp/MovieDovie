@@ -1,5 +1,7 @@
 package com.board.entity.movie;
 
+import java.util.Map;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -21,7 +23,7 @@ public class CompanyEntity {
 		private long seqno;
 		
 		@Column(name="companyCd")
-		private String companuCd;
+		private String companyCd;
 		
 		@Column(name="companyNm")
 		private String companyNm;
@@ -31,4 +33,14 @@ public class CompanyEntity {
 		
 		@Column(name="companyPartNm")
 		private String companyPartNm;
+
+		public CompanyEntity(Map<String,Object> data)
+		{
+			this.companyCd = (String)data.get("companyCd");
+			this.companyNm = (String)data.get("companyNm");
+			this.companyNmEn = (String)data.get("companyNmEn");
+			this.companyPartNm = (String)data.get("companyPartNm");
+		}
 }
+
+
