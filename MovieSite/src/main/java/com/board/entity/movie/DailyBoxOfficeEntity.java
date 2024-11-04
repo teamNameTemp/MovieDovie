@@ -1,4 +1,4 @@
-package com.board.entity;
+package com.board.entity.movie;
 
 import java.util.ArrayList;
 import java.util.List;
