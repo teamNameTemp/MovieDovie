@@ -40,5 +40,14 @@ public interface RentRepository extends JpaRepository<RentEntity, Long>{
 	public List<Object[]> RentCount(@Param("startDate") LocalDateTime startDate, @Param("endDate") LocalDateTime endDate);
 
 	
+	
+	//관리자 페이지 - 통계 : 월별 대여 수 확인
+	@Query(value = "SELECT TO_CHAR(r.rentdate, 'YYYY-MM') AS month, "
+			+ "COUNT(*) AS count "
+			+ "FROM tbl_rent r "
+			+ "WHERE EXTRACT(YEAR FROM r.rentdate) = :year "
+			+ "GROUP BY TO_CHAR(r.rentdate, 'YYYY-MM')", nativeQuery = true)
+	public List<Object[]> RentCountByMonth(@Param("year") int year);
+	
 
 }
