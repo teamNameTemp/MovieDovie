@@ -25,9 +25,9 @@ public class DailyBoxOfficeEntity {
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "daily_box_office_date")
-    private List<DailyMovieEntity> movies = new ArrayList<>();
+    private List<MovieEntity> movies = new ArrayList<>();
 
-    public void addMovie(DailyMovieEntity movie) {
-        movies.add(movie);
-    }
+//    public void addMovie(MovieEntity movie) {
+//        movies.add(movie);
+//    }
 }
