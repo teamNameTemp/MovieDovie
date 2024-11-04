@@ -12,8 +12,8 @@ import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
-import com.board.entity.DailyBoxOfficeEntity;
-import com.board.entity.MovieEntity;
+import com.board.entity.movie.DailyBoxOfficeEntity;
+import com.board.entity.movie.MovieEntity;
 import com.board.entity.repository.DailyBoxOfficeRepository;
 import com.board.util.convertToMapper;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -66,8 +66,20 @@ public class MovieAPIService {
 	    for (MovieEntity movie : daily.getMovies()) {
 	        Map<String, Object> movieMap = new HashMap<>();
 	        movieMap.put("rank", movie.getRank());
+	        movieMap.put("audiAcc", movie.getAudiAcc());
 	        movieMap.put("movieCd", movie.getMovieCd());
+	        movieMap.put("hitno", movie.getHitno());
 	        movieMap.put("movieNm", movie.getMovieNm());
+	        movieMap.put("movieNmEn", movie.getMovieNmEn());
+	        movieMap.put("imgPath", movie.getImgPath());
+	        movieMap.put("prdtYear", movie.getPrdtYear());
+	        movieMap.put("salesAcc", movie.getSalesAcc());
+	        movieMap.put("uploadcheck", movie.getUploadCheck());
+	        movieMap.put("actors", movie.getActors());
+	        movieMap.put("director", movie.getDirectors());
+	        movieMap.put("companys", movie.getCompanys());
+	        movieMap.put("genres", movie.getGenres());
+	        movieMap.put("nations", movie.getNations());
 	        movieMap.put("prdtYear", movie.getOpenDt());
 	        movieMap.put("showtime", movie.getShowtime());
 	        movieMap.put("posterPath", posterOriginPath + movie.getPosterPath());
@@ -107,17 +119,31 @@ public class MovieAPIService {
 	private void saveToDatabase(String date, List<Map<String, Object>> movieList) {
 	    DailyBoxOfficeEntity dailyEntity = new DailyBoxOfficeEntity();
 	    dailyEntity.setDate(date);
-
+	    
 	    List<MovieEntity> movieEntities = movieList.stream().map(movie -> {
-	    	MovieEntity entity = new MovieEntity();
-	        entity.setRank((String) movie.get("rank"));
-	        entity.setMovieCd((String) movie.get("movieCd"));
-	        entity.setMovieNm((String) movie.get("movieNm"));
-	        entity.setOpenDt((String) movie.get("openDt"));
-	        entity.setShowtime((String)movie.get("showTm"));
-	        entity.setPosterPath((String) movie.get("posterPath"));
-	        entity.setOverview((String) movie.get("overview"));
-	        entity.setTmdbId((Integer) movie.get("tmdbId"));
+	    	MovieEntity entity = MovieEntity.builder()
+	    							.rank((String)movie.get("rank"))
+	    							.movieCd((String)movie.get("movieCd"))
+	    							.movieNm((String)movie.get("movieNm"))
+	    							.movieNmEn((String)movie.get("movieNmEn"))
+	    							.openDt((String)movie.get("openDt"))
+	    							.showtime((String)movie.get("showtime"))
+	    							.posterPath((String)movie.get("posterPath"))
+	    							.overview((String)movie.get("overview"))
+	    							.tmdbId((Integer)movie.get("tmdbId"))
+	    							.prdtYear((String)movie.get("prdtYear"))
+	    							.audiAcc((String)movie.get("audiAcc"))
+	    							.hitno((Integer)movie.get("hitno"))
+	    							.imgPath((String)movie.get("imgPath"))
+	    							.salesAcc((String)movie.get("salesAcc"))
+	    							.uploadCheck((String)movie.get("uploadcheck"))
+	    							.actors((List)movie.get("actors"))
+	    							.directors((List)movie.get("directors"))
+	    							.companys((List)movie.get("companys"))
+	    							.nations((List)movie.get("nations"))
+	    							.genres((List)movie.get("genres"))
+	    							.build();
+	      
 	        return entity;
 	    }).collect(Collectors.toList());
 

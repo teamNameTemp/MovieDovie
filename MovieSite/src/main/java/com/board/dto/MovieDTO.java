@@ -2,7 +2,7 @@ package com.board.dto;
 
 import java.time.LocalDateTime;
 
-import com.board.entity.MovieEntity;
+import com.board.entity.movie.MovieEntity;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
