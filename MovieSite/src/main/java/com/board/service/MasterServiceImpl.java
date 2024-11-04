@@ -3,7 +3,9 @@ package com.board.service;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 import java.util.Random;
 
@@ -46,7 +48,6 @@ public class MasterServiceImpl implements MasterService{
 	private final LikeRepository likeRepository;
 	private final RentRepository rentRepository;
 	private static final String[] GENDERS = {"Male", "Female"};
-    private static final String[] ROLES = {"USER", "MASTER"};
     private final Random random;
     private static final String[] YorN = {"Y", "N"};
     private static final String[] INOUT = {"LOGIN", "LOGOUT"};
@@ -107,7 +108,13 @@ public class MasterServiceImpl implements MasterService{
 	}	
 	
 	
-	/*
+	//영화 중복 체크
+	@Override
+	public void movieCheck(String movieNm) {
+		//return movieRepository.findById(movieNm).isEmpty()?0:1;
+	}
+	
+	
 	//dummy 회원 대량으로 만들기
 	@Override
     @Transactional
@@ -115,6 +122,7 @@ public class MasterServiceImpl implements MasterService{
 		
 		Random random = new Random(); // Random 초기화
 		
+		List<MemberEntity> members = new ArrayList<>();
         for (int i = 1; i <= count; i++) {
         	MemberEntity member = new MemberEntity();
             member.setEmail("user" + i + "@example.com");
@@ -123,33 +131,31 @@ public class MasterServiceImpl implements MasterService{
             member.setNickname("Nickname" + i);
             member.setGender(GENDERS[random.nextInt(GENDERS.length)]);
             
-            // 1970년 1월 1일부터 2020년 12월 31일 사이의 랜덤 생일 생성
-            long minDay = LocalDateTime.of(1970, 1, 1, 0, 0).atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
-            long maxDay = LocalDateTime.of(2020, 12, 31, 23, 59).atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
+            // 1980년 1월 1일부터 2010년 12월 31일 사이의 랜덤 생일 생성
+            long minDay = LocalDateTime.of(1980, 1, 1, 0, 0).atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
+            long maxDay = LocalDateTime.of(2010, 12, 31, 23, 59).atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
             long randomTime = minDay + (long)(random.nextDouble() * (maxDay - minDay));
             LocalDateTime birth = LocalDateTime.ofInstant(new Date(randomTime).toInstant(), ZoneId.systemDefault());
             member.setBirth(birth); // 생일 설정
             
             member.setTelno("010-" + (random.nextInt(9000) + 1000) + "-" + (random.nextInt(9000) + 1000));
             
-            // 2022년 1월 1일부터 2024년 10월 31일 사이의 랜덤 회원 가입일 생성
-            long regminDay = LocalDateTime.of(2022, 1, 1, 0, 0).atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
+            // 2023년 1월 1일부터 2024년 10월 31일 사이의 랜덤 회원 가입일 생성
+            long regminDay = LocalDateTime.of(2023, 1, 1, 0, 0).atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
             long regmaxDay = LocalDateTime.of(2024, 10, 31, 23, 59).atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
             long regrandomTime = regminDay + (long)(random.nextDouble() * (regmaxDay - regminDay));
             LocalDateTime regdate = LocalDateTime.ofInstant(new Date(regrandomTime).toInstant(), ZoneId.systemDefault());
             member.setRegdate(regdate); // 회원 가입일 설정
             
-            
-            member.setRole(ROLES[random.nextInt(ROLES.length)]);
+            member.setRole("USER");
             member.setLogseqno((long) i);
             member.setGenreseqno((long) i);
 
-            memberRepository.save(member);
+            members.add(member);
         }
+        memberRepository.saveAll(members); //일괄 저장
     }
-    */
-	
-	
+
 	
 	//Dummy Rents 만들기
 	@Override
@@ -161,16 +167,16 @@ public class MasterServiceImpl implements MasterService{
         	RentEntity rent = new RentEntity();
             rent.setSeqno((long) i);
         	
-            // 2024년 9월 1일부터 2024년 10월 31일 사이의 랜덤 대여일 생성
-            long minDay = LocalDateTime.of(2024, 9, 1, 0, 0).atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
-            long maxDay = LocalDateTime.of(2024, 10, 31, 23, 59).atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
+            // 2023년 9월 1일부터 2024년 11월 3일 사이의 랜덤 대여일 생성
+            long minDay = LocalDateTime.of(2023, 9, 1, 0, 0).atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
+            long maxDay = LocalDateTime.of(2024, 11, 3, 23, 59).atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
             long randomTime = minDay + (long)(random.nextDouble() * (maxDay - minDay));
             LocalDateTime rentdate = LocalDateTime.ofInstant(new Date(randomTime).toInstant(), ZoneId.systemDefault());
             
             rent.setRentdate(rentdate); // 대여일 설정
             
-            // 대여 반납일은 대여일로부터 2주 후로 설정
-            LocalDateTime returndate = rentdate.plusWeeks(2);
+            // 대여 반납일은 대여일로부터 3일 후로 설정
+            LocalDateTime returndate = rentdate.plusDays(3);
             rent.setReturndate(returndate); // 반납일 설정
             
             // 대여 상태 설정
@@ -203,7 +209,7 @@ public class MasterServiceImpl implements MasterService{
 	            }
 
 	        	like.setEmail("user" + i + "@example.com");
-	        	like.setMovieseqno((long) i);
+	        	like.setMovieseqno((long) (random.nextInt(20) + 1)); // 1부터 20까지의 랜덤 숫자 설정
 	            
 	        	likeRepository.save(like);
 	      }
@@ -218,9 +224,9 @@ public class MasterServiceImpl implements MasterService{
         	MemberLogEntity log = new MemberLogEntity();
             log.setSeqno((long) i);
             
-            // 2024년 9월 1일부터 2024년 10월 31일 사이의 랜덤 로그인 로그아웃일 생성
-            long minDay = LocalDateTime.of(2024, 9, 1, 0, 0).atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
-            long maxDay = LocalDateTime.of(2024, 10, 31, 23, 59).atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
+            // 2024년 10월 1일부터 2024년 11월 3일 사이의 랜덤 로그인 로그아웃일 생성
+            long minDay = LocalDateTime.of(2024, 10, 1, 0, 0).atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
+            long maxDay = LocalDateTime.of(2024, 11, 3, 23, 59).atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
             long randomTime = minDay + (long)(random.nextDouble() * (maxDay - minDay));
             LocalDateTime inouttime = LocalDateTime.ofInstant(new Date(randomTime).toInstant(), ZoneId.systemDefault());
             
@@ -253,7 +259,7 @@ public class MasterServiceImpl implements MasterService{
             
             watch.setStatus(YorN[random.nextInt(YorN.length)]);
         	watch.setEmail("user" + i + "@example.com");
-        	watch.setMovieseqno((long) i);
+        	watch.setMovieseqno((long) (random.nextInt(20) + 1)); // 1부터 20까지의 랜덤 숫자 설정
 
         	watchRepository.save(watch);
 		}
@@ -270,17 +276,11 @@ public class MasterServiceImpl implements MasterService{
             bookmark.setSeqno((long) i);
             bookmark.setStatus(YorN[random.nextInt(YorN.length)]);
             bookmark.setEmail("user" + i + "@example.com");
-            bookmark.setMovieseqno((long) i);
+            bookmark.setMovieseqno((long) (random.nextInt(20) + 1)); // 1부터 20까지의 랜덤 숫자 설정
 
             bookmarkRepository.save(bookmark);
 		}
 	}
 
-	@Override
-	public void createDummyMembers(int count) {
-		// TODO Auto-generated method stub
-		
-	}
-	
 	
 }

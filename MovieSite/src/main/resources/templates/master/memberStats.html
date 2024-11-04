@@ -187,6 +187,76 @@
 		
 		<br><br><br>
 		
+		[월별 대여 현황]<br>
+		<div>
+		  <canvas id="MonthlyRent"></canvas>
+		</div>
+		<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+		<script>
+		  Promise.all([
+			  fetch('/master/MonthlyRentCurrentYear').then(response => response.json()),
+			  fetch('/master/MonthlyRentLastYear').then(response => response.json())
+		  ])
+	  	  .then(([currentYearData, lastYearData]) => {
+		      // 각 월의 대여 수를 저장할 배열 초기화
+		      const currentYearCounts = Array(12).fill(0);
+		      const lastYearCounts = Array(12).fill(0);
+		
+		      // 현재 연도 데이터 처리
+		      currentYearData.forEach(item => {
+		          const date = new Date(item.date);
+		          const month = date.getMonth(); // 0-11 범위
+		          currentYearCounts[month] += item.count; // 해당 월의 대여 수 누적
+		      });
+		
+		      // 작년 데이터 처리
+		      lastYearData.forEach(item => {
+		          const date = new Date(item.date);
+		          const month = date.getMonth(); // 0-11 범위
+		          lastYearCounts[month] += item.count; // 해당 월의 대여 수 누적
+		      });
+		
+		      // 월별 레이블 생성
+		      const monthLabels = Array.from({ length: 12 }, (_, i) => i + 1); // [1, 2, 3, ..., 12]
+		
+		      const ctxmonth = document.getElementById('MonthlyRent').getContext('2d');
+		
+		      new Chart(ctxmonth, {
+		          type: 'bar',
+		          data: {
+		              labels: monthLabels, // 월별 레이블
+		              datasets: [
+		                  {
+		                      label: '작년 대여 수',
+		                      data: lastYearCounts,
+		                      borderWidth: 1,
+		                      borderColor: '#FF6384',
+		                      backgroundColor: '#FF638490'
+		                  },
+		                  {
+		                      label: '올해 대여 수',
+		                      data: currentYearCounts,
+		                      borderWidth: 1,
+		                      borderColor: '#4dbf00',
+		                      backgroundColor: '#4dbf0090'
+		                  }
+		              ]
+		          },
+		          options: {
+		              scales: {
+		                  y: {
+		                      beginAtZero: true
+		                  }
+		              }
+		          }
+		      });
+		  })
+		  .catch(error => console.error('Error fetching data:', error));
+		</script>
+		
+		
+		
+		<!-- 
 		[누적 대여 현황]<br>
 		<div>
 		  <canvas id="RentCumulative"></canvas>
@@ -232,7 +302,8 @@
 				  });
 		  	})
 		  	.catch(error => console.error('Error fetching data:', error));
-		</script>
+		  
+		</script> -->
 		
 		</div>
 	</div>
