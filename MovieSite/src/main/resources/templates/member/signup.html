@@ -74,11 +74,12 @@ window.onload = () => {
 	const passwordValidationMessage = document.getElementById('passwordValidationMessage'); 
 	const password1 = document.getElementById('password1'); // password1 정의
 	const username = document.getElementById('username'); // username 정의
+	
 	const nickname = document.getElementById('nickname'); // nickname 정의
 	const telno = document.getElementById('telno'); // telno 정의
 	const telnoValidationMessage = document.getElementById('telnoValidationMessage'); 
-	const birthdate = document.getElementById('birthdate'); 
-	const birthdateValidationMessage = document.getElementById('birthdateValidationMessage'); 
+	const birth = document.getElementById('birth'); 
+	const birthValidationMessage = document.getElementById('birthValidationMessage'); 
 	const RegistryForm = document.getElementById('RegistryForm'); // RegistryForm 정의
 	
 	
@@ -127,36 +128,30 @@ window.onload = () => {
 	   });
 	   
 	   //생년월일
-	   const isValidBirthdate = (birthdate) => {
-	       const birthdatePattern = /^\d{8}$/;
-		   if (!birthdatePattern.test(birthdate)) return false;
+	   const toLocalDateTime = (date) => {
+	       // 입력받은 날짜 형식이 YYYY-MM-DD 형식이므로, 이를 분해하여 Date 객체로 변환합니다.
+	       const birthDate = new Date(date);
+	       const year = birthDate.getFullYear();
+	       const month = String(birthDate.getMonth() + 1).padStart(2, '0');
+	       const day = String(birthDate.getDate()).padStart(2, '0');
+	       const hours = "00";
+	       const minutes = "00";
+	       const seconds = "00";
 
-		   const year = parseInt(birthdate.slice(0, 4), 10);
-		   const month = parseInt(birthdate.slice(4, 6), 10);
-		   const day = parseInt(birthdate.slice(6, 8), 10);
-
-		   const dateObj = new Date(year, month - 1, day);
-		   const minDate = new Date(1990, 0, 1);
-		   const maxDate = new Date(2024, 11, 31);
-
-		   // 입력된 날짜가 유효한지 확인하고, 범위 내에 있는지 검사
-		   return (
-		       dateObj.getFullYear() === year &&
-		       dateObj.getMonth() === month - 1 &&
-		       dateObj.getDate() === day &&
-		       dateObj >= minDate &&
-		       dateObj <= maxDate
-		   );
+	       // YYYY-MM-DDTHH:mm:ss 형식의 문자열로 반환
+	       return `${year}-${month}-${day}T${hours}:${minutes}:${seconds}`;
 	   };
 	   
 	   // 생년월일 입력란에 'input' 이벤트 리스너 추가
-	   birthdate.addEventListener('input', () => {
-	       if (isValidBirthdate(birthdate.value)) {
-	           birthdateValidationMessage.textContent = "유효한 생년월일입니다.";
-	           birthdateValidationMessage.style.color = "green";
+	   birth.addEventListener('input', () => {
+	       if (toLocalDateTime(birth.value)) {
+			   const birthLocalDateTime = toLocalDateTime(birth.value); // LocalDateTime 형식으로 변환
+			   console.log("LocalDateTime 형식:", birthLocalDateTime); // 변환된 값 확인용
+	           birthValidationMessage.textContent = "유효한 생년월일입니다.";
+	           birthValidationMessage.style.color = "green";
 	       } else {
-	           birthdateValidationMessage.textContent = "예)19970101";
-	           birthdateValidationMessage.style.color = "red";
+	           birthValidationMessage.textContent = "예)19970101";
+	           birthValidationMessage.style.color = "red";
 	       }
 	   });
 	   
@@ -199,9 +194,15 @@ window.onload = () => {
 		    return false;
 		}
 		
-		if (!isValidBirthdate(birthdate.value)) {
+		const selectedGender = document.querySelector('input[name="gender"]:checked'); //gender정의
+		if (!selectedGender) {
+		    alert("성별을 선택하세요");
+		    return false;
+		}
+		
+		if (!toLocalDateTime(birth.value)) {
 		    alert("생년월일이 유효하지 않습니다. 다시 확인해주세요.");
-		    birthdate.focus();
+		    birth.focus();
 		    return false;
 		}
 		
@@ -259,15 +260,17 @@ window.onload = () => {
 		telno.value = afterTelno;
 		
 		   const formData = new FormData(RegistryForm);
-		   console.log(formData);
+		   formData.append('gender', selectedGender.value); // 성별 값을 추가
+		   //console.log(formData);
 		   await fetch('/member/signup', {
 		   	method: 'POST',
 		   	body: formData
 		   }).then((response)=> response.json())
 		   	.then((data)=> {
 		   		if(data.message === 'good'){
-		   			alert(decodeURIComponent(data.email) + '님, 회원 가입을 축하 드립니다.');
-		   			document.location.href='/member/login';
+		   			alert(decodeURIComponent(data.username) + '님, 회원 가입을 축하 드립니다.');
+		   		
+						document.location.href='/member/login';
 		   		} else {
 		   			alert("서버 장애로 회원 가입에 실패했습니다.");
 		   		}
@@ -297,22 +300,25 @@ window.onload = () => {
                 <input type="password" id="password1" name="password1" class="input_field" placeholder="비밀번호 한번 더 입력"><br><br><br><br>
 				<label>이름</label>
                 <input type="text" id="username" name="username" class="input_field" placeholder="이름"><br><br>
+				성별 : 
+				<label><input type="radio" name="gender" value="남성">남성</label>	
+				<label><input type="radio" name="gender" value="여성">여성</label><br><br>
 				<label>별명</label>
                 <input type="text" id="nickname" name="nickname" class="input_field" placeholder="별명"><br><br>
 				<label>생년월일</label>
-                <input type="text" id="birthdate" name="birthdate" class="input_field" placeholder="생년월일" maxlength="8">
-				<span id="birthdateValidationMessage"></span><br><br>
+                <input type="date" id="birth" name="birth" class="input_field" placeholder="생년월일" maxlength="8">
+				<span id="birthValidationMessage"></span><br><br>
 				<label>전화번호</label>
                 <input type="text" id="telno" name="telno" class="input_field" placeholder="전화번호" maxlength="12">
 				<span id="telnoValidationMessage"></span><br><br><br><br>
             
                 <div>
-                    <input type="button" id="btnRegister" value="회원가입"></input>
-                    
+                    <input type="button" id="btnRegister" value="회원가입"></input><br><br>
+					<button onclick="goTestList()">리스트로</button>
                 </div><br>	
             </div>
         </form>
-				<button onclick="goTestList()">리스트로</button>
+				
     </div>
 </div>
 </body>

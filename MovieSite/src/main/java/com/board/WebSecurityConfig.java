@@ -19,20 +19,25 @@ import lombok.extern.log4j.Log4j2;
 @Log4j2
 public class WebSecurityConfig {
 
-	private final AuthSuccessHandler authSuccessHandler;
-	private final AuthFailureHandler authFailureHandler;
-	private final UserDetailsServiceImpl userDetailService;
-
-	// 스프링 시큐리티 적용 제외 대상 설정--> 스프링빈을 등록
+   private final AuthSuccessHandler authSuccessHandler;
+   private final AuthFailureHandler authFailureHandler;
+   private final UserDetailsServiceImpl userDetailService;
+	//스프링시큐리티에서 암호화 관련 객체를 가져다가 스프링빈으로 등록
 	@Bean
-	WebSecurityCustomizer webSecurityCustomizer() {
-		return (web) -> web.ignoring().requestMatchers("/images/**", "/css/**", "/js/**");
+	BCryptPasswordEncoder pwdEncoder() {
+		return new BCryptPasswordEncoder(); 
 	}
+	
+   // 스프링 시큐리티 적용 제외 대상 설정--> 스프링빈을 등록
+   @Bean
+   WebSecurityCustomizer webSecurityCustomizer() {
+      return (web) -> web.ignoring().requestMatchers("/images/**", "/css/**", "/js/**");
+   }
 
-	// 스프링시큐리티 로그인 화면 사용 비활성화, CSRF/CORS 공격 방어용 보안 설정 비활성화
-	@Bean
-	SecurityFilterChain filter(HttpSecurity http) throws Exception {
-		 http
+   // 스프링시큐리티 로그인 화면 사용 비활성화, CSRF/CORS 공격 방어용 보안 설정 비활성화
+   @Bean
+   SecurityFilterChain filter(HttpSecurity http) throws Exception {
+       http
          .authorizeHttpRequests((authz) -> authz
              .anyRequest().permitAll()
          )
@@ -48,6 +53,6 @@ public class WebSecurityConfig {
          );
 
      return http.build();
-	}
+   }
 
 }
