@@ -80,58 +80,58 @@ public class BoardController {
 	
 
 	//좋아요/싫어요 관리
-	@ResponseBody
-	@PostMapping("/board/likeCheck")
-	public String postLikeCheck(@RequestBody Map<String,Object> likeCheckData) throws Exception {
-		
-		int seq = (int)likeCheckData.get("seqno");
-		Long seqno = (long)seq;
-		//Long seqno = (Long)likeCheckData.get("seqno");
-		String email = (String)likeCheckData.get("email");
-		String mylikecheck = (String)likeCheckData.get("mylikecheck");
-		String mydislikecheck = (String)likeCheckData.get("mydislikecheck");
-		int checkCnt = (int)likeCheckData.get("checkCnt");		
-		
-		//현재 날짜, 시간 구해서 좋아요/싫어요 한 날짜/시간 입력 및 수정
-		String likeDate = "";
-		String dislikeDate = "";
-		LocalDateTime now = LocalDateTime.now();
-		if(likeCheckData.get("mylikecheck").equals("Y")) {
-			likeDate = now.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));		
-		}else if(likeCheckData.get("mydislikecheck").equals("Y")){
-			dislikeDate = now.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));		
-		}		
-
-		//tbl_like 테이블 입력/수정
-		LikeEntity likeCheckView = service.likeCheckView(seqno,email);
-		if(likeCheckView == null) //좋아요/싫어요를 등록한 적이 없음 
-				service.likeCheckRegistry(seqno, email, mylikecheck,
-						mydislikecheck, likeDate, dislikeDate);
-			else //좋아요/싫어요를 등록한 적이 있음
-				service.likeCheckUpdate(seqno, email, mylikecheck,
-						mydislikecheck, likeDate, dislikeDate); 
-		
-		long likeCnt = service.view(seqno).getLikecnt();
-		long dislikeCnt = service.view(seqno).getDislikecnt();
-		
-		switch(checkCnt) {
-		case 1: likeCnt--; break;
-		case 2: likeCnt++; dislikeCnt--; break;
-		case 3: likeCnt++; break;
-		case 4: dislikeCnt--; break;
-		case 5: likeCnt--; dislikeCnt++; break;
-		case 6: dislikeCnt++; break;
-		}
-		
-		MovieDTO board = MovieDTO.builder()
-							.seqno(seqno)
-							.likecnt(likeCnt)
-							.dislikecnt(dislikeCnt)
-							.build();
-		service.boardLikeUpdate(board);
-		
-		return "{\"likecnt\":\"" + likeCnt + "\",\"dislikecnt\": \"" + dislikeCnt + "\"}";
-	}
+//	@ResponseBody
+//	@PostMapping("/board/likeCheck")
+//	public String postLikeCheck(@RequestBody Map<String,Object> likeCheckData) throws Exception {
+//		
+//		int seq = (int)likeCheckData.get("seqno");
+//		Long seqno = (long)seq;
+//		//Long seqno = (Long)likeCheckData.get("seqno");
+//		String email = (String)likeCheckData.get("email");
+//		String mylikecheck = (String)likeCheckData.get("mylikecheck");
+//		String mydislikecheck = (String)likeCheckData.get("mydislikecheck");
+//		int checkCnt = (int)likeCheckData.get("checkCnt");		
+//		
+//		//현재 날짜, 시간 구해서 좋아요/싫어요 한 날짜/시간 입력 및 수정
+//		String likeDate = "";
+//		String dislikeDate = "";
+//		LocalDateTime now = LocalDateTime.now();
+//		if(likeCheckData.get("mylikecheck").equals("Y")) {
+//			likeDate = now.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));		
+//		}else if(likeCheckData.get("mydislikecheck").equals("Y")){
+//			dislikeDate = now.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));		
+//		}		
+//
+//		//tbl_like 테이블 입력/수정
+//		LikeEntity likeCheckView = service.likeCheckView(seqno,email);
+//		if(likeCheckView == null) //좋아요/싫어요를 등록한 적이 없음 
+//				service.likeCheckRegistry(seqno, email, mylikecheck,
+//						mydislikecheck, likeDate, dislikeDate);
+//			else //좋아요/싫어요를 등록한 적이 있음
+//				service.likeCheckUpdate(seqno, email, mylikecheck,
+//						mydislikecheck, likeDate, dislikeDate); 
+//		
+//		long likeCnt = service.view(seqno).getLikecnt();
+//		long dislikeCnt = service.view(seqno).getDislikecnt();
+//		
+//		switch(checkCnt) {
+//		case 1: likeCnt--; break;
+//		case 2: likeCnt++; dislikeCnt--; break;
+//		case 3: likeCnt++; break;
+//		case 4: dislikeCnt--; break;
+//		case 5: likeCnt--; dislikeCnt++; break;
+//		case 6: dislikeCnt++; break;
+//		}
+//		
+//		MovieDTO board = MovieDTO.builder()
+//							.seqno(seqno)
+//							.likecnt(likeCnt)
+//							.dislikecnt(dislikeCnt)
+//							.build();
+	//		service.boardLikeUpdate(board);
+//		
+//		return "{\"likecnt\":\"" + likeCnt + "\",\"dislikecnt\": \"" + dislikeCnt + "\"}";
+//	}
 	
 	//댓글 처리
 	@ResponseBody

@@ -32,7 +32,8 @@ public class BoardServiceImpl implements BoardService {
 	//상품 상세 정보 보기
 	@Override
 	public MovieDTO view(Long seqno) throws Exception {
-		return movieRepository.findById(seqno).map(view -> new MovieDTO(view)).get();
+//		return movieRepository.findById(seqno).map(view -> new MovieDTO(view)).get();
+		return null;
 	}
 	
 	//게시물 조회수 증가
@@ -84,10 +85,10 @@ public class BoardServiceImpl implements BoardService {
 	
 	@Override
 	public void boardLikeUpdate(MovieDTO movie) throws Exception{
-		MovieEntity movieEntity = movieRepository.findById(movie.getSeqno()).get();
-		movieEntity.setLikecnt(movie.getLikecnt());
-		movieEntity.setDislikecnt(movie.getDislikecnt());
-		movieRepository.save(movieEntity);
+//		MovieEntity movieEntity = movieRepository.findById(movie.getSeqno()).get();
+//		movieEntity.setLikecnt(movie.getLikecnt());
+//		movieEntity.setDislikecnt(movie.getDislikecnt());
+//		movieRepository.save(movieEntity);
 	}
 
 	//댓글 목록 보기

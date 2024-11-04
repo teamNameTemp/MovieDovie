@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 
 import com.board.entity.DailyBoxOfficeEntity;
-import com.board.entity.DailyMovieEntity;
+import com.board.entity.MovieEntity;
 import com.board.entity.repository.DailyBoxOfficeRepository;
 import com.board.util.convertToMapper;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -63,7 +63,7 @@ public class MovieAPIService {
 
 	private List<Map<String, Object>> convertEntitiesToMaps(DailyBoxOfficeEntity daily, String posterOriginPath) {
 	    List<Map<String, Object>> movieDetailsList = new ArrayList<>();
-	    for (DailyMovieEntity movie : daily.getMovies()) {
+	    for (MovieEntity movie : daily.getMovies()) {
 	        Map<String, Object> movieMap = new HashMap<>();
 	        movieMap.put("rank", movie.getRank());
 	        movieMap.put("movieCd", movie.getMovieCd());
@@ -95,6 +95,7 @@ public class MovieAPIService {
 	            }
 	            
 				movie.put("showTm", getMovieInfo((String) movie.get("movieCd")).get("showTm"));
+				log.info(getMovieInfo((String)movie.get("movieCd")));
 	        } catch (Exception e) {
 	            log.error("Error fetching TMDB info for movie: " + movieNm, e);
 	        }
@@ -107,8 +108,8 @@ public class MovieAPIService {
 	    DailyBoxOfficeEntity dailyEntity = new DailyBoxOfficeEntity();
 	    dailyEntity.setDate(date);
 
-	    List<DailyMovieEntity> movieEntities = movieList.stream().map(movie -> {
-	    	DailyMovieEntity entity = new DailyMovieEntity();
+	    List<MovieEntity> movieEntities = movieList.stream().map(movie -> {
+	    	MovieEntity entity = new MovieEntity();
 	        entity.setRank((String) movie.get("rank"));
 	        entity.setMovieCd((String) movie.get("movieCd"));
 	        entity.setMovieNm((String) movie.get("movieNm"));
