@@ -94,6 +94,15 @@ const cal_selectedAmount = (itemAmountId) => {
 	
 }
 
+//전체 체크 박스 선택/취소 시 상품 가격 계산
+const cal_allSelectedAmount = () => {
+	
+	if(event.target.checked) totalItemAmount = cal_totalAmount();
+		else totalItemAmount = 0;
+	document.getElementById('selectedAmount').innerHTML = totalItemAmount.toLocaleString('ko-KR');
+	
+}
+
 //상품 전체 선택/해제
 const selectAll = (selectAll) => {
 	const checkboxes = document.getElementsByName('cartItems');
@@ -175,7 +184,7 @@ const cartManage = async (type) => {
 
 </script>
 
-<script src="/js/logout.js"></script>
+<script src="/logout.js"></script>
 	
 </head>
 <body onload = "cal_totalAmount()">
@@ -207,7 +216,6 @@ const cartManage = async (type) => {
 			  			<th><input type="checkbox" id="allCheck" onclick="selectAll(this)" onchange="cal_allSelectedAmount()"></th>
 			   			<th>상품이미지</th>
 			   			<th>상품명</th>
-			   			<th>제조사</th>
 			   			<th>상품단가</th>
 			   			<th>상품갯수</th>
 			   			<th>상품가격</th>
@@ -215,7 +223,7 @@ const cartManage = async (type) => {
 			
 			 		<tbody>
 						<tr th:each="list : ${list}"> <!-- ${list}에서 가져온 각 요소에 대해 반복하여 <tr> 태그를 생성 -->
-							<td><input type="checkbox" th:id="${'c' + list.cart_id}" class="cartItems" name="cartItems" th:value="${list.cart_id}" 
+							<td><input type="checkbox" th:id="${'c' + list.email}" class="cartItems" name="cartItems" th:value="${list.cart_id}" 
 								th:onchange='cal_selectedAmount([[${"a" + list.cart_id}]])' th:disabled="${list.p_stock} lt 1"></td>
 			  				<td><img class="p_image" th:src="@{'/p_img/' + ${list.p_stored_image}}" style="width:200px; height: auto"></td>
 			  				<td style="text-align:left;"><a id="hypertext" th:href="@{'/shop/pView?p_id=' + ${list.p_id}}" onMouseover='this.style.textDecoration="underline"'  
@@ -227,10 +235,6 @@ const cartManage = async (type) => {
 			  				<th:block th:if="${list.p_stock} gt 0">
 			  					<td><span th:id="${'p' + list.cart_id}">[[${#numbers.formatInteger(list.p_price,3,'COMMA')}]]</span>원</td>
 			  				</th:block>
-			  				<td><input type='button' th:onclick='count("plus",[[${"p" + list.cart_id}]],[[${"q"+ list.cart_id}]],[[${"a" + list.cart_id}]],[[${list.p_id}]],[[${"c" + list.cart_id}]])' value='+' th:disabled="${list.p_stock} lt 1">
-			  					<span th:id="${'q' + list.cart_id}">[[${list.cart_quantity}]]</span>
-			  					<input type='button' th:onclick='count("minus",[[${"p" + list.cart_id}]],[[${"q"+ list.cart_id}]],[[${"a" + list.cart_id}]],[[${list.p_id}]],[[${"c" + list.cart_id}]])' value='-' th:disabled="${list.p_stock} lt 1">
-			  				</td>
 			  				<th:block th:if="${list.p_stock} lt 1">
 			  					<td><span class="cartAmount" th:id="${'a' + list.cart_id}">0</span>원</td>
 			  				</th:block>
