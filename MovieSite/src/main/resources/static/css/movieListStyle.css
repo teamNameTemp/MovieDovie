@@ -1,9 +1,13 @@
 * {
+  box-sizing: border-box;
   margin: 0;
+  padding: 0
 }
 
 body {
-  font-family: "Roboto", sans-serif;
+  font-family: "Jua", sans-serif;
+  font-weight: 400;
+  font-style: normal;
 }
 
 .navbar {
@@ -20,7 +24,7 @@ body {
   padding: 0 50px;
   height: 100%;
   color: white;
-  font-family: "Sen", sans-serif;
+  font-family: "Jua", sans-serif;
 }
 
 .logo-container {
@@ -169,6 +173,11 @@ body {
   position: relative;
 }
 
+.jua-regular {
+  font-family: "Jua", sans-serif;
+  font-weight: 400;
+  font-style: normal;
+}
 .movie-list-item:hover .movie-list-item-img {
   transform: scale(1.2);
   margin: 0 30px;
@@ -275,38 +284,6 @@ body {
     }
 }
 
-.search-bar {
-  width: 220px;
-  height: 27px;
-  border-radius: 30%;
-
-  display: flex;
-  justify-content: left;
-  align-items: left;
-  z-index: 1;
-  opacity: 1;
-}
-.search-bar__input {
-  width: 220px;
-  border: none;
-  -webkit-appearance: none;
-  text-align: left;
-  margin-left: 10px;
-  overflow: auto;
-  z-index: -1;
-  font-size: 15px;
-}
-
-
-.search-bar__input:focus {
-  outline: none;
-  width: 300px;
-  text-align: left;
-}
-
-.fa-search {
-  font-size: 15px;
-}
 
 
 
@@ -431,7 +408,63 @@ a {
   display: block;
 }
 
+.search-box {
+  position: absolute;
+  top: 50%;
+  left: 29%;
+  transform: translate(0%, -50%);
+  height: 30px;
+  margin-left: -10px;
+  border-radius: 30px;
+  background-color:gray;
+  
+}
 
+.search-btn {
+  color: #EDEDED;
+  float: left;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: #949BA0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.search-box input::placeholder {
+    color: #c0c0c0;
+}
+
+
+.search-txt {
+  
+  float: center;
+  padding: 0;
+  background: none;
+  border: none;
+  outline: none;
+  color: white;
+  font-size: 15px;
+  line-height: 30px;
+  width: 0; /* 추가 */
+  transition: 0.5s; /* 추가 */
+  font-family: "Jua", sans-serif;
+  font-weight: 400;
+  font-style: normal;
+}
+
+.search-box:hover > form .search-txt {
+  width: 300px;
+}
+
+.search-box > form .search-txt:focus {
+    width: 300px;
+}
+
+.search-box:hover > form .search-btn {
+  background: #464E54;
+}
 
 
 

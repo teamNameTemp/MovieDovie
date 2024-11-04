@@ -1,7 +1,11 @@
-<html lang="en">
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
 
 
 <head>
+	<style>
+	@import url('https://fonts.googleapis.com/css2?family=Jua&display=swap');
+	</style>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -17,19 +21,27 @@
                 <h1 class="logo">Movie</h1>
             </div>
             <div class="menu-list">
-            	<div class="search-bar">
-          <i class="fas fa-search"></i>
-          <input class="search-bar__input" type="search" placeholder="검색" >
-        </div>
                 <ul class="menu-list">
                     <li class="menu-list-item active"><a href="#">홈</a></li>
                     <li class="menu-list-item"><a href="#">추천 영화</a></li>
                     <li class="menu-list-item"><a href="#">장르</a></li>
-                    <li class="menu-list-item"><a href="#">인기 영화</a></li>
-                    <li class="menu-list-item"><a href="#">인기 영화</a></li>              
-
+                    <li class="menu-list-item"><a href="#">인기 영화</a></li>         
                 </ul>
+              
+ 			  
+ 			  
+</div>
+      <div class="menu-list">
+            	<div class="search-box">
+  				<form action="." method="post">
+    			<input class="search-txt" type="text" placeholder="  작품, 배우, 게시글, 태그를 검색해보세요" >
+    			<button class="search-btn" type="submit">
+				  <i class="fas fa-search"></i>
+			  	</button>
+			  </form>    
+        </div>
             </div>
+            
           <div class="profile-container">
             
             <div class="dropdown">
@@ -77,7 +89,6 @@
             </div>
         </div>
         
-        </div>
     <div class="sidebar">
         <a style="text-decoration:none" href="#" class="left-menu-icon fas fa-home"></a>
         <a style="text-decoration:none" href="#" class="left-menu-icon fas fa-bookmark"></a>
@@ -87,77 +98,29 @@
     <div class="container">
         <div class="content-container">
             <div class="featured-content"
-                style="background: linear-gradient(to bottom, rgba(0,0,0,0), #151515), url('/img/f-1.jpg');">
-                <img class="featured-title" src="/img/f-t-1.png" alt="">
-                <p class="featured-desc">추천 영화 줄거리 입니다.</p>
-                <button class="featured-button">대여</button>
-                <button class="featured-button">찜</button>
+                style="background: linear-gradient(to bottom, rgba(0,0,0,0), #FFF), url('/img/PromotionBanner-001.png') center no-repeat; background-size: cover;">
+                <img class="featured-title" src="/img/PromotionBanner-001.png" alt="">
+                 <p class="featured-desc" style="color:#c92fb9">11월 빼빼로 데이 초특가 SALE EVENT!!!</p>
             </div>
             <div class="movie-list-container">
                 <h1 class="movie-list-title">일별 박스 오피스</h1>
-                <div class="movie-list-wrapper">
-                    <div class="movie-list">
-                        <div class="movie-list-item">
-                            <img class="movie-list-item-img" src="/img/1.jpeg" alt="">
-                            <span class="movie-list-item-title">Her</span>
-                            <p class="movie-list-item-desc">Lorem ipsum dolor sit amet consectetur adipisicing elit. At
-                                hic fugit similique accusantium.</p>
-                            <button class="featured-button">대여</button>
-                			<button class="featured-button">찜</button>
-                        </div>
-                        <div class="movie-list-item">
-                            <img class="movie-list-item-img" src="/img/2.jpeg" alt="">
-                            <span class="movie-list-item-title">Star Wars</span>
-                            <p class="movie-list-item-desc">Lorem ipsum dolor sit amet consectetur adipisicing elit. At
-                                hic fugit similique accusantium.</p>
-                            <button class="featured-button">대여</button>
-                			<button class="featured-button">찜</button>
-                        </div>
-                        <div class="movie-list-item">
-                            <img class="movie-list-item-img" src="/img/3.jpg" alt="">
-                            <span class="movie-list-item-title">Storm</span>
-                            <p class="movie-list-item-desc">Lorem ipsum dolor sit amet consectetur adipisicing elit. At
-                                hic fugit similique accusantium.</p>
-                            <button class="featured-button">대여</button>
-                			<button class="featured-button">찜</button>
-                        </div>
-                        <div class="movie-list-item">
-                            <img class="movie-list-item-img" src="/img/4.jpg" alt="">
-                            <span class="movie-list-item-title">1917</span>
-                            <p class="movie-list-item-desc">Lorem ipsum dolor sit amet consectetur adipisicing elit. At
-                                hic fugit similique accusantium.</p>
-                            <button class="featured-button">대여</button>
-                			<button class="featured-button">찜</button>
-                        </div>
-                        <div class="movie-list-item">
-                            <img class="movie-list-item-img" src="/img/5.jpg" alt="">
-                            <span class="movie-list-item-title">Avengers</span>
-                            <p class="movie-list-item-desc">Lorem ipsum dolor sit amet consectetur adipisicing elit. At
-                                hic fugit similique accusantium.</p>
-                            <button class="featured-button">대여</button>
-                			<button class="featured-button">찜</button>
-                        </div>
-                        <div class="movie-list-item">
-                            <img class="movie-list-item-img" src="/img/6.jpg" alt="">
-                            <span class="movie-list-item-title">Her</span>
-                            <p class="movie-list-item-desc">Lorem ipsum dolor sit amet consectetur adipisicing elit. At
-                                hic fugit similique accusantium.</p>
-                           <button class="featured-button">대여</button>
-                			<button class="featured-button">찜</button>
-                        </div>
-                        <div class="movie-list-item">
-                            <img class="movie-list-item-img" src="/img/7.jpg" alt="">
-                            <span class="movie-list-item-title">Her</span>
-                            <p class="movie-list-item-desc">Lorem ipsum dolor sit amet consectetur adipisicing elit. At
-                                hic fugit similique accusantium.</p>
-                            <button class="featured-button">대여</button>
-                			<button class="featured-button">찜</button>
-                            
-                        </div>
-                    </div>
-                    <i class="fas fa-chevron-right arrow"></i>
-                </div>
-            </div>
+                <!-- 여기서
+				<div class="movie-list-wrapper">
+					<div class="movie-list">
+						<div class="movie-list-item" th:each="movie : ${dailyMovies}">
+                        이미지 클릭 시 상세 페이지로 JS 작성 onclick="javescript()"
+                        controller에서 post로 응답받고 RequestParam 영화이름이나 ID값 받아서 DailyMovieEntity 값 연동
+                        그 후 상세정보 나열
+							<img class="movie-list-item-img" th:src="${movie.posterPath}"
+								alt=""> <span class="movie-list-item-title"
+								th:text="${movie.movieNm}"></span>
+							<p class="movie-list-item-desc" th:text="${movie.overview}"></p>
+						</div>
+					</div>
+					<i class="fas fa-chevron-right arrow"></i>
+				</div>
+                 -->
+			</div>
             <div class="movie-list-container">
                 <h1 class="movie-list-title">회원이 선택한 영화!</h1>
                 <div class="movie-list-wrapper">
@@ -167,69 +130,60 @@
                             <span class="movie-list-item-title">Her</span>
                             <p class="movie-list-item-desc">Lorem ipsum dolor sit amet consectetur adipisicing elit. At
                                 hic fugit similique accusantium.</p>
-                            <button class="featured-button">대여</button>
-                			<button class="featured-button">찜</button>
+                            
                         </div>
                         <div class="movie-list-item">
                             <img class="movie-list-item-img" src="/img/9.jpg" alt="">
                             <span class="movie-list-item-title">Her</span>
                             <p class="movie-list-item-desc">Lorem ipsum dolor sit amet consectetur adipisicing elit. At
                                 hic fugit similique accusantium.</p>
-                            <button class="featured-button">대여</button>
-                			<button class="featured-button">찜</button>
+                            
                         </div>
                         <div class="movie-list-item">
                             <img class="movie-list-item-img" src="/img/10.jpg" alt="">
                             <span class="movie-list-item-title">Her</span>
                             <p class="movie-list-item-desc">Lorem ipsum dolor sit amet consectetur adipisicing elit. At
                                 hic fugit similique accusantium.</p>
-                            <button class="featured-button">대여</button>
-                			<button class="featured-button">찜</button>
+                            
                         </div>
                         <div class="movie-list-item">
                             <img class="movie-list-item-img" src="/img/11.jpg" alt="">
                             <span class="movie-list-item-title">Her</span>
                             <p class="movie-list-item-desc">Lorem ipsum dolor sit amet consectetur adipisicing elit. At
                                 hic fugit similique accusantium.</p>
-                            <button class="featured-button">대여</button>
-                			<button class="featured-button">찜</button>
+                            
                         </div>
                         <div class="movie-list-item">
                             <img class="movie-list-item-img" src="/img/12.jpg" alt="">
                             <span class="movie-list-item-title">Her</span>
                             <p class="movie-list-item-desc">Lorem ipsum dolor sit amet consectetur adipisicing elit. At
                                 hic fugit similique accusantium.</p>
-                            <button class="featured-button">대여</button>
-                			<button class="featured-button">찜</button>
+                            
                         </div>
                         <div class="movie-list-item">
                             <img class="movie-list-item-img" src="/img/1.jpg" alt="">
                             <span class="movie-list-item-title">Her</span>
                             <p class="movie-list-item-desc">Lorem ipsum dolor sit amet consectetur adipisicing elit. At
                                 hic fugit similique accusantium.</p>
-                            <button class="featured-button">대여</button>
-                			<button class="featured-button">찜</button>
+                            
                         </div>
                         <div class="movie-list-item">
                             <img class="movie-list-item-img" src="/img/1.jpg" alt="">
                             <span class="movie-list-item-title">Her</span>
                             <p class="movie-list-item-desc">Lorem ipsum dolor sit amet consectetur adipisicing elit. At
                                 hic fugit similique accusantium.</p>
-                            <button class="featured-button">대여</button>
-                			<button class="featured-button">찜</button>
+                            
                         </div>
                     </div>
                     <i class="fas fa-chevron-right arrow"></i>
                 </div>
             </div>
             <div class="featured-content"
-                style="background: linear-gradient(to bottom, rgba(0,0,0,0), #151515), url('/img/f-2.jpg');">
-                <img class="featured-title" src="/img/f-t-2.png" alt="">
-                <p class="featured-desc">Lorem ipsum, dolor sit amet consectetur adipisicing elit. Iusto illo dolor
-                    deserunt nam assumenda ipsa eligendi dolore, ipsum id fugiat quo enim impedit, laboriosam omnis
-                    minima voluptatibus incidunt. Accusamus, provident.</p>
-                <button class="featured-button">대여</button>
-                <button class="featured-button">찜</button>
+                style="background:url('/img/PromotionBanner-001.png') center no-repeat; background-size: cover;">
+                <img class="featured-title" src="/img/PromotionBanner-001.png" alt="">
+                
+
+                
             </div>
             <div class="movie-list-container">
                 <h1 class="movie-list-title">좋아요 순</h1>
@@ -240,56 +194,49 @@
                             <span class="movie-list-item-title">Her</span>
                             <p class="movie-list-item-desc">Lorem ipsum dolor sit amet consectetur adipisicing elit. At
                                 hic fugit similique accusantium.</p>
-                            <button class="featured-button">대여</button>
-                			<button class="featured-button">찜</button>
+                            
                         </div>
                         <div class="movie-list-item">
                             <img class="movie-list-item-img" src="/img/2.jpeg" alt="">
                             <span class="movie-list-item-title">Her</span>
                             <p class="movie-list-item-desc">Lorem ipsum dolor sit amet consectetur adipisicing elit. At
                                 hic fugit similique accusantium.</p>
-                            <button class="featured-button">대여</button>
-                			<button class="featured-button">찜</button>
+                            
                         </div>
                         <div class="movie-list-item">
                             <img class="movie-list-item-img" src="/img/15.jpg" alt="">
                             <span class="movie-list-item-title">Her</span>
                             <p class="movie-list-item-desc">Lorem ipsum dolor sit amet consectetur adipisicing elit. At
                                 hic fugit similique accusantium.</p>
-                            <button class="featured-button">대여</button>
-                			<button class="featured-button">찜</button>
+                            
                         </div>
                         <div class="movie-list-item">
                             <img class="movie-list-item-img" src="/img/3.jpg" alt="">
                             <span class="movie-list-item-title">Her</span>
                             <p class="movie-list-item-desc">Lorem ipsum dolor sit amet consectetur adipisicing elit. At
                                 hic fugit similique accusantium.</p>
-                            <button class="featured-button">대여</button>
-                			<button class="featured-button">찜</button>
+                            
                         </div>
                         <div class="movie-list-item">
                             <img class="movie-list-item-img" src="/img/4.jpg" alt="">
                             <span class="movie-list-item-title">Her</span>
                             <p class="movie-list-item-desc">Lorem ipsum dolor sit amet consectetur adipisicing elit. At
                                 hic fugit similique accusantium.</p>
-                            <button class="featured-button">대여</button>
-                			<button class="featured-button">찜</button>
+                       
                         </div>
                         <div class="movie-list-item">
                             <img class="movie-list-item-img" src="/img/5.jpg" alt="">
                             <span class="movie-list-item-title">Her</span>
                             <p class="movie-list-item-desc">Lorem ipsum dolor sit amet consectetur adipisicing elit. At
                                 hic fugit similique accusantium.</p>
-                            <button class="featured-button">대여</button>
-                			<button class="featured-button">찜</button>
+                           
                         </div>
                         <div class="movie-list-item">
                             <img class="movie-list-item-img" src="/img/1.jpg" alt="">
                             <span class="movie-list-item-title">Her</span>
                             <p class="movie-list-item-desc">Lorem ipsum dolor sit amet consectetur adipisicing elit. At
                                 hic fugit similique accusantium.</p>
-                            <button class="featured-button">대여</button>
-                			<button class="featured-button">찜</button>
+                       
                         </div>
                     </div>
                     <i class="fas fa-chevron-right arrow"></i>
@@ -304,56 +251,49 @@
                             <span class="movie-list-item-title">Her</span>
                             <p class="movie-list-item-desc">Lorem ipsum dolor sit amet consectetur adipisicing elit. At
                                 hic fugit similique accusantium.</p>
-                            <button class="featured-button">대여</button>
-                			<button class="featured-button">찜</button>
+                            
                         </div>
                         <div class="movie-list-item">
                             <img class="movie-list-item-img" src="/img/18.jpg" alt="">
                             <span class="movie-list-item-title">Her</span>
                             <p class="movie-list-item-desc">Lorem ipsum dolor sit amet consectetur adipisicing elit. At
                                 hic fugit similique accusantium.</p>
-                            <button class="featured-button">대여</button>
-                			<button class="featured-button">찜</button>
+                            
                         </div>
                         <div class="movie-list-item">
                             <img class="movie-list-item-img" src="/img/19.jpg" alt="">
                             <span class="movie-list-item-title">Her</span>
                             <p class="movie-list-item-desc">Lorem ipsum dolor sit amet consectetur adipisicing elit. At
                                 hic fugit similique accusantium.</p>
-                            <button class="featured-button">대여</button>
-                			<button class="featured-button">찜</button>
+                            
                         </div>
                         <div class="movie-list-item">
                             <img class="movie-list-item-img" src="/img/7.jpg" alt="">
                             <span class="movie-list-item-title">Her</span>
                             <p class="movie-list-item-desc">Lorem ipsum dolor sit amet consectetur adipisicing elit. At
                                 hic fugit similique accusantium.</p>
-                            <button class="featured-button">대여</button>
-                			<button class="featured-button">찜</button>
+                            
                         </div>
                         <div class="movie-list-item">
                             <img class="movie-list-item-img" src="/img/1.jpg" alt="">
                             <span class="movie-list-item-title">Her</span>
                             <p class="movie-list-item-desc">Lorem ipsum dolor sit amet consectetur adipisicing elit. At
                                 hic fugit similique accusantium.</p>
-                            <button class="featured-button">대여</button>
-                			<button class="featured-button">찜</button>
+                            
                         </div>
                         <div class="movie-list-item">
                             <img class="movie-list-item-img" src="/img/1.jpg" alt="">
                             <span class="movie-list-item-title">Her</span>
                             <p class="movie-list-item-desc">Lorem ipsum dolor sit amet consectetur adipisicing elit. At
                                 hic fugit similique accusantium.</p>
-                            <button class="featured-button">대여</button>
-                			<button class="featured-button">찜</button>
+                            
                         </div>
                         <div class="movie-list-item">
                             <img class="movie-list-item-img" src="/img/1.jpg" alt="">
                             <span class="movie-list-item-title">Her</span>
                             <p class="movie-list-item-desc">Lorem ipsum dolor sit amet consectetur adipisicing elit. At
                                 hic fugit similique accusantium.</p>
-                            <button class="featured-button">대여</button>
-                			<button class="featured-button">찜</button>
+                            
                         </div>
                     </div>
                     <i class="fas fa-chevron-right arrow"></i>
@@ -368,56 +308,49 @@
                             <span class="movie-list-item-title">Her</span>
                             <p class="movie-list-item-desc">Lorem ipsum dolor sit amet consectetur adipisicing elit. At
                                 hic fugit similique accusantium.</p>
-                            <button class="featured-button">대여</button>
-                			<button class="featured-button">찜</button>
+                            
                         </div>
                         <div class="movie-list-item">
                             <img class="movie-list-item-img" src="/img/18.jpg" alt="">
                             <span class="movie-list-item-title">Her</span>
                             <p class="movie-list-item-desc">Lorem ipsum dolor sit amet consectetur adipisicing elit. At
                                 hic fugit similique accusantium.</p>
-                            <button class="featured-button">대여</button>
-                			<button class="featured-button">찜</button>
+                           
                         </div>
                         <div class="movie-list-item">
                             <img class="movie-list-item-img" src="/img/19.jpg" alt="">
                             <span class="movie-list-item-title">Her</span>
                             <p class="movie-list-item-desc">Lorem ipsum dolor sit amet consectetur adipisicing elit. At
                                 hic fugit similique accusantium.</p>
-                            <button class="featured-button">대여</button>
-                			<button class="featured-button">찜</button>
+                            
                         </div>
                         <div class="movie-list-item">
                             <img class="movie-list-item-img" src="/img/7.jpg" alt="">
                             <span class="movie-list-item-title">Her</span>
                             <p class="movie-list-item-desc">Lorem ipsum dolor sit amet consectetur adipisicing elit. At
                                 hic fugit similique accusantium.</p>
-                            <button class="featured-button">대여</button>
-                			<button class="featured-button">찜</button>
+                           
                         </div>
                         <div class="movie-list-item">
                             <img class="movie-list-item-img" src="/img/1.jpg" alt="">
                             <span class="movie-list-item-title">Her</span>
                             <p class="movie-list-item-desc">Lorem ipsum dolor sit amet consectetur adipisicing elit. At
                                 hic fugit similique accusantium.</p>
-                            <button class="featured-button">대여</button>
-                			<button class="featured-button">찜</button>
+                            
                         </div>
                         <div class="movie-list-item">
                             <img class="movie-list-item-img" src="/img/1.jpg" alt="">
                             <span class="movie-list-item-title">Her</span>
                             <p class="movie-list-item-desc">Lorem ipsum dolor sit amet consectetur adipisicing elit. At
                                 hic fugit similique accusantium.</p>
-                            <button class="featured-button">대여</button>
-                			<button class="featured-button">찜</button>
+                            
                         </div>
                         <div class="movie-list-item">
                             <img class="movie-list-item-img" src="/img/1.jpg" alt="">
                             <span class="movie-list-item-title">Her</span>
                             <p class="movie-list-item-desc">Lorem ipsum dolor sit amet consectetur adipisicing elit. At
                                 hic fugit similique accusantium.</p>
-                            <button class="featured-button">대여</button>
-                			<button class="featured-button">찜</button>
+                            
                         </div>
                     </div>
                     <i class="fas fa-chevron-right arrow"></i>
@@ -433,56 +366,49 @@
                             <span class="movie-list-item-title">Her</span>
                             <p class="movie-list-item-desc">Lorem ipsum dolor sit amet consectetur adipisicing elit. At
                                 hic fugit similique accusantium.</p>
-                            <button class="featured-button">대여</button>
-                			<button class="featured-button">찜</button>
+                            
                         </div>
                         <div class="movie-list-item">
                             <img class="movie-list-item-img" src="/img/18.jpg" alt="">
                             <span class="movie-list-item-title">Her</span>
                             <p class="movie-list-item-desc">Lorem ipsum dolor sit amet consectetur adipisicing elit. At
                                 hic fugit similique accusantium.</p>
-                            <button class="featured-button">대여</button>
-                			<button class="featured-button">찜</button>
+                            
                         </div>
                         <div class="movie-list-item">
                             <img class="movie-list-item-img" src="/img/19.jpg" alt="">
                             <span class="movie-list-item-title">Her</span>
                             <p class="movie-list-item-desc">Lorem ipsum dolor sit amet consectetur adipisicing elit. At
                                 hic fugit similique accusantium.</p>
-                            <button class="featured-button">대여</button>
-                			<button class="featured-button">찜</button>
+                            
                         </div>
                         <div class="movie-list-item">
                             <img class="movie-list-item-img" src="/img/7.jpg" alt="">
                             <span class="movie-list-item-title">Her</span>
                             <p class="movie-list-item-desc">Lorem ipsum dolor sit amet consectetur adipisicing elit. At
                                 hic fugit similique accusantium.</p>
-                            <button class="featured-button">대여</button>
-                			<button class="featured-button">찜</button>
+                            
                         </div>
                         <div class="movie-list-item">
                             <img class="movie-list-item-img" src="/img/1.jpg" alt="">
                             <span class="movie-list-item-title">Her</span>
                             <p class="movie-list-item-desc">Lorem ipsum dolor sit amet consectetur adipisicing elit. At
                                 hic fugit similique accusantium.</p>
-                            <button class="featured-button">대여</button>
-                			<button class="featured-button">찜</button>
+                            
                         </div>
                         <div class="movie-list-item">
                             <img class="movie-list-item-img" src="/img/1.jpg" alt="">
                             <span class="movie-list-item-title">Her</span>
                             <p class="movie-list-item-desc">Lorem ipsum dolor sit amet consectetur adipisicing elit. At
                                 hic fugit similique accusantium.</p>
-                            <button class="featured-button">대여</button>
-                			<button class="featured-button">찜</button>
+                            
                         </div>
                         <div class="movie-list-item">
                             <img class="movie-list-item-img" src="/img/1.jpg" alt="">
                             <span class="movie-list-item-title">Her</span>
                             <p class="movie-list-item-desc">Lorem ipsum dolor sit amet consectetur adipisicing elit. At
                                 hic fugit similique accusantium.</p>
-                            <button class="featured-button">대여</button>
-                			<button class="featured-button">찜</button>
+                            
                         </div>
                     </div>
                     <i class="fas fa-chevron-right arrow"></i>
@@ -491,8 +417,8 @@
             
             
             
-            <div class="movie-list-container">
-            <h1 class="movie-list-title">관리자가 등록한 영화</h1>
+            <div class="movie-list-container" style="background:url('/img/admin-001.png') center no-repeat; background-size: cover;">
+            <h1 class="movie-list-title" style=color:#8756b0>관리자가 등록한 영화</h1>
                 <div class="movie-list-wrapper">
                     <div class="movie-list">
                         <div class="movie-list-item">
@@ -500,56 +426,49 @@
                             <span class="movie-list-item-title">Her</span>
                             <p class="movie-list-item-desc">Lorem ipsum dolor sit amet consectetur adipisicing elit. At
                                 hic fugit similique accusantium.</p>
-                            <button class="featured-button">대여</button>
-                			<button class="featured-button">찜</button>
+                            
                         </div>
                         <div class="movie-list-item">
                             <img class="movie-list-item-img" src="/img/18.jpg" alt="">
                             <span class="movie-list-item-title">Her</span>
                             <p class="movie-list-item-desc">Lorem ipsum dolor sit amet consectetur adipisicing elit. At
                                 hic fugit similique accusantium.</p>
-                            <button class="featured-button">대여</button>
-                			<button class="featured-button">찜</button>
+                            
                         </div>
                         <div class="movie-list-item">
                             <img class="movie-list-item-img" src="/img/19.jpg" alt="">
                             <span class="movie-list-item-title">Her</span>
                             <p class="movie-list-item-desc">Lorem ipsum dolor sit amet consectetur adipisicing elit. At
                                 hic fugit similique accusantium.</p>
-                            <button class="featured-button">대여</button>
-                			<button class="featured-button">찜</button>
+                           
                         </div>
                         <div class="movie-list-item">
                             <img class="movie-list-item-img" src="/img/7.jpg" alt="">
                             <span class="movie-list-item-title">Her</span>
                             <p class="movie-list-item-desc">Lorem ipsum dolor sit amet consectetur adipisicing elit. At
                                 hic fugit similique accusantium.</p>
-                            <button class="featured-button">대여</button>
-                			<button class="featured-button">찜</button>
+                            
                         </div>
                         <div class="movie-list-item">
                             <img class="movie-list-item-img" src="/img/1.jpg" alt="">
                             <span class="movie-list-item-title">Her</span>
                             <p class="movie-list-item-desc">Lorem ipsum dolor sit amet consectetur adipisicing elit. At
                                 hic fugit similique accusantium.</p>
-                            <button class="featured-button">대여</button>
-                			<button class="featured-button">찜</button>
+                            
                         </div>
                         <div class="movie-list-item">
                             <img class="movie-list-item-img" src="/img/1.jpg" alt="">
                             <span class="movie-list-item-title">Her</span>
                             <p class="movie-list-item-desc">Lorem ipsum dolor sit amet consectetur adipisicing elit. At
                                 hic fugit similique accusantium.</p>
-                            <button class="featured-button">대여</button>
-                			<button class="featured-button">찜</button>
+                            
                         </div>
                         <div class="movie-list-item">
                             <img class="movie-list-item-img" src="/img/1.jpg" alt="">
                             <span class="movie-list-item-title">Her</span>
                             <p class="movie-list-item-desc">Lorem ipsum dolor sit amet consectetur adipisicing elit. At
                                 hic fugit similique accusantium.</p>
-                            <button class="featured-button">대여</button>
-                			<button class="featured-button">찜</button>
+                            
                         </div>
                     </div>
                     <i class="fas fa-chevron-right arrow"></i>
