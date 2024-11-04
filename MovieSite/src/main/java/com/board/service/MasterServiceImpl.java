@@ -136,7 +136,7 @@ public class MasterServiceImpl implements MasterService{
             long maxDay = LocalDateTime.of(2010, 12, 31, 23, 59).atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
             long randomTime = minDay + (long)(random.nextDouble() * (maxDay - minDay));
             LocalDateTime birth = LocalDateTime.ofInstant(new Date(randomTime).toInstant(), ZoneId.systemDefault());
-            member.setBirth(birth); // 생일 설정
+//            member.setBirth(birth); // 생일 설정
             
             member.setTelno("010-" + (random.nextInt(9000) + 1000) + "-" + (random.nextInt(9000) + 1000));
             
@@ -148,8 +148,8 @@ public class MasterServiceImpl implements MasterService{
             member.setRegdate(regdate); // 회원 가입일 설정
             
             member.setRole("USER");
-            member.setLogseqno((long) i);
-            member.setGenreseqno((long) i);
+//            member.setLogseqno((long) i);
+//            member.setGenreseqno((long) i);
 
             members.add(member);
         }

@@ -2,6 +2,7 @@ package com.board.entity.movie;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.DynamicInsert;
@@ -29,17 +30,13 @@ import lombok.Setter;
 @Setter
 @Entity(name = "movie")
 @Table(name = "jpa_movie")
-@Builder
 @DynamicInsert
 public class MovieEntity {
-
 	@Id
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator="MOVIE_SEQ")
 	@SequenceGenerator(name="MOVIE_SEQ", sequenceName = "tbl_movie_seq", initialValue = 1, allocationSize = 1)
 	private long seqno;
 	
-	private Long id;
-
 	// 영화코드
 	@Column(name = "moviecd", nullable = false)
 	private String movieCd;
@@ -81,8 +78,8 @@ public class MovieEntity {
 
 	@ManyToMany(cascade = CascadeType.ALL)
 	@JoinTable(name = "movie_actor", 
-	joinColumns = @JoinColumn(name = "movie_id"), 
-	inverseJoinColumns = @JoinColumn(name = "actor_id"))
+	joinColumns = @JoinColumn(name = "movie_id", nullable=true), 
+	inverseJoinColumns = @JoinColumn(name = "actor_id",nullable=true))
 	private List<ActorEntity> actors = new ArrayList();
 
 	// 개봉일
@@ -100,10 +97,6 @@ public class MovieEntity {
 	// 상영시간
 	@Column(name = "showtime", nullable = true)
 	private String showtime;
-
-	// tmdbid
-	@Column(name = "tmdb_id", nullable = true)
-	private Integer tmdbId;
 
 	@ManyToMany(cascade = CascadeType.ALL)
 	@JoinTable(name = "movie_director", 
