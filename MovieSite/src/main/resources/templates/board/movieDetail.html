@@ -5,16 +5,23 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="/css/movieDetailStyle.css">
-    <th:block th:replace="/fragments/header::header">
+    <th:block th:replace="/fragments/header::header"></th:block>
 
     <title>영화 상세</title>
 
 <script>
 
-	//화면 렌더링 이후 발생할 이벤트에서 사용될 광역 변수 설정
-	//var number = 1;
-	//var totalPrice = parseInt('[[${view.p_price}]]'); //가격 아직 없음
-	//var price = parseInt('[[${view.p_price}]]');
+	// 로그인 체크 함수
+	function checkLogin() {
+		const email = '[[${session.email}]]';
+		if (!email) {
+			if (confirm('로그인이 필요한 서비스입니다.\n로그인 페이지로 이동하시겠습니까?')) {
+				window.location.href = '/member/login';  // 로그인 페이지 URL
+			}
+			return false;
+		}
+		return true;
+	}
 	
 	//로그아웃 처리
 	const logout = () => {
@@ -29,42 +36,44 @@
 	}
 */	
 	//장바구니에 상품 담기
-	const cart = async (email, seqno) => { //? movieseqno from tbl_rent
-
-		//number += pCartQuantity; //선택한 상품 갯수에다가 기존 장바구니에 담겨져 있는 이 상품의 갯수를 더한다 
-		
-		if(email === '' || email === null) { //논리적 or, 둘중하나만 참이면..true
-			alert("로그인 이후 이용할 수 있는 서비스입니다.");
-			return;
-		}
-
-		await fetch('/board/Cart',{
-			  method: "POST",
-			  headers: {
-			    "Content-Type": "application/json", //JSON 형식의 데이터를 보낸다는 것을 서버에 알립
-			  },
-			  body: JSON.stringify({ // 장바구니에 추가할 상품에 대한 정보를 JSON 형식으로 포함
-					cart_email: email, //from TBL_RENT
-					seqno: seqno, //from TBL_MOVIE
-			  }),				
-			}).then((response)=> response.text())
-				.then((data) => {
-					if(data != '' || data != null){
-						alert("장바구니에 상품을 넣어 두었습니다.");
-					} else {
-						alert("시스템 장애로 장바구니 담기가 실패했습니다.");		
-					}
-			}).catch((error)=> {				
-				console.log("error = " + error);
+	const cart = async (email, movieseqno) => {
+		if (!checkLogin()) return;
+		try {
+			const csrfToken = document.querySelector('meta[name="_csrf"]').content;
+			const response = await fetch('/board/Cart', {
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json",
+					"X-CSRF-TOKEN": csrfToken
+				},
+				body: JSON.stringify({ 
+					cart_email: email,
+					movieseqno: movieseqno,
+				}),              
 			});
-		
+			
+			if (!response.ok) {
+				throw new Error(`HTTP error! status: ${response.status}`);
+			}
+			
+			const data = await response.text();
+			if (!data) {
+				throw new Error('응답 데이터가 없습니다.');
+			}
+			
+			alert("장바구니에 상품을 담았습니다.");
+		} catch (error) {
+			console.error("장바구니 담기 실패:", error);
+			alert("장바구니 담기에 실패했습니다. 다시 시도해주세요.");
+		}
 	}
 
 	//관심상품 
 	const likeCheck = async (type,email) => {
 		
-		//재고가 0이면 장바구니 담기 버튼 비활성화 --> 관심상품 관리와 상관 없음
-		const stock = parseInt(1);
+		//재고가 0이면 장바구니 담기 버튼 비활성화: 관심상품 관리와 상관 없음
+		
+		const stock = parseInt('[[${view.p_stock}]]');
 		const btnCart = document.getElementById('btn_cart');  
 		
 		if(stock < 1) {
@@ -104,10 +113,8 @@
 			}).catch((error)=> {				
 				console.log("error = " + error);
 			});
-		
-		
 	}
-	
+
 </script>
 
 <script src="/js/logout.js"></script>
@@ -128,80 +135,68 @@
 	        	</div>
 	        	
 	            <div> 
-	            	<input type="button" class="featured-button" value="장바구니 담기 | 가격" >
-	            	
-
+	            	<input type="button" class="featured-button" value="장바구니 담기 | 가격" th:onclick="cart([[${session.email}]],[[${view.seqno}]])">
 	            </div>
 			</div>
-				<br><br><br><br><br><br><br><br><br><br>
 
-	       <div class="featured-desc">
-    <h2>작품정보</h2>
-    <p>줄거리</p>
-    <hr>
-    <div class="movie-details">
-        <div class="detail-row">
-        <div th:each="director : movie.directors">
-            <span class="detail-label"></span>
-            <span class="detail-value" ></span>
-        </div>
-        </div>
-        <div class="detail-row">
-            <span class="detail-label">장르:</span>
-            <span class="detail-value" ></span>
-        </div>
-        <div class="detail-row">
-            <span class="detail-label">개봉일:</span>
-            <span class="detail-value" ></span>
-        </div>
-        <div class="detail-row">
-            <span class="detail-label" th:text="${movie.watchGradeNm}"></span>
-            <span class="detail-value"></span>
-        </div>
-        <div class="detail-row">
-            <span class="detail-label">러닝타임:</span>
-            <span class="detail-value" ></span>
-        </div>
-        <div class="detail-row">
-            <span class="detail-label">제작 국가:</span>
-            <span class="detail-value" ></span>
-        </div>
-        <div class="detail-row">
-            <span class="detail-label">제작연도:</span>
-            <span class="detail-value" ></span>
-        </div>
-    </div>
-</div>
+	        <div class="featured-desc" style="margin-left: 100px;">
+	            <h2 style="text-align: left;">작품정보</h2> <br>
+	            <p style="text-align: left;">[[${view.summary}]]</p>
+	            <hr><br>
+	            <div class="row">
+	                <div class="col">
+						<th><b>감독</b></th>
+	                    <td>[[${view.directorName}]]</td>
+	                </div>
+	                <div class="col">	                    						
+	                	<th><b>장르</b></th>
+	                    <td>[[${view.genres}]]</td>
+	                </div>
+	                <div class="col">
+	                    <th><b>개봉일</b></th>
+	                    <td>[[${view.titleen}]]</td>
+	                </div>
+	                <div class="col">
+	                    <th><b>연령등급</b></th>
+	                    <td>[[${view.genres}]]</td>
+	                </div>
+	                <div class="col">
+	                    <th><b>러닝타임</b></th>
+	                    <td>[[${view.showtime}]]</td>
+	                </div>
+	                <div class="col">
+	                    <th><b>제작 국가</b></th>
+	                    <td>[[${view.nationalt}]]</td>
+	                </div>
+	                <div class="col">
+	                    <th><b>제작연도</b></th>
+	                    <td>[[${view.prodtyear}]]</td>
+	                </div>
+	            </div>
+	        </div>
 	        <br><br>
 	
 	        <div>
 	            <h2 class="featured-desc">출연</h2>
 	            <div class="movie-list-wrapper">
 		            <div class="movie-list">
-		                <div class="movie-list-item-img">
-		                    <img src="C:\Users\gladius\Desktop\MovieSite\MovieSite\src\main\resources\static\images\20231202_163527.jpg" alt="director" width= 100%;>
-		                    <h4>director_name</h4>
-		                </div>
-		                <div class="movie-list-item-img">
-		                    <img src="C:\Users\gladius\Desktop\MovieSite\MovieSite\src\main\resources\static\images\20231202_163532.jpg" alt="actor1" width= 100%;>
-		                    <h4>actor1_name</h4> 
-		                </div>
-		                <div class="movie-list-item-img">
-		                    <img src="C:\Users\gladius\Desktop\MovieSite\MovieSite\src\main\resources\static\images\20231202_163730.jpg" alt="actor2" width= 100%;>
-		                    <h4>actor2_name</h4>
-		                </div>
-		                <div class="movie-list-item-img">
-		                    <img src="C:\Users\gladius\Desktop\MovieSite\MovieSite\src\main\resources\static\images\20231202_163743.jpg#" alt="actor3" width= 100%;>
-		                    <h4>actor3_name</h4>
-		                </div>
-		                <div class="movie-list-item-img">
-		                    <img src="C:\Users\gladius\Desktop\MovieSite\MovieSite\src\main\resources\static\images\20231202_163808.jpg" alt="actor4" width= 100%;>
-		                    <h4>actor4_name</h4>
-		                </div>
-		                <div class="movie-list-item-img">
-		                    <img src="C:\Users\gladius\Desktop\MovieSite\MovieSite\src\main\resources\static\images\20231202_163902.jpg" alt="actor5" width= 100%;>
-		                    <h4>actor5_name</h4>
-		                </div>
+						<!-- 배우 목록을 반복 처리 -->
+						<div th:each="actor : ${actors}" class="movie-list-item-img">
+							<!-- 이미지 처리 -->
+							<img th:src="@{/images/actors/{name}.jpg(name=${actor.imageName})}" 
+								 th:alt="${actor.name}"
+								 th:onerror="this.src='/images/default-actor.jpg'"
+								 loading="lazy"
+								 class="actor-image">
+							
+							<!-- 배우 이름 -->
+							<h4 th:text="${actor.name}" class="actor-name"></h4>
+							
+							<!-- 배우 역할 (있는 경우) -->
+							<p th:if="${actor.role != null}" 
+							   th:text="${actor.role}" 
+							   class="actor-role"></p>
+						</div>
 		            </div>
 	            </div>
 	        </div>
@@ -209,14 +204,26 @@
 		    <!--리뷰-->
 		    <div>
 		        <h2 class="featured-desc">리뷰</h2> <br>
-				<button class="featured-button">
-					<img width="28" height="28" src="https://static.kinolights.com/icon/legacy/ic-smile-face-disable.svg" alt="smile face">
-					<span>좋아요</span>
+				<button class="featured-button" 
+						aria-label="좋아요 버튼"
+						role="button"
+						tabindex="0">
+					<img width="28" height="28" 
+						 th:src="${userLiked ? '/images/smile-face-active.svg' : '/images/smile-face-disable.svg'}" 
+						 alt="좋아요 아이콘"
+						 aria-hidden="true">
+					<span class="button-text">좋아요</span>
 				</button>
-				<span class="featured-desc" style="text-align: right;">view.likecnt vs view.dislikecnt</span>
-				<button class="featured-button">
-					<img width="28" height="28" src="https://static.kinolights.com/icon/legacy/ic-angry-face-disable.svg" alt="angry face">
-					<span>싫어요</span>
+				<span class="featured-desc" style="text-align: right;">[[${view.likecnt}]] vs [[${view.dislikecnt}]]</span>
+				<button class="featured-button" 
+						aria-label="싫어요 버튼"
+						role="button"
+						tabindex="0">
+					<img width="28" height="28" 
+						th:src="${userLiked ? '/images/angry-face-active.svg' : '/images/smile-face-disable.svg'}" 
+						alt="싫어요 아이콘"
+						aria-hidden="true">
+					<span class="button-text">싫어요</span>
 				</button>
 				<br><br>
 				
@@ -236,7 +243,7 @@
 				</div> 
 		    </div>
 
-		    <!--영화 영상/이미지 섹션-->
+		    <!-- 영화 영상/이미지 섹션
 		    <div class="previewDiv">
 		        <h2 class="featured-desc">영상/ 이미지</h2>
 		        <div class="image-container">
@@ -250,22 +257,27 @@
 		                <img src="C:\Users\gladius\Desktop\MovieSite\MovieSite\src\main\resources\static\images\20231202_163902.jpg" alt="영화 이미지 2">
 		            </button>
 		        </div>
-		    </div>
+		    </div> -->
 		
 		    <!-- 함께 볼만한 영화 섹션 -->
 		    <div class="section">
 		        <h2 class="featured-desc">함께 볼만한 영화</h2>
-		        <div class="image-container" >
-		            <button class="image-button">
-		                <img src="recommended1.jpg" alt="추천 영화 1" class="recommended-poster">
-		            </button>
-		            <button class="image-button">
-		                <img src="recommended2.jpg" alt="추천 영화 2" class="recommended-poster">
-		            </button>
-		            <button class="image-button">
-		                <img src="recommended3.jpg" alt="추천 영화 3" class="recommended-poster">
-		            </button>
-		
+		        <div class="image-container">
+		            <div th:each="movie : ${recommendedMovies}" class="movie-item">
+		                <a th:href="@{/board/movieDetail/{seqno}(seqno=${movie.seqno})}"
+		                   class="movie-link">
+		                    <img th:src="@{${movie.posterUrl}}" 
+		                         th:alt="${movie.title}"
+		                         loading="lazy"
+		                         width="200"
+		                         height="300"
+		                         class="movie-poster">
+		                    <div class="movie-info">
+		                        <h3 th:text="${movie.title}"></h3>
+		                        <p th:text="${movie.year}"></p>
+		                    </div>
+		                </a>
+		            </div>
 		        </div>
 		    </div>
 		</div>
@@ -383,5 +395,3 @@
     </table>
 </body>
 </html>
-
-
