@@ -228,6 +228,10 @@ public class MovieAPIService {
 		Mono<String> result = kobis.getDailyBoxOffice(targetDate);
 		return convertToMapper.getDailyBoxOffice(result.block());
 	}
+	
+	public MovieEntity getMovieByCode(Long seqno ) {
+		return movieRepository.findById(seqno).get();
+    }
 
 	public Mono<MovieEntity> getMovieInfo(String movieNm) throws JsonMappingException, JsonProcessingException {
 		return kobis.getMovieInfo(movieNm).flatMap(data -> Mono.fromCallable(()->{
