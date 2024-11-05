@@ -4,18 +4,23 @@ import java.util.Map;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
 @Setter
 @Entity(name="company")
 @Table(name="tbl_company")
+@NoArgsConstructor
 public class CompanyEntity {
 		@Id
 		@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "COMPANY_SEQ")
@@ -33,14 +38,10 @@ public class CompanyEntity {
 		
 		@Column(name="companyPartNm")
 		private String companyPartNm;
-
-		public CompanyEntity(Map<String,Object> data)
-		{
-			this.companyCd = (String)data.get("companyCd");
-			this.companyNm = (String)data.get("companyNm");
-			this.companyNmEn = (String)data.get("companyNmEn");
-			this.companyPartNm = (String)data.get("companyPartNm");
-		}
+		
+		@ManyToOne(fetch=FetchType.LAZY)
+		@JoinColumn(name="movie_cd")
+		private MovieEntity movie;
 }
 
 

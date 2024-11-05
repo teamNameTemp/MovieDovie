@@ -7,9 +7,8 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import com.board.entity.movie.ActorEntity;
+import com.board.entity.movie.MovieEntity;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -18,18 +17,24 @@ import lombok.extern.log4j.Log4j2;
 
 @Log4j2
 public class convertToMapper {
-	public static List<Map<String,Object>> getDailyBoxOffice(String result) throws JsonMappingException, JsonProcessingException{
-		ObjectMapper mapper = new ObjectMapper();
-		JsonNode rootNode = mapper.readTree(result);
-		JsonNode dailyList = rootNode.path("boxOfficeResult").path("dailyBoxOfficeList");
+	public static List<MovieEntity> getDailyBoxOffice(String result) throws JsonMappingException, JsonProcessingException {
+	    ObjectMapper mapper = new ObjectMapper();
+	    JsonNode rootNode = mapper.readTree(result);
+	    JsonNode dailyList = rootNode.path("boxOfficeResult").path("dailyBoxOfficeList");
 
-		List<Map<String, Object>> list = new ArrayList<>();
-		for (JsonNode d : dailyList) {
-			Map<String, Object> map = mapper.convertValue(d, new TypeReference<Map<String, Object>>() {
-			});
-			list.add(map);
-		}
-		return list;
+	    List<MovieEntity> movieList = new ArrayList<>();
+	    for (JsonNode d : dailyList) {
+	        MovieEntity movie = new MovieEntity();
+	        movie.setMovieCd(d.path("movieCd").asText());
+	        movie.setRank(d.path("rank").asText());
+	        movie.setMovieNm(d.path("movieNm").asText());
+	        movie.setOpenDt(d.path("openDt").asText());
+	        movie.setSalesAcc(d.path("salesAcc").asText());
+	        movie.setAudiAcc(d.path("audiAcc").asText());
+
+	        movieList.add(movie);
+	    }
+	    return movieList;
 	}
 	
 	public static Map<String, Object> getMovieInfo(String result) throws JsonMappingException, JsonProcessingException {
@@ -122,22 +127,10 @@ public class convertToMapper {
 	    return movieInfoMap;
 	}
 	
-	public static List<ActorEntity> getActorList(List<Map<String,Object>> data){
-		if(data == null) {
-			return new ArrayList<>();
-		}
-		
-		List<ActorEntity> actorList = data.stream().map(d->{
-			log.info("data : " + d);
-			ActorEntity actor = new ActorEntity(d);
-			return actor;
-		}).collect(Collectors.toList());
-		
-		return actorList;
-	}
+	
 	
 	public static <T> List<T> getEntityList(List<Map<String, Object>> data, Function<Map<String, Object>, T> constructor) {
-	    if (data == null) {
+	    if (data.size() == 0) {
 	        return new ArrayList<>();
 	    }
 	    
@@ -147,6 +140,8 @@ public class convertToMapper {
 	            return constructor.apply(d);
 	        })
 	        .collect(Collectors.toList());
+	    
+	    log.info("list = " + entityList.toString());
 	    
 	    return entityList;
 	}

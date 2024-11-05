@@ -267,6 +267,117 @@
 		    </div>
 		</div>
 	</div>
+	<!-- 양식 -->
+	 <table border="1">
+        <thead>
+            <tr>
+                <th>Property Name</th>
+                <th>Value</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Movie Code</td>
+                <td th:text="${movie.movieCd}"></td>
+            </tr>
+            <tr>
+                <td>Rank</td>
+                <td th:text="${movie.rank}"></td>
+            </tr>
+            <tr>
+                <td>Name</td>
+                <td th:text="${movie.movieNm}"></td>
+            </tr>
+            <tr>
+                <td>English Name</td>
+                <td th:text="${movie.movieNmEn}"></td>
+            </tr>
+            <tr>
+                <td>Production Year</td>
+                <td th:text="${movie.prdtYear}"></td>
+            </tr>
+            <tr>
+                <td>Nations</td>
+                <td>
+                    <ul>
+                        <li th:each="nation : ${movie.nations}" th:text="${nation.nationNm}"></li>
+                    </ul>
+                </td>
+            </tr>
+            <tr>
+                <td>Companies</td>
+                <td>
+                    <ul>
+                        <li th:each="company : ${movie.companys}" th:text="${company.companyNm}"></li>
+                    </ul>
+                </td>
+            </tr>
+            <tr>
+                <td>Genres</td>
+                <td>
+                    <ul>
+                        <li th:each="genre : ${movie.genres}" th:text="${genre.genreNm}"></li>
+                    </ul>
+                </td>
+            </tr>
+            <tr>
+                <td>Actors</td>
+                <td>
+                    <ul>
+                        <li th:each="actor : ${movie.actors}" th:text="${actor.peopleNm}"></li>
+                    </ul>
+                </td>
+            </tr>
+            <tr>
+                <td>Watch Grade</td>
+                <td th:text="${movie.watchGradeNm}"></td>
+            </tr>
+            <tr>
+                <td>Release Date</td>
+                <td th:text="${movie.openDt}"></td>
+            </tr>
+            <tr>
+                <td>Poster Path</td>
+                <td th:text="${movie.posterPath}"></td>
+            </tr>
+            <tr>
+                <td>Overview</td>
+                <td th:text="${movie.overview}"></td>
+            </tr>
+            <tr>
+                <td>Showtime</td>
+                <td th:text="${movie.showtime}"></td>
+            </tr>
+            <tr>
+                <td>Directors</td>
+                <td>
+                    <ul>
+                        <li th:each="director : ${movie.directors}" th:text="${director.peopleNm}"></li>
+                    </ul>
+                </td>
+            </tr>
+            <tr>
+                <td>Image Path</td>
+                <td th:text="${movie.imgPath}"></td>
+            </tr>
+            <tr>
+                <td>Hit Number</td>
+                <td th:text="${movie.hitno}"></td>
+            </tr>
+            <tr>
+                <td>Sales Amount</td>
+                <td th:text="${movie.salesAcc}"></td>
+            </tr>
+            <tr>
+                <td>Audience Count</td>
+                <td th:text="${movie.audiAcc}"></td>
+            </tr>
+            <tr>
+                <td>Upload Check</td>
+                <td th:text="${movie.uploadCheck}"></td>
+            </tr>
+        </tbody>
+    </table>
 </body>
 </html>
 

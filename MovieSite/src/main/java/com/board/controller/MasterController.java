@@ -29,8 +29,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.board.dto.MovieDTO;
 import com.board.dto.RequestDTO;
+import com.board.dto.movie.KobisMovieDTO;
 import com.board.entity.LikeEntity;
 import com.board.entity.MemberEntity;
 import com.board.entity.RequestEntity;

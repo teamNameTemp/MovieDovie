@@ -11,6 +11,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.board.entity.movie.ActorEntity;
 import com.board.entity.movie.CompanyEntity;
@@ -19,7 +20,13 @@ import com.board.entity.movie.DirectorEntity;
 import com.board.entity.movie.GenreEntity;
 import com.board.entity.movie.MovieEntity;
 import com.board.entity.movie.NationEntity;
+import com.board.entity.repository.ActorRepository;
+import com.board.entity.repository.CompanyRepository;
 import com.board.entity.repository.DailyBoxOfficeRepository;
+import com.board.entity.repository.DirectorRepository;
+import com.board.entity.repository.GenreRepository;
+import com.board.entity.repository.MovieRepository;
+import com.board.entity.repository.NationRepository;
 import com.board.util.convertToMapper;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
@@ -35,8 +42,14 @@ public class MovieAPIService {
 	private final KobisAPIService kobis;
 	private final TmdbAPIService tmdb;
 	private final DailyBoxOfficeRepository dailyRepository;
+	private final MovieRepository movieRepository;
+	private final NationRepository nationRepository;
+	private final GenreRepository genreRepository;
+	private final DirectorRepository directorRepository;
+	private final CompanyRepository CompanyRepository;
+	private final ActorRepository actorRepository;
 
-	public List<Map<String, Object>> getDailyBoxOffice() {
+	public List<MovieEntity> getDailyBoxOffice() {
 		LocalDate dateObj = LocalDate.now().minusDays(1);
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
 		String yesterday = dateObj.format(formatter);
@@ -50,9 +63,9 @@ public class MovieAPIService {
 				return convertEntitiesToMaps(dailyEntities.get(), posterOriginPath);
 			} else {
 				// 데이터베이스에 데이터가 없는 경우, API 호출
-				List<Map<String, Object>> dailyList = getDailyBoxOfficeList(yesterday);
+				List<MovieEntity> dailyList = getDailyBoxOfficeList(yesterday);
 				if (!dailyList.isEmpty()) {
-					List<Map<String, Object>> enrichedList = enrichMovieDetails(dailyList, posterOriginPath);
+					List<MovieEntity> enrichedList = enrichMovieDetails(dailyList, posterOriginPath);
 					saveToDatabase(yesterday, enrichedList);
 					return enrichedList;
 				} else {
@@ -66,122 +79,191 @@ public class MovieAPIService {
 		}
 	}
 
-	private List<Map<String, Object>> convertEntitiesToMaps(DailyBoxOfficeEntity daily, String posterOriginPath) {
-		List<Map<String, Object>> movieDetailsList = new ArrayList<>();
-		for (MovieEntity movie : daily.getMovies()) {
-			Map<String, Object> movieMap = new HashMap<>();
-			movieMap.put("rank", movie.getRank());
-			movieMap.put("audiAcc", movie.getAudiAcc());
-			movieMap.put("movieCd", movie.getMovieCd());
-			movieMap.put("hitno", movie.getHitno());
-			movieMap.put("movieNm", movie.getMovieNm());
-			movieMap.put("movieNmEn", movie.getMovieNmEn());
-			movieMap.put("imgPath", movie.getImgPath());
-			movieMap.put("prdtYear", movie.getPrdtYear());
-			movieMap.put("salesAcc", movie.getSalesAcc());
-			movieMap.put("uploadcheck", movie.getUploadCheck());
-			movieMap.put("actors", movie.getActors());
-			movieMap.put("director", movie.getDirectors());
-			movieMap.put("companys", movie.getCompanys());
-			movieMap.put("genres", movie.getGenres());
-			movieMap.put("nations", movie.getNations());
-			movieMap.put("prdtYear", movie.getOpenDt());
-			movieMap.put("showtime", movie.getShowtime());
-			movieMap.put("posterPath", posterOriginPath + movie.getPosterPath());
-			movieMap.put("overview", movie.getOverview());
-			movieDetailsList.add(movieMap);
-		}
-		return movieDetailsList;
+	private List<MovieEntity> convertEntitiesToMaps(DailyBoxOfficeEntity daily, String posterOriginPath) {
+	    List<MovieEntity> movieEntities = new ArrayList<>();
+	    for (MovieEntity movie : daily.getMovies()) {
+	        Map<String, Object> movieMap = new HashMap<>();
+	        movieMap.put("rank", movie.getRank());
+	        movieMap.put("audiAcc", movie.getAudiAcc());
+	        movieMap.put("movieCd", movie.getMovieCd());
+	        movieMap.put("hitno", movie.getHitno());
+	        movieMap.put("movieNm", movie.getMovieNm());
+	        movieMap.put("movieNmEn", movie.getMovieNmEn());
+	        movieMap.put("imgPath", movie.getImgPath());
+	        movieMap.put("prdtYear", movie.getPrdtYear());
+	        movieMap.put("salesAcc", movie.getSalesAcc());
+	        movieMap.put("uploadcheck", movie.getUploadCheck());
+	        movieMap.put("actors", movie.getActors());
+	        movieMap.put("director", movie.getDirectors());
+	        movieMap.put("companys", movie.getCompanys());
+	        movieMap.put("genres", movie.getGenres());
+	        movieMap.put("nations", movie.getNations());
+	        movieMap.put("openDt", movie.getOpenDt());
+	        movieMap.put("showtime", movie.getShowtime());
+	        movieMap.put("posterPath", posterOriginPath + movie.getPosterPath());
+	        movieMap.put("overview", movie.getOverview());
+	        
+	        // 여기서 MovieEntity를 새로 생성하거나 기존 movie 객체를 수정해야 합니다.
+	        // 예를 들어:
+	        movie.setPosterPath(posterOriginPath + movie.getPosterPath());
+	        movieEntities.add(movie);
+	    }
+	    return movieEntities;
 	}
+	
+	
 
-	private List<Map<String, Object>> enrichMovieDetails(List<Map<String, Object>> dailyList, String posterOriginPath) {
-		List<Map<String, Object>> movieDetailsList = new ArrayList<>();
-		for (Map<String, Object> movie : dailyList) {
-			String movieNm = (String) movie.get("movieNm");
-			String prdtYear = (String) movie.get("prdtYear");
-
-			try {
-				Map<String, Object> tmdbInfo = tmdb.searchTmdbMovie(movieNm, prdtYear).block();
-				if (tmdbInfo != null) {
-					movie.put("posterPath", posterOriginPath + tmdbInfo.get("poster_path"));
-					movie.put("overview", tmdbInfo.get("overview"));
-					movie.put("tmdbId", tmdbInfo.get("id"));
-					System.out.println("tmdb: " + tmdb);
-				}
-
-				Map<String, Object> info = getMovieInfo((String) movie.get("movieCd"));
-				//log.info("info = " + info);
-				movie.put("showTm", info.get("showTm"));
-			} catch (Exception e) {
-				log.error("Error fetching TMDB info for movie: " + movieNm, e);
-			}
+	
+	private List<MovieEntity> enrichMovieDetails(List<MovieEntity> dailyList, String posterOriginPath) throws JsonMappingException, JsonProcessingException {
+		List<MovieEntity> movieDetailsList = new ArrayList<>();
+		for (MovieEntity movie : dailyList) {
+			String movieCd = movie.getMovieCd();
+			String movieNm = movie.getMovieNm();
+			//영화 상세정보
+			MovieEntity info = getMovieInfo(movieCd).block();
+			//영화 포스터이미지, 영화줄거리
+			MovieEntity tmdbInfo = tmdb.searchAndConvertMovie(movieNm).block();
+			
+			movie.setPrdtYear(info.getPrdtYear());
+			movie.setOpenDt(info.getOpenDt());
+			movie.setShowtime(info.getShowtime());
+			movie.setWatchGradeNm(info.getWatchGradeNm());
+			movie.setOverview(tmdbInfo.getOverview());
+			movie.setPosterPath(posterOriginPath + tmdbInfo.getPosterPath());
+			movie.setNations(info.getNations());
+			movie.setGenres(info.getGenres());
+			movie.setCompanys(info.getCompanys());
+			movie.setDirectors(info.getDirectors());
+			movie.setActors(info.getActors());
+			
+			
 			movieDetailsList.add(movie);
 		}
 		return movieDetailsList;
 	}
 
-	private void saveToDatabase(String date, List<Map<String, Object>> movieList) {
-		DailyBoxOfficeEntity dailyEntity = new DailyBoxOfficeEntity();
-		dailyEntity.setDate(date);
+	//DB세이브
+//	private void saveToDatabase(String date, List<MovieEntity> movieList) {
+//		DailyBoxOfficeEntity dailyEntity = new DailyBoxOfficeEntity();
+//		dailyEntity.setDate(date);
+//
+//		log.info("Savelist = " + movieList);
+//
+//		List<MovieEntity> movieEntities = movieList.stream().map(movie -> {
+//		    MovieEntity entity = new MovieEntity();
+//		    entity.setRank(movie.getRank());
+//		    entity.setMovieCd(movie.getMovieCd());
+//		    entity.setMovieNm(movie.getMovieNm());
+//		    entity.setMovieNmEn(movie.getMovieNmEn());
+//		    entity.setOpenDt(movie.getOpenDt());
+//		    entity.setShowtime(movie.getShowtime());
+//		    entity.setPosterPath(movie.getPosterPath());
+//		    entity.setOverview(movie.getOverview());
+//		    entity.setPrdtYear(movie.getPrdtYear());
+//		    entity.setAudiAcc(movie.getAudiAcc());
+//		    entity.setHitno(movie.getHitno());
+//		    entity.setImgPath(movie.getImgPath());
+//		    entity.setSalesAcc(movie.getSalesAcc());
+//		    entity.setUploadCheck(movie.getUploadCheck());
+//		    return entity;
+//		}).collect(Collectors.toList());
+//
+//		dailyEntity.setMovies(movieEntities);
+//
+//		try {
+//			dailyRepository.save(dailyEntity);
+//			log.info("Saved daily box office data for date: " + date);
+//		} catch (Exception e) {
+//			log.error("Error saving daily box office data to database", e);
+//		}
+//	}
+	
+	@Transactional
+	private void saveToDatabase(String date, List<MovieEntity> movieList) {
+	    DailyBoxOfficeEntity dailyEntity = dailyRepository.findById(date)
+	            .orElseGet(() -> {
+	                DailyBoxOfficeEntity newEntity = new DailyBoxOfficeEntity();
+	                newEntity.setDate(date);
+	                return newEntity;
+	            });
 
-		List<MovieEntity> movieEntities = movieList.stream().map(movie -> {
-			MovieEntity entity = new MovieEntity();
-			entity.setRank((String) movie.get("rank"));
-			entity.setMovieCd((String) movie.get("movieCd"));
-			entity.setMovieNm((String) movie.get("movieNm"));
-			entity.setMovieNmEn((String) movie.get("movieNmEn"));
-			entity.setOpenDt((String) movie.get("openDt"));
-			entity.setShowtime((String) movie.get("showtime"));
-			entity.setPosterPath((String) movie.get("posterPath"));
-			entity.setOverview((String) movie.get("overview"));
-			entity.setPrdtYear((String) movie.get("prdtYear"));
-			entity.setAudiAcc((String) movie.get("audiAcc"));
-			entity.setHitno((Integer) movie.get("hitno"));
-			entity.setImgPath((String) movie.get("imgPath"));
-			entity.setSalesAcc((String) movie.get("salesAcc"));
-			entity.setUploadCheck((String) movie.get("uploadcheck"));
+	    log.info("Savelist = " + movieList);
 
-			// ActorList 저장
-			// List<Map<String,Object>> -> List<ActorEntity>로 변환
-			List<ActorEntity> actorList = convertToMapper.getEntityList((List)movie.get("actors"),ActorEntity::new);
-			entity.setActors(actorList);
+	    List<MovieEntity> updatedMovies = movieList.stream().map(movie -> {
+	        MovieEntity existingMovie = movieRepository.findByMovieNm(movie.getMovieNm())
+	                .orElseGet(MovieEntity::new);
 
-			// DirectorList 저장
-			List<DirectorEntity> directorList = convertToMapper.getEntityList((List)movie.get("directors"),DirectorEntity::new);
-			entity.setDirectors(directorList);
-			
-			//CompanyList 설정
-			List<CompanyEntity> companyListMap = convertToMapper.getEntityList((List)movie.get("companys"),CompanyEntity::new);
-			
-			List<NationEntity> nations = (List)movie.get("nations");
-			
-			entity.setNations((List) movie.get("nations"));
-			
-			List<GenreEntity> genres = (List)movie.get("genres");
-			entity.setGenres((List) movie.get("genres"));
+	        // Update existing movie or set fields for new movie
+	        existingMovie.setRank(movie.getRank());
+	        existingMovie.setMovieCd(movie.getMovieCd());
+	        existingMovie.setMovieNm(movie.getMovieNm());
+	        existingMovie.setMovieNmEn(movie.getMovieNmEn());
+	        existingMovie.setOpenDt(movie.getOpenDt());
+	        existingMovie.setShowtime(movie.getShowtime());
+	        existingMovie.setPosterPath(movie.getPosterPath());
+	        existingMovie.setOverview(movie.getOverview());
+	        existingMovie.setPrdtYear(movie.getPrdtYear());
+	        existingMovie.setAudiAcc(movie.getAudiAcc());
+	        existingMovie.setHitno(movie.getHitno());
+	        existingMovie.setImgPath(movie.getImgPath());
+	        existingMovie.setSalesAcc(movie.getSalesAcc());
+	        existingMovie.setUploadCheck(movie.getUploadCheck());
 
-			log.info(entity);
-			return entity;
-		}).collect(Collectors.toList());
+	        movieRepository.save(existingMovie);
+	        
+	        return existingMovie;
+	    }).collect(Collectors.toList());
 
-		dailyEntity.setMovies(movieEntities);
+	    dailyEntity.setMovies(updatedMovies);
 
-		try {
-			dailyRepository.save(dailyEntity);
-			log.info("Saved daily box office data for date: " + date);
-		} catch (Exception e) {
-			log.error("Error saving daily box office data to database", e);
-		}
+	    try {
+	        dailyRepository.save(dailyEntity);
+	        log.info("Saved/Updated daily box office data for date: " + date);
+	    } catch (Exception e) {
+	        log.error("Error saving/updating daily box office data to database", e);
+	    }
 	}
 
-	private List<Map<String, Object>> getDailyBoxOfficeList(String targetDate) throws JsonProcessingException {
+	private List<MovieEntity> getDailyBoxOfficeList(String targetDate) throws JsonProcessingException {
 		Mono<String> result = kobis.getDailyBoxOffice(targetDate);
 		return convertToMapper.getDailyBoxOffice(result.block());
 	}
 
-	private Map<String, Object> getMovieInfo(String movieCd) throws JsonMappingException, JsonProcessingException {
-		Mono<String> result = kobis.getMovieInfo(movieCd);
-		return convertToMapper.getMovieInfo(result.block());
+	public Mono<MovieEntity> getMovieInfo(String movieNm) throws JsonMappingException, JsonProcessingException {
+		return kobis.getMovieInfo(movieNm).flatMap(data -> Mono.fromCallable(()->{
+			MovieEntity savedMovie = movieRepository.save(data);
+			
+			// Nation 엔티티 저장
+			for (NationEntity nation : data.getNations()) {
+				nation.setMovie(savedMovie);
+				nationRepository.save(nation);
+			}
+			
+			// Genre 엔티티 저장
+			for (GenreEntity genre : data.getGenres()) {
+				genre.setMovie(savedMovie);
+				genreRepository.save(genre);
+			}
+
+			// Company 엔티티 저장
+			for(CompanyEntity company : data.getCompanys()){
+				company.setMovie(savedMovie);
+				CompanyRepository.save(company);
+			}
+			
+			// Director 엔티티 저장
+			for(DirectorEntity director : data.getDirectors()){
+				director.setMovie(savedMovie);
+				directorRepository.save(director);
+			}
+
+			// Actor 엔티티 저장
+			for(ActorEntity actor : data.getActors()){
+				actor.setMovie(savedMovie);
+				actorRepository.save(actor);
+			}
+			return savedMovie;
+		}));
 	}
 
 }
