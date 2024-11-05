@@ -44,41 +44,38 @@ public class BoardServiceImpl implements BoardService {
 	//좋아요/싫어요 등록여부 확인
 	@Override
 	public LikeEntity likeCheckView(Long seqno, String email) throws Exception {
-		MovieEntity boardEntity = movieRepository.findById(seqno).get();
+		MovieEntity movieEntity = movieRepository.findById(seqno).get();
 		MemberEntity memberEntity = memberRepository.findById(email).get();
-		return likeRepository.findBySeqnoAndEmail(boardEntity,memberEntity);
+		return likeRepository.findBySeqnoAndEmail(movieEntity,memberEntity);
 	}
 	
 	//좋아요/싫어요 신규 등록
 	@Override
-	public void likeCheckRegistry(Long seqno, String email, String mylikeCheck, String mydislikeCheck, String likeDate,String dislikeDate) throws Exception {
+	public void likeCheckRegistry(Long seqno, String email, String likeCheck, String dislikeCheck) throws Exception {
 	  MovieEntity movieEntity = movieRepository.findById(seqno).get();
 	  MemberEntity memberEntity = memberRepository.findById(email).get();
 	
 	  LikeEntity likeEntity = LikeEntity.builder()
-										.seqno(movieEntity)
+										.movieseqno(movieEntity)
 										.email(memberEntity)
-										.mylikecheck(mylikeCheck)
-										.mydislikecheck(mydislikeCheck)
-										.likedate(likeDate)
-										.dislikedate(dislikeDate)
+										.likecheck(likeCheck)
+										.dislikecheck(dislikeCheck)
 										.build();
 		likeRepository.save(likeEntity);		
 	}
 	
 	//좋아요/싫어요 수정
 	@Override  //email > nickname??
-	public void likeCheckUpdate(Long seqno, String email, String mylikeCheck,
-			String mydislikeCheck, String likeDate, String dislikeDate) throws Exception{
+	public void likeCheckUpdate(Long seqno, String email, String likeCheck,
+			String dislikeCheck) throws Exception{
 		MovieEntity movieEntity = movieRepository.findById(seqno).get();
 		MemberEntity memberEntity = memberRepository.findById(email).get();
 		
 		LikeEntity likeEntity = likeRepository
 				.findBySeqnoAndEmail(movieEntity, memberEntity);
-		likeEntity.setMylikecheck(mylikeCheck);
-		likeEntity.setMydislikecheck(mydislikeCheck);
-		likeEntity.setLikedate(likeDate);	
-		likeEntity.setDislikedate(dislikeDate);	
+		
+		likeEntity.setLikecheck(likeCheck);
+		likeEntity.setDislikecheck(dislikeCheck);
 		likeRepository.save(likeEntity);
 	}
 	

@@ -1,7 +1,5 @@
 package com.board.controller;
 
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
 
@@ -60,11 +58,11 @@ public class BoardController {
 		
 		//초기에 좋아요/싫어요 등록이 안되어져 있을 경우 "N"으로 초기화
 		if(likeCheckView == null) {
-			model.addAttribute("myLikeCheck", "N");
-			model.addAttribute("myDislikeCheck", "N");
+			model.addAttribute("LikeCheck", "N");
+			model.addAttribute("DislikeCheck", "N");
 		} else if(likeCheckView != null) {
-			model.addAttribute("myLikeCheck", likeCheckView.getMylikecheck());
-			model.addAttribute("myDislikeCheck", likeCheckView.getMydislikecheck()); 
+			model.addAttribute("LikeCheck", likeCheckView.getLikecheck());
+			model.addAttribute("DislikeCheck", likeCheckView.getDislikecheck()); 
 		}
 		
 		model.addAttribute("view", service.view(seqno));
@@ -82,28 +80,18 @@ public class BoardController {
 		Long seqno = (long)seq;
 		//Long seqno = (Long)likeCheckData.get("seqno");
 		String email = (String)likeCheckData.get("email");
-		String mylikecheck = (String)likeCheckData.get("mylikecheck");
-		String mydislikecheck = (String)likeCheckData.get("mydislikecheck");
-		int checkCnt = (int)likeCheckData.get("checkCnt");		
-		
-		//현재 날짜, 시간 구해서 좋아요/싫어요 한 날짜/시간 입력 및 수정
-		String likeDate = "";
-		String dislikeDate = "";
-		LocalDateTime now = LocalDateTime.now();
-		if(likeCheckData.get("mylikecheck").equals("Y")) {
-			likeDate = now.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));		
-		}else if(likeCheckData.get("mydislikecheck").equals("Y")){
-			dislikeDate = now.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));		
-		}		
+		String likecheck = (String)likeCheckData.get("likecheck");
+		String dislikecheck = (String)likeCheckData.get("dislikecheck");
+		int checkCnt = (int)likeCheckData.get("checkCnt");			
 
 		//tbl_like 테이블 입력/수정
 		LikeEntity likeCheckView = service.likeCheckView(seqno,email);
 		if(likeCheckView == null) //좋아요/싫어요를 등록한 적이 없음 
-				service.likeCheckRegistry(seqno, email, mylikecheck,
-						mydislikecheck, likeDate, dislikeDate);
+				service.likeCheckRegistry(seqno, email, likecheck,
+						dislikecheck);
 			else //좋아요/싫어요를 등록한 적이 있음
-				service.likeCheckUpdate(seqno, email, mylikecheck,
-						mydislikecheck, likeDate, dislikeDate); 
+				service.likeCheckUpdate(seqno, email, likecheck,
+						dislikecheck); 
 		
 		long likeCnt = service.view(seqno).getLikecnt();
 		long dislikeCnt = service.view(seqno).getDislikecnt();
