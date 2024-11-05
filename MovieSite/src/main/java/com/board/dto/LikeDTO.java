@@ -1,6 +1,7 @@
 package com.board.dto;
 
 import com.board.entity.LikeEntity;
+import com.board.entity.RentEntity;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -20,6 +21,7 @@ public class LikeDTO {
 	private String email;
 	private Long movieseqno;
 	
+
 	//Entity --> DTO 이동
 	public LikeDTO(LikeEntity likeEntity) {
 		this.seqno = likeEntity.getSeqno();

@@ -24,12 +24,12 @@ public interface BoardService {
 	public LikeEntity likeCheckView(Long seqno,String email) throws Exception;
 	
 	//좋아요/싫어요 신규 등록
-	public void likeCheckRegistry(Long seqno, String email, String mylikeCheck,
-			String mydislikeCheck, String likeDate, String dislikeDate) throws Exception;
+	public void likeCheckRegistry(Long seqno, String email, String likeCheck,
+			String dislikeCheck) throws Exception;
 	
 	//좋아요/싫어요 수정
-	public void likeCheckUpdate(Long seqno, String email, String mylikeCheck,
-			String mydislikeCheck, String likeDate, String dislikeDate) throws Exception;
+	public void likeCheckUpdate(Long seqno, String email, String likeCheck,
+			String dislikeCheck) throws Exception;
 	
 	//댓글 목록 보기
 	public List<ReplyInterface> replyView(ReplyInterface reply) throws Exception;
