@@ -16,6 +16,7 @@ import com.board.entity.repository.MemberRepository;
 import com.board.entity.repository.MovieRepository;
 import com.board.entity.repository.ReplyRepository;
 
+import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 
 @Service
@@ -31,6 +32,7 @@ public class BoardServiceImpl implements BoardService {
 	
 	//상품 상세 정보 보기
 	@Override
+	@Transactional
 	public MovieDTO view(Long seqno) throws Exception {
 		return movieRepository.findById(seqno).map(view -> new MovieDTO(view)).get();
 	}
@@ -43,21 +45,17 @@ public class BoardServiceImpl implements BoardService {
 	
 	//좋아요/싫어요 등록여부 확인
 	@Override
-	public LikeEntity likeCheckView(Long seqno, String email) throws Exception {
-		MovieEntity movieEntity = movieRepository.findById(seqno).get();
-		MemberEntity memberEntity = memberRepository.findById(email).get();
-		return likeRepository.findBySeqnoAndEmail(movieEntity,memberEntity);
+	public LikeEntity likeCheckView(Long movieseqno, String email) throws Exception {
+		return likeRepository.findByMovieseqnoAndEmail(movieseqno,email);
 	}
 	
 	//좋아요/싫어요 신규 등록
 	@Override
-	public void likeCheckRegistry(Long seqno, String email, String likeCheck, String dislikeCheck) throws Exception {
-	  MovieEntity movieEntity = movieRepository.findById(seqno).get();
-	  MemberEntity memberEntity = memberRepository.findById(email).get();
-	
+	public void likeCheckRegistry(Long movieseqno, String email, String likeCheck, String dislikeCheck) throws Exception {
+
 	  LikeEntity likeEntity = LikeEntity.builder()
-										.movieseqno(movieEntity)
-										.email(memberEntity)
+										.movieseqno(movieseqno)
+										.email(email)
 										.likecheck(likeCheck)
 										.dislikecheck(dislikeCheck)
 										.build();
@@ -66,13 +64,9 @@ public class BoardServiceImpl implements BoardService {
 	
 	//좋아요/싫어요 수정
 	@Override  //email > nickname??
-	public void likeCheckUpdate(Long seqno, String email, String likeCheck,
-			String dislikeCheck) throws Exception{
-		MovieEntity movieEntity = movieRepository.findById(seqno).get();
-		MemberEntity memberEntity = memberRepository.findById(email).get();
-		
+	public void likeCheckUpdate(Long movieseqno, String email, String likeCheck, String dislikeCheck) throws Exception{
 		LikeEntity likeEntity = likeRepository
-				.findBySeqnoAndEmail(movieEntity, memberEntity);
+				.findByMovieseqnoAndEmail(movieseqno, email);
 		
 		likeEntity.setLikecheck(likeCheck);
 		likeEntity.setDislikecheck(dislikeCheck);
@@ -96,11 +90,15 @@ public class BoardServiceImpl implements BoardService {
 	//댓글 등록
 	@Override
 	public void replyRegistry(ReplyInterface reply) throws Exception {
-		MovieEntity movieEntity = movieRepository.findById(reply.getSeqno()).get();
-		MemberEntity memberEntity = memberRepository.findById(reply.getEmail()).get();
+		MovieEntity movieEntity = movieRepository.findById(reply.getSeqno())
+		.orElseThrow(() -> new RuntimeException("영화를 찾을 수 없습니다"));
+		
+MemberEntity memberEntity = memberRepository.findById(reply.getEmail())
+		.orElseThrow(() -> new RuntimeException("회원을 찾을 수 없습니다"));
 		
 		ReplyEntity replyEntity = ReplyEntity.builder()
 											.seqno(movieEntity)
+											.movieseqno(movieEntity.getSeqno())
 											.email(memberEntity)
 											.replywriter(reply.getReplywriter())
 											.replycontent(reply.getReplycontent())

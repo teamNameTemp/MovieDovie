@@ -2,13 +2,13 @@ package com.board.service;
 
 import java.util.List;
 
-import org.springframework.stereotype.Controller;
+import org.springframework.stereotype.Service;
 
 import com.board.dto.MovieDTO;
 import com.board.dto.ReplyInterface;
 import com.board.entity.LikeEntity;
 
-@Controller
+@Service
 public interface BoardService {
 	
 	//상품 상세 정보 보기
@@ -17,19 +17,18 @@ public interface BoardService {
 	//게시물 조회수 증가
 	public void hitno(Long seqno) throws Exception;
 	
+
 	//게시물 좋아요/싫어요 갯수 수정
-	public void boardLikeUpdate(MovieDTO board) throws Exception;
+	public void boardLikeUpdate(MovieDTO movie) throws Exception;
 	
 	//좋아요/싫어요 등록여부 확인
-	public LikeEntity likeCheckView(Long seqno,String email) throws Exception;
+	public LikeEntity likeCheckView(Long movieseqno,String email) throws Exception;
 	
 	//좋아요/싫어요 신규 등록
-	public void likeCheckRegistry(Long seqno, String email, String likeCheck,
-			String dislikeCheck) throws Exception;
+	public void likeCheckRegistry(Long movieseqno, String email, String likeCheck, String dislikeCheck) throws Exception;
 	
 	//좋아요/싫어요 수정
-	public void likeCheckUpdate(Long seqno, String email, String likeCheck,
-			String dislikeCheck) throws Exception;
+	public void likeCheckUpdate(Long movieseqno, String email, String likeCheck, String dislikeCheck) throws Exception;
 	
 	//댓글 목록 보기
 	public List<ReplyInterface> replyView(ReplyInterface reply) throws Exception;
