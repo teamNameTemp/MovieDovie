@@ -8,12 +8,12 @@
 	<link rel="stylesheet" th:href="@{/css/styles.css}">
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css">
 	<style>
-		 #wrap {width: 1200px; height: 1000px; font-size: 15px; text-align: center; margin : auto;}
+		 #wrap {width: 1200px; height: 1000px; font-size: 15px; text-align: center; margin : auto; }
+	 	
 	 	.side {
 	 		display: flex;
 		 	float: left; width: 700px; height: 902px; text-align: center; 
 		 	flex-direction: column; /* 세로 방향으로 정렬 */
-	    	justify-content: center; /* 수직 중앙 정렬 */
 	    	align-items: center; /* 수평 중앙 정렬 */
 	    }
 	    
@@ -130,7 +130,45 @@
 		tr:nth-child(even) {
 		  background-color: #4dbf0010;
 		}
-	
+		
+		.statuscontent {
+            width: 100%; /* 부모 너비에 맞춤 */
+            height: 100%; /*부모 너비에 맞춤*/
+            text-align: center;
+            background-color: white;
+            padding: 3%; /* 패딩 10% */
+            border: 1.8px solid lightgray;
+            box-sizing: border-box; /* 패딩 포함한 크기 계산 */
+            display: flex; /* 콘텐츠를 flexbox로 설정 */
+		    flex-direction: column; /* 세로 정렬 */
+		    justify-content: center; /* 수직 중앙 정렬 */
+		    align-items: center; /* 수평 중앙 정렬 */
+        }
+		
+		.status-container {
+		    margin: auto;
+		    display: flex; /* 이미지를 왼쪽에, 텍스트를 오른쪽에 배치 */
+		    align-items: center; /* 수직 중앙 정렬 */
+		}
+		
+		.icon {
+		    width: 100px; /* 이미지 크기 설정 */
+		    height: 100px; /* 이미지 크기 설정 */
+		    margin-right: 15px; /* 이미지와 텍스트 간 간격 */
+		}
+		
+		.status-text {
+		    font-size: 16px; /* 텍스트 크기 */
+		    line-height: 1.5; /* 텍스트 간격 조정 */
+		}
+		
+		.pending-highlight {
+		    font-size: 25px; /* 텍스트 크기 키우기 */
+		    color: #FF6384; /* 빨간색으로 강조 */
+		    font-weight: bold; /* 텍스트 굵게 */
+		}
+			
+		
 	</style>
 
 
@@ -175,8 +213,11 @@
 <br><br><br>
 
 
-<div id="wrap">
 
+<div id="wrap">
+<a onClick="window.location.reload()" style="cursor: pointer; position: absolute; top: 107px; right: 100px;">
+    <img class="reload" src="/img/reload.png" alt="" style="width: 35px; height: 35px;">
+</a>
 	<div class="side">
 		<div class="content"><b>대여 현황</b><br><br><br>
 				
@@ -220,7 +261,9 @@
 			  	.catch(error => console.error('Error fetching data:', error));
 		</script>
 		
-		<br><br><br>
+		<br><br>
+		<hr style="border-width:1.5px 0 0 0; border-style:dashed; border-color:#4dbf00;">
+		<br><br>	
 		
 		[월별 대여 현황]<br><br>
 		<div>
@@ -337,7 +380,7 @@
 						    },
 						    options: {
 						    	responsive: false,
-						    	cutout: 60
+						    	cutout: 50
 						    }
 						  });
 					  
@@ -389,7 +432,7 @@
 	</div>
 	<div class="content1">
 		<div class="content">
-			2024 구매 전환률<br><br>  
+			<b>2024 구매 전환률</b><br><br>  
 			<!-- 구매 전환률 (Conversion Rate) = 영화 전체 대여 수 / 영화 상세페이지를 클릭한 전체 횟수(hitno) * 100% -->
 			<p><div class="progress-bar">           
 				<div class="progress" id="progress" style="width: 60%;">60%</div><br><br>
@@ -398,18 +441,30 @@
 	
 	<div class="content1">
 		<div class="content">
-		<b>회원 증감 수</b><br><br>
-		<p>금일 가입 회원 수 : <span id="todaySignupCount"></span> 명 <span id="resultSignup"></span></p>
-		<p>전체 누적 회원 수 : <span id="totalMemberCount"></span> 명</p>
+			<b>회원 증감 수</b><br>
+			<p>· 금일 가입 회원 수 : <span id="todaySignupCount"></span> 명 <span id="resultSignup"></span></p>
+			<p>· 전체 누적 회원 수 : <span id="totalMemberCount"></span> 명</p>
+			<br>
+			<hr style="border-width:1.5px 0 0 0; border-style:dashed; border-color:#4dbf00;">
+			<br>
+			<b>방문 현황</b><br>
+			<p>· 금일 방문자 수 : <span id="todayVisitorsCount"></span> 명 <span id="resultVisit"></span><br></p>
+			<p>· 전체 누적 방문자 수 : <span id="totalVisitorsCount"></span> 명</p>
 		</div>
 	</div>
 	
 	
 	<div class="content1">
-		<div class="content">
-			방문 현황<br><br>
-			<p>금일 방문자 수 : <span id="todayVisitorsCount"></span> 명 <span id="resultVisit"></span></p>
-			<p>전체 누적 방문자 수 : <span id="totalVisitorsCount"></span> 명</p>
+		<div class="statuscontent">
+			<b>회원 요청 사항 현황</b><br>
+			<div class="status-container">
+				<img class="icon" src="/img/RequestStatus.png" alt="">&nbsp;&nbsp;&nbsp;
+				<div class="status-text">
+					<span class="pending-highlight">· 처리 필요 : <span id="pendingCount"></span> 건</span>
+					<br>
+					· 처리 완료 : <span id="completedCount"></span> 건
+				</div>
+			</div>
 		</div>
 	</div>
 
@@ -501,14 +556,42 @@
 				    resultDivSignup.innerHTML = `<span class="nochange"> → 변동 없음</span>`;
 				}
 
-	  
 		  }).catch((error) => {
 		        console.error('============= Error :', error);
 		  });
 	}
 	visitResult();
 	
+	//회원 요청 사항 처리 상태 현황 표시
+	const requestStatus = async() => {
+		await fetch('/master/requestStatus', {
+			method: 'GET',
+			headers: { "content-type": "application/json" }
+		}).then((response)=> response.json())
+		  .then((data)=> {
 
+			  let pendingCount = 0;
+			  let completedCount = 0;
+			  
+			  
+			  // 객체에서 status와 count를 가져와서 처리
+	          Object.entries(data).forEach(([status, count]) => {
+	            if (status === 'PENDING') {
+	                pendingCount = count;  // PENDING 상태의 수 설정
+	            } else if (status === 'COMPLETED') {
+	                completedCount = count;  // COMPLETED 상태의 수 설정
+	            }
+	          });
+			  
+			  // HTML 요소에 값 설정
+		      document.getElementById('pendingCount').textContent = pendingCount;
+		      document.getElementById('completedCount').textContent = completedCount;
+
+		  }).catch((error) => {
+		        console.error('============= Error :', error);
+		  });
+	}
+	requestStatus();
 	
     
 </script>

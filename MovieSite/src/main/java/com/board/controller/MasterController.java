@@ -1,6 +1,8 @@
 package com.board.controller;
 
 import java.io.File;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -38,10 +40,13 @@ import com.board.entity.MemberEntity;
 import com.board.entity.RequestEntity;
 import com.board.entity.repository.MemberRepository;
 import com.board.entity.repository.RentRepository;
+import com.board.service.FavGenreService;
+import com.board.service.LikeService;
 import com.board.service.MasterService;
 import com.board.service.MemberLogService;
 import com.board.service.MemberService;
 import com.board.service.RentService;
+import com.board.service.RequestService;
 import com.board.util.PageUtil;
 
 import jakarta.servlet.http.HttpSession;
@@ -55,9 +60,12 @@ import net.bytebuddy.description.field.FieldDescription.InGenericShape;
 public class MasterController {
 
 	private final MasterService service;
+	private final LikeService likeService;
 	private final MemberLogService memberLogService;
 	private final MemberService memberService;
 	private final RentService rentService;
+	private final FavGenreService favGenreService;
+	private final RequestService requestService;
 
 	
 	//회원의 요청 목록 보기
@@ -65,7 +73,7 @@ public class MasterController {
 	public void getMemberRequest(Model model, @RequestParam(name="page", defaultValue = "1") int pageNum, 
 				@RequestParam(name="keyword", defaultValue="", required=false) String keyword) throws Exception {
 		
-		int postNum = 10; //한 화면에 보여지는 게시물 행의 갯수
+		int postNum = 15; //한 화면에 보여지는 게시물 행의 갯수
 		int pageListCount = 10; //화면 하단에 보여지는 페이지리스트의 페이지 갯수	
 	
 		PageUtil page = new PageUtil();
@@ -202,8 +210,6 @@ public class MasterController {
     		map.put("status", result[0]); //대여 상태 (Y 혹은 N)
     		map.put("count", result[1] != null ? result[1] : 0); //count
     		response.add(map);
-    		// 추가 로그
-            System.out.println("Status: " + result[0] + ", Count: " + result[1]);
     	}
     	return response;
     }
@@ -220,8 +226,7 @@ public class MasterController {
             map.put("email", item[0]);
             map.put("rentCount", item[1]);
             response.add(map);
-        }
-        
+        }      
         return response; // JSON 형태로 반환
     }
 
@@ -267,7 +272,118 @@ public class MasterController {
         return response;
     }
     
+    //관리자 페이지 - 통계 : 회원 요청사항 처리 상태 확인하기
+    @GetMapping("/requestStatus")
+    @ResponseBody
+    public Map<String, Integer> getRequestStatus() {
+
+        Map<String, Integer> response = new HashMap<>();
+        List<Object[]> results = requestService.findStatus();
+
+        if (!results.isEmpty()) {
+            for (Object[] counts : results) {
+                String status = (String) counts[0]; // 상태 (예: PENDING, COMPLETED)
+                Integer count = ((Number) counts[1]).intValue(); // 해당 상태의 카운트
+
+                // 상태별로 count를 Map에 추가
+                response.put(status, count);
+            }
+        } else {
+            // 상태별 카운트가 없는 경우 기본값 설정
+            response.put("PENDING", 0);
+            response.put("COMPLETED", 0);
+        }
+        return response;
+    }
+    
+    //관리자 페이지 - 통계 : 회원들이 가장 좋아하는 장르 인기 순으로 보여주기
+    @GetMapping("/topFavGenre")
+    @ResponseBody
+    public List<Map<String, Object>> getTopFavGenre(){
+    	
+    	List<Object[]> list = favGenreService.favGenreResult();
+    	
+    	List<Map<String, Object>> response = new ArrayList<>();
+    	for(Object[] item : list) {
+    		Map<String, Object> map = new HashMap<>();
+    		map.put("genre", item[0]);
+    		map.put("count", item[1]);
+    		response.add(map);
+    	}
+    	return response;
+    }
 	
+    //관리자 페이지 - 통계 : 좋아요 % 높은 영화 순위 보여주기
+    @GetMapping("/topLikeMovie")
+    @ResponseBody
+    public List<Map<String, Object>> getTopLikeMovie(){
+    	
+    	List<Object[]> list = likeService.topLikeMovie();
+    	
+    	List<Map<String, Object>> response = new ArrayList<>();
+    	
+    	for(Object[] item : list) {
+    		Map<String, Object> map = new HashMap<>();
+    		map.put("movieseqno", item[0]);
+    		map.put("totalCount", item[1]);
+    		map.put("likeCount", item[2]);
+    		map.put("likePercentage", item[3]);
+    		response.add(map);
+    	}
+    	return response;
+    }
+    
+    //관리자 페이지 - 통계 : 싫어요 % 높은 영화 순위 보여주기
+    @GetMapping("/topDislikeMovie")
+    @ResponseBody
+    public List<Map<String, Object>> getTopDislikeMovie(){
+    	
+    	List<Object[]> list = likeService.topDislikeMovie();
+    	
+    	List<Map<String, Object>> response = new ArrayList<>();
+    	
+    	for(Object[] item : list) {
+    		Map<String, Object> map = new HashMap<>();
+    		map.put("movieseqno", item[0]);
+    		map.put("totalCount", item[1]);
+    		map.put("dislikeCount", item[2]);
+    		map.put("dislikePercentage", item[3]);
+    		response.add(map);
+    	}
+    	return response;
+    }
+    
+    //관리자 페이지 - 통계 : 호불호 높은 영화 순위 보여주기
+    @GetMapping("/topDivisiveMovie")
+    @ResponseBody
+    public List<Map<String, Object>> getTopDivisiveMovie(){
+    	
+    	List<Object[]> list = likeService.topDivisiveMovie();
+    	
+    	List<Map<String, Object>> response = new ArrayList<>();
+    	
+    	for(Object[] item : list) {
+    		Map<String, Object> map = new HashMap<>();
+    		map.put("movieseqno", item[0]);
+    		map.put("totalCount", item[1]);
+    		map.put("likeCount", item[2]);
+    		map.put("dislikeCount", item[3]);
+    		map.put("likePercentage", item[4]);
+    		map.put("dislikePercentage", item[5]);
+    		
+    		// item[4]와 item[5]가 BigDecimal타입이라 BigDecimal을 String으로 변환 (소수점 아예 없게.)
+            String likePercentage = ((BigDecimal)item[4]).setScale(0, RoundingMode.HALF_UP).toString();
+            String dislikePercentage = ((BigDecimal)item[5]).setScale(0, RoundingMode.HALF_UP).toString();
+            
+            // 비율 합성
+            String likeVsDislikeRatio = likePercentage + " : " + dislikePercentage;
+            map.put("ratio", likeVsDislikeRatio);
+    		
+    		response.add(map);
+    	}
+    	return response;
+    }
+    
 	
 	@GetMapping("/movieStats")
 	public void getMovieStats() {
@@ -406,6 +522,15 @@ public class MasterController {
         int count = 500; //원하는 대로 수 변경 가능
     	service.createDummyBookmarks(count);
         return " ▶▷▶ " + count + "개의 더미 즐겨찾기가 생성되었습니다.";
+    }
+	
+	//Dummy 좋아하는 장르 만들기
+	@ResponseBody
+    @PostMapping("/createDummyFavGenre")
+    public String createDummyFavGenre() {
+        int count = 500; //원하는 대로 수 변경 가능
+    	service.createDummyFavGenre(count);
+        return " ▶▷▶ " + count + "개의 더미 좋아하는 장르가 생성되었습니다.";
     }
 
 }
