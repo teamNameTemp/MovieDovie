@@ -8,14 +8,20 @@ body {
   font-family: "Jua", sans-serif;
   font-weight: 400;
   font-style: normal;
+  -webkit-user-select:none;
+  -moz-user-select:none;
+  -ms-user-select:none;
+  user-select:none
 }
 
 .navbar {
   width: 100%;
+  min-width:30%;
   height: 50px;
   background-color: black;
-  position: sticky;
+  position: fixed;
   top: 0;
+   
 }
 
 .navbar-container {
@@ -25,6 +31,7 @@ body {
   height: 100%;
   color: white;
   font-family: "Jua", sans-serif;
+
 }
 
 .logo-container {
@@ -412,14 +419,15 @@ a {
 }
 
 .search-box {
-  position: absolute;
+  position: relative;
   top: 50%;
-  left: 29%;
+  
   transform: translate(0%, -50%);
   height: 30px;
   margin-left: -10px;
   border-radius: 30px;
   background-color:gray;
+
   
 }
 
