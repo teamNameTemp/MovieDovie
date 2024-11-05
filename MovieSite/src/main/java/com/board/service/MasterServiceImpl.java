@@ -183,8 +183,11 @@ public class MasterServiceImpl implements MasterService{
             String status = today.isBefore(returndate.toLocalDate()) ? "Y" : "N"; // 상태 설정
             rent.setStatus(status); // 상태 설정
             
-        	rent.setEmail("user" + i + "@example.com");
-        	rent.setMovieseqno((long) i);
+            // 1부터 30까지의 랜덤 숫자 생성
+            int randomNumber = random.nextInt(30) + 1; // 0~29 사이의 숫자를 생성하고 1을 더하여 1~30으로 변경
+            rent.setEmail("user" + randomNumber + "@example.com"); // 랜덤 숫자를 이메일에 포함
+            
+            rent.setMovieseqno((long) (random.nextInt(50) + 1)); // 1부터 50까지의 랜덤 숫자 설정
             
             rentRepository.save(rent);
         }
