@@ -122,13 +122,13 @@
 		<div class="content-container">
 		    <div class="featured-content" style="background: linear-gradient(to bottom, rgba(0,0,0,0), #151515), url('/img/6.jpg');"> <!-- 영화 포스터 -->
 	        	<div class="featured-desc">
-	               <h1 class="featured-title">[[${view.title}]]</h1>
-	               <p class="#">[[${view.titleen}]], [[${view.prodtyear}]]</p>
-	               <p class="#" style="text-align: right;">[[${view.likecnt}]] vs [[${view.dislikecnt}]] </p> <!--좋아요 vs 싫어요 % ??-->	               
+	               <h1 class="featured-title">view.title</h1>
+	               <p class="#">view.titleen, view.prdtYear</p>
+	               <p class="#" style="text-align: right;">view.likecheck vs view.dislikechceck</p> <!--좋아요 vs 싫어요 % ??-->	               
 	        	</div>
 	        	
 	            <div> 
-	            	<input type="button" class="featured-button" value="장바구니 담기 | 가격" th:onclick="cart([[${session.email]],[[${view.seqno}]])">
+	            	<input type="button" class="featured-button" value="장바구니 담기 | 가격">
 	            	
 
 	            </div>
@@ -137,36 +137,32 @@
 
 	        <div class="featured-desc">
 	            <h2 style="text-align: left;">작품정보</h2> <br>
-	            <p style="text-align: left;"> 줄[[${v거iew.}]]리 </p>
+	            <p style="text-align: left;"> 줄rh리 </p>
 	            <hr><br>
 	            <div class="row">
 	                <div class="col">
 						<th><b>감독</b></th>
-	                    <td>[[${view.directors}]]</td>
+	                    <td>view.directors</td>
 	                </div>
 	                <div class="col">	                    						
 	                	<th><b>장르</b></th>
-	                    <td>[[${view.genres}]]</td>
+	                    <td>view.genre</td>
 	                </div>
 	                <div class="col">
 	                    <th><b>개봉일</b></th>
-	                    <td>[[${view.titleen}]]</td>
+	                    <td>view.titleen</td>
 	                </div>
 	                <div class="col">
 	                    <th><b>연령등급</b></th>
-	                    <td>[[${view.genres}]]</td>
 	                </div>
 	                <div class="col">
 	                    <th><b>러닝타임</b></th>
-	                    <td>[[${view.showtime}]]</td>
 	                </div>
 	                <div class="col">
 	                    <th><b>제작 국가</b></th>
-	                    <td>[[${view.nationalt}]]</td>
 	                </div>
 	                <div class="col">
 	                    <th><b>제작연도</b></th>
-	                    <td>[[${view.prodtyear}]]</td>
 	                </div>
 	            </div>
 	        </div>
@@ -211,7 +207,7 @@
 					<img width="28" height="28" src="https://static.kinolights.com/icon/legacy/ic-smile-face-disable.svg" alt="smile face">
 					<span>좋아요</span>
 				</button>
-				<span class="featured-desc" style="text-align: right;">[[${view.likecnt}]] vs [[${view.dislikecnt}]]</span>
+				<span class="featured-desc" style="text-align: right;"></span>
 				<button class="featured-button">
 					<img width="28" height="28" src="https://static.kinolights.com/icon/legacy/ic-angry-face-disable.svg" alt="angry face">
 					<span>싫어요</span>
@@ -221,11 +217,11 @@
 				<div class="replyDiv" style="width:60%;height:300px;margin:auto;text-align:left;">
 					<p id="replyNotice">이 영화 어떠셨나요?</p>
 					<form id="replyForm" name="replyForm" method="POST">
-						<input type="hidden" id="replywriter" name="replywriter" th:value="${session.username}" readonly><br>
+						<input type="hidden" id="replywriter" name="replywriter"  readonly><br>
 						<textarea id="replycontent" name="replycontent" cols="80" rows="5" maxlength="150" placeholder="글자수:150자 이내">
 						</textarea><br>
-						<input type="hidden" id="seqno" name="seqno" th:value="${view.seqno}">
-						<input type="hidden" id="email" name="email" th:value="${session.email}">
+						<input type="hidden" id="seqno" name="seqno" >
+						<input type="hidden" id="email" name="email">
 					</form>
 					<input type="button" id="btn_reply" value="댓글등록" onclick="replyRegister()">
 					<input type="button" id="btn_cancel" value="취소" onclick="replyCancel()">

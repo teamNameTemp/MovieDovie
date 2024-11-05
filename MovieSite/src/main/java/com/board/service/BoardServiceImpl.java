@@ -44,39 +44,40 @@ public class BoardServiceImpl implements BoardService {
 	//좋아요/싫어요 등록여부 확인
 	@Override
 	public LikeEntity likeCheckView(Long seqno, String email) throws Exception {
-		MovieEntity movieEntity = movieRepository.findById(seqno).get();
-		MemberEntity memberEntity = memberRepository.findById(email).get();
-		return likeRepository.findBySeqnoAndEmail(movieEntity,memberEntity);
+//		MovieEntity movieEntity = movieRepository.findById(seqno).get();
+//		MemberEntity memberEntity = memberRepository.findById(email).get();
+//		return likeRepository.findBySeqnoAndEmail(movieEntity,memberEntity);
+		return null;
 	}
 	
 	//좋아요/싫어요 신규 등록
 	@Override
 	public void likeCheckRegistry(Long seqno, String email, String likeCheck, String dislikeCheck) throws Exception {
-	  MovieEntity movieEntity = movieRepository.findById(seqno).get();
-	  MemberEntity memberEntity = memberRepository.findById(email).get();
-	
-	  LikeEntity likeEntity = LikeEntity.builder()
-										.movieseqno(movieEntity)
-										.email(memberEntity)
-										.likecheck(likeCheck)
-										.dislikecheck(dislikeCheck)
-										.build();
-		likeRepository.save(likeEntity);		
+//	  MovieEntity movieEntity = movieRepository.findById(seqno).get();
+//	  MemberEntity memberEntity = memberRepository.findById(email).get();
+//	
+//	  LikeEntity likeEntity = LikeEntity.builder()
+//										.movieseqno(movieEntity)
+//										.email(memberEntity)
+//										.likecheck(likeCheck)
+//										.dislikecheck(dislikeCheck)
+//										.build();
+//		likeRepository.save(likeEntity);		
 	}
 	
 	//좋아요/싫어요 수정
 	@Override  //email > nickname??
 	public void likeCheckUpdate(Long seqno, String email, String likeCheck,
 			String dislikeCheck) throws Exception{
-		MovieEntity movieEntity = movieRepository.findById(seqno).get();
-		MemberEntity memberEntity = memberRepository.findById(email).get();
-		
-		LikeEntity likeEntity = likeRepository
-				.findBySeqnoAndEmail(movieEntity, memberEntity);
-		
-		likeEntity.setLikecheck(likeCheck);
-		likeEntity.setDislikecheck(dislikeCheck);
-		likeRepository.save(likeEntity);
+//		MovieEntity movieEntity = movieRepository.findById(seqno).get();
+//		MemberEntity memberEntity = memberRepository.findById(email).get();
+//		
+//		LikeEntity likeEntity = likeRepository
+//				.findBySeqnoAndEmail(movieEntity, memberEntity);
+//		
+//		likeEntity.setLikecheck(likeCheck);
+//		likeEntity.setDislikecheck(dislikeCheck);
+//		likeRepository.save(likeEntity);
 	}
 	
 	@Override

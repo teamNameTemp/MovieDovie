@@ -45,29 +45,37 @@ public class BoardController {
 	}
 	
 	//영화상세
+	//1. @PathVariable
+	//@GetMapping('/movieDetail/title/{name}
+	//=>public void getView(@PathVariable("name") String name
+	
+	//2. @RequestParam
+	//movieDetail?title=""
+	//public void getView(Model model, @RequestParam("title") String title){
+	//MovieEntity entity = service.getMovieInfo(title);
+	//model.addAttribute("movieInfo",entity);
+	//}
 	@GetMapping("/movieDetail")
-	public void getView(@RequestParam("seqno") Long seqno, @RequestParam("page") int pageNum,
-			@RequestParam(name="keyword",defaultValue="",required=false) String keyword,
-			Model model, HttpSession session) throws Exception {
-
-		//세션 email값 가져 오기
-		String sessionEmail = (String)session.getAttribute("email");
-		
-		//좋아요/싫어요 처리
-		LikeEntity likeCheckView = service.likeCheckView(seqno,sessionEmail);
-		
-		//초기에 좋아요/싫어요 등록이 안되어져 있을 경우 "N"으로 초기화
-		if(likeCheckView == null) {
-			model.addAttribute("LikeCheck", "N");
-			model.addAttribute("DislikeCheck", "N");
-		} else if(likeCheckView != null) {
-			model.addAttribute("LikeCheck", likeCheckView.getLikecheck());
-			model.addAttribute("DislikeCheck", likeCheckView.getDislikecheck()); 
-		}
-		
-		model.addAttribute("view", service.view(seqno));
-		model.addAttribute("page", pageNum);
-		model.addAttribute("keyword", keyword);	
+	public void getView(@RequestParam("title") String title,Model model) throws Exception {
+//
+//		//세션 email값 가져 오기
+//		String sessionEmail = (String)session.getAttribute("email");
+//		
+//		//좋아요/싫어요 처리
+//		LikeEntity likeCheckView = service.likeCheckView(seqno,sessionEmail);
+//		
+//		//초기에 좋아요/싫어요 등록이 안되어져 있을 경우 "N"으로 초기화
+//		if(likeCheckView == null) {
+//			model.addAttribute("LikeCheck", "N");
+//			model.addAttribute("DislikeCheck", "N");
+//		} else if(likeCheckView != null) {
+//			model.addAttribute("LikeCheck", likeCheckView.getLikecheck());
+//			model.addAttribute("DislikeCheck", likeCheckView.getDislikecheck()); 
+//		}
+//		
+//		model.addAttribute("view", service.view(seqno));
+//		model.addAttribute("page", pageNum);
+//		model.addAttribute("keyword", keyword);	
 	}
 	
 
