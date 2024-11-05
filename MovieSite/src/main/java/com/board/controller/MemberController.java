@@ -1,4 +1,4 @@
-package com.board.controller;
+ package com.board.controller;
 
 import java.io.File;
 import java.net.URLEncoder;
