@@ -1,5 +1,7 @@
 package com.board.entity.repository;
 
+import java.util.List;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -51,4 +53,9 @@ public interface RequestRepository extends JpaRepository<RequestEntity, Long>{ /
 	@Transactional
 	@Query("delete from request r where r.seqno = :seqno")
 	public void deleteBySeqno(@Param("seqno") Long seqno);
+	
+	//관리자페이지 : 통계 - 처리 상태 확인하기
+	@Query("select r.status, count(r) from request r group by status")
+	public List<Object[]> findStatus();
+	
 }

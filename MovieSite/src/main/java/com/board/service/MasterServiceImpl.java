@@ -4,10 +4,13 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
+
+import javax.crypto.spec.DHPrivateKeySpec;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -19,6 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.board.dto.RequestDTO;
 import com.board.entity.BookmarkEntity;
+import com.board.entity.FavGenreEntity;
 import com.board.entity.LikeEntity;
 import com.board.entity.MemberEntity;
 import com.board.entity.MemberLogEntity;
@@ -26,6 +30,7 @@ import com.board.entity.RentEntity;
 import com.board.entity.RequestEntity;
 import com.board.entity.WatchEntity;
 import com.board.entity.repository.BookmarkRepository;
+import com.board.entity.repository.FavGenreRepository;
 import com.board.entity.repository.LikeRepository;
 import com.board.entity.repository.MemberLogRepository;
 import com.board.entity.repository.MemberRepository;
@@ -46,11 +51,14 @@ public class MasterServiceImpl implements MasterService{
 	private final MemberLogRepository memberLogRepository;
 	private final MemberRepository memberRepository;
 	private final LikeRepository likeRepository;
+	private final FavGenreRepository favGenreRepository;
 	private final RentRepository rentRepository;
 	private static final String[] GENDERS = {"Male", "Female"};
     private final Random random;
     private static final String[] YorN = {"Y", "N"};
     private static final String[] INOUT = {"LOGIN", "LOGOUT"};
+    private static final String[] GENRES = {"드라마", "코미디", "멜로/로맨스", "스릴러", "미스터리", "전쟁", "뮤지컬", "공연", "기타", 
+    								"공포(호러)", "어드벤처", "범죄", "가족", "판타지", "SF", "서부극(웨스턴)", "사극", "애니메이션", "다큐멘터리"};
 	
 	//요청 게시물 목록 보기
 	@Override
@@ -183,8 +191,11 @@ public class MasterServiceImpl implements MasterService{
             String status = today.isBefore(returndate.toLocalDate()) ? "Y" : "N"; // 상태 설정
             rent.setStatus(status); // 상태 설정
             
-        	rent.setEmail("user" + i + "@example.com");
-        	rent.setMovieseqno((long) i);
+            // 1부터 30까지의 랜덤 숫자 생성
+            int randomNumber = random.nextInt(30) + 1; // 0~29 사이의 숫자를 생성하고 1을 더하여 1~30으로 변경
+            rent.setEmail("user" + randomNumber + "@example.com"); // 랜덤 숫자를 이메일에 포함
+            
+            rent.setMovieseqno((long) (random.nextInt(50) + 1)); // 1부터 50까지의 랜덤 숫자 설정
             
             rentRepository.save(rent);
         }
@@ -281,6 +292,51 @@ public class MasterServiceImpl implements MasterService{
             bookmarkRepository.save(bookmark);
 		}
 	}
+	
+	
+	//Dummy 좋아하는 장르 만들기
+	@Override
+	@Transactional
+	public void createDummyFavGenre(int count) {
+
+	    // 장르 배열 (18개)
+	    String[] GENRES = {"드라마", "코미디", "멜로/로맨스", "스릴러", "미스터리", "전쟁", "뮤지컬", "공연", "기타", 
+	                        "공포(호러)", "어드벤처", "범죄", "가족", "판타지", "SF", "서부극(웨스턴)", "사극", "애니메이션", "다큐멘터리"};
+
+	    for (int i = 1; i <= count; i++) {
+	        FavGenreEntity favGenre = new FavGenreEntity();
+	        favGenre.setSeqno((long) i);
+	        favGenre.setEmail("user" + i + "@example.com");
+
+	        // 장르 선택을 위한 배열 복사
+	        List<String> availableGenres = new ArrayList<>(Arrays.asList(GENRES));
+
+	        // genre1 설정
+	        String genre1 = pickRandomGenre(availableGenres);
+	        favGenre.setGenre1(genre1);
+
+	        // genre2 설정: genre1을 제외한 목록에서 선택
+	        String genre2 = pickRandomGenre(availableGenres);
+	        favGenre.setGenre2(genre2);
+
+	        // genre3 설정: genre1과 genre2를 제외한 목록에서 선택
+	        String genre3 = pickRandomGenre(availableGenres);
+	        favGenre.setGenre3(genre3);
+
+	        favGenreRepository.save(favGenre);
+	    }
+	}
+	
+	// 장르 중복을 피하면서 랜덤으로 장르를 뽑는 메서드
+	private String pickRandomGenre(List<String> availableGenres) {
+	    Random random = new Random();
+	    int randomIndex = random.nextInt(availableGenres.size());
+	    String selectedGenre = availableGenres.get(randomIndex);
+	    availableGenres.remove(randomIndex); // 선택된 장르는 목록에서 제거
+	    return selectedGenre;
+	}
+	
+	
 
 	
 }

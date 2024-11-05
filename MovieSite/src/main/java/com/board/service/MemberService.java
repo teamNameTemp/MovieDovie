@@ -29,5 +29,7 @@ public interface MemberService {
 	
 	//비밀번호 찾기
 	public String searchPassword(MemberDTO member);
+	//관리자페이지 - 통계 : 회원 가입한 날 확인
+	public List<Object[]> signupResult();
 	
 }
