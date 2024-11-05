@@ -1,8 +1,6 @@
 package com.board.controller;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -14,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.board.dto.ReplyInterface;
+import com.board.entity.LikeEntity;
 import com.board.entity.movie.MovieEntity;
 import com.board.service.BoardService;
 import com.board.service.KobisAPIService;
@@ -22,6 +21,7 @@ import com.board.service.TmdbAPIService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 
@@ -53,32 +53,31 @@ public class BoardController {
 	
 	//영화상세
 	@GetMapping("/movieDetail") //?seqno=name
-	public String movieDetail(@PathVariable Long seqno, @RequestParam("page") int pageNum,
-			@RequestParam(name="keyword",defaultValue="",required=false) String keyword,
-			Model model, HttpSession session) throws Exception {
-				MovieEntity entity = movieService.getMovieByCode(seqno);
+	public void movieDetail(Model model, @RequestParam("title") Long no) 
+					throws Exception {
+				MovieEntity entity = movieService.getMovieByCode(no);
 
 		//세션 email값 가져 오기
-		String sessionEmail = (String)session.getAttribute("email");
-		
-		//좋아요/싫어요 처리
-		LikeEntity likeCheckView = service.likeCheckView(seqno,sessionEmail);
-		
-		//초기에 좋아요/싫어요 등록이 안되어져 있을 경우 "N"으로 초기화
-		if(likeCheckView == null) {
-			model.addAttribute("LikeCheck", "N");
-			model.addAttribute("DislikeCheck", "N");
-		} else if(likeCheckView != null) {
-			model.addAttribute("LikeCheck", likeCheckView.getLikecheck());
-			model.addAttribute("DislikeCheck", likeCheckView.getDislikecheck()); 
-		}
-		
-		model.addAttribute("view", service.view(seqno));
-		model.addAttribute("page", pageNum);
-		model.addAttribute("keyword", keyword);	
+//		String sessionEmail = (String)session.getAttribute("email");
+//		
+//		//좋아요/싫어요 처리
+//		LikeEntity likeCheckmovie = service.likeCheckmovie(seqno,sessionEmail);
+//		
+//		//초기에 좋아요/싫어요 등록이 안되어져 있을 경우 "N"으로 초기화
+//		if(likeCheckmovie == null) {
+//			model.addAttribute("LikeCheck", "N");
+//			model.addAttribute("DislikeCheck", "N");
+//		} else if(likeCheckmovie != null) {
+//			model.addAttribute("LikeCheck", likeCheckmovie.getLikecheck());
+//			model.addAttribute("DislikeCheck", likeCheckmovie.getDislikecheck()); 
+//		}
+//		
+		model.addAttribute("movie", entity);
+//		model.addAttribute("page", pageNum);
+//		model.addAttribute("keyword", keyword);	
 	}
 	
-//	public void getView(@RequestParam("seqno") Long seqno, @RequestParam("page") int pageNum,
+//	public void getmovie(@RequestParam("seqno") Long seqno, @RequestParam("page") int pageNum,
 //			@RequestParam(name="keyword",defaultValue="",required=false) String keyword,
 //			Model model, HttpSession session) throws Exception {
 //		model.addAttribute("movie",movieService.getMovieInfo("20192206").block());
@@ -86,18 +85,18 @@ public class BoardController {
 ////		String sessionEmail = (String)session.getAttribute("email");
 ////		
 ////		//좋아요/싫어요 처리
-////		LikeEntity likeCheckView = service.likeCheckView(seqno,sessionEmail);
+////		LikeEntity likeCheckmovie = service.likeCheckmovie(seqno,sessionEmail);
 ////		
 ////		//초기에 좋아요/싫어요 등록이 안되어져 있을 경우 "N"으로 초기화
-////		if(likeCheckView == null) {
+////		if(likeCheckmovie == null) {
 ////			model.addAttribute("myLikeCheck", "N");
 ////			model.addAttribute("myDislikeCheck", "N");
-////		} else if(likeCheckView != null) {
-////			model.addAttribute("myLikeCheck", likeCheckView.getLikecheck());
-////			model.addAttribute("myDislikeCheck", likeCheckView.getDislikecheck()); 
+////		} else if(likeCheckmovie != null) {
+////			model.addAttribute("myLikeCheck", likeCheckmovie.getLikecheck());
+////			model.addAttribute("myDislikeCheck", likeCheckmovie.getDislikecheck()); 
 ////		}
 //		
-////		model.addAttribute("view", service.view(seqno));
+////		model.addAttribute("movie", service.movie(seqno));
 ////		model.addAttribute("page", pageNum);
 ////		model.addAttribute("keyword", keyword);	
 //	}
@@ -127,16 +126,16 @@ public class BoardController {
 //		}		
 //
 //		//tbl_like 테이블 입력/수정
-//		LikeEntity likeCheckView = service.likeCheckView(seqno,email);
-//		if(likeCheckView == null) //좋아요/싫어요를 등록한 적이 없음 
+//		LikeEntity likeCheckmovie = service.likeCheckmovie(seqno,email);
+//		if(likeCheckmovie == null) //좋아요/싫어요를 등록한 적이 없음 
 //				service.likeCheckRegistry(seqno, email, mylikecheck,
 //						mydislikecheck, likeDate, dislikeDate);
 //			else //좋아요/싫어요를 등록한 적이 있음
 //				service.likeCheckUpdate(seqno, email, mylikecheck,
 //						mydislikecheck, likeDate, dislikeDate); 
 //		
-//		long likeCnt = service.view(seqno).getLikecnt();
-//		long dislikeCnt = service.view(seqno).getDislikecnt();
+//		long likeCnt = service.movie(seqno).getLikecnt();
+//		long dislikeCnt = service.movie(seqno).getDislikecnt();
 //		
 //		switch(checkCnt) {
 //		case 1: likeCnt--; break;

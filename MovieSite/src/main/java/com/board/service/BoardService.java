@@ -12,13 +12,13 @@ import com.board.entity.LikeEntity;
 public interface BoardService {
 	
 	//영화 상세 정보 보기
-	public MovieDTO view(Long seqno) throws Exception;
+//	public MovieDTO view(Long seqno) throws Exception;
 	
 	//게시물 조회수 증가
 	public void hitno(Long seqno) throws Exception;
 	
     // 좋아요/싫어요 관련
-    public void boardLikeUpdate(MovieDTO movie) throws Exception;
+//    public void boardLikeUpdate(MovieDTO movie) throws Exception;
     public LikeEntity likeCheckView(Long movieseqno, String email) throws Exception;
     public void likeCheckRegistry(Long movieseqno, String email, String likeCheck, String dislikeCheck) throws Exception;
     public void likeCheckUpdate(Long movieseqno, String email, String likeCheck, String dislikeCheck) throws Exception;
