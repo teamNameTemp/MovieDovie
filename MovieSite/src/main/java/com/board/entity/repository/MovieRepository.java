@@ -1,5 +1,6 @@
 package com.board.entity.repository;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -21,6 +22,6 @@ public interface MovieRepository extends JpaRepository<MovieEntity, Long>{
 			+ "where seqno = :seqno",nativeQuery = true)
 	public void hitno(@Param("seqno") Long seqno);
 	
-	 Optional<MovieEntity> findByMovieNm(String movieNm);
-
+	public Optional<MovieEntity> findByMovieNm(String movieNm);
+	public MovieEntity findByMovieCd(String movieCd);
 }

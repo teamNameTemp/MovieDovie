@@ -2,6 +2,8 @@ package com.board.entity;
 
 import java.time.LocalDateTime;
 
+import com.board.entity.movie.MovieEntity;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;

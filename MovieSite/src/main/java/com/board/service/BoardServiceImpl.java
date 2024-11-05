@@ -5,12 +5,12 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
-import com.board.dto.MovieDTO;
 import com.board.dto.ReplyInterface;
+import com.board.dto.movie.KobisMovieDTO;
 import com.board.entity.LikeEntity;
 import com.board.entity.MemberEntity;
-import com.board.entity.MovieEntity;
 import com.board.entity.ReplyEntity;
+import com.board.entity.movie.MovieEntity;
 import com.board.entity.repository.LikeRepository;
 import com.board.entity.repository.MemberRepository;
 import com.board.entity.repository.MovieRepository;
@@ -29,11 +29,6 @@ public class BoardServiceImpl implements BoardService {
 	
 	//게시물 목록 보기
 	
-	//상품 상세 정보 보기
-	@Override
-	public MovieDTO view(Long seqno) throws Exception {
-		return movieRepository.findById(seqno).map(view -> new MovieDTO(view)).get();
-	}
 	
 	//게시물 조회수 증가
 	@Override
@@ -80,13 +75,6 @@ public class BoardServiceImpl implements BoardService {
 //		likeRepository.save(likeEntity);
 	}
 	
-	@Override
-	public void boardLikeUpdate(MovieDTO movie) throws Exception{
-		MovieEntity movieEntity = movieRepository.findById(movie.getSeqno()).get();
-		movieEntity.setLikecnt(movie.getLikecnt());
-		movieEntity.setDislikecnt(movie.getDislikecnt());
-		movieRepository.save(movieEntity);
-	}
 
 	//댓글 목록 보기
 	@Override
@@ -125,6 +113,18 @@ public class BoardServiceImpl implements BoardService {
 		ReplyEntity replyEntity = replyRepository
 				.findById(reply.getReplyseqno()).get();
 		replyRepository.delete(replyEntity);	
+	}
+
+	@Override
+	public void boardLikeUpdate(KobisMovieDTO board) throws Exception {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public KobisMovieDTO view(Long seqno) throws Exception {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }
