@@ -5,16 +5,23 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="/css/movieDetailStyle.css">
-    <th:block th:replace="/fragments/header::header">
+    <th:block th:replace="/fragments/header::header"></th:block>
 
     <title>영화 상세</title>
 
 <script>
 
-	//화면 렌더링 이후 발생할 이벤트에서 사용될 광역 변수 설정
-	//var number = 1;
-	//var totalPrice = parseInt('[[${view.p_price}]]'); //가격 아직 없음
-	//var price = parseInt('[[${view.p_price}]]');
+	// 로그인 체크 함수
+	function checkLogin() {
+		const email = '[[${session.email}]]';
+		if (!email) {
+			if (confirm('로그인이 필요한 서비스입니다.\n로그인 페이지로 이동하시겠습니까?')) {
+				window.location.href = '/member/login';  // 로그인 페이지 URL
+			}
+			return false;
+		}
+		return true;
+	}
 	
 	//로그아웃 처리
 	const logout = () => {
@@ -30,6 +37,7 @@
 */	
 	//장바구니에 상품 담기
 	const cart = async (email, movieseqno) => {
+		if (!checkLogin()) return;
 		try {
 			const csrfToken = document.querySelector('meta[name="_csrf"]').content;
 			const response = await fetch('/board/Cart', {
@@ -64,7 +72,8 @@
 	//관심상품 
 	const likeCheck = async (type,email) => {
 		
-		//재고가 0이면 장바구니 담기 버튼 비활성화 --> 관심상품 관리와 상관 없음
+		//재고가 0이면 장바구니 담기 버튼 비활성화: 관심상품 관리와 상관 없음
+		
 		const stock = parseInt('[[${view.p_stock}]]');
 		const btnCart = document.getElementById('btn_cart');  
 		
@@ -105,10 +114,8 @@
 			}).catch((error)=> {				
 				console.log("error = " + error);
 			});
-		
-		
-//	} 
-	
+//	}
+*/
 </script>
 
 <script src="/js/logout.js"></script>
@@ -128,9 +135,7 @@
 	        	</div>
 	        	
 	            <div> 
-	            	<input type="button" class="featured-button" value="장바구니 담기 | 가격" th:onclick="cart([[$session.email]],[[${view.seqno}]])">
-	            	
-
+	            	<input type="button" class="featured-button" value="장바구니 담기 | 가격" th:onclick="cart([[${session.email}]],[[${view.seqno}]])">
 	            </div>
 			</div>
 				<br><br><br><br><br><br><br><br><br><br>
@@ -176,29 +181,22 @@
 	            <h2 class="featured-desc">출연</h2>
 	            <div class="movie-list-wrapper">
 		            <div class="movie-list">
-						<div class="movie-list-item-img">
-							<img th:src="@{/images/actors/{imageName}.jpg}" th:alt="${actorName}">
-		                    <h4 th:text="${actorName}"></h4> 
-		                </div>
-		                <div class="movie-list-item-img">
-							<img th:src="@{/images/actors/{imageName}.jpg}" th:alt="${actorName}">
-		                    <h4 th:text="${actorName}"></h4>
-		                </div>
-		                <div class="movie-list-item-img">
-							<img th:src="@{/images/actors/{imageName}.jpg}" th:alt="${actorName}">
-		                    <h4 th:text="${actorName}"></h4>
-		                </div>
-		                <div class="movie-list-item-img">
-							<img th:src="@{/images/actors/{imageName}.jpg}" th:alt="${actorName}">
-		                    <h4 th:text="${actorName}"></h4>
-		                </div>
-		                <div class="movie-list-item-img">
-							<img th:src="@{/images/actors/{imageName}.jpg}" th:alt="${actorName}">
-		                    <h4 th:text="${actorName}"></h4>
-		                </div>
-						<div class="movie-list-item-img">
-							<img th:src="@{/images/actors/{imageName}.jpg}" th:alt="${actorName}">
-							<h4 th:text="${actorName}"></h4>
+						<!-- 배우 목록을 반복 처리 -->
+						<div th:each="actor : ${actors}" class="movie-list-item-img">
+							<!-- 이미지 처리 -->
+							<img th:src="@{/images/actors/{name}.jpg(name=${actor.imageName})}" 
+								 th:alt="${actor.name}"
+								 th:onerror="this.src='/images/default-actor.jpg'"
+								 loading="lazy"
+								 class="actor-image">
+							
+							<!-- 배우 이름 -->
+							<h4 th:text="${actor.name}" class="actor-name"></h4>
+							
+							<!-- 배우 역할 (있는 경우) -->
+							<p th:if="${actor.role != null}" 
+							   th:text="${actor.role}" 
+							   class="actor-role"></p>
 						</div>
 		            </div>
 	            </div>
@@ -207,14 +205,26 @@
 		    <!--리뷰-->
 		    <div>
 		        <h2 class="featured-desc">리뷰</h2> <br>
-				<button class="featured-button">
-					<img width="28" height="28" src="https://static.kinolights.com/icon/legacy/ic-smile-face-disable.svg" alt="smile face">
-					<span>좋아요</span>
+				<button class="featured-button" 
+						aria-label="좋아요 버튼"
+						role="button"
+						tabindex="0">
+					<img width="28" height="28" 
+						 th:src="${userLiked ? '/images/smile-face-active.svg' : '/images/smile-face-disable.svg'}" 
+						 alt="좋아요 아이콘"
+						 aria-hidden="true">
+					<span class="button-text">좋아요</span>
 				</button>
 				<span class="featured-desc" style="text-align: right;">[[${view.likecnt}]] vs [[${view.dislikecnt}]]</span>
-				<button class="featured-button">
-					<img width="28" height="28" src="https://static.kinolights.com/icon/legacy/ic-angry-face-disable.svg" alt="angry face">
-					<span>싫어요</span>
+				<button class="featured-button" 
+						aria-label="싫어요 버튼"
+						role="button"
+						tabindex="0">
+					<img width="28" height="28" 
+						th:src="${userLiked ? '/images/angry-face-active.svg' : '/images/smile-face-disable.svg'}" 
+						alt="싫어요 아이콘"
+						aria-hidden="true">
+					<span class="button-text">싫어요</span>
 				</button>
 				<br><br>
 				
@@ -253,22 +263,25 @@
 		    <!-- 함께 볼만한 영화 섹션 -->
 		    <div class="section">
 		        <h2 class="featured-desc">함께 볼만한 영화</h2>
-		        <div class="image-container" >
-		            <button class="image-button">
-		                <img src="#" alt="추천 영화 1" class="recommended-poster">
-		            </button>
-		            <button class="image-button">
-		                <img src="#" alt="추천 영화 2" class="recommended-poster">
-		            </button>
-		            <button class="image-button">
-		                <img src="#" alt="추천 영화 3" class="recommended-poster">
-		            </button>
-		
+		        <div class="image-container">
+		            <div th:each="movie : ${recommendedMovies}" class="movie-item">
+		                <a th:href="@{/board/movieDetail/{seqno}(seqno=${movie.seqno})}"
+		                   class="movie-link">
+		                    <img th:src="@{${movie.posterUrl}}" 
+		                         th:alt="${movie.title}"
+		                         loading="lazy"
+		                         width="200"
+		                         height="300"
+		                         class="movie-poster">
+		                    <div class="movie-info">
+		                        <h3 th:text="${movie.title}"></h3>
+		                        <p th:text="${movie.year}"></p>
+		                    </div>
+		                </a>
+		            </div>
 		        </div>
 		    </div>
 		</div>
 	</div>
 </body>
 </html>
-
-

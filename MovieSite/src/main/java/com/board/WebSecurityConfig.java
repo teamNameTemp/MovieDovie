@@ -5,10 +5,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-
-import com.board.service.UserDetailsServiceImpl;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -21,8 +18,6 @@ public class WebSecurityConfig {
 
 	private final AuthSuccessHandler authSuccessHandler;
 	private final AuthFailureHandler authFailureHandler;
-	private final UserDetailsServiceImpl userDetailService;
-
 	// 스프링 시큐리티 적용 제외 대상 설정--> 스프링빈을 등록
 	@Bean
 	WebSecurityCustomizer webSecurityCustomizer() {

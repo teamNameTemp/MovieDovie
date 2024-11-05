@@ -1,8 +1,6 @@
 package com.board.dto;
 
 import com.board.entity.BookmarkEntity;
-import com.board.entity.LikeEntity;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;

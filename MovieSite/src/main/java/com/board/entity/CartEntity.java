@@ -41,9 +41,4 @@ public class CartEntity {
     
     @Column(name = "regdate")
     private LocalDateTime regDate;
-
-    public Object getCartSeqno() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getCartSeqno'");
-    }
 }
