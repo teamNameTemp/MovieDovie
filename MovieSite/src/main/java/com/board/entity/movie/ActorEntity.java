@@ -1,21 +1,31 @@
 package com.board.entity.movie;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToMany;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 
+@ToString(exclude="movies")
 @Getter
 @Setter
 @Entity(name = "actor")
 @Table(name="tbl_actor")
+@NoArgsConstructor
 public class ActorEntity {
 	@Id
 	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator="ACTOR_SEQ")
@@ -34,11 +44,7 @@ public class ActorEntity {
 	@Column(name="castEn",nullable=true)
 	private String castEn;
 	
-
-	public ActorEntity(Map<String, Object> data) {
-		this.peopleNm = (String)data.get("peopleNm");
-		this.peopleNmEn = (String)data.get("peopleNmEn");
-		this.cast = (String)data.get("cast");
-		this.castEn = (String)data.get("castEn");
-	}
+	@ManyToOne(fetch=FetchType.LAZY)
+	@JoinColumn(name="movie_cd",nullable=true)
+	private MovieEntity movie;
 }

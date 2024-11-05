@@ -1,8 +1,8 @@
 package com.board.entity.movie;
 
 import java.util.ArrayList;
+
 import java.util.List;
-import java.util.Map;
 
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.DynamicInsert;
@@ -13,18 +13,13 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.JoinTable;
-import jakarta.persistence.ManyToMany;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
-@AllArgsConstructor
+import lombok.ToString;
 @NoArgsConstructor
 @Getter
 @Setter
@@ -33,12 +28,12 @@ import lombok.Setter;
 @DynamicInsert
 public class MovieEntity {
 	@Id
-	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator="MOVIE_SEQ")
-	@SequenceGenerator(name="MOVIE_SEQ", sequenceName = "tbl_movie_seq", initialValue = 1, allocationSize = 1)
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "MOVIE_SEQ")
+	@SequenceGenerator(name = "MOVIE_SEQ", sequenceName = "tbl_movie_seq", initialValue = 1, allocationSize = 1)
 	private long seqno;
-	
+
 	// 영화코드
-	@Column(name = "moviecd", nullable = false)
+	@Column(name = "moviecd", nullable = true)
 	private String movieCd;
 
 	// 순위
@@ -56,32 +51,26 @@ public class MovieEntity {
 	@Column(name = "prdt_year", nullable = true)
 	private String prdtYear;
 	// 제작국가
-	@ManyToMany(cascade = CascadeType.ALL)
-	@JoinTable(name = "movie_nation", 
-	joinColumns = @JoinColumn(name = "movie_id"), 
-	inverseJoinColumns = @JoinColumn(name = "nation_id"))
+	@OneToMany(mappedBy = "movie", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<NationEntity> nations = new ArrayList<>();
 
 	// 제작사
-	@ManyToMany(cascade = CascadeType.ALL)
-	@JoinTable(name = "movie_company", 
-	joinColumns = @JoinColumn(name = "movie_id"), 
-	inverseJoinColumns = @JoinColumn(name = "company_id"))
-	private List<CompanyEntity> companys = new ArrayList();
+	@OneToMany(mappedBy = "movie", cascade = CascadeType.ALL, orphanRemoval = true)
+	private List<CompanyEntity> companys = new ArrayList<>();
 
 	// 장르
-	@ManyToMany(cascade = CascadeType.ALL)
-	@JoinTable(name = "movie_genre", 
-	joinColumns = @JoinColumn(name = "movie_id"), 
-	inverseJoinColumns = @JoinColumn(name = "genre_id"))
-	private List<GenreEntity> genres = new ArrayList();
+	@OneToMany(mappedBy = "movie", cascade = CascadeType.ALL, orphanRemoval = true)
+	private List<GenreEntity> genres = new ArrayList<>();
 
-	@ManyToMany(cascade = CascadeType.ALL)
-	@JoinTable(name = "movie_actor", 
-	joinColumns = @JoinColumn(name = "movie_id", nullable=true), 
-	inverseJoinColumns = @JoinColumn(name = "actor_id",nullable=true))
-	private List<ActorEntity> actors = new ArrayList();
+	// 배우
+	@Column(nullable=true)
+	@OneToMany(mappedBy = "movie", cascade = CascadeType.ALL, orphanRemoval = true)
+	private List<ActorEntity> actors = new ArrayList<>();
 
+	// 관람
+	@Column(name="watch_grade_nm",nullable=true)
+	private String watchGradeNm;
+	
 	// 개봉일
 	@Column(name = "opendt", nullable = true)
 	private String openDt;
@@ -98,16 +87,15 @@ public class MovieEntity {
 	@Column(name = "showtime", nullable = true)
 	private String showtime;
 
-	@ManyToMany(cascade = CascadeType.ALL)
-	@JoinTable(name = "movie_director", 
-	joinColumns = @JoinColumn(name = "movie_id"), 
-	inverseJoinColumns = @JoinColumn(name = "director_id"))	private List<DirectorEntity> directors;
+	// 감독
+	@OneToMany(mappedBy = "movie", cascade = CascadeType.ALL, orphanRemoval = true)
+	private List<DirectorEntity> directors = new ArrayList<>();
 
 	// 관리자가 업로드한 이미지
 	@Column(name = "img_path", nullable = true)
 	private String imgPath;
 
-	//조회(hitno)
+	// 조회(hitno)
 	@Column(name = "hitno", nullable = true)
 	@ColumnDefault("0")
 	private Integer hitno;
@@ -120,5 +108,40 @@ public class MovieEntity {
 	// 업로드여부(null)
 	@Column(name = "uploadcheck", nullable = true)
 	private String uploadCheck;
+
+	public void addNations(NationEntity entity) {
+		if (entity != null) {
+			nations.add(entity);
+			entity.setMovie(this);
+		}
+	}
+
+	public void addGenres(GenreEntity entity) {
+		if (entity != null) {
+			genres.add(entity);
+			entity.setMovie(this);
+		}
+	}
+
+	public void addDirectors(DirectorEntity entity) {
+		if (entity != null) {
+			directors.add(entity);
+			entity.setMovie(this);
+		}
+	}
+
+	public void addActors(ActorEntity entity) {
+		if (entity != null) {
+			actors.add(entity);
+			entity.setMovie(this);
+		}
+	}
+
+	public void addCompanys(CompanyEntity entity) {
+		if (entity != null) {
+			companys.add(entity);
+			entity.setMovie(this);
+		}
+	}
 
 }

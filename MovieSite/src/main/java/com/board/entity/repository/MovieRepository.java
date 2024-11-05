@@ -1,5 +1,7 @@
 package com.board.entity.repository;
 
+import java.util.Optional;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -18,5 +20,7 @@ public interface MovieRepository extends JpaRepository<MovieEntity, Long>{
 			+ "(select nvl(hitno,0) from jpa_movie where seqno = :seqno) + 1 "
 			+ "where seqno = :seqno",nativeQuery = true)
 	public void hitno(@Param("seqno") Long seqno);
+	
+	 Optional<MovieEntity> findByMovieNm(String movieNm);
 
 }

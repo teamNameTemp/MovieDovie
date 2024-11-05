@@ -5,8 +5,8 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
-import com.board.dto.MovieDTO;
 import com.board.dto.ReplyInterface;
+import com.board.dto.movie.KobisMovieDTO;
 import com.board.entity.LikeEntity;
 import com.board.entity.MemberEntity;
 import com.board.entity.ReplyEntity;
@@ -31,7 +31,7 @@ public class BoardServiceImpl implements BoardService {
 	
 	//상품 상세 정보 보기
 	@Override
-	public MovieDTO view(Long seqno) throws Exception {
+	public KobisMovieDTO view(Long seqno) throws Exception {
 //		return movieRepository.findById(seqno).map(view -> new MovieDTO(view)).get();
 		return null;
 	}
@@ -84,7 +84,7 @@ public class BoardServiceImpl implements BoardService {
 	}
 	
 	@Override
-	public void boardLikeUpdate(MovieDTO movie) throws Exception{
+	public void boardLikeUpdate(KobisMovieDTO movie) throws Exception{
 //		MovieEntity movieEntity = movieRepository.findById(movie.getSeqno()).get();
 //		movieEntity.setLikecnt(movie.getLikecnt());
 //		movieEntity.setDislikecnt(movie.getDislikecnt());

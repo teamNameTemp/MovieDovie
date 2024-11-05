@@ -1,15 +1,20 @@
 package com.board.service;
 
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import com.board.dto.movie.ActorDetailDTO;
+import com.board.dto.movie.TmdbMovieDTO.Movie;
+import com.board.dto.movie.TmdbMovieDTO.MovieSearchResponse;
+import com.board.entity.movie.GenreEntity;
+import com.board.entity.movie.MovieEntity;
 
 import jakarta.annotation.PostConstruct;
 import lombok.extern.log4j.Log4j2;
@@ -81,27 +86,69 @@ public class TmdbAPIService {
             .bodyToMono(ActorDetailDTO.class);
     }
 
-    public Mono<Map<String, Object>> searchTmdbMovie(String movieNm, String year) {
+//    public Mono<Map<String, Object>> searchTmdbMovie(String movieNm) {
+//        return webClient.get()
+//                .uri(uriBuilder -> uriBuilder
+//                        .path("/search/movie")
+//                        .queryParam("api_key", token)
+//                        .queryParam("query", movieNm)
+//                        .queryParam("language", "ko-KR")
+//                        .build())
+//                .retrieve()
+//                .bodyToMono(new ParameterizedTypeReference<Map<String, Object>>() {})
+//                .flatMap(response -> {
+//                    List<Map<String, Object>> results = (List<Map<String, Object>>) response.get("results");
+//                    return results != null && !results.isEmpty() ? 
+//                        Mono.just(results.get(0)) : 
+//                        Mono.empty();
+//                })
+//                .onErrorResume(e -> {
+//                    log.error("Error searching TMDB movie: ", e);
+//                    return Mono.empty();
+//                });
+//    }
+//    
+    public Mono<MovieEntity> searchAndConvertMovie(String title) {
+        return searchMovie(title)
+                .map(this::convertToMovieEntity);
+    }
+
+    public Mono<MovieSearchResponse> searchMovie(String title) {
         return webClient.get()
                 .uri(uriBuilder -> uriBuilder
                         .path("/search/movie")
-                        .queryParam("api_key", token)
-                        .queryParam("query", movieNm)
-                        .queryParam("year", year)
+                        .queryParam("query", title)
                         .queryParam("language", "ko-KR")
                         .build())
                 .retrieve()
-                .bodyToMono(new ParameterizedTypeReference<Map<String, Object>>() {})
-                .flatMap(response -> {
-                    List<Map<String, Object>> results = (List<Map<String, Object>>) response.get("results");
-                    return results != null && !results.isEmpty() ? 
-                        Mono.just(results.get(0)) : 
-                        Mono.empty();
-                })
-                .onErrorResume(e -> {
-                    log.error("Error searching TMDB movie: ", e);
-                    return Mono.empty();
-                });
+                .bodyToMono(MovieSearchResponse.class);
     }
 
+    private MovieEntity convertToMovieEntity(MovieSearchResponse response) {
+        MovieEntity movieEntity = new MovieEntity();
+
+        if (response.getResults() != null && !response.getResults().isEmpty()) {
+            Movie movie = response.getResults().get(0);
+
+            movieEntity.setMovieNm(movie.getTitle());
+            movieEntity.setPosterPath(movie.getPosterPath());
+            movieEntity.setOverview(movie.getOverview());
+            movieEntity.setOpenDt(movie.getReleaseDate());
+
+            // Set other fields that are available in MovieEntity but not in the DTO
+            movieEntity.setMovieCd(String.valueOf(movie.getId())); // Using ID as movie code
+            movieEntity.setMovieNmEn(""); // Not available in the DTO
+            movieEntity.setPrdtYear(movie.getReleaseDate() != null ? movie.getReleaseDate().substring(0, 4) : "");
+
+            // Initialize empty lists for fields that are not populated
+            movieEntity.setNations(new ArrayList<>());
+            movieEntity.setCompanys(new ArrayList<>());
+            movieEntity.setGenres(new ArrayList<>());
+            movieEntity.setActors(new ArrayList<>());
+            movieEntity.setDirectors(new ArrayList<>());
+        }
+
+        return movieEntity;
+    }
 }
+
