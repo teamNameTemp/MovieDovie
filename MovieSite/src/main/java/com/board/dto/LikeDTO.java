@@ -1,9 +1,6 @@
 package com.board.dto;
 
 import com.board.entity.LikeEntity;
-import com.board.entity.MemberEntity;
-import com.board.entity.MovieEntity;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -19,8 +16,8 @@ public class LikeDTO {
 	private Long seqno;
 	private String likecheck;
 	private String dislikecheck;
-    private MemberEntity email;
-    private MovieEntity movieseqno;
+    private String email;
+    private Long movieseqno;
 	
 	//Entity --> DTO 이동
 	public LikeDTO(LikeEntity likeEntity) {

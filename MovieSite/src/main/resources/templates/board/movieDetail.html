@@ -29,35 +29,35 @@
 	}
 */	
 	//장바구니에 상품 담기
-	const cart = async (email, seqno) => { //? movieseqno from tbl_rent
-
-		//number += pCartQuantity; //선택한 상품 갯수에다가 기존 장바구니에 담겨져 있는 이 상품의 갯수를 더한다 
-		
-		if(email === '' || email === null) { //논리적 or, 둘중하나만 참이면..true
-			alert("로그인 이후 이용할 수 있는 서비스입니다.");
-			return;
-		}
-
-		await fetch('/board/Cart',{
-			  method: "POST",
-			  headers: {
-			    "Content-Type": "application/json", //JSON 형식의 데이터를 보낸다는 것을 서버에 알립
-			  },
-			  body: JSON.stringify({ // 장바구니에 추가할 상품에 대한 정보를 JSON 형식으로 포함
-					cart_email: email, //from TBL_RENT
-					seqno: seqno, //from TBL_MOVIE
-			  }),				
-			}).then((response)=> response.text())
-				.then((data) => {
-					if(data != '' || data != null){
-						alert("장바구니에 상품을 넣어 두었습니다.");
-					} else {
-						alert("시스템 장애로 장바구니 담기가 실패했습니다.");		
-					}
-			}).catch((error)=> {				
-				console.log("error = " + error);
+	const cart = async (email, movieseqno) => {
+		try {
+			const csrfToken = document.querySelector('meta[name="_csrf"]').content;
+			const response = await fetch('/board/Cart', {
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json",
+					"X-CSRF-TOKEN": csrfToken
+				},
+				body: JSON.stringify({ 
+					cart_email: email,
+					movieseqno: movieseqno,
+				}),              
 			});
-		
+			
+			if (!response.ok) {
+				throw new Error(`HTTP error! status: ${response.status}`);
+			}
+			
+			const data = await response.text();
+			if (!data) {
+				throw new Error('응답 데이터가 없습니다.');
+			}
+			
+			alert("장바구니에 상품을 담았습니다.");
+		} catch (error) {
+			console.error("장바구니 담기 실패:", error);
+			alert("장바구니 담기에 실패했습니다. 다시 시도해주세요.");
+		}
 	}
 
 	/*
@@ -107,7 +107,7 @@
 			});
 		
 		
-	} */
+//	} 
 	
 </script>
 
@@ -128,7 +128,7 @@
 	        	</div>
 	        	
 	            <div> 
-	            	<input type="button" class="featured-button" value="장바구니 담기 | 가격" th:onclick="cart([[${session.email]],[[${view.seqno}]])">
+	            	<input type="button" class="featured-button" value="장바구니 담기 | 가격" th:onclick="cart([[$session.email]],[[${view.seqno}]])">
 	            	
 
 	            </div>
@@ -137,12 +137,12 @@
 
 	        <div class="featured-desc">
 	            <h2 style="text-align: left;">작품정보</h2> <br>
-	            <p style="text-align: left;"> 줄[[${v거iew.}]]리 </p>
+	            <p style="text-align: left;">[[${view.summary}]]</p>
 	            <hr><br>
 	            <div class="row">
 	                <div class="col">
 						<th><b>감독</b></th>
-	                    <td>[[${view.directors}]]</td>
+	                    <td>[[${view.directorName}]]</td>
 	                </div>
 	                <div class="col">	                    						
 	                	<th><b>장르</b></th>
@@ -176,30 +176,30 @@
 	            <h2 class="featured-desc">출연</h2>
 	            <div class="movie-list-wrapper">
 		            <div class="movie-list">
-		                <div class="movie-list-item-img">
-		                    <img src="C:\Users\gladius\Desktop\MovieSite\MovieSite\src\main\resources\static\images\20231202_163527.jpg" alt="director" width= 100%;>
-		                    <h4>director_name</h4>
+						<div class="movie-list-item-img">
+							<img th:src="@{/images/actors/{imageName}.jpg}" th:alt="${actorName}">
+		                    <h4 th:text="${actorName}"></h4> 
 		                </div>
 		                <div class="movie-list-item-img">
-		                    <img src="C:\Users\gladius\Desktop\MovieSite\MovieSite\src\main\resources\static\images\20231202_163532.jpg" alt="actor1" width= 100%;>
-		                    <h4>actor1_name</h4> 
+							<img th:src="@{/images/actors/{imageName}.jpg}" th:alt="${actorName}">
+		                    <h4 th:text="${actorName}"></h4>
 		                </div>
 		                <div class="movie-list-item-img">
-		                    <img src="C:\Users\gladius\Desktop\MovieSite\MovieSite\src\main\resources\static\images\20231202_163730.jpg" alt="actor2" width= 100%;>
-		                    <h4>actor2_name</h4>
+							<img th:src="@{/images/actors/{imageName}.jpg}" th:alt="${actorName}">
+		                    <h4 th:text="${actorName}"></h4>
 		                </div>
 		                <div class="movie-list-item-img">
-		                    <img src="C:\Users\gladius\Desktop\MovieSite\MovieSite\src\main\resources\static\images\20231202_163743.jpg#" alt="actor3" width= 100%;>
-		                    <h4>actor3_name</h4>
+							<img th:src="@{/images/actors/{imageName}.jpg}" th:alt="${actorName}">
+		                    <h4 th:text="${actorName}"></h4>
 		                </div>
 		                <div class="movie-list-item-img">
-		                    <img src="C:\Users\gladius\Desktop\MovieSite\MovieSite\src\main\resources\static\images\20231202_163808.jpg" alt="actor4" width= 100%;>
-		                    <h4>actor4_name</h4>
+							<img th:src="@{/images/actors/{imageName}.jpg}" th:alt="${actorName}">
+		                    <h4 th:text="${actorName}"></h4>
 		                </div>
-		                <div class="movie-list-item-img">
-		                    <img src="C:\Users\gladius\Desktop\MovieSite\MovieSite\src\main\resources\static\images\20231202_163902.jpg" alt="actor5" width= 100%;>
-		                    <h4>actor5_name</h4>
-		                </div>
+						<div class="movie-list-item-img">
+							<img th:src="@{/images/actors/{imageName}.jpg}" th:alt="${actorName}">
+							<h4 th:text="${actorName}"></h4>
+						</div>
 		            </div>
 	            </div>
 	        </div>
@@ -234,7 +234,7 @@
 				</div> 
 		    </div>
 
-		    <!--영화 영상/이미지 섹션-->
+		    <!-- 영화 영상/이미지 섹션
 		    <div class="previewDiv">
 		        <h2 class="featured-desc">영상/ 이미지</h2>
 		        <div class="image-container">
@@ -248,20 +248,20 @@
 		                <img src="C:\Users\gladius\Desktop\MovieSite\MovieSite\src\main\resources\static\images\20231202_163902.jpg" alt="영화 이미지 2">
 		            </button>
 		        </div>
-		    </div>
+		    </div> -->
 		
 		    <!-- 함께 볼만한 영화 섹션 -->
 		    <div class="section">
 		        <h2 class="featured-desc">함께 볼만한 영화</h2>
 		        <div class="image-container" >
 		            <button class="image-button">
-		                <img src="recommended1.jpg" alt="추천 영화 1" class="recommended-poster">
+		                <img src="#" alt="추천 영화 1" class="recommended-poster">
 		            </button>
 		            <button class="image-button">
-		                <img src="recommended2.jpg" alt="추천 영화 2" class="recommended-poster">
+		                <img src="#" alt="추천 영화 2" class="recommended-poster">
 		            </button>
 		            <button class="image-button">
-		                <img src="recommended3.jpg" alt="추천 영화 3" class="recommended-poster">
+		                <img src="#" alt="추천 영화 3" class="recommended-poster">
 		            </button>
 		
 		        </div>
