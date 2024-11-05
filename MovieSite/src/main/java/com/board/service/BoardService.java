@@ -8,6 +8,8 @@ import com.board.dto.MovieDTO;
 import com.board.dto.ReplyInterface;
 import com.board.entity.LikeEntity;
 
+import lombok.RequiredArgsConstructor;
+
 @Service
 public interface BoardService {
 	

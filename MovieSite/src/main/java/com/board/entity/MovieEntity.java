@@ -53,7 +53,7 @@ public class MovieEntity {
 	private String title;
 	
 	@Column(name="titleen", length=200, nullable=false)
-	private String titleen;
+	private String titleen; 
 	
 	@Column(name="prodtyear", nullable=false)
 	private LocalDateTime prodtyear;

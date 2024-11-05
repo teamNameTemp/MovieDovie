@@ -30,7 +30,7 @@ public class BoardServiceImpl implements BoardService {
 	
 	//게시물 목록 보기
 	
-	//상품 상세 정보 보기
+	//영화 상세 정보 보기
 	@Override
 	@Transactional
 	public MovieDTO view(Long seqno) throws Exception {
