@@ -8,7 +8,12 @@ import org.springframework.data.jpa.repository.Query;
 import com.board.entity.LikeEntity;
 
 public interface LikeRepository extends JpaRepository<LikeEntity, Long>{
+	//select * from jpa_like where seqno = :seqno and email=:email
+		public LikeEntity findByMovieseqnoAndEmail(Long movieseqno, String email);
 
+		List<LikeEntity> findByEmail(String email);
+	    List<LikeEntity> findByMovieseqno(Long movieseqno);
+	    
 	//각 영화에 대해 좋아요 %가 높은 영화 순으로 나열 (좋아요 수 10개 이상부터 보여주기.)
 	@Query(value = "select movieseqno, "
 			+ "count(*) as totalCount, "

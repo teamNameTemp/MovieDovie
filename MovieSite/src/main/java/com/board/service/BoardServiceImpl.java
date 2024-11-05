@@ -39,15 +39,6 @@ public class BoardServiceImpl implements BoardService {
 	
 	//게시물 목록 보기
 	
-	//영화 상세 정보 보기
-	@Override
-	@Transactional
-	public MovieDTO view(Long seqno) throws Exception {
-		return movieRepository.findById(seqno)
-            .map(MovieDTO::new)  // 람다식을 메서드 참조로 변경
-            .orElseThrow(() -> new EntityNotFoundException("영화를 찾을 수 없습니다."));
-    }
-	
 	//게시물 조회수 증가
 	@Override
 	@Transactional
@@ -85,17 +76,6 @@ public class BoardServiceImpl implements BoardService {
 		likeRepository.save(likeEntity);
 	}
 	
-	@Override
-    @Transactional
-	public void boardLikeUpdate(MovieDTO movie) throws Exception{
-		MovieEntity movieEntity = movieRepository.findById(movie.getSeqno())
-			.orElseThrow(() -> new EntityNotFoundException("영화를 찾을 수 없습니다."));
-
-		movieEntity.setLikecnt(movie.getLikecnt());
-		movieEntity.setDislikecnt(movie.getDislikecnt());
-		movieRepository.save(movieEntity);
-	}
-
 	//댓글 목록 보기
 	@Override
 	public List<ReplyInterface> replyView(ReplyInterface reply) throws Exception{
@@ -151,17 +131,5 @@ public class BoardServiceImpl implements BoardService {
     //         .map(MovieDTO::new)
     //         .toList();
     // }
-
-	@Override
-	public void boardLikeUpdate(KobisMovieDTO board) throws Exception {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public KobisMovieDTO view(Long seqno) throws Exception {
-		// TODO Auto-generated method stub
-		return null;
-	}
 
 }
