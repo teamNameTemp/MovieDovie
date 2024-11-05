@@ -4,14 +4,14 @@
 <meta charset="UTF-8">
 <title>회원 활동 통계</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://getbootstrap.com/docs/5.3/assets/css/docs.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+	<link rel="stylesheet" th:href="@{/css/styles.css}">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css">
 	<style>
-		 #wrap {width: 1000px; height: 1200px; font-size: 15px; text-align: center; margin : auto;}
+		 #wrap {width: 1200px; height: 1000px; font-size: 15px; text-align: center; margin : auto;}
 	 	.side {
 	 		display: flex;
-		 	float: left; width: 700px; height: 1000px; text-align: center; 
+		 	float: left; width: 700px; height: 902px; text-align: center; 
 		 	flex-direction: column; /* 세로 방향으로 정렬 */
 	    	justify-content: center; /* 수직 중앙 정렬 */
 	    	align-items: center; /* 수평 중앙 정렬 */
@@ -20,8 +20,20 @@
 	    .content1 {
 		    display: flex; flex-direction: column; align-items: center; justify-content: space-between;
 		    align-items: center; /* 수직 중앙 정렬 */
-		    width: 300px;
-		    height: 250px; /* 고정 높이 유지 */
+		    width: 500px;
+		    height: 280px; /* 고정 높이 유지 */
+		    text-align: center;
+		    text-align: center;
+		    float: left;
+		    margin: auto;
+		    min-height: 200px;
+		}
+		
+		.content2 {
+		    display: flex; flex-direction: column; align-items: center; justify-content: space-between;
+		    align-items: center; /* 수직 중앙 정렬 */
+		    width: 500px;
+		    height: 400px; /* 고정 높이 유지 */
 		    text-align: center;
 		    text-align: center;
 		    float: left;
@@ -30,29 +42,44 @@
 		}
 
 	 	.content {
-            width: 90%; /* 부모 너비에 맞춤 */
-            height: 90%; /*부모 너비에 맞춤*/
+            width: 100%; /* 부모 너비에 맞춤 */
+            height: 100%; /*부모 너비에 맞춤*/
             text-align: center;
             background-color: white;
-            padding: 1%; /* 패딩 10% */
-            border: 2px solid lightgray;
+            padding: 3%; /* 패딩 10% */
+            border: 1.8px solid lightgray;
             box-sizing: border-box; /* 패딩 포함한 크기 계산 */
         }
+        
+        .horicontent {
+            display: flex;  
+   			justify-content: space-between; /* 양쪽으로 배치 */
+            width: 100%; /* 부모 너비에 맞춤 */
+            height: 100%; /*부모 너비에 맞춤*/
+            text-align: center;
+        }
+        
+		        
+		.left-div, .right-div {
+		    width: 48%; /* 여백을 고려하여 너비 설정 */
+		    box-sizing: border-box;
+		}
+        
 		.progress-bar {
 		    width: 100%;
 		    height: 30px;
 		    background-color: #dedede;
 		    font-weight: 600;
-		    font-size: .8rem;
 		}
 		
 		.progress-bar .progress {
             height: 100%;
             padding: 0;
             text-align: center;
-            background-color: #4F98FF;
-            color: #111;
+            background-color:#4dbf00;
+            color: white;
         }
+        
 	    .positive {
             color: red; /* 방문자 수 증가 */
         }
@@ -65,22 +92,43 @@
 
 </head>
 <body class="p-3 m-0 border-0 bd-example m-0 border-0">
-<ul class="nav nav-pills">
-  <li class="nav-item">
-    <a class="nav-link active" aria-current="page" href="/master/memberStats">회원 활동 통계</a>
-  </li>
-  <li class="nav-item">
-    <a class="nav-link" href="/master/memberRequest">회원 요청사항 관리</a>
-  </li>
-  <li class="nav-item">
-    <a class="nav-link" href="/master/movieStats">영화 통계</a>
-  </li>
-  <li class="nav-item">
-    <a class="nav-link" href="/master/movieUpload">영화 업로드</a>
-  </li>
-</ul>
-
-<br>
+<div th:replace = "/fragments/nav/sidebar::sidebar"></div>
+ <div class="navbar">
+     <div class="navbar-container">
+         <!--  <div class="logo-container">-->
+             <h6 class="logo">Admin Page</h6>
+         <!--</div>-->
+         <div class="menu-container">
+             <ul class="menu-list">
+                 <li class="menu-list-item active">
+                 	<a href="/master/memberStats">회원 활동 통계</a>
+                 </li>
+                 <li class="menu-list-item">
+                 	<a href="/master/memberRequest">회원 요청사항 관리</a>
+                 </li>
+                 <li class="menu-list-item">
+                 	<a href="/master/movieStats">영화 통계</a>
+                 </li>
+                 <li class="menu-list-item">
+                 	<a href="/master/movieUpload">영화 업로드</a>
+                 </li>
+			</ul>
+		</div>
+		<div class="profile-container">
+             <img class="profile-picture" src="/img/masterprofile.png" alt="">
+             <div class="profile-text-container">
+                 <span class="profile-text">관리자</span>
+                 <i class="fas fa-caret-down"></i>
+             </div>
+             <div class="toggle">
+                 <i class="fas fa-moon toggle-icon"></i> 
+                 <i class="fas fa-sun toggle-icon"></i> 
+                 <div class="toggle-ball"></div>
+             </div>
+         </div>
+     </div>
+ </div>
+<br><br><br>
 <!--  
 <ul>
 	<li>회원 증감 수 확인</li>
@@ -95,71 +143,244 @@
 <div id="wrap">
 
 	<div class="side">
-		<div class="content"><b>대여 현황</b><br><br>
+		<div class="content"><b>대여 현황</b><br><br><br>
 				
-		[최근 일주일 간 대여 현황]<br>
+		[최근 일주일 간 대여 현황]<br><br>
 		<div>
-		  <canvas id="myChart"></canvas>
+		  <canvas id="weeklyRent"></canvas>
 		</div>
 		<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 		<script>
-		//DB와 맞물려서 데이터 가져오는 것 생각해보자..
-		  const ctx = document.getElementById('myChart');
-		
-		  new Chart(ctx, {
-		    type: 'bar',
-		    data: {
-		      labels: ['10/19', '10/20', '10/21', '10/22', '10/23', '10/24', '10/25'],
-		      datasets: [{
-		        label: '# of purchase',
-		        data: [5, 12, 19, 3, 5, 7, 3],
-		        borderWidth: 1
-		      }]
-		    },
-		    options: {
-		      scales: {
-		        y: {
-		          beginAtZero: true
-		        }
-		      }
-		    }
-		  });
+		  fetch('/master/weeklyRent')
+		  	.then(response => response.json())
+		  	.then(data => {
+		  		 const labels = data.map(item => {
+		  			 const date = new Date(item.date);
+		  			 return (date.getMonth() + 1) + '/' + date.getDate(); // MM/DD 형식으로 변환
+		  		  });
+		  		  const rentData = data.map(item => item.count); //대여수 생성
+		  	
+		  		  const ctx = document.getElementById('weeklyRent');
+				  new Chart(ctx, {
+				    type: 'bar',
+				    data: {
+				      labels: labels,
+				      datasets: [{
+				        label: '대여 수',
+				        data: rentData,
+				        borderWidth: 1,
+				        borderColor: '#4dbf00',
+				        backgroundColor: '#4dbf0090'
+				      }]
+				    },
+				    options: {
+					      scales: {
+					        y: {
+					          beginAtZero: true
+					        }
+					      }
+					    }
+					  });
+			  	})
+			  	.catch(error => console.error('Error fetching data:', error));
 		</script>
 		
-		<br><br>
+		<br><br><br>
 		
+		[월별 대여 현황]<br>
+		<div>
+		  <canvas id="MonthlyRent"></canvas>
+		</div>
+		<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+		<script>
+		  Promise.all([
+			  fetch('/master/MonthlyRentCurrentYear').then(response => response.json()),
+			  fetch('/master/MonthlyRentLastYear').then(response => response.json())
+		  ])
+	  	  .then(([currentYearData, lastYearData]) => {
+		      // 각 월의 대여 수를 저장할 배열 초기화
+		      const currentYearCounts = Array(12).fill(0);
+		      const lastYearCounts = Array(12).fill(0);
+		
+		      // 현재 연도 데이터 처리
+		      currentYearData.forEach(item => {
+		          const date = new Date(item.date);
+		          const month = date.getMonth(); // 0-11 범위
+		          currentYearCounts[month] += item.count; // 해당 월의 대여 수 누적
+		      });
+		
+		      // 작년 데이터 처리
+		      lastYearData.forEach(item => {
+		          const date = new Date(item.date);
+		          const month = date.getMonth(); // 0-11 범위
+		          lastYearCounts[month] += item.count; // 해당 월의 대여 수 누적
+		      });
+		
+		      // 월별 레이블 생성
+		      const monthLabels = Array.from({ length: 12 }, (_, i) => i + 1); // [1, 2, 3, ..., 12]
+		
+		      const ctxmonth = document.getElementById('MonthlyRent').getContext('2d');
+		
+		      new Chart(ctxmonth, {
+		          type: 'bar',
+		          data: {
+		              labels: monthLabels, // 월별 레이블
+		              datasets: [
+		                  {
+		                      label: '작년 대여 수',
+		                      data: lastYearCounts,
+		                      borderWidth: 1,
+		                      borderColor: '#FF6384',
+		                      backgroundColor: '#FF638490'
+		                  },
+		                  {
+		                      label: '올해 대여 수',
+		                      data: currentYearCounts,
+		                      borderWidth: 1,
+		                      borderColor: '#4dbf00',
+		                      backgroundColor: '#4dbf0090'
+		                  }
+		              ]
+		          },
+		          options: {
+		              scales: {
+		                  y: {
+		                      beginAtZero: true
+		                  }
+		              }
+		          }
+		      });
+		  })
+		  .catch(error => console.error('Error fetching data:', error));
+		</script>
+		
+		
+		
+		<!-- 
 		[누적 대여 현황]<br>
 		<div>
-		  <canvas id="myChartt"></canvas>
+		  <canvas id="RentCumulative"></canvas>
 		</div>
 		<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 		<script>
-		//DB와 맞물려서 데이터 가져오는 것 생각해보자..
-		  const ctxx = document.getElementById('myChartt');
-		
-		  new Chart(ctxx, {
-		    type: 'line',
-		    data: {
-		      labels: ['10/19', '10/20', '10/21', '10/22', '10/23', '10/24', '10/25'],
-		      datasets: [{
-		        label: '# of total purchase',
-		        data: [5, 17, 36, 44, 49, 56, 59],
-		        borderWidth: 1
-		      }]
-		    },
-		    options: {
-		      scales: {
-		        y: {
-		          beginAtZero: true
-		        }
-		      }
-		    }
-		  });
-		</script>
+		  fetch('/master/RentCumulative')
+		  	.then(response => response.json())
+		  	.then(data => {
+		  		 // 0이 아닌 누적 대여 수만 포함하도록 필터링
+		         const filteredData = data.filter(item => item.count > 0);
+
+		  		  const labels = filteredData.map(item => {
+		  			 const date = new Date(item.date);
+		  			 return (date.getMonth() + 1) + '/' + date.getDate(); // MM/DD 형식으로 변환
+		  		  });
+		  		  const cumulativeData = filteredData.map(item => item.count);
+		  	
+		  	
+				  const ctxx = document.getElementById('RentCumulative');
+				
+				  new Chart(ctxx, {
+				    type: 'line',
+				    data: {
+				      labels: labels,
+				      datasets: [
+				    	 {
+					        label: '누적 대여 수',
+					        data: cumulativeData,
+					        borderWidth: 1,
+					        borderColor: '#4dbf00',
+					        backgroundColor: '#4dbf0090'
+				         }
+				      ]
+				    },
+				    options: {
+				      scales: {
+				        y: {
+				          beginAtZero: true
+				        }
+				      }
+				    }
+				  });
+		  	})
+		  	.catch(error => console.error('Error fetching data:', error));
+		  
+		</script> -->
 		
 		</div>
 	</div>
 	
+	<div class="content2">
+		<div class="content">
+			<b>대여 파이프라인</b>
+			<div class="horicontent">
+				<div class="left-div">
+		        	<br><br>[대여 중 / 대여종료 비율]<br><br><br>
+					<div>
+					  <canvas id="RentPercent" width="230"></canvas>
+					</div>
+					<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+					<script>
+					  const ctxz = document.getElementById('RentPercent');
+					
+					  new Chart(ctxz, {
+					    type: 'doughnut',
+					    data: {
+					      labels: ['대여 중', '대여 종료'],
+					      datasets: [{
+					        label: '대여 건수',
+					        data: [47, 91],
+					        backgroundColor: ['#4dbf00', '#d2d2d2'],
+					        hoverOffset: 4,
+							borderRadius : 5,
+							spacing : 3
+					      }]
+					    },
+					    options: {
+					    	responsive: false,
+					    	cutout: 60
+					    }
+					  });
+					</script>
+				</div>
+				
+	        	<div class="right-div">
+	        		<br><br>[회원의 대여 현황 여부]<br><br>
+					<div>
+					  <canvas id="MemberRentPercent" width="250"></canvas>
+					</div>
+					<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+					<script>
+					  const ctxzx = document.getElementById('MemberRentPercent');
+					
+					  new Chart(ctxzx, {
+					    type: 'doughnut',
+					    data: {
+					      labels: ['현재 대여 중인 회원', '대여 중이지 않은 회원'],
+					      datasets: [{
+					        label: '회원 수',
+					        data: [55, 79],
+					        backgroundColor: ['#4dbf00', '#d2d2d2'],
+					        hoverOffset: 4,
+							borderRadius : 5,
+							spacing : 3
+					      }]
+					    },
+					    options: {
+					    	responsive: false,
+					    	cutout: 60
+					    }
+					  });
+					</script>
+	        	</div>	
+			</div>
+		</div>
+	</div>
+	<div class="content1">
+		<div class="content">
+		전체 구매 전환률<br><br>  <!-- 구매 전환률 (Conversion Rate) = 영화 대여 수 / 영화 상세페이지를 클릭한 횟수(hitno) * 100% -->
+			<p><div class="progress-bar">           
+			   <div class="progress" id="progress" style="width: 60%;">60%</div><br><br>
+			</div></p>
+	</div>
 	
 	<div class="content1">
 		<div class="content">
@@ -168,13 +389,7 @@
 		<p>전체 누적 회원 수 : nnn 명</p>
 		</div>
 	</div>
-	<div class="content1">
-		<div class="content">
-		전체 구매 전환률<br>  <!-- 구매 전환률 = 영화 대여 수 / 영화 상세페이지를 클릭한 횟수(hitno) * 100% -->
-			<div class="progress-bar">           
-			   <div class="progress" id="progress" style="width: 50%;">50%</div>
-			</div>
-	</div>
+	
 	
 	<div class="content1">
 		<div class="content">
@@ -185,14 +400,7 @@
 		</div>
 	</div>
 	
-	<div class="content1">
-		<div class="content">
-		대여 수 현황<br><br>
-		<p>1위 : 해리포터</p>
-		<p>2위 : 아이언맨</p>
-		<p>3위 : 스파이더맨</p>
-		</div>
-	</div>
+	
 </div>
 
 </div>

@@ -1,5 +1,9 @@
 package com.board.entity.repository;
 
-public interface WatchReopository {
+import org.springframework.data.jpa.repository.JpaRepository;
+
+import com.board.entity.WatchEntity;
+
+public interface WatchReopository extends JpaRepository<WatchEntity, Long>{
 
 }

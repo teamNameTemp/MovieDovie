@@ -4,20 +4,20 @@
 <meta charset="UTF-8">
 <title>영화 업로드</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://getbootstrap.com/docs/5.3/assets/css/docs.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+	<link rel="stylesheet" th:href="@{/css/styles.css}">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css">
 <style>
 
 .boardView {
-  width:60%;
+  width:70%;
   height:auto;
   margin:auto;
   text-align: left;
-  padding: 20px, 20px;
+  padding: 50px;
   background-color:#FFFFFF;
-  border:4px solid gray;
-  border-radius: 20px;
+  border:3px solid gray;
+  border-radius: 5px;
 }
 
 .main {
@@ -28,13 +28,36 @@
   width: 90%;
   border:none;
   border-bottom: 2px solid #adadad;
-  margin: 10px;
+  margin: 12px;
   padding: 10px;
   outline:none;
   color: #636e72;
-  font-size:16px;
+  font-size:15px;
   height:25px;
   background: none;
+}
+
+.imageZone {
+	border: 2px solid #92AAB0;
+	width: 60%;
+	height: auto;
+	color: #92AAB0;
+	text-align: center;
+	vertical-align: middle;
+	margin: auto;
+	padding: 10px 10px;
+	font-size: 150%;
+}
+
+.input_content{
+  width: 90%;
+  height: 200px;
+  margin: 15px;
+  padding: 15px;
+  box-sizing: border-box;
+  border: 2px solid #adadad;
+  font-size: 15px;
+  resize: both;
 }
 
 .btn_write  {
@@ -45,9 +68,9 @@
   margin-bottom: 10px;
   width:40%;
   height:40px;
-  background: red;
-  background-position: left;
-  background-size: 200%;
+  background: #4dbf00;
+  background-position: center;
+  background-size: 150%;
   color:white;
   font-weight: bold;
   border:none;
@@ -56,49 +79,204 @@
   display:inline;
 }
 
+.btn_write > a:hover, .btn_write > a:active {
+	background-color: #1E90FF;
+	text-decoration: none;
+}
+
 </style>
+
+<script>
+window.onload = () => {
+	
+	var imgCheck = "N";
+	var imgZone = document.querySelector('#imageZone');
+	var fileEvent = document.querySelectcor('#imageFile');
+	
+	//imageZone 영역 클릭 시 파일이벤트 작동.
+	imgZone.addEventListener('click', (e) => {
+		fileEvent.click(e);
+	})
+	
+	fileEvent.addEventListener('change', (e) => {
+		const files = e.target.files;
+		showImage(files);
+	})
+	
+	const showImage = (files) => {
+		imgZone.innerHTML = '';
+		const imgFile = files[0];
+		
+		if(imgFile.type.indexOf("image")<0){
+			alert("이미지 파일만 업로드하세요");
+			return false;
+		}
+		
+		const reader = new FileReader(); //new 연산자를 통해서 FileReader 객체를 reader가 참조(상속)
+		reader.onload = function(event) { //reader.readAsDataURL(imgFile)로 이미지를 읽고 나서 해야 할 일
+			imgZone.innerHTML = "<img src=" + event.target.result + " id='uploadImg' style='width:350px;height:auto'>";
+		};
+		
+		reader.readAsDataURL(imgFile); //실제로 이미지 파일을 읽는 부분
+		imgCheck = "Y";	
+	}
+	
+	
+	btnRegister.addEventListener('click',async ()=> {
+		
+		//유효성 검사
+		if(imgCheck == 'N') {
+			alert("영화 포스터 이미지를 등록하세요");
+			return false;
+		}		
+		if(movieCd.value == '') {
+			alert("영화 코드를 입력하세요.");
+			movieCd.focus();
+			return false;
+		}
+		if(movieNm.value == '') {
+			alert("영화제목(국문)을 입력하세요.");
+			movieNm.focus();
+			return false;
+		}
+		if(movieEn.value == '') {
+			alert("영화제목(영문)을 입력하세요.");
+			movieEn.focus();
+			return false;
+		}
+		if(nation.value == '') {
+			alert("제작 국가를 입력하세요.");
+			nation.focus();
+			return false;
+		}
+		if(company.value == '') {
+			alert("제작사를 입력하세요.");
+			company.focus();
+			return false;
+		}
+		if(actor.value == '') {
+			alert("배우를 입력하세요.");
+			actor.focus();
+			return false;
+		}
+		
+		const genre = document.querySelectorAll('input[name=genre]:checked');
+		if(genre.length == 0) { alert('장르를 선택하세요.'); return false; }
+		
+		const formData = new FormData(UploadForm);
+		
+		await fetch('/master/movieUpload', {
+			method: 'POST',
+			body: formData	
+		}).then((response)=> response.json())
+		  .then((data)=> {
+			  if(data.message === 'good'){
+				  alert("영화 등록이 완료되었습니다.");
+				  document.location.href='/master/memberRequest?page=1';
+			  } else {
+				  alert('서버 장애로 영화 업로드에 실패했습니다.');
+			  }
+		  }).catch((error) => {
+			  console.log("error=" + error);
+		  });	  
+		});
+}
+
+
+/* MasterService 및 MovieRepository 완성하고 열기. 
+const movieCheck = async () => {
+	const movieNm = document.querySelector("#movieNm");
+	
+	await fetch('/master/movieCheck',{
+		method: "POST",
+		body: movieNm.value,
+	}).then((response) => response.text())
+	  .then((data) => {
+		  const movieCheckNotice = document.querySelector('#movieCheckNotice');
+		  if (data == 0){
+			  movieCheckNotice.innerHTML = "영화 등록을 계속해주세요.";
+		  } else {
+			  movieCheckNotice.innerHTML = "이미 등록된 영화입니다.";
+			  movieNm.focus();
+		  }
+	  });
+}
+*/
+
+</script>
 
 </head>
 
 <body class="p-3 m-0 border-0 bd-example m-0 border-0">
+<div th:replace = "/fragments/nav/sidebar::sidebar"></div>
+ <div class="navbar">
+     <div class="navbar-container">
 
-<ul class="nav nav-pills">
-  <li class="nav-item">
-    <a class="nav-link" href="/master/memberStats">회원 활동 통계</a>
-  </li>
-  <li class="nav-item">
-    <a class="nav-link" href="/master/memberRequest">회원 요청사항 관리</a>
-  </li>
-  <li class="nav-item">
-    <a class="nav-link" href="/master/movieStats">영화 통계</a>
-  </li>
-  <li class="nav-item">
-    <a class="nav-link active" href="/master/movieUpload">영화 업로드</a>
-  </li>
-</ul>
+             <h1 class="logo">Admin Page</h1>
 
+         <div class="menu-container">
+             <ul class="menu-list">
+                 <li class="menu-list-item">
+                 	<a href="/master/memberStats">회원 활동 통계</a>
+                 </li>
+                 <li class="menu-list-item">
+                 	<a href="/master/memberRequest">회원 요청사항 관리</a>
+                 </li>
+                 <li class="menu-list-item">
+                 	<a href="/master/movieStats">영화 통계</a>
+                 </li>
+                 <li class="menu-list-item active">
+                 	<a href="/master/movieUpload">영화 업로드</a>
+                 </li>
+			</ul>
+		</div>
+		<div class="profile-container">
+             <img class="profile-picture" src="/img/masterprofile.png" alt="">
+             <div class="profile-text-container">
+                 <span class="profile-text">관리자</span>
+                 <i class="fas fa-caret-down"></i>
+             </div>
+             <div class="toggle">
+                 <i class="fas fa-moon toggle-icon"></i> 
+                 <i class="fas fa-sun toggle-icon"></i> 
+                 <div class="toggle-ball"></div>
+             </div>
+         </div>
+     </div>
+ </div>
 <br><br><br>
 <div class="main">
 
-	<h5 style="text-align: center;">영화 대량 파일 업로드 시 <a class="massUpload" href="#">여기</a>를 클릭하세요</h5>
-	<br><br><br>
+	<br>
 	<h1 style="text-align: center;">영화 개별 업로드</h1>
-	<!-- 여기서 개별로 업로드한 영화 파일들은 tbl_movieUploadedByMaster 테이블에 업로드 예정. -->
 	
      <br>
      <div class="boardView">
     	<br>
-        <input type="text" class="input_field" id="movieCd" name="movieCd" placeholder="영화 코드">
-        <input type="text" class="input_field" id="movieNm" name="movieNm" placeholder="영화 제목(한글)">
-		<input type="text" class="input_field" id="movieNmEn" name="movieNmEn" placeholder="영화 제목(영어)">
-		<input type="text" class="input_field" id="prodtYear" name="prodtYear" placeholder="제작 연도">
-		<input type="text" class="input_field" id="nationAlt" name="nationAlt" placeholder="제작 국가">
-		<input type="text" class="input_field" id="typeNm" name="typeNm" placeholder="유형">
-		<input type="text" class="input_field" id="genreid" name="genreid" placeholder="장르">
-		<input type="text" class="input_field" id="prodtStatNm" name="prodtStatNm" placeholder="제작 상태">
-		<input type="text" class="input_field" id="directors" name="directors" placeholder="감독">
-		<input type="text" class="input_field" id="companyNm" name="companyNm" placeholder="제작사">
-		<br>
+    	<form id="UploadForm" name="UploadForm" method="POST" enctype="multipart/form-data">
+	        <input type="file" name="fileUpload" id="imageFile" style="display:none"/>
+	        <div class="imageZone" id="imageZone"><br>영화포스터 업로드<br><br></div>
+	        <input type="text" class="input_field" id="movieCd" name="movieCd" placeholder="영화 코드">
+	        <input type="text" class="input_field" id="movieNm" name="movieNm" placeholder="영화 제목(한글)" onchange="movieCheck()">
+	        <br><span id="movieCheckNotice"></span>
+			<input type="text" class="input_field" id="movieEn" name="movieEn" placeholder="영화 제목(영어)">
+			<input type="text" class="input_field" id="prdtYear" name="prdtYear" placeholder="제작 연도"><br>
+			<input type="text" class="input_field" id="nation" name="nation" placeholder="제작 국가"><br>
+			<input type="text" class="input_field" id="company" name="company" placeholder="제작사"><br>
+			
+			<input type="text" class="input_field" id="openDt" name="openDt" placeholder="개봉일"><br>
+			<br>
+			&nbsp;&nbsp;&nbsp;장르 : 
+			<label><input type="checkbox" name="genre" value="판타지">판타지</label>
+			<label><input type="checkbox" name="genre" value="액션">액션</label>
+			<label><input type="checkbox" name="genre" value="로맨스">로맨스</label><br>
+			<br>
+			<input type="text" class="input_field" id="actors" name="actors" placeholder="배우">
+			<input type="text" class="input_field" id="directors" name="directors" placeholder="감독">
+			<input type="text" class="input_field" id="showtime" name="showtime" placeholder="상영시간">
+			<textarea class="input_content" id="overview" cols="100" rows="500" name="overview" placeholder="1000자 이내로 줄거리를 입력하세요"></textarea><br>
+			<input type="hidden" class="input_field" id="uploadCheck" name="uploadCheck" value="Y">
+   		</form>
    		<input type="button" id="btnRegister" class="btn_write" value="업로드하기">	
    		
      </div>

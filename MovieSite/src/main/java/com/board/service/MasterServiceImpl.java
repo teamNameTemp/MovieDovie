@@ -1,0 +1,286 @@
+package com.board.service;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Optional;
+import java.util.Random;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.board.dto.RequestDTO;
+import com.board.entity.BookmarkEntity;
+import com.board.entity.LikeEntity;
+import com.board.entity.MemberEntity;
+import com.board.entity.MemberLogEntity;
+import com.board.entity.RentEntity;
+import com.board.entity.RequestEntity;
+import com.board.entity.WatchEntity;
+import com.board.entity.repository.BookmarkRepository;
+import com.board.entity.repository.LikeRepository;
+import com.board.entity.repository.MemberLogRepository;
+import com.board.entity.repository.MemberRepository;
+import com.board.entity.repository.RentRepository;
+import com.board.entity.repository.RequestRepository;
+import com.board.entity.repository.WatchReopository;
+
+import jakarta.persistence.EntityNotFoundException;
+import lombok.AllArgsConstructor;
+
+@Service
+@AllArgsConstructor
+public class MasterServiceImpl implements MasterService{
+
+	private final RequestRepository requestRepository;
+	private final BookmarkRepository bookmarkRepository;
+	private final WatchReopository watchRepository;
+	private final MemberLogRepository memberLogRepository;
+	private final MemberRepository memberRepository;
+	private final LikeRepository likeRepository;
+	private final RentRepository rentRepository;
+	private static final String[] GENDERS = {"Male", "Female"};
+    private final Random random;
+    private static final String[] YorN = {"Y", "N"};
+    private static final String[] INOUT = {"LOGIN", "LOGOUT"};
+	
+	//요청 게시물 목록 보기
+	@Override
+	public Page<RequestEntity> list(int pageNum, int postNum, String keyword) throws Exception {	
+		//PageRequest는 Page와 함께 사용되는 JPA의 객체로, 페이징 기준을 설정 -> 시작점(0부터 시작), 증가분(한 화면에 보이는 행의 수), 정렬 방식(seqno를 기준으로 역순으로 정렬)
+		PageRequest pageRequest = PageRequest.of(pageNum - 1, postNum, Sort.by(Direction.DESC, "seqno")); //pageNum은 1부터 시작하기 때문에 -1해줌
+		return requestRepository.findByTitleContainingOrContentContaining(keyword, keyword, pageRequest); //마지막에 pageRequest 넣어주면 됨
+	}
+
+	//요청 게시물 내용 상세 보기
+	@Override
+	public RequestDTO view(Long seqno) {
+		//Entity --> DTO, xxxRepository의 리턴값은 Optional type 이기 때문에, List 타입이 아닌 최종 값을 얻기 위해선 뒤에 get()을 붙여줘야 함.
+		return requestRepository.findById(seqno).map(view -> new RequestDTO(view)).get();
+
+	}
+
+	//요청 게시물 이전 보기
+	@Override
+	public Long pre_seqno(Long seqno, String keyword) {
+		//null 이 들어올 수도 있음. 그렇기 때문에 아래처럼 써줘야해.
+		//3항 연산식 > null값이 들어올 경우 0으로. 아니면 그대로.
+		return requestRepository.pre_seqno(seqno, keyword, keyword)==null?0:requestRepository.pre_seqno(seqno, keyword, keyword);
+	}
+	
+	//요청 게시물 다음 보기
+	@Override
+	public Long next_seqno(Long seqno, String keyword) {
+		return requestRepository.next_seqno(seqno, keyword, keyword)==null?0:requestRepository.next_seqno(seqno, keyword, keyword);
+	}
+	
+	//max seqno 구하기
+	@Override
+	public Long getMaxSeqno(String email) {
+		return requestRepository.getMaxSeqno(email);
+	}
+	
+	//회원 요청 게시물 삭제
+	@Override
+	public void delete(Long seqno) {
+		requestRepository.deleteBySeqno(seqno);
+	}
+	
+	//처리 완료 여부 확인하기
+	@Override
+	public String statusCheck(Long seqno) {
+	    return requestRepository.findStatusBySeqno(seqno);
+	}
+	
+	//처리 상태 업데이트하기
+	@Transactional
+	@Override
+	public void updateStatus(Long seqno, String status){
+		requestRepository.updateStatusBySeqno(seqno, status);
+	}	
+	
+	
+	//영화 중복 체크
+	@Override
+	public void movieCheck(String movieNm) {
+		//return movieRepository.findById(movieNm).isEmpty()?0:1;
+	}
+	
+	
+	//dummy 회원 대량으로 만들기
+	@Override
+    @Transactional
+    public void createDummyMembers(int count) {
+		
+		Random random = new Random(); // Random 초기화
+		
+		List<MemberEntity> members = new ArrayList<>();
+        for (int i = 1; i <= count; i++) {
+        	MemberEntity member = new MemberEntity();
+            member.setEmail("user" + i + "@example.com");
+            member.setPassword("password" + i);
+            member.setUsername("User" + i);
+            member.setNickname("Nickname" + i);
+            member.setGender(GENDERS[random.nextInt(GENDERS.length)]);
+            
+            // 1980년 1월 1일부터 2010년 12월 31일 사이의 랜덤 생일 생성
+            long minDay = LocalDateTime.of(1980, 1, 1, 0, 0).atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
+            long maxDay = LocalDateTime.of(2010, 12, 31, 23, 59).atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
+            long randomTime = minDay + (long)(random.nextDouble() * (maxDay - minDay));
+            LocalDateTime birth = LocalDateTime.ofInstant(new Date(randomTime).toInstant(), ZoneId.systemDefault());
+            member.setBirth(birth); // 생일 설정
+            
+            member.setTelno("010-" + (random.nextInt(9000) + 1000) + "-" + (random.nextInt(9000) + 1000));
+            
+            // 2023년 1월 1일부터 2024년 10월 31일 사이의 랜덤 회원 가입일 생성
+            long regminDay = LocalDateTime.of(2023, 1, 1, 0, 0).atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
+            long regmaxDay = LocalDateTime.of(2024, 10, 31, 23, 59).atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
+            long regrandomTime = regminDay + (long)(random.nextDouble() * (regmaxDay - regminDay));
+            LocalDateTime regdate = LocalDateTime.ofInstant(new Date(regrandomTime).toInstant(), ZoneId.systemDefault());
+            member.setRegdate(regdate); // 회원 가입일 설정
+            
+            member.setRole("USER");
+            member.setLogseqno((long) i);
+            member.setGenreseqno((long) i);
+
+            members.add(member);
+        }
+        memberRepository.saveAll(members); //일괄 저장
+    }
+
+	
+	//Dummy Rents 만들기
+	@Override
+    @Transactional
+    public void createDummyRents(int count) {
+		LocalDate today = LocalDate.now(); // 오늘 날짜
+		
+        for (int i = 1; i <= count; i++) {
+        	RentEntity rent = new RentEntity();
+            rent.setSeqno((long) i);
+        	
+            // 2023년 9월 1일부터 2024년 11월 3일 사이의 랜덤 대여일 생성
+            long minDay = LocalDateTime.of(2023, 9, 1, 0, 0).atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
+            long maxDay = LocalDateTime.of(2024, 11, 3, 23, 59).atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
+            long randomTime = minDay + (long)(random.nextDouble() * (maxDay - minDay));
+            LocalDateTime rentdate = LocalDateTime.ofInstant(new Date(randomTime).toInstant(), ZoneId.systemDefault());
+            
+            rent.setRentdate(rentdate); // 대여일 설정
+            
+            // 대여 반납일은 대여일로부터 3일 후로 설정
+            LocalDateTime returndate = rentdate.plusDays(3);
+            rent.setReturndate(returndate); // 반납일 설정
+            
+            // 대여 상태 설정
+            String status = today.isBefore(returndate.toLocalDate()) ? "Y" : "N"; // 상태 설정
+            rent.setStatus(status); // 상태 설정
+            
+        	rent.setEmail("user" + i + "@example.com");
+        	rent.setMovieseqno((long) i);
+            
+            rentRepository.save(rent);
+        }
+    }
+	
+	//Dummy 좋아요 싫어요 만들기
+	@Override
+    @Transactional
+	public void createDummyLikes(int count) {
+		
+		  for (int i = 1; i <= count; i++) {
+	        	LikeEntity like = new LikeEntity();
+	            like.setSeqno((long) i);
+	            
+	            String likecheck = YorN[random.nextInt(YorN.length)];
+	            
+	            like.setLikecheck(likecheck);
+	            if (likecheck.equals("Y")) {
+	            	like.setDislikecheck("N");
+	            } else if (likecheck.equals("N")){
+	            	like.setDislikecheck("Y");
+	            }
+
+	        	like.setEmail("user" + i + "@example.com");
+	        	like.setMovieseqno((long) (random.nextInt(20) + 1)); // 1부터 20까지의 랜덤 숫자 설정
+	            
+	        	likeRepository.save(like);
+	      }
+	}
+	
+	//Dummy 멤버 로그인/로그아웃 현황 (member_log) 만들기
+	@Override
+    @Transactional
+	public void createDummyLogs(int count) {
+		
+		for (int i = 1; i <= count; i++) {
+        	MemberLogEntity log = new MemberLogEntity();
+            log.setSeqno((long) i);
+            
+            // 2024년 10월 1일부터 2024년 11월 3일 사이의 랜덤 로그인 로그아웃일 생성
+            long minDay = LocalDateTime.of(2024, 10, 1, 0, 0).atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
+            long maxDay = LocalDateTime.of(2024, 11, 3, 23, 59).atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
+            long randomTime = minDay + (long)(random.nextDouble() * (maxDay - minDay));
+            LocalDateTime inouttime = LocalDateTime.ofInstant(new Date(randomTime).toInstant(), ZoneId.systemDefault());
+            
+            log.setInouttime(inouttime); // 로그인 로그아웃일 설정
+            
+            log.setStatus(INOUT[random.nextInt(INOUT.length)]);
+
+        	log.setEmail("user" + i + "@example.com");
+
+        	memberLogRepository.save(log);
+		}
+	}
+	
+	//Dummy 시청여부 만들기
+	@Override
+    @Transactional
+	public void createDummyWatch(int count) {
+		
+		for (int i = 1; i <= count; i++) {
+        	WatchEntity watch = new WatchEntity();
+            watch.setSeqno((long) i);
+            
+            // 2022년 1월 1일부터 2024년 10월 31일 사이의 랜덤 로그인 로그아웃일 생성
+            long minDay = LocalDateTime.of(2022, 1, 1, 0, 0).atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
+            long maxDay = LocalDateTime.of(2024, 10, 31, 23, 59).atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
+            long randomTime = minDay + (long)(random.nextDouble() * (maxDay - minDay));
+            LocalDateTime watchdate = LocalDateTime.ofInstant(new Date(randomTime).toInstant(), ZoneId.systemDefault());
+            
+            watch.setWatchdate(watchdate); // 시청일 설정
+            
+            watch.setStatus(YorN[random.nextInt(YorN.length)]);
+        	watch.setEmail("user" + i + "@example.com");
+        	watch.setMovieseqno((long) (random.nextInt(20) + 1)); // 1부터 20까지의 랜덤 숫자 설정
+
+        	watchRepository.save(watch);
+		}
+	}
+	
+	
+	//Dummy 즐겨찾기 만들기
+	@Override
+    @Transactional	
+	public void createDummyBookmarks(int count) {
+		
+		for (int i = 1; i <= count; i++) {
+        	BookmarkEntity bookmark = new BookmarkEntity();
+            bookmark.setSeqno((long) i);
+            bookmark.setStatus(YorN[random.nextInt(YorN.length)]);
+            bookmark.setEmail("user" + i + "@example.com");
+            bookmark.setMovieseqno((long) (random.nextInt(20) + 1)); // 1부터 20까지의 랜덤 숫자 설정
+
+            bookmarkRepository.save(bookmark);
+		}
+	}
+
+	
+}

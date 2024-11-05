@@ -1,5 +1,9 @@
 package com.board.entity.repository;
 
-public interface MemberLogRepository {
+import org.springframework.data.jpa.repository.JpaRepository;
+
+import com.board.entity.MemberLogEntity;
+
+public interface MemberLogRepository extends JpaRepository<MemberLogEntity, Long>{
 
 }
