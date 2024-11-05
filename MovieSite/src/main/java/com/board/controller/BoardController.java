@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,17 +20,16 @@ import com.board.entity.LikeEntity;
 import com.board.service.BoardService;
 
 import jakarta.servlet.http.HttpSession;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Controller
 @RequestMapping("/board")
+@RequiredArgsConstructor
 public class BoardController { 
 	
-	private final BoardService service;
-	
-	@Autowired
-	public BoardController(BoardService service) {
-		this.service = service;
-	}
+	private final BoardService boardService;
 	
 	//추천 장르
 	@GetMapping("/selectGenre")
@@ -45,8 +45,8 @@ public class BoardController {
 	}
 	
 	//영화상세
-	@GetMapping("/movieDetail")
-	public void getView(@RequestParam("seqno") Long seqno, @RequestParam("page") int pageNum,
+	@GetMapping("/movieDetail") //?seqno=name
+	public String movieDetail(@PathVariable Long seqno, @RequestParam("page") int pageNum,
 			@RequestParam(name="keyword",defaultValue="",required=false) String keyword,
 			Model model, HttpSession session) throws Exception {
 
