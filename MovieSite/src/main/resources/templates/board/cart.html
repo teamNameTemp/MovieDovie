@@ -196,9 +196,8 @@ const cartManage = async (type) => {
 	</div>
 
 	<div class="main_shop">
-	
 		<div class="tableDiv">
-			<h1>[[${session.nickname}]]님의 장바구니</h1> 
+			<h1 th:text="${session.nickname + '님의 장바구니'}"></h1> 
 			<form name="cartList" method="post">
 				<input type="hidden" name="page" value="page">
 				<input type="hidden" name="keyword" value="keyword">
