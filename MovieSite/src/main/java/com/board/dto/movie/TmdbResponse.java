@@ -16,7 +16,6 @@ public class TmdbResponse {
 		private int id;
 
 		public Object getKnownForDepartment() {
-			// TODO Auto-generated method stub
 			return null;
 		}
 	}
