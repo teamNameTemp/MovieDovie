@@ -57,7 +57,7 @@ public class MovieAPIService {
 
 		try {
 			Optional<DailyBoxOfficeEntity> dailyEntities = dailyRepository.findById(yesterday);
-
+			
 			if (dailyEntities.isPresent()) {
 				// 데이터베이스에서 데이터를 찾은 경우
 				return convertEntitiesToMaps(dailyEntities.get(), posterOriginPath);
@@ -229,7 +229,7 @@ public class MovieAPIService {
 		return convertToMapper.getDailyBoxOffice(result.block());
 	}
 	
-	public MovieEntity getMovieByCode(Long seqno ) {
+	public MovieEntity getMovieByCode(Long seqno) {
 		return movieRepository.findById(seqno).get();
     }
 
