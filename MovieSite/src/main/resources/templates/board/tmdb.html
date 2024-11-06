@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Actor and Director Details</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+        .person-list {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-around;
+        }
+        .person-card {
+            background-color: white;
+            border-radius: 5px;
+            padding: 20px;
+            margin: 10px;
+            width: 400px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        .person-image {
+            width: 100%;
+            height: auto;
+            border-radius: 5px;
+        }
+        h2 {
+            color: #333;
+            margin-top: 10px;
+        }
+        p {
+            margin: 5px 0;
+        }
+        .known-for, .movie-credits {
+            margin-top: 15px;
+        }
+        .known-for h3, .movie-credits h3 {
+            color: #444;
+        }
+        ul {
+            padding-left: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Actor and Director Details</h1>
+    <div class="person-list">
+        <!-- Actors -->
+        <div th:each="actor : ${actors}" class="person-card">
+            <img th:if="${actor.profilePath}" th:src="@{'https://image.tmdb.org/t/p/w500' + ${actor.profilePath}}" alt="Actor Profile" class="person-image">
+            <img th:unless="${actor.profilePath}" src="/path/to/default/image.jpg" alt="Default Profile" class="person-image">
+            <h2 th:text="${actor.name}">Actor Name</h2>
+            <p><strong>ID:</strong> <span th:text="${actor.id}">ID</span></p>
+            <p><strong>Known For Department:</strong> <span th:text="${actor.knownForDepartment}">Department</span></p>
+            <p><strong>Birthday:</strong> <span th:text="${actor.birthday ?: 'Unknown'}">Birthday</span></p>
+            <p><strong>Deathday:</strong> <span th:text="${actor.deathday ?: 'N/A'}">Deathday</span></p>
+            <p><strong>Place of Birth:</strong> <span th:text="${actor.placeOfBirth ?: 'Unknown'}">Place of Birth</span></p>
+            <p><strong>Popularity:</strong> <span th:text="${actor.popularity}">Popularity</span></p>
+            <p><strong>Gender:</strong> <span th:text="${actor.gender == 1 ? 'Female' : (actor.gender == 2 ? 'Male' : 'Other')}">Gender</span></p>
+            <p><strong>Also Known As:</strong> <span th:text="${#strings.listJoin(actor.alsoKnownAs ?: {}, ', ')}">Also Known As</span></p>
+            <p><strong>Biography:</strong> <span th:text="${#strings.abbreviate(actor.biography ?: '', 200)}">Biography</span></p>
+            
+            <div class="known-for" th:if="${not #lists.isEmpty(actor.knownFor)}">
+                <h3>Known For:</h3>
+                <ul>
+                    <li th:each="work : ${actor.knownFor}">
+                        <span th:text="${work.title ?: work.name}">Title</span> 
+                        (<span th:text="${work.mediaType}">Media Type</span>, 
+                        <span th:text="${work.releaseDate ?: work.firstAirDate ?: 'Unknown'}">Release Date</span>)
+                    </li>
+                </ul>
+            </div>
+            
+            <div class="movie-credits" th:if="${actor.movieCredits}">
+                <h3>Movie Credits:</h3>
+                <h4 th:if="${not #lists.isEmpty(actor.movieCredits?.cast)}">Cast:</h4>
+                <ul th:if="${not #lists.isEmpty(actor.movieCredits?.cast)}">
+                    <li th:each="castRole : ${actor.movieCredits.cast}">
+                        <span th:text="${castRole.title}">Movie Title</span> 
+                        (<span th:text="${castRole.character ?: 'Unknown'}">Character</span>, 
+                        <span th:text="${castRole.releaseDate ?: 'Unknown'}">Release Date</span>)
+                    </li>
+                </ul>
+                <h4 th:if="${not #lists.isEmpty(actor.movieCredits?.crew)}">Crew:</h4>
+                <ul th:if="${not #lists.isEmpty(actor.movieCredits?.crew)}">
+                    <li th:each="crewRole : ${actor.movieCredits.crew}">
+                        <span th:text="${crewRole.title}">Movie Title</span> 
+                        (<span th:text="${crewRole.job ?: 'Unknown'}">Job</span>, 
+                        <span th:text="${crewRole.releaseDate ?: 'Unknown'}">Release Date</span>)
+                    </li>
+                </ul>
+            </div>
+        </div>
+        
+        <!-- Director -->
+        <div th:if="${director}" class="person-card">
+            <img th:if="${director.profilePath}" th:src="@{'https://image.tmdb.org/t/p/w500' + ${director.profilePath}}" alt="Director Profile" class="person-image">
+            <img th:unless="${director.profilePath}" src="/path/to/default/image.jpg" alt="Default Profile" class="person-image">
+            <h2 th:text="${director.name}">Director Name</h2>
+            <p><strong>ID:</strong> <span th:text="${director.id}">ID</span></p>
+            <p><strong>Known For Department:</strong> <span th:text="${director.knownForDepartment}">Department</span></p>
+            <p><strong>Birthday:</strong> <span th:text="${director.birthday ?: 'Unknown'}">Birthday</span></p>
+            <p><strong>Deathday:</strong> <span th:text="${director.deathday ?: 'N/A'}">Deathday</span></p>
+            <p><strong>Place of Birth:</strong> <span th:text="${director.placeOfBirth ?: 'Unknown'}">Place of Birth</span></p>
+            <p><strong>Popularity:</strong> <span th:text="${director.popularity}">Popularity</span></p>
+            <p><strong>Gender:</strong> <span th:text="${director.gender == 1 ? 'Female' : (director.gender == 2 ? 'Male' : 'Other')}">Gender</span></p>
+            <p><strong>Also Known As:</strong> <span th:text="${#strings.listJoin(director.alsoKnownAs ?: {}, ', ')}">Also Known As</span></p>
+            <p><strong>Biography:</strong> <span th:text="${#strings.abbreviate(director.biography ?: '', 200)}">Biography</span></p>
+            
+            <!-- Known For and Movie Credits sections for director (similar to actor) -->
+        </div>
+    </div>
+</body>
+</html>
