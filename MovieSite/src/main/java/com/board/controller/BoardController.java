@@ -12,7 +12,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.board.dto.ReplyInterface;
-import com.board.entity.LikeEntity;
+import com.board.dto.movie.ActorDetailDTO;
+import com.board.dto.movie.DirectorDetailDTO;
+import com.board.entity.movie.ActorEntity;
+import com.board.entity.movie.DirectorEntity;
 import com.board.entity.movie.MovieEntity;
 import com.board.service.BoardService;
 import com.board.service.KobisAPIService;
@@ -52,29 +55,43 @@ public class BoardController {
 	
 	
 	//영화상세
-	@GetMapping("/movieDetail") //?seqno=name
-	public void movieDetail(Model model, @RequestParam("title") Long no) 
-					throws Exception {
-				MovieEntity entity = movieService.getMovieByCode(no);
-
-		//세션 email값 가져 오기
-//		String sessionEmail = (String)session.getAttribute("email");
-//		
-//		//좋아요/싫어요 처리
-//		LikeEntity likeCheckmovie = service.likeCheckmovie(seqno,sessionEmail);
-//		
-//		//초기에 좋아요/싫어요 등록이 안되어져 있을 경우 "N"으로 초기화
-//		if(likeCheckmovie == null) {
-//			model.addAttribute("LikeCheck", "N");
-//			model.addAttribute("DislikeCheck", "N");
-//		} else if(likeCheckmovie != null) {
-//			model.addAttribute("LikeCheck", likeCheckmovie.getLikecheck());
-//			model.addAttribute("DislikeCheck", likeCheckmovie.getDislikecheck()); 
-//		}
-//		
-		model.addAttribute("movie", entity);
-//		model.addAttribute("page", pageNum);
-//		model.addAttribute("keyword", keyword);	
+	@GetMapping("/movieDetail")
+	public void getView(Model model, @RequestParam("title") Long seqno) throws JsonMappingException, JsonProcessingException{
+//		MovieEntity entity = movieService.getMovieInfo(movieCd).block();
+		MovieEntity entity = movieService.getMovieByCode(seqno);
+		model.addAttribute("movie",entity);
+//		String posterOriginPath = "https://image.tmdb.org/t/p/original";
+		
+		//detail person으로 변경 dto/entity 다 person으로
+		int actorMax = 5;
+		List<ActorDetailDTO> actorList = new ArrayList<>();
+		for(ActorEntity actor : entity.getActors()) {
+			if(actorMax==0)break;
+			actorMax--;
+			String actorNm = actor.getPeopleNm();
+			String actorNmEn = actor.getPeopleNmEn();
+			ActorDetailDTO dto = tmdb.getActorDetailsByName(actorNmEn).block();
+			if(dto !=null) {
+				log.info(dto);
+				dto.setProfilePath(dto.getProfilePath());	
+				actorList.add(dto);
+			}
+		}
+		int directorMax=5;
+		List<DirectorDetailDTO> directorList = new ArrayList<>();
+		for(DirectorEntity director : entity.getDirectors()) {
+			if(directorMax==0) break;
+			directorMax--;
+			String directorNm = director.getPeopleNm();
+			String directorNmEn = director.getPeopleNmEn();
+			DirectorDetailDTO dto = tmdb.getDirectorDetailsByName(directorNmEn).block();
+			if(dto !=null) {
+				dto.setProfilePath(dto.getProfilePath());	
+				directorList.add(dto);
+			}
+		}
+		model.addAttribute("actors",actorList);
+		model.addAttribute("director",directorList);
 	}
 	
 //	public void getmovie(@RequestParam("seqno") Long seqno, @RequestParam("page") int pageNum,
@@ -174,21 +191,22 @@ public class BoardController {
 		return service.replyView(reply);
 	}
 
-//	@GetMapping("/tmdb")
-//	public void getAuthentication(Model model){
-//		 //tmdb.getAuthentication();
-//		Mono<Map> mono = tmdb.getMovieDetails("1034541");
-//		mono.subscribe(value -> System.out.println(value.get("poster_path")));
-//		System.out.println(mono.block());
-//		Mono<ActorDetailDTO> actors = tmdb.getActorDetails(287);
-//		System.out.println("배우 : " + actors.block());
-//		String posterOriginPath = "https://image.tmdb.org/t/p/original";
-//
-//		model.addAttribute("actor",actors.block());
-//		model.addAttribute("detail",mono.block());
-//		model.addAttribute("image",posterOriginPath+mono.block().get("poster_path"));
-//		model.addAttribute("image",posterOriginPath+actors.block().getProfile_path());;
-//	}
+	@GetMapping("/tmdb")
+	public void getAuthentication(Model model){
+		MovieEntity entity = movieService.getMovieByCode(777L);
+		String posterOriginPath = "https://image.tmdb.org/t/p/original";
+		List<ActorDetailDTO> actorList = new ArrayList<>();
+		for(ActorEntity actor : entity.getActors()) {
+			String actorNm = actor.getPeopleNm();
+			ActorDetailDTO dto = tmdb.getActorDetailsByName(actorNm).block();
+			dto.setProfilePath(posterOriginPath + dto.getProfilePath());	
+			actorList.add(dto);
+		}
+			ActorDetailDTO director= tmdb.getActorDetails(21684).block();
+			director.setProfilePath(posterOriginPath + director.getProfilePath());
+		model.addAttribute("actors",actorList);
+		model.addAttribute("director",director);
+	}
 	
 //	@GetMapping("/daily")
 //	public void getDaily(@RequestParam("targetDt") String targetDate, Model model) {
