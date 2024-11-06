@@ -57,7 +57,7 @@ public class BoardController {
 	
 	//영화상세
 	@GetMapping("/movieDetail")
-	public void getView(Model model, @RequestParam("title") Long seqno) throws JsonMappingException, JsonProcessingException{
+	public void getView(Model model, @RequestParam(name="title", required = false) Long seqno) throws JsonMappingException, JsonProcessingException{
 //		MovieEntity entity = movieService.getMovieInfo(movieCd).block();
 		MovieEntity entity = movieService.getMovieByCode(seqno);
 		model.addAttribute("movie",entity);
