@@ -166,9 +166,24 @@
 		    font-size: 25px; /* 텍스트 크기 키우기 */
 		    color: #FF6384; /* 빨간색으로 강조 */
 		    font-weight: bold; /* 텍스트 굵게 */
+		    opacity: 1;
+  			animation: animate 1s infinite;
+		}
+		
+		@keyframes animate {
+		  0% {opacity: 1;}
+		  50% {opacity: 0.5;}
+		  100% {opacity: 1;}
 		}
 			
+		a.pending {
+		  text-decoration : none;
+		  color:  #FF6384;
+		}
 		
+		a.pending:hover{
+			text-decoration : underline;
+		}
 	</style>
 
 
@@ -460,7 +475,7 @@
 			<div class="status-container">
 				<img class="icon" src="/img/RequestStatus.png" alt="">&nbsp;&nbsp;&nbsp;
 				<div class="status-text">
-					<span class="pending-highlight">· 처리 필요 : <span id="pendingCount"></span> 건</span>
+					<span class="pending-highlight">· <a href="/master/memberRequest" class="pending">처리 필요 : <span id="pendingCount"></span> 건</a></span>
 					<br><br>
 					· 처리 완료 : <span id="completedCount"></span> 건
 				</div>
