@@ -12,5 +12,5 @@ public interface TmdbAPIService {
 	//영화 필터 검색
 	public Mono<MovieDTO> getDiscoverMovies(String sortBy, String withGenres, int page, String language);
 	//영화 상세 정보 검색
-    public Mono<MovieDTO> getMovieDetails(int movieId, String language);
+    public Mono<MovieDTO> getMovieDetails(Long movieId, String language);
 }

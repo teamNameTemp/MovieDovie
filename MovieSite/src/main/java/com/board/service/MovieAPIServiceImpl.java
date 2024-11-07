@@ -27,7 +27,7 @@ public class MovieAPIServiceImpl implements MovieAPIService {
 		return tmdb.getDiscoverMovies(sortBy, withGenres, page, language);
 	}
 	
-	public Mono<MovieDTO> getMovieDetails(int movieId,String language){
+	public Mono<MovieDTO> getMovieDetails(Long movieId,String language){
 		return tmdb.getMovieDetails(movieId,language);
 	}
 	
@@ -38,6 +38,6 @@ public class MovieAPIServiceImpl implements MovieAPIService {
 	public void saveTheDataBase(MovieEntity movie) {
 		movieRepository.save(movie);
 	}
-	
+
 
 }
