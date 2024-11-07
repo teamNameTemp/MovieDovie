@@ -1,0 +1,47 @@
+package com.board.controller;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+
+import com.board.dto.movie.MovieDTO;
+import com.board.entity.movie.MovieEntity;
+import com.board.service.MovieAPIServiceImpl;
+
+import lombok.RequiredArgsConstructor;
+
+@Controller
+@RequiredArgsConstructor
+public class MakeController {
+	private final MovieAPIServiceImpl movie;
+	
+	@GetMapping("/make/movie")
+	public void getMake() {
+		
+	}
+	
+	@PostMapping("/make/movies/save")
+	public void postMovies() {
+		List<MovieDTO> list = movie.getTrendingMovies("day", 1, "ko-KR").block();
+		List<MovieEntity> listEntity = new ArrayList<>();
+		for(MovieDTO dto : list) {
+			MovieDTO detail = movie.getMovieDetails(dto.getId(), "ko-KR").block();
+
+			MovieEntity entity = detail.convertToEntity(dto);
+			entity.setGenres(detail.convertGenres());
+			entity.setActors(detail.convertActors());
+			entity.setCompanys(detail.convertCompanies());
+			entity.setCountrys(detail.convertCountries());
+			entity.setCrews(detail.convertCrews());
+			entity.setSpokenLanguages(detail.convertSpokenLanguages());
+			entity.setVideos(detail.convertVideos());
+			listEntity.add(entity);
+		}
+		
+		movie.saveTheDataBases(listEntity);
+		
+	}
+}
