@@ -70,6 +70,7 @@
             <p><span class="label">Video:</span> <span th:text="${movie.video}">Video</span></p>
             <p><span class="label">IMDB ID:</span> <span th:text="${movie.imdbId}">IMDB ID</span></p>
             <p><span class="label">Homepage:</span> <a th:href="${movie.homepage}" th:text="${movie.homepage}">Homepage</a></p>
+            <p><span class="label">등급:</span> <a th:href="${movie.homepage}" th:text="${movie.certification}">Homepage</a></p>
         </div>
 
         <div class="section" th:if="${!#lists.isEmpty(movie.productionCompanies)}">

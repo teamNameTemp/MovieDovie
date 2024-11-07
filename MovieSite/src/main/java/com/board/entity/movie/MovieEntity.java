@@ -1,11 +1,8 @@
 package com.board.entity.movie;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
-
 import java.util.List;
-
-import org.hibernate.annotations.ColumnDefault;
-import org.hibernate.annotations.DynamicInsert;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -13,135 +10,108 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
-import lombok.Getter;
+import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
+
+@Data
 @NoArgsConstructor
-@Getter
-@Setter
+@AllArgsConstructor
 @Entity(name = "movie")
 @Table(name = "jpa_movie")
-@DynamicInsert
 public class MovieEntity {
 	@Id
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "MOVIE_SEQ")
-	@SequenceGenerator(name = "MOVIE_SEQ", sequenceName = "tbl_movie_seq", initialValue = 1, allocationSize = 1)
-	private long seqno;
+	@SequenceGenerator(name = "MOVIE_SEQ", sequenceName = "jpa_movie_seq", initialValue = 1, allocationSize = 1)
+	private Long seqno;
 
-	// 영화코드
-	@Column(name = "moviecd", nullable = true)
-	private String movieCd;
+	@Column(name="id", nullable=true)
+	private int id;
+	@Column(name = "title", nullable = true)
+	private String title;
 
-	// 순위
-	@Column(name = "rank", nullable = true)
-	private String rank;
+	@Column(name = "original_title", nullable = true)
+	private String originalTitle;
 
-	// 이름
-	@Column(name = "movie_nm", nullable = true)
-	private String movieNm;
-	// 이름(영문)
-	@Column(name = "movie_nmen", nullable = true)
-	private String movieNmEn;
+	@Column(name = "tagline", nullable = true)
+	private String tagline;
 
-	// 제작연도
-	@Column(name = "prdt_year", nullable = true)
-	private String prdtYear;
-	// 제작국가
-	@OneToMany(mappedBy = "movie", cascade = CascadeType.ALL, orphanRemoval = true)
-	private List<NationEntity> nations = new ArrayList<>();
+	@Column(name = "overview", nullable = true)
+	private String overview;
 
-	// 제작사
-	@OneToMany(mappedBy = "movie", cascade = CascadeType.ALL, orphanRemoval = true)
-	private List<CompanyEntity> companys = new ArrayList<>();
+	@Column(name = "runtime", nullable = true)
+	private String runtime;
 
-	// 장르
-	@OneToMany(mappedBy = "movie", cascade = CascadeType.ALL, orphanRemoval = true)
-	private List<GenreEntity> genres = new ArrayList<>();
+	@Column(name = "backdrop_path", nullable = true)
+	private String backDropPath;
 
-	// 배우
-	@Column(nullable=true)
-	@OneToMany(mappedBy = "movie", cascade = CascadeType.ALL, orphanRemoval = true)
-	private List<ActorEntity> actors = new ArrayList<>();
-
-	// 관람
-	@Column(name="watch_grade_nm",nullable=true)
-	private String watchGradeNm;
-	
-	// 개봉일
-	@Column(name = "opendt", nullable = true)
-	private String openDt;
-
-	// 이미지경로
 	@Column(name = "poster_path", nullable = true)
 	private String posterPath;
 
-	// 줄거리
-	@Column(name = "overview", length = 2000, nullable = true)
-	public String overview;
+	@Column(name = "original_language", nullable = true)
+	private String originalLanguage;
+	@Column(name = "imdb_id", nullable = true)
+	private String imdbId;
+	@Column(name = "popularity", nullable = true)
+	private String popularity;
+	@Column(name = "release_date", nullable = true)
+	private LocalDate releaseDate; //Released 개봉된
+	@Column(name = "status", nullable = true)
+	private String status;
+	@Column(name = "vote_average", nullable = true)
+	private String voteAverage;
+	@Column(name = "vote_count", nullable = true)
+	private int voteCount;
 
-	// 상영시간
-	@Column(name = "showtime", nullable = true)
-	private String showtime;
+	@ManyToMany
+	@JoinTable(
+		name="movie_genres",
+		joinColumns = @JoinColumn(name="movie_id"),
+		inverseJoinColumns = @JoinColumn(name="genre_id")
+	)
+	private List<GenreEntity> genres;
 
-	// 감독
 	@OneToMany(mappedBy = "movie", cascade = CascadeType.ALL, orphanRemoval = true)
-	private List<DirectorEntity> directors = new ArrayList<>();
+	private List<VideoEntity> videos = new ArrayList<>();
+	
+	 @ManyToMany
+	    @JoinTable(
+	        name="movie_companys",
+	        joinColumns = @JoinColumn(name="movie_id"),
+	        inverseJoinColumns = @JoinColumn(name="company_id")
+	    )
+	    private List<CompanyEntity> companys = new ArrayList<>();
 
-	// 관리자가 업로드한 이미지
-	@Column(name = "img_path", nullable = true)
-	private String imgPath;
+	    @ManyToMany
+	    @JoinTable(
+	        name="movie_production_countries",
+	        joinColumns = @JoinColumn(name="movie_id"),
+	        inverseJoinColumns = @JoinColumn(name="country_id")
+	    )
+	    private List<CountryEntity> productionCountries = new ArrayList<>();
 
-	// 조회(hitno)
-	@Column(name = "hitno", nullable = true)
-	@ColumnDefault("0")
-	private Integer hitno;
-	// 매출액
-	@Column(name = "sales_acc", nullable = true)
-	private String salesAcc;
-	// 관객수
-	@Column(name = "audi_acc", nullable = true)
-	private String audiAcc;
-	// 업로드여부(null)
-	@Column(name = "uploadcheck", nullable = true)
-	private String uploadCheck;
+	    @ManyToMany
+	    @JoinTable(
+	        name="movie_spoken_languages",
+	        joinColumns = @JoinColumn(name="movie_id"),
+	        inverseJoinColumns = @JoinColumn(name="language_id")
+	    )
+	    private List<SpokenlanguageEntity> spokenLanguages = new ArrayList<>();
 
-	public void addNations(NationEntity entity) {
-		if (entity != null) {
-			nations.add(entity);
-			entity.setMovie(this);
-		}
-	}
+	    @ManyToMany
+	    @JoinTable(
+	        name="movie_actors",
+	        joinColumns = @JoinColumn(name="movie_id"),
+	        inverseJoinColumns = @JoinColumn(name="actor_id")
+	    )
+	    private List<ActorEntity> actor = new ArrayList<>();
 
-	public void addGenres(GenreEntity entity) {
-		if (entity != null) {
-			genres.add(entity);
-			entity.setMovie(this);
-		}
-	}
-
-	public void addDirectors(DirectorEntity entity) {
-		if (entity != null) {
-			directors.add(entity);
-			entity.setMovie(this);
-		}
-	}
-
-	public void addActors(ActorEntity entity) {
-		if (entity != null) {
-			actors.add(entity);
-			entity.setMovie(this);
-		}
-	}
-
-	public void addCompanys(CompanyEntity entity) {
-		if (entity != null) {
-			companys.add(entity);
-			entity.setMovie(this);
-		}
-	}
-
+	    @OneToMany(mappedBy = "movie", cascade = CascadeType.ALL, orphanRemoval = true)
+	    private List<CrewEntity> crew = new ArrayList<>();
 }
