@@ -33,8 +33,8 @@ public class CrewEntity {
 	@Column(name = "profilePath", nullable = true)
 	private String profilePath;
 
-//	@ManyToOne
-//	@JoinColumn(name = "movie_id", nullable = false)
-//	private MovieEntity movie;
+	@ManyToOne
+	@JoinColumn(name = "movie_id", nullable = false)
+	private MovieEntity movie;
 
 }

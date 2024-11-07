@@ -26,6 +26,6 @@ public class GenreEntity {
     @Column(nullable = false, unique = true)
     private String name;
 
-//    @ManyToMany(mappedBy = "genres")
-//    private List<MovieEntity> movies;
+    @ManyToMany(mappedBy = "genres")
+    private List<MovieEntity> movies;
 }

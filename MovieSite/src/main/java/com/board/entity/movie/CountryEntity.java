@@ -31,6 +31,6 @@ public class CountryEntity {
 	@Column(name="name",nullable = true)
 	private String name;
 	
-//	@ManyToMany(mappedBy = "countrys")
-//	private List<MovieEntity> movies;
+	@ManyToMany(mappedBy = "countrys")
+	private List<MovieEntity> movies;
 }

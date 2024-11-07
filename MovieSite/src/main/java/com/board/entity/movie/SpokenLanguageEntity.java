@@ -34,7 +34,7 @@ public class SpokenLanguageEntity {
 	@Column(name = "name", nullable = true)
 	private String name;
 	
-//	
-//	@ManyToMany(mappedBy = "spokenLanguages")
-//	private List<MovieEntity> movies;
+	
+	@ManyToMany(mappedBy = "spokenLanguages")
+	private List<MovieEntity> movies;
 }

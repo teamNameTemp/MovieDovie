@@ -32,9 +32,9 @@ public class ActorEntity {
 	@Column(name = "profilePath", nullable = true)
 	private String profilePath;
 	// 출연 순서
-	@Column(name = "order", nullable = true)
+	@Column(name = "orderNum", nullable = true)
 	private int order;
 
-//		@ManyToMany(mappedBy = "actors")
-//		private List<MovieEntity> movies;
+		@ManyToMany(mappedBy = "actors")
+		private List<MovieEntity> movies;
 }
