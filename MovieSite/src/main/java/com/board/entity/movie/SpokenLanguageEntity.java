@@ -12,6 +12,7 @@ import jakarta.persistence.ManyToMany;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -19,6 +20,8 @@ import lombok.NoArgsConstructor;
 @Entity(name = "spokenLanguages")
 @Table(name = "jpa_spokenLanguage")
 @NoArgsConstructor
+@Builder
+@AllArgsConstructor
 public class SpokenLanguageEntity {
 	@Id
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SPOKEN_SEQ")
@@ -36,5 +39,9 @@ public class SpokenLanguageEntity {
 	
 	
 	@ManyToMany(mappedBy = "spokenLanguages")
-	private List<MovieEntity> movies;
+	private List<MovieEntity> movies = new ArrayList<>();
+	
+	public void addMovies(MovieEntity entity) {
+		movies.add(entity);
+	}
 }

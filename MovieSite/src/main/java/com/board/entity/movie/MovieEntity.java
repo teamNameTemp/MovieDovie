@@ -14,8 +14,9 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
-import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -23,6 +24,8 @@ import lombok.NoArgsConstructor;
 @Entity(name = "movie")
 @Table(name = "jpa_movie")
 @NoArgsConstructor
+@Builder
+@AllArgsConstructor
 public class MovieEntity {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
@@ -48,6 +51,9 @@ public class MovieEntity {
 
 	@Column(name = "poster_path", nullable = true)
 	private String posterPath;
+	
+	@Column(name="certification", nullable=true)
+	private String certification;
 
 	@Column(name="video", nullable = true)
 	private boolean video;
@@ -62,7 +68,7 @@ public class MovieEntity {
 	@Column(name = "status", nullable = true)
 	private String status;
 	@Column(name = "vote_average", nullable = true)
-	private String voteAverage;
+	private Double voteAverage;
 	@Column(name = "vote_count", nullable = true)
 	private int voteCount;
 	//==========================================================================

@@ -27,14 +27,20 @@ public class MakeController {
 	public void postMovies() {
 		List<MovieDTO> list = movie.getTrendingMovies("day", 1, "ko-KR").block();
 		List<MovieEntity> listEntity = new ArrayList<>();
-		MovieEntity e = new MovieEntity();
 		for(MovieDTO dto : list) {
-			MovieEntity entity = dto.convertToEntity();
+			MovieDTO detail = movie.getMovieDetails(dto.getId(), "ko-KR").block();
+
+			MovieEntity entity = detail.convertToEntity(dto);
+			entity.setGenres(detail.convertGenres());
+			entity.setActors(detail.convertActors());
+			entity.setCompanys(detail.convertCompanies());
+			entity.setCountrys(detail.convertCountries());
+			entity.setCrews(detail.convertCrews());
+			entity.setSpokenLanguages(detail.convertSpokenLanguages());
+			entity.setVideos(detail.convertVideos());
 			listEntity.add(entity);
-			e = dto.convertToEntity();
 		}
 		
-		movie.saveTheDataBase(e);
 		movie.saveTheDataBases(listEntity);
 		
 	}

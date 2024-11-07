@@ -1,7 +1,9 @@
 package com.board.service;
 
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -9,6 +11,14 @@ import org.springframework.web.reactive.function.client.WebClient;
 
 import com.board.dto.movie.MovieDTO;
 import com.board.dto.movie.TmdbResponse;
+import com.board.entity.movie.ActorEntity;
+import com.board.entity.movie.CompanyEntity;
+import com.board.entity.movie.CountryEntity;
+import com.board.entity.movie.CrewEntity;
+import com.board.entity.movie.GenreEntity;
+import com.board.entity.movie.MovieEntity;
+import com.board.entity.movie.SpokenLanguageEntity;
+import com.board.entity.movie.VideoEntity;
 
 import jakarta.annotation.PostConstruct;
 import lombok.extern.log4j.Log4j2;
@@ -96,5 +106,124 @@ public class TmdbAPIServiceImpl implements TmdbAPIService {
                         .build(movieId))
                 .retrieve()
                 .bodyToMono(MovieDTO.class);
+    }
+
+    //================================================
+    public Mono<MovieEntity> getCovertToEntity(Mono<MovieDTO> dto) {
+        return dto.map(this::convertDtoToEntity);
+    }
+
+    private MovieEntity convertDtoToEntity(MovieDTO dto) {
+        return MovieEntity.builder()
+            .id(dto.getId())
+            .title(dto.getTitle())
+            .originalTitle(dto.getOriginalTitle())
+            .tagline(dto.getTagline())
+            .overview(dto.getOverview())
+            .runtime(dto.getRuntime())
+            .backdropPath(dto.getBackdropPath())
+            .posterPath(dto.getPosterPath())
+            .certification(dto.getReleaseDates().getResults().get(0).getReleaseDates().get(0).getCertification())
+            .video(dto.getVideo())
+            .originalLanguage(dto.getOriginalLanguage())
+            .imdbId(dto.getImdbId())
+            .popularity(dto.getPopularity())
+            .releaseDate(dto.getReleaseDate())
+            .status(dto.getStatus())
+            .voteAverage(dto.getVoteAverage())
+            .voteCount(dto.getVoteCount())
+            .genres(convertGenres(dto.getGenres()))
+            .videos(convertVideos(dto.getVideos()))
+            .companys(convertCompanies(dto.getProductionCompanies()))
+            .countrys(convertCountries(dto.getProductionCountries()))
+            .spokenLanguages(convertSpokenLanguages(dto.getSpokenLanguages()))
+            .actors(convertActors(dto.getCredits().getCast()))
+            .crews(convertCrews(dto.getCredits().getCrew()))
+            .build();
+    }
+
+    private List<GenreEntity> convertGenres(List<MovieDTO.Genre> genres) {
+        if (genres == null) return new ArrayList<>();
+        return genres.stream()
+            .map(genre -> GenreEntity.builder()
+                .id(genre.getId())
+                .name(genre.getName())
+                .build())
+            .collect(Collectors.toList());
+    }
+
+    private List<VideoEntity> convertVideos(MovieDTO.Videos videos) {
+        if (videos == null || videos.getResults() == null) return new ArrayList<>();
+        return videos.getResults().stream()
+            .map(video -> VideoEntity.builder()
+                .id(video.getId())
+                .iso639_1(video.getIso639_1())
+                .iso3166_1(video.getIso3166_1())
+                .key(video.getKey())
+                .name(video.getName())
+                .site(video.getSite())
+                .size(video.getSize())
+                .type(video.getType())
+                .build())
+            .collect(Collectors.toList());
+    }
+
+    private List<CompanyEntity> convertCompanies(List<MovieDTO.ProductionCompany> companies) {
+        if (companies == null) return new ArrayList<>();
+        return companies.stream()
+            .map(company -> CompanyEntity.builder()
+                .id(company.getId())
+                .logoPath(company.getLogoPath())
+                .name(company.getName())
+                .originCountry(company.getOriginCountry())
+                .build())
+            .collect(Collectors.toList());
+    }
+
+    private List<CountryEntity> convertCountries(List<MovieDTO.ProductionCountry> countries) {
+        if (countries == null) return new ArrayList<>();
+        return countries.stream()
+            .map(country -> CountryEntity.builder()
+                .iso3166_1(country.getIso3166_1())
+                .name(country.getName())
+                .build())
+            .collect(Collectors.toList());
+    }
+
+    private List<SpokenLanguageEntity> convertSpokenLanguages(List<MovieDTO.SpokenLanguage> languages) {
+        if (languages == null) return new ArrayList<>();
+        return languages.stream()
+            .map(language -> SpokenLanguageEntity.builder()
+                .englishName(language.getEnglishName())
+                .iso639_1(language.getIso639_1())
+                .name(language.getName())
+                .build())
+            .collect(Collectors.toList());
+    }
+
+    private List<ActorEntity> convertActors(List<MovieDTO.Cast> cast) {
+        if (cast == null) return new ArrayList<>();
+        return cast.stream()
+            .map(actor -> ActorEntity.builder()
+                .id(actor.getId())
+                .name(actor.getName())
+                .characterName(actor.getCharacterName())
+                .profilePath(actor.getProfilePath())
+                .order(actor.getOrder())
+                .build())
+            .collect(Collectors.toList());
+    }
+
+    private List<CrewEntity> convertCrews(List<MovieDTO.Crew> crew) {
+        if (crew == null) return new ArrayList<>();
+        return crew.stream()
+            .map(crewMember -> CrewEntity.builder()
+                .id(crewMember.getId())
+                .name(crewMember.getName())
+                .jobTitle(crewMember.getJobTitle())
+                .department(crewMember.getDepartment())
+                .profilePath(crewMember.getProfilePath())
+                .build())
+            .collect(Collectors.toList());
     }
 }

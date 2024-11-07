@@ -1,5 +1,6 @@
 package com.board.entity.movie;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import jakarta.persistence.Column;
@@ -11,6 +12,7 @@ import jakarta.persistence.ManyToMany;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -18,6 +20,8 @@ import lombok.NoArgsConstructor;
 @Entity(name = "countrys")
 @Table(name = "jpa_country")
 @NoArgsConstructor
+@Builder
+@AllArgsConstructor
 public class CountryEntity {
 	@Id
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "COUNTRY_SEQ")
@@ -32,5 +36,13 @@ public class CountryEntity {
 	private String name;
 	
 	@ManyToMany(mappedBy = "countrys")
-	private List<MovieEntity> movies;
+	private List<MovieEntity> movies = new ArrayList<>();
+	
+	public void addMovies(MovieEntity entity) {
+		 movies.add(entity);
+		 if(!entity.getCountrys().contains(this))
+		 {
+			 entity.getCountrys().add(this);
+		 }
+	}
 }
