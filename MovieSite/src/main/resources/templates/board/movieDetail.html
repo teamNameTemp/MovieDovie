@@ -11,27 +11,14 @@
 
 <script>
 
-	//화면 렌더링 이후 발생할 이벤트에서 사용될 광역 변수 설정
-	//var number = 1;
-	//var totalPrice = parseInt('[[${view.p_price}]]'); //가격 아직 없음
-	//var price = parseInt('[[${view.p_price}]]');
-	
 	//로그아웃 처리
 	const logout = () => {
 		if(!confirm("로그아웃 하시겠습니까?")) return;
 		document.location.href='/member/logout';		
 	}
-	
-	//장바구니에 담을 상품 갯수 및 가격 구하기
-/*	const count = (type) =>  {
-		  
-		  document.getElementById('total_price').innerHTML = totalPrice.toLocaleString('ko-KR');
-	}
-*/	
+
 	//장바구니에 상품 담기
 	const cart = async (email, seqno) => { //? movieseqno from tbl_rent
-
-		//number += pCartQuantity; //선택한 상품 갯수에다가 기존 장바구니에 담겨져 있는 이 상품의 갯수를 더한다 
 		
 		if(email === '' || email === null) { //논리적 or, 둘중하나만 참이면..true
 			alert("로그인 이후 이용할 수 있는 서비스입니다.");
@@ -62,16 +49,6 @@
 
 	//관심상품 
 	const likeCheck = async (type,email) => {
-		
-		//재고가 0이면 장바구니 담기 버튼 비활성화 --> 관심상품 관리와 상관 없음
-		const stock = parseInt(1);
-		const btnCart = document.getElementById('btn_cart');  
-		
-		if(stock < 1) {
-			btnCart.disabled = true; //관련상품 버튼 비활성화
-			btnCart.style.background = 'gray'; //관련상품 버튼 색상변화
-		}
-		///////////////////////////////////////////////////////
 		
 		if(email === '' || email === null) {
 			alert("로그인 이후 이용할 수 있는 서비스입니다.");
@@ -104,10 +81,8 @@
 			}).catch((error)=> {				
 				console.log("error = " + error);
 			});
-		
-		
 	}
-	
+
 </script>
 
 <script src="/js/logout.js"></script>
@@ -115,21 +90,25 @@
 </head>
 
 <body> <!-- likeCheck -->
-   	<div th:replace="/fragments/nav/menubar::menubar"></div> <!--replace 특정 템플릿 조각(프래그먼트)을 다른 위치에 삽입할 때 사용 -->
-   	<div th:replace="/fragments/nav/sidebar::sidebar"></div>
+<div th:replace="/fragments/nav/menubar::menubar"></div> <!--replace 특정 템플릿 조각(프래그먼트)을 다른 위치에 삽입할 때 사용 -->
+<div th:replace="/fragments/nav/sidebar::sidebar"></div>
 	<div class="container">
 		<div class="content-container">
-		    <div class="featured-content" th:style="'background: linear-gradient(to bottom, rgba(0,0,0,0), #151515), url(\'' + ${movie.posterPath} + '\');'">
-	        	<div class="featured-desc">
-	               <h1 class="featured-title" th:text="${movie.movieNm}"></h1>
-	               <p class="featured-title" th:text="${movie.prdtYear}"></p>
-	               <p class="#" style="text-align: right;">view.likecnt vs view.dislikecnt </p> <!--좋아요 vs 싫어요 % ??-->	               
-	        	</div>
-	            <div> 
-	            	<input type="button" class="featured-button" value="장바구니 담기 | 가격" >
-	            </div>
+			<div class="featured-content" th:style="'background: linear-gradient(to bottom, rgba(0,0,0,0), #151515), url(\'' + ${movie.posterPath} + '\');'">
+				<div class="featured-desc">
+					<h1 class="featured-title" th:text="${movie.movieNm}"></h1>
+					/*
+					태그라인
+					
+					*/
+					<p class="featured-title" th:text="${movie.prdtYear}"></p>
+					<p class="like-dislike-count" style="text-align: center;">${view.likecnt} vs ${view.dislikecnt}</p>
+				</div>
+				<div> 
+					<input type="button" class="featured-button" value="장바구니 담기 | 가격" >
+				</div>
 			</div>
-				<div class="featured-desc movie-info">
+			<div class="featured-desc movie-info">
     <h2 class="section-title">작품정보</h2>
     <p class="overview">
         <span th:text="${movie.overview}"></span>
@@ -137,41 +116,37 @@
     <hr class="divider">
     
     <div class="movie-details">
-        <!-- 감독 정보 수정 -->
+        <!-- 감독 -->
         <div class="detail-row">
             <span class="detail-label">감독</span>
             <div class="detail-value">
-                <span th:each="director : ${movie.directors}" 
-                      th:text="${director.peopleNm}"
-                      class="director-name">
+                <span th:each="director : ${movie.directors}" th:text="${director.peopleNm}" class="director-name">
                 </span>
             </div>
         </div>
 
-        <!-- 장르 정보 수정 -->
+        <!-- 장르 -->
         <div class="detail-row">
             <span class="detail-label">장르</span>
             <div class="detail-value">
-                <span th:each="genre, iterStat : ${movie.genres}" 
-                      th:text="${genre.genreNm + (iterStat.last ? '' : ', ')}"
-                      class="genre-item">
+                <span th:each="genre, iterStat : ${movie.genres}" th:text="${genre.genreNm + (iterStat.last ? '' : ', ')}" class="genre-item">
                 </span>
             </div>
         </div>
 
-        <!-- 개봉일 정보 -->
+        <!-- 개봉일 -->
         <div class="detail-row">
             <span class="detail-label">개봉일</span>
             <span class="detail-value" th:text="${movie.openDt}"></span>
         </div>
 
-        <!-- 관람등급 정보 (오타 수정) -->
+        <!-- 관람등급-->
         <div class="detail-row">
             <span class="detail-label">관람등급</span>
             <span class="detail-value" th:text="${movie.watchGradeNm}"></span>
         </div>
 
-        <!-- 러닝타임 정보 -->
+        <!-- 러닝타임 -->
         <div class="detail-row">
             <span class="detail-label">러닝타임</span>
             <span class="detail-value" th:text="${movie.showtime}"></span>
@@ -181,9 +156,7 @@
         <div class="detail-row">
             <span class="detail-label">제작 국가</span>
             <div class="detail-value">
-                <span th:each="nation, iterStat : ${movie.nations}" 
-                      th:text="${nation.nationNm + (iterStat.last ? '' : ', ')}"
-                      class="nation-item">
+                <span th:each="nation, iterStat : ${movie.nations}" th:text="${nation.nationNm + (iterStat.last ? '' : ', ')}" class="nation-item">
                 </span>
             </div>
         </div>
@@ -194,57 +167,63 @@
             <span class="detail-value" th:text="${movie.prdtYear}"></span>
         </div>
     </div>
-</div>
-	        <br><br>
+</div> <br><br>
 	
-	        <div>
-	            <h2 class="featured-desc">출연</h2>
-	            <div class="movie-list-wrapper">
-		            <div class="movie-list" >
-		                <div class="movie-list-item-img" th:if="${directors}" th:each="director : ${directors}">
-		                    <img th:if="${director.profilePath}" th:src="@{'https://image.tmdb.org/t/p/original' + ${director.profilePath}}" alt="Director Profile" width= 100%; style="object-fit:contain">
-		                    <h4 th:text="${director.name}"></h4>
-		                </div>
-		                <div class="movie-list-item-img" th:if="${actors}" th:each="actor : ${actors}">
-		                    <img th:if="${actor.profilePath}" th:src="@{'https://image.tmdb.org/t/p/original' + ${actor.profilePath}}" alt="Actor Profile" width= 100%; >
-		                    <h4 th:text="${actor.name}"></h4> 
-		                </div> 
-		            </div>
-					<i class="fas fa-chevron-right arrow"></i>
-	            </div>
-	        </div>
-		
-		    <!--리뷰-->
-		    <div class="replyDiv review-section">
-		        <h2 class="featured-desc">리뷰</h2> <br>
-				<button class="featured-button">
-					<img width="28" height="28" src="https://static.kinolights.com/icon/legacy/ic-smile-face-disable.svg" alt="smile face">
-					<span>좋아요</span>
-				</button>
-				<span class="featured-desc" style="text-align: right;">view.likecnt vs view.dislikecnt</span>
-				<button class="featured-button">
-					<img width="28" height="28" src="https://static.kinolights.com/icon/legacy/ic-angry-face-disable.svg" alt="angry face">
-					<span>싫어요</span>
-				</button>
-				<br><br>
-				
-				<div class="replyDiv" style="width:60%;height:300px;margin:auto;text-align:left;">
-					<p id="replyNotice">이 영화 어떠셨나요?</p>
-					<form id="replyForm" name="replyForm" method="POST">
-						<input type="hidden" id="replywriter" name="replywriter"  readonly><br>
-						<textarea id="replycontent" name="replycontent" cols="80" rows="5" maxlength="150" placeholder="글자수:150자 이내">
-						</textarea><br>
-						<input type="hidden" id="seqno" name="seqno" >
-						<input type="hidden" id="email" name="email" >
-					</form>
-					<input type="button" id="btn_reply" value="댓글등록" onclick="replyRegister()">
-					<input type="button" id="btn_cancel" value="취소" onclick="replyCancel()">
-					<hr>
-					<div id="replyList" style="width:100%; height:600px; overflow:auto;"></div>		
-				</div> 
-		    </div>
+		<div>
+			<h2 class="featured-desc">출연</h2>
+			<div class="movie-list-wrapper">
+				<div class="movie-list">
+					<div class="movie-list-item-img" th:if="${directors}" th:each="director : ${directors}">
+						<img th:if="${director.profilePath}" th:src="@{'https://image.tmdb.org/t/p/original' + ${director.profilePath}}" alt="Director Profile" width="100%" style="object-fit:contain">
+						<h4 th:text="${director.name}"></h4>
+					</div>
 
-		    <!--영화 영상/이미지 섹션-->
+					<div class="movie-list-item-img" th:if="${actors}" th:each="actor : ${actors}">
+						<img th:if="${actor.profilePath}" th:src="@{'https://image.tmdb.org/t/p/original' + ${actor.profilePath}}" alt="Actor Profile" width="100%">
+						<h4 th:text="${actor.name}"></h4>
+					</div>
+				</div>
+				<i class="fas fa-chevron-right arrow"></i>
+			</div>
+		</div>
+		
+		<!--리뷰-->
+		<div class="review-section">
+			<h2 class="featured-desc">리뷰</h2> <br>
+
+			<!-- 좋아요/싫어요 버튼 -->
+			<button class="featured-button">
+				<img width="28" height="28" src="https://static.kinolights.com/icon/legacy/ic-smile-face-disable.svg" alt="smile face">
+				<span>좋아요</span>
+			</button>
+			<span class="featured-desc" style="text-align: right;">view.likecnt vs view.dislikecnt</span>
+			<button class="featured-button">
+				<img width="28" height="28" src="https://static.kinolights.com/icon/legacy/ic-angry-face-disable.svg" alt="angry face">
+				<span>싫어요</span>
+			</button>
+			<br><br>
+
+			<!-- 댓글 등록 섹션 -->
+			<div class="replyDiv" style="width:60%;height:300px;margin:auto;text-align:left;">
+				<p id="replyNotice">이 영화 어떠셨나요?</p>
+				<form id="replyForm" name="replyForm" method="POST">
+					<input type="hidden" id="replywriter" name="replywriter" readonly><br>
+					<textarea id="replycontent" name="replycontent" cols="80" rows="5" maxlength="150" placeholder="글자수:150자 이내"></textarea><br>
+					<input type="hidden" id="seqno" name="seqno">
+					<input type="hidden" id="email" name="email">
+				</form>
+				
+				<!-- 버튼 섹션 -->
+				<input type="button" id="btn_reply" value="댓글등록" onclick="replyRegister()">
+				<input type="button" id="btn_cancel" value="취소" onclick="replyCancel()">
+				<hr>
+
+				<!-- 댓글 목록 섹션 -->
+				<div id="replyList" style="width:100%; height:600px; overflow:auto;"></div>		
+			</div> 
+		</div>
+
+		    <!-- 영화 영상/이미지 섹션
 		    <div class="previewDiv">
 		        <h2 class="featured-desc">영상/ 이미지</h2>
 		        <div class="image-container">
@@ -258,7 +237,7 @@
 		                <img src="C:\Users\gladius\Desktop\MovieSite\MovieSite\src\main\resources\static\images\20231202_163902.jpg" alt="영화 이미지 2">
 		            </button>
 		        </div>
-		    </div>
+		    </div> -->
 		
 		    <!-- 함께 볼만한 영화 섹션 -->
 		    <div class="section">
