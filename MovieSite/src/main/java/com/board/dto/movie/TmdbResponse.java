@@ -3,20 +3,20 @@ package com.board.dto.movie;
 import java.util.List;
 
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 
-@NoArgsConstructor
 @Getter
 public class TmdbResponse {
-
-	private List<MovieDTO> results;
-	private int page;
-	private int totalPages;
-	private int totalResults;
-
-	// Getters and setters
-	public List<MovieDTO> getResults() {
-		return results;
+	@Getter
+	public static class SearchResponse {
+		private List<SearchResult> results;
 	}
 
+	@Getter
+	public static class SearchResult {
+		private int id;
+
+		public Object getKnownForDepartment() {
+			return null;
+		}
+	}
 }

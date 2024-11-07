@@ -42,8 +42,8 @@ public class MemberLogEntity {
 	@Column(name="status", length=50, nullable=false)
 	private String status;	
 	
-//	@ManyToOne(fetch = FetchType.LAZY)
-//	@OnDelete(action = OnDeleteAction.CASCADE)
-//	@JoinColumn(name="email", referencedColumnName = "email", insertable = false, updatable = false) // 관계 설정
-//	private MemberEntity member; // MemberEntity와의 관계
+	@ManyToOne(fetch = FetchType.LAZY)
+	@OnDelete(action = OnDeleteAction.CASCADE)
+	@JoinColumn(name="email", referencedColumnName = "email", insertable = false, updatable = false) // 관계 설정
+	private MemberEntity member; // MemberEntity와의 관계
 }

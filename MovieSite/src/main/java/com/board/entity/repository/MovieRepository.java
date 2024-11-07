@@ -22,6 +22,6 @@ public interface MovieRepository extends JpaRepository<MovieEntity, Long>{
 			+ "where seqno = :seqno",nativeQuery = true)
 	public void hitno(@Param("seqno") Long seqno);
 	
-//	public Optional<MovieEntity> findByMovieNm(String movieNm);
-//	public MovieEntity findByMovieCd(String movieCd);
+	public Optional<MovieEntity> findByMovieNm(String movieNm);
+	public MovieEntity findByMovieCd(String movieCd);
 }

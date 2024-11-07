@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import com.board.dto.ReplyInterface;
+import com.board.dto.movie.KobisMovieDTO;
 import com.board.entity.LikeEntity;
 import com.board.entity.MemberEntity;
 import com.board.entity.ReplyEntity;
@@ -20,6 +21,7 @@ import com.board.entity.repository.ReplyRepository;
 
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
+import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -91,6 +93,7 @@ public class BoardServiceImpl implements BoardService {
 		
 		ReplyEntity replyEntity = ReplyEntity.builder()
 											.seqno(movieEntity)
+											.movieseqno(movieEntity.getSeqno())
 											.email(memberEntity)
 											.replywriter(reply.getReplywriter())
 											.replycontent(reply.getReplycontent())
