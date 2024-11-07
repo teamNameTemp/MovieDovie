@@ -6,7 +6,6 @@ import java.util.List;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -21,10 +20,12 @@ import com.board.entity.movie.MovieEntity;
 import com.board.service.BoardService;
 import com.board.service.MovieAPIService;
 import com.board.service.TmdbAPIService;
+import com.board.dto.movie.MovieDTO;
+import com.board.service.BoardService;
+import com.board.service.MovieAPIServiceImpl;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 
-import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 
@@ -33,7 +34,7 @@ import lombok.extern.log4j.Log4j2;
 @RequestMapping("/board")
 @Log4j2
 public class BoardController {
-	private final MovieAPIService movieService;
+	private final MovieAPIServiceImpl movieService;
 	private final BoardService service;
 	private final TmdbAPIService tmdb;
 	
@@ -44,7 +45,9 @@ public class BoardController {
 
 	@GetMapping("/list")
 	public void getList(Model model) throws JsonMappingException, JsonProcessingException {
-		model.addAttribute("dailyMovies",movieService.getDailyBoxOffice());
+		List<MovieDTO> trendList = movieService.getTrendingMovies("day", 1, "ko-KR").block();
+		model.addAttribute("dailyMovies",trendList);
+		
 	}
 	// 장르 필터
 	@PostMapping("/genreCheck")
@@ -92,6 +95,8 @@ public class BoardController {
 		model.addAttribute("actors",actorList);
 		model.addAttribute("director",directorList);
 	}
+	public void getView(Model model, @RequestParam("title") Long seqno) throws JsonMappingException, JsonProcessingException{
+		}
 	
 //	public void getmovie(@RequestParam("seqno") Long seqno, @RequestParam("page") int pageNum,
 //			@RequestParam(name="keyword",defaultValue="",required=false) String keyword,
@@ -191,20 +196,21 @@ public class BoardController {
 	}
 
 	@GetMapping("/tmdb")
-	public void getAuthentication(Model model){
-		MovieEntity entity = movieService.getMovieByCode(777L);
-		String posterOriginPath = "https://image.tmdb.org/t/p/original";
-		List<ActorDetailDTO> actorList = new ArrayList<>();
-		for(ActorEntity actor : entity.getActors()) {
-			String actorNm = actor.getPeopleNm();
-			ActorDetailDTO dto = tmdb.getActorDetailsByName(actorNm).block();
-			dto.setProfilePath(posterOriginPath + dto.getProfilePath());	
-			actorList.add(dto);
+	public void getTmdb(Model model) {
+		//한글로 뽑고 영어로 뽑고 해야함 onErrorResume(en-US / ko-KR)
+		List<MovieDTO> trendList = movieService.getTrendingMovies("day", 1, "ko-KR").block();
+		List<MovieDTO> info = new ArrayList<>();
+		MovieDTO koInfo = movieService.getMovieDetails(1154154, "ko-KR").block();
+		int idx=5;
+		info.add(koInfo);
+		for(MovieDTO d : trendList) {
+			if(idx==0)break;
+			MovieDTO dto = movieService.getMovieDetails(d.getId(),"ko-KR").block();
+			dto.setTitle(d.getTitle());
+			info.add(dto);
+			idx--;
 		}
-			ActorDetailDTO director= tmdb.getActorDetails(21684).block();
-			director.setProfilePath(posterOriginPath + director.getProfilePath());
-		model.addAttribute("actors",actorList);
-		model.addAttribute("director",director);
+		model.addAttribute("movies",info);
 	}
 	
 //	@GetMapping("/daily")
