@@ -1,5 +1,6 @@
 package com.board.entity.movie;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import jakarta.persistence.Column;
@@ -9,6 +10,8 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -16,6 +19,8 @@ import lombok.NoArgsConstructor;
 @Entity(name = "actors")
 @Table(name = "jpa_actor")
 @NoArgsConstructor
+@Builder
+@AllArgsConstructor
 public class ActorEntity {
 	// 배우 ID
 	@Id
@@ -35,6 +40,14 @@ public class ActorEntity {
 	@Column(name = "orderNum", nullable = true)
 	private int order;
 
-		@ManyToMany(mappedBy = "actors")
-		private List<MovieEntity> movies;
+	@ManyToMany(mappedBy = "actors")
+	private List<MovieEntity> movies = new ArrayList<>();
+	
+	public void addMovies(MovieEntity entity) {
+		movies.add(entity);
+		if(!entity.getActors().contains(this))
+		{
+			entity.getActors().add(this);
+		}
+	}
 }

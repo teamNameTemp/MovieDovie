@@ -1,5 +1,6 @@
 package com.board.entity.movie;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import jakarta.persistence.Column;
@@ -8,9 +9,9 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToMany;
-import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -18,6 +19,8 @@ import lombok.NoArgsConstructor;
 @Table(name = "jpa_genre")
 @NoArgsConstructor
 @Data
+@Builder
+@AllArgsConstructor
 public class GenreEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -27,5 +30,9 @@ public class GenreEntity {
     private String name;
 
     @ManyToMany(mappedBy = "genres")
-    private List<MovieEntity> movies;
+    private List<MovieEntity> movies = new ArrayList<>();
+    
+    public void addMovies(MovieEntity entity) {
+    	movies.add(entity);
+    }
 }

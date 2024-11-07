@@ -1,5 +1,7 @@
 package com.board.entity.movie;
 
+import java.util.List;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -9,6 +11,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -16,6 +19,8 @@ import lombok.NoArgsConstructor;
 @Entity(name = "crews")
 @Table(name = "jpa_crew")
 @NoArgsConstructor
+@Builder
+@AllArgsConstructor
 public class CrewEntity {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)

@@ -5,8 +5,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import com.board.entity.movie.ActorEntity;
+import com.board.entity.movie.CompanyEntity;
+import com.board.entity.movie.CountryEntity;
+import com.board.entity.movie.CrewEntity;
 import com.board.entity.movie.GenreEntity;
 import com.board.entity.movie.MovieEntity;
+import com.board.entity.movie.SpokenLanguageEntity;
+import com.board.entity.movie.VideoEntity;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.AllArgsConstructor;
@@ -72,6 +78,7 @@ public class MovieDTO {
 	private String status;
 	// 비디오 여부
 	private boolean video;
+	public boolean getVideo() {return this.video;}
 	// 소속 컬렉션 정보
 	@JsonProperty("belongs_to_collection")
 	private CollectionInfo belongsToCollection;
@@ -347,40 +354,42 @@ public class MovieDTO {
 		private LocalDate releaseDate;
 	}
 	
-	public MovieEntity convertToEntity() {
+	public MovieEntity convertToEntity(MovieDTO dto) {
 	    MovieEntity entity = new MovieEntity();
 	    
-	    entity.setId(this.id);
-	    entity.setTitle(this.title);
-	    entity.setOriginalTitle(this.originalTitle);
-	    entity.setTagline(this.tagline);
-	    entity.setOverview(this.overview);
-	    entity.setRuntime(this.runtime);
-	    entity.setBackdropPath(this.backdropPath);
-	    entity.setPosterPath(this.posterPath);
-	    entity.setVideo(this.video);
-	    entity.setOriginalLanguage(this.originalLanguage);
-	    entity.setImdbId(this.imdbId);
-	    entity.setPopularity(this.popularity);
-	    entity.setReleaseDate(this.releaseDate);
-	    entity.setStatus(this.status);
-	    entity.setVoteAverage(String.valueOf(this.voteAverage));
-	    entity.setVoteCount(this.voteCount);
-
+	    entity.setId(dto.getId());
+	    entity.setTitle(dto.getTitle());
+	    entity.setOriginalTitle(dto.getOriginalTitle());
+	    entity.setTagline(dto.getTagline());
+	    entity.setOverview(dto.getOverview());
+	    entity.setRuntime(dto.getRuntime());
+	    entity.setBackdropPath(dto.getBackdropPath());
+	    entity.setPosterPath(dto.getPosterPath());
+	    entity.setVideo(dto.getVideo());
+	    entity.setOriginalLanguage(dto.getOriginalLanguage());
+	    entity.setImdbId(dto.getImdbId());
+	    entity.setPopularity(dto.getPopularity());
+	    entity.setReleaseDate(dto.getReleaseDate());
+	    entity.setStatus(dto.getStatus());
+	    entity.setVoteAverage(dto.getVoteAverage());
+	    entity.setVoteCount(dto.getVoteCount());
 	    // Note: The following relationships are commented out in the MovieEntity.
 	    // If you decide to uncomment and use them, you'll need to implement the conversion logic for these as well.
 	    
-	    // entity.setGenres(convertGenres());
-	    // entity.setVideos(convertVideos());
-	    // entity.setCompanys(convertCompanies());
-	    // entity.setCountrys(convertCountries());
-	    // entity.setSpokenLanguages(convertSpokenLanguages());
-	    // entity.setActors(convertActors());
-	    // entity.setCrews(convertCrews());
+	    entity.setCertification(covertCertification());
+	entity.setGenres(convertGenres());
+	entity.setVideos(convertVideos());
+	entity.setCompanys(convertCompanies());
+	entity.setCountrys(convertCountries());
+	entity.setSpokenLanguages(convertSpokenLanguages());
+	entity.setActors(convertActors());
+	entity.setCrews(convertCrews());
 
-	    return entity;
+		return entity;
 	}
-	private List<GenreEntity> convertGenres() {
+//	
+
+	public List<GenreEntity> convertGenres() {
 	    if (this.genres == null) return new ArrayList<>();
 	    return this.genres.stream()
 	        .map(genre -> {
@@ -390,5 +399,108 @@ public class MovieDTO {
 	            return genreEntity;
 	        })
 	        .collect(Collectors.toList());
+	}
+
+	public List<VideoEntity> convertVideos() {
+	    if (this.videos == null) return new ArrayList<>();
+	    return this.videos.getResults().stream()
+	        .map(video -> {
+	            VideoEntity videoEntity = new VideoEntity();
+	            videoEntity.setId(video.getId());
+	            videoEntity.setIso639_1(video.getIso639_1());
+	            videoEntity.setIso3166_1(video.getIso3166_1());
+	            videoEntity.setKey(video.getKey());
+	            videoEntity.setName(video.getName());
+	            videoEntity.setSite(video.getSite());
+	            videoEntity.setSize(video.getSize());
+	            return videoEntity;
+	        })
+	        .collect(Collectors.toList());
+	}
+
+	public List<CompanyEntity> convertCompanies() {
+	    if (this.productionCompanies == null) return new ArrayList<>();
+	    return this.productionCompanies.stream()
+	        .map(company -> {
+	            CompanyEntity companyEntity = new CompanyEntity();
+	            companyEntity.setId(company.getId());
+	            companyEntity.setName(company.getName());
+	            return companyEntity;
+	        })
+	        .collect(Collectors.toList());
+	}
+
+	public List<CountryEntity> convertCountries() {
+	    if (this.productionCountries == null) return new ArrayList<>();
+	    return this.productionCountries.stream()
+	        .map(country -> {
+	            CountryEntity countryEntity = new CountryEntity();
+	            countryEntity.setIso3166_1(country.getIso3166_1());
+	            countryEntity.setName(country.getName());
+	            return countryEntity;
+	        })
+	        .collect(Collectors.toList());
+	}
+
+	public List<SpokenLanguageEntity> convertSpokenLanguages() {
+	    if (this.spokenLanguages == null) return new ArrayList<>();
+	    return this.spokenLanguages.stream()
+	        .map(language -> {
+	        	SpokenLanguageEntity languageEntity = new SpokenLanguageEntity();
+	            languageEntity.setEnglishName(language.getEnglishName());
+	            languageEntity.setIso639_1(language.getIso639_1());
+	            languageEntity.setName(language.getName());
+	            return languageEntity;
+	        })
+	        .collect(Collectors.toList());
+	}
+
+	public List<ActorEntity> convertActors() {
+	    if (this.credits == null) return new ArrayList<>();
+	    
+	    if(this.credits.getCast() == null)return new ArrayList<>();
+	    else return this.credits.getCast().stream()
+	        .map(actor -> {
+	            ActorEntity actorEntity = new ActorEntity();
+	            actorEntity.setId(actor.getId());
+	            actorEntity.setName(actor.getName());
+	            actorEntity.setCharacterName(actor.getCharacterName());
+	            actorEntity.setProfilePath(actor.getProfilePath());
+	            actorEntity.setOrder(actor.getOrder());
+	            return actorEntity;
+	        })
+	        .collect(Collectors.toList());
+	}
+
+	public List<CrewEntity> convertCrews() {
+	    if (this.credits == null) return new ArrayList<>();
+	    
+	    if(this.credits.getCrew() == null)return new ArrayList<>();
+	    else return this.credits.getCrew().stream()
+	        .map(crew -> {
+	            CrewEntity crewEntity = new CrewEntity();
+	            crewEntity.setId(crew.getId());
+	            crewEntity.setName(crew.getName());
+	            crewEntity.setJobTitle(crew.getJobTitle());
+	            crewEntity.setDepartment(crew.getDepartment());
+	            crewEntity.setProfilePath(crew.getProfilePath());
+	            return crewEntity;
+	        })
+	        .collect(Collectors.toList());
+	}
+	
+	private String covertCertification() {
+		if(releaseDates == null)return "";
+		
+		if(releaseDates.getResults() == null)return "";
+		else{
+			String certi = "";
+			for(ReleaseDateInfo d : releaseDates.getResults()) {
+				if("KR".equals(d.iso31661)) {
+					certi = d.getReleaseDates().get(0).getCertification();
+				}
+			}
+			return certi;
+		}
 	}
 }
