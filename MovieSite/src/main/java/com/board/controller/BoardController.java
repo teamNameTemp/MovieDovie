@@ -19,7 +19,6 @@ import com.board.entity.movie.ActorEntity;
 import com.board.entity.movie.DirectorEntity;
 import com.board.entity.movie.MovieEntity;
 import com.board.service.BoardService;
-import com.board.service.KobisAPIService;
 import com.board.service.MovieAPIService;
 import com.board.service.TmdbAPIService;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -37,7 +36,6 @@ public class BoardController {
 	private final MovieAPIService movieService;
 	private final BoardService service;
 	private final TmdbAPIService tmdb;
-	private final KobisAPIService kobis;
 	
 	// 추천 장르
 	@GetMapping("/selectGenre")

@@ -2,6 +2,7 @@ package com.board.dto.movie;
 
 import lombok.Getter;
 import lombok.Setter;
+import java.util.List;
 
 @Getter
 @Setter
@@ -12,8 +13,6 @@ public class MovieDetailDTO {
     private String overview;
     private String releaseDate;
     private String posterPath;
-    
-    // 추가 필드...
-    
-    // Getters and setters
+    private List<DirectorDetailDTO> directors;
+    private List<ActorDetailDTO> actors;
 }

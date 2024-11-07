@@ -39,7 +39,6 @@ import reactor.core.publisher.Mono;
 @Service
 @Log4j2
 public class MovieAPIService {
-	private final KobisAPIService kobis;
 	private final TmdbAPIService tmdb;
 	private final DailyBoxOfficeRepository dailyRepository;
 	private final MovieRepository movieRepository;
