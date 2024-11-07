@@ -2,7 +2,6 @@ package com.board.entity;
 
 import java.io.Serializable;
 
-import lombok.EqualsAndHashCode;
 import lombok.*;
 
 @Getter
@@ -12,6 +11,6 @@ import lombok.*;
 public class LikeEntityID implements Serializable{ //변수값들을 serialize화 하기 위해서 필요한 작업을 해 줌
 
 	private static final long serialVersionUID = 1L;
-	private Long seqno;
+	private Long movieseqno;
 	private String email;	
 }

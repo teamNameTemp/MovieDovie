@@ -1,7 +1,9 @@
 package com.board.service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Service;
 
 import com.board.dto.MemberDTO;
@@ -54,6 +56,12 @@ public class MemberServiceImpl implements MemberService {
 														 .build();		
 		memberLogRepository.save(memberLogEntity);
 	}
+	//관리자페이지 - 통계 : 회원 가입한 날 확인
+	@Override
+	public List<Object[]> signupResult(){
+		return memberRepository.signupResult();
+	}
+
 	
 	//마지막 로그인/로그아웃/패스워드 변경일 등록 하기
 	@Override
