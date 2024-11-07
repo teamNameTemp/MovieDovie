@@ -17,14 +17,9 @@ import lombok.NoArgsConstructor;
 @Table(name = "jpa_video")
 @Data
 @NoArgsConstructor
-@AllArgsConstructor
 public class VideoEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE,generator = "VIDEO_SEQ")
-    @SequenceGenerator(name="VIDEO_SEQ", sequenceName = "jpa_video_seq", initialValue = 1,allocationSize = 1)
-    private Long seqno;
-    
-    @Column(name="id", nullable = true)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private String id;
     
     // 언어 코드 (ISO 639-1)
@@ -49,7 +44,7 @@ public class VideoEntity {
     @Column(name="type",nullable = true)
 	private String type;
     
-    @ManyToOne
-    @JoinColumn(name = "movie_id")
-    private MovieEntity movie;
+//    @ManyToOne
+//    @JoinColumn(name = "movie_id")
+//    private MovieEntity movie;
 }

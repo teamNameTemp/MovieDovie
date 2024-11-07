@@ -1,8 +1,7 @@
 package com.board.entity.movie;
 
+import java.util.ArrayList;
 import java.util.List;
-
-import com.fasterxml.jackson.annotation.JsonProperty;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -17,14 +16,13 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@Entity(name = "spokenLanguage")
-@Table(name = "tbl_spokenLanguage")
+@Entity(name = "spokenLanguages")
+@Table(name = "jpa_spokenLanguage")
 @NoArgsConstructor
-@AllArgsConstructor
-public class SpokenlanguageEntity {
+public class SpokenLanguageEntity {
 	@Id
-	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "COUNTRY_SEQ")
-	@SequenceGenerator(name = "COUNTRY_SEQ", sequenceName = "tbl_country_seq", initialValue = 1, allocationSize = 1)
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SPOKEN_SEQ")
+	@SequenceGenerator(name = "SPOKEN_SEQ", sequenceName = "jpa_spoken_seq", initialValue = 1, allocationSize = 1)
 	private Long seqno;
 
 	@Column(name = "englishName", nullable = true)
@@ -36,7 +34,7 @@ public class SpokenlanguageEntity {
 	@Column(name = "name", nullable = true)
 	private String name;
 	
-	
-	@ManyToMany(mappedBy = "spokenLanguage")
-	private List<MovieEntity> movies;
+//	
+//	@ManyToMany(mappedBy = "spokenLanguages")
+//	private List<MovieEntity> movies;
 }
