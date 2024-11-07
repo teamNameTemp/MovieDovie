@@ -1,47 +1,50 @@
 package com.board.entity.movie;
 
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.SequenceGenerator;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
-import lombok.Getter;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
-@Getter
-@Setter
-@Entity(name="company")
-@Table(name="tbl_company")
+@Data
+@Entity(name="companys")
+@Table(name="jpa_company")
 @NoArgsConstructor
+@Builder
+@AllArgsConstructor
 public class CompanyEntity {
 		@Id
-		@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "COMPANY_SEQ")
-		@SequenceGenerator(name="COMPANY_SEQ", sequenceName = "tbl_company_seq", initialValue = 1, allocationSize = 1)
-		private long seqno;
+		@GeneratedValue(strategy = GenerationType.AUTO)
+		private Integer id;
+		// 제작사 로고 경로
+		@Column(name="logoPath", nullable = true)
+		private String logoPath;
+		// 제작사 이름
+		@Column(name="name",nullable = true)
+		private String name;
+		// 제작사 국가
+		@Column(name="originCountry",nullable = true)
+		private String originCountry;
 		
-		@Column(name="companyCd")
-		private String companyCd;
+		@ManyToMany(mappedBy = "companys")
+		private List<MovieEntity> movies = new ArrayList<>();
 		
-		@Column(name="companyNm")
-		private String companyNm;
-		
-		@Column(name="companyNmEn")
-		private String companyNmEn;
-		
-		@Column(name="companyPartNm")
-		private String companyPartNm;
-		
-		@ManyToOne(fetch=FetchType.LAZY)
-		@JoinColumn(name="movie_cd")
-		private MovieEntity movie;
+		public void addMovies(MovieEntity entity) {
+			movies.add(entity);
+			if(entity.getCompanys().contains(this))
+			{
+				entity.getCompanys().add(this);
+			}
+		}
 }
 
 
