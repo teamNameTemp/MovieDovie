@@ -5,7 +5,6 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 
 import com.board.dto.ReplyInterface;
-import com.board.dto.movie.KobisMovieDTO;
 import com.board.entity.LikeEntity;
 
 @Service
