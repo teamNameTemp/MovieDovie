@@ -25,12 +25,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class MovieEntity {
 	@Id
-	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "MOVIE_SEQ")
-	@SequenceGenerator(name = "MOVIE_SEQ", sequenceName = "jpa_movie_seq", initialValue = 1, allocationSize = 1)
-	private Long seqno;
-
-	@Column(name = "id", nullable = true)
+	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Integer id;
+	
 	@Column(name = "title", nullable = true)
 	private String title;
 
@@ -40,7 +37,7 @@ public class MovieEntity {
 	@Column(name = "tagline", nullable = true)
 	private String tagline;
 
-	@Column(name = "overview", nullable = true)
+	@Column(name = "overview", length=2000,nullable = true)
 	private String overview;
 
 	@Column(name = "runtime", nullable = true)
@@ -71,41 +68,41 @@ public class MovieEntity {
 	//==========================================================================
 	
 	//==========================================================================
-//	@ManyToMany
-//	@JoinTable(name = "movie_genres", 
-//	joinColumns = @JoinColumn(name = "movie_id"), 
-//	inverseJoinColumns = @JoinColumn(name = "jpa_genre_id"))
-//	private List<GenreEntity> genres =new ArrayList<>();
-//
-//	@OneToMany(mappedBy = "movie", cascade = CascadeType.ALL, orphanRemoval = true)
-//	private List<VideoEntity> videos = new ArrayList<>();
-//
-//	@ManyToMany
-//	@JoinTable(name = "movie_companys", 
-//	joinColumns = @JoinColumn(name = "movie_id"), 
-//	inverseJoinColumns = @JoinColumn(name = "jpa_company_id"))
-//	private List<CompanyEntity> companys = new ArrayList<>();
-//
-//	@ManyToMany
-//	@JoinTable(name = "movie_countrys", 
-//	joinColumns = @JoinColumn(name = "movie_id"), 
-//	inverseJoinColumns = @JoinColumn(name = "jpa_country_id"))
-//	private List<CountryEntity> countrys = new ArrayList<>();
-//
-//	@ManyToMany
-//	@JoinTable(name = "movie_spokenLanguages", 
-//	joinColumns = @JoinColumn(name = "movie_id"), 
-//	inverseJoinColumns = @JoinColumn(name = "jpa_spokenLanguage_id"))
-//	private List<SpokenLanguageEntity> spokenLanguages = new ArrayList<>();
-//
-//	@ManyToMany
-//	@JoinTable(name = "movie_actors", 
-//	joinColumns = @JoinColumn(name = "movie_id"), 
-//	inverseJoinColumns = @JoinColumn(name = "jpa_actor_id"))
-//	private List<ActorEntity> actors = new ArrayList<>();
-//
-//	@OneToMany(mappedBy = "movie", cascade = CascadeType.ALL, orphanRemoval = true)
-//	private List<CrewEntity> crews = new ArrayList<>();
-//	
+	@ManyToMany
+	@JoinTable(name = "movie_genres", 
+	joinColumns = @JoinColumn(name = "movie_id"), 
+	inverseJoinColumns = @JoinColumn(name = "jpa_genre_id"))
+	private List<GenreEntity> genres =new ArrayList<>();
+
+	@OneToMany(mappedBy = "movie", cascade = CascadeType.ALL, orphanRemoval = true)
+	private List<VideoEntity> videos = new ArrayList<>();
+
+	@ManyToMany
+	@JoinTable(name = "movie_companys", 
+	joinColumns = @JoinColumn(name = "movie_id"), 
+	inverseJoinColumns = @JoinColumn(name = "jpa_company_id"))
+	private List<CompanyEntity> companys = new ArrayList<>();
+
+	@ManyToMany
+	@JoinTable(name = "movie_countrys", 
+	joinColumns = @JoinColumn(name = "movie_id"), 
+	inverseJoinColumns = @JoinColumn(name = "jpa_country_id"))
+	private List<CountryEntity> countrys = new ArrayList<>();
+
+	@ManyToMany
+	@JoinTable(name = "movie_spokenLanguages", 
+	joinColumns = @JoinColumn(name = "movie_id"), 
+	inverseJoinColumns = @JoinColumn(name = "jpa_spokenLanguage_id"))
+	private List<SpokenLanguageEntity> spokenLanguages = new ArrayList<>();
+
+	@ManyToMany
+	@JoinTable(name = "movie_actors", 
+	joinColumns = @JoinColumn(name = "movie_id"), 
+	inverseJoinColumns = @JoinColumn(name = "jpa_actor_id"))
+	private List<ActorEntity> actors = new ArrayList<>();
+
+	@OneToMany(mappedBy = "movie", cascade = CascadeType.ALL, orphanRemoval = true)
+	private List<CrewEntity> crews = new ArrayList<>();
+	
 	
 }

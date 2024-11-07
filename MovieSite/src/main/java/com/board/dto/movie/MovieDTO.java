@@ -1,8 +1,12 @@
 package com.board.dto.movie;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
+import com.board.entity.movie.GenreEntity;
+import com.board.entity.movie.MovieEntity;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.AllArgsConstructor;
@@ -341,5 +345,50 @@ public class MovieDTO {
 		// 개봉일
 		@JsonProperty("release_date")
 		private LocalDate releaseDate;
+	}
+	
+	public MovieEntity convertToEntity() {
+	    MovieEntity entity = new MovieEntity();
+	    
+	    entity.setId(this.id);
+	    entity.setTitle(this.title);
+	    entity.setOriginalTitle(this.originalTitle);
+	    entity.setTagline(this.tagline);
+	    entity.setOverview(this.overview);
+	    entity.setRuntime(this.runtime);
+	    entity.setBackdropPath(this.backdropPath);
+	    entity.setPosterPath(this.posterPath);
+	    entity.setVideo(this.video);
+	    entity.setOriginalLanguage(this.originalLanguage);
+	    entity.setImdbId(this.imdbId);
+	    entity.setPopularity(this.popularity);
+	    entity.setReleaseDate(this.releaseDate);
+	    entity.setStatus(this.status);
+	    entity.setVoteAverage(String.valueOf(this.voteAverage));
+	    entity.setVoteCount(this.voteCount);
+
+	    // Note: The following relationships are commented out in the MovieEntity.
+	    // If you decide to uncomment and use them, you'll need to implement the conversion logic for these as well.
+	    
+	    // entity.setGenres(convertGenres());
+	    // entity.setVideos(convertVideos());
+	    // entity.setCompanys(convertCompanies());
+	    // entity.setCountrys(convertCountries());
+	    // entity.setSpokenLanguages(convertSpokenLanguages());
+	    // entity.setActors(convertActors());
+	    // entity.setCrews(convertCrews());
+
+	    return entity;
+	}
+	private List<GenreEntity> convertGenres() {
+	    if (this.genres == null) return new ArrayList<>();
+	    return this.genres.stream()
+	        .map(genre -> {
+	            GenreEntity genreEntity = new GenreEntity();
+	            genreEntity.setId(genre.getId());
+	            genreEntity.setName(genre.getName());
+	            return genreEntity;
+	        })
+	        .collect(Collectors.toList());
 	}
 }

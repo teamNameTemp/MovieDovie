@@ -32,8 +32,8 @@ public class CompanyEntity {
 		@Column(name="originCountry",nullable = true)
 		private String originCountry;
 		
-//		@ManyToMany(mappedBy = "companys")
-//		private List<MovieEntity> movies;
+		@ManyToMany(mappedBy = "companys")
+		private List<MovieEntity> movies;
 }
 
 

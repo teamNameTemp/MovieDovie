@@ -52,7 +52,7 @@
                                 <td>${movie.id}</td>
                                 <td>${movie.title}</td>
                                 <td>${movie.releaseDate}</td>
-                                <td><button onclick="saveMovie(${movie.id})">저장</button></td>
+                                <td><button onclick="saveMovie()">저장</button></td>
                             </tr>
                         `;
                         tableBody.innerHTML += row;
@@ -70,14 +70,16 @@
                 });
         }
 
-        function saveMovie(movieId) {
+        function saveMovie() {
             // AJAX를 사용하여 개별 영화를 저장합니다
-            fetch(`/api/movies/save/${movieId}`, { method: 'POST' })
+            fetch("/make/movies/save", { method: 'POST' })
                 .then(response => response.json())
                 .then(result => {
                     alert(`영화 ID ${movieId}가 저장되었습니다.`);
                 });
         }
     </script>
+    
+    <button onclick="saveMovie()">저장</button>
 </body>
 </html>

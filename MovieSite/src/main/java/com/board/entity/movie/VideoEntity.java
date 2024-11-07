@@ -44,7 +44,7 @@ public class VideoEntity {
     @Column(name="type",nullable = true)
 	private String type;
     
-//    @ManyToOne
-//    @JoinColumn(name = "movie_id")
-//    private MovieEntity movie;
+    @ManyToOne
+    @JoinColumn(name = "movie_id")
+    private MovieEntity movie;
 }
