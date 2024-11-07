@@ -92,7 +92,7 @@ public class TmdbAPIServiceImpl implements TmdbAPIService {
                         .path("/movie/{movieId}")
                         .queryParam("api_key", token)
                         .queryParam("language", language)
-                        .queryParam("append_to_response", "credits,videos")
+                        .queryParam("append_to_response", "credits,videos,release_dates")
                         .build(movieId))
                 .retrieve()
                 .bodyToMono(MovieDTO.class);

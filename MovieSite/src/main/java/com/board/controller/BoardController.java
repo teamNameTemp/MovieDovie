@@ -37,6 +37,9 @@ public class BoardController {
 
 	@GetMapping("/list")
 	public void getList(Model model) throws JsonMappingException, JsonProcessingException {
+		List<MovieDTO> trendList = movieService.getTrendingMovies("day", 1, "ko-KR").block();
+		model.addAttribute("dailyMovies",trendList);
+		
 	}
 	// 장르 필터
 	@PostMapping("/genreCheck")
@@ -152,11 +155,12 @@ public class BoardController {
 		//한글로 뽑고 영어로 뽑고 해야함 onErrorResume(en-US / ko-KR)
 		List<MovieDTO> trendList = movieService.getTrendingMovies("day", 1, "ko-KR").block();
 		List<MovieDTO> info = new ArrayList<>();
-		
+		MovieDTO koInfo = movieService.getMovieDetails(1154154, "ko-KR").block();
 		int idx=5;
+		info.add(koInfo);
 		for(MovieDTO d : trendList) {
 			if(idx==0)break;
-			MovieDTO dto = movieService.getMovieDetails(d.getId(),"en-US").block();
+			MovieDTO dto = movieService.getMovieDetails(d.getId(),"ko-KR").block();
 			dto.setTitle(d.getTitle());
 			info.add(dto);
 			idx--;
