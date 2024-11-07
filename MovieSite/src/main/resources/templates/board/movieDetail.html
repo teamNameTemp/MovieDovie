@@ -26,14 +26,14 @@
 		}
 
 		await fetch('/board/Cart',{
-			  method: "POST",
-			  headers: {
+			method: "POST",
+			headers: {
 			    "Content-Type": "application/json", //JSON 형식의 데이터를 보낸다는 것을 서버에 알립
-			  },
+			},
 			  body: JSON.stringify({ // 장바구니에 추가할 상품에 대한 정보를 JSON 형식으로 포함
 					cart_email: email, //from TBL_RENT
 					seqno: seqno, //from TBL_MOVIE
-			  }),				
+			}),				
 			}).then((response)=> response.text())
 				.then((data) => {
 					if(data != '' || data != null){
@@ -45,42 +45,6 @@
 				console.log("error = " + error);
 			});
 		
-	}
-
-	//관심상품 
-	const likeCheck = async (type,email) => {
-		
-		if(email === '' || email === null) {
-			alert("로그인 이후 이용할 수 있는 서비스입니다.");
-			return;
-		}
-				
-		await fetch('/shop/likeManage?type=' + type,{
-			  method: "POST",
-			  headers: {
-			    "Content-Type": "application/json",
-			  },
-			  body: JSON.stringify({
-				    like_email: '[[${session.email}]]',
-					p_id: parseInt('[[${view.p_id}]]'),					
-			  }),				
-			}).then((response)=> response.text())
-				.then((data) => {
-					if(data == 'good'){
-						const btnLike = document.getElementById('btn_like');
-						btnLike.style.border = 'solid, red';
-						btnLike.style.background = 'red';
-						btnLike.style.color = 'white';
-						
-					} else {
-						const btnLike = document.getElementById('btn_like');
-						btnLike.style.border = 'solid, #168';
-						btnLike.style.background = 'white';
-						btnLike.style.color = 'black';	
-					}
-			}).catch((error)=> {				
-				console.log("error = " + error);
-			});
 	}
 
 </script>
@@ -99,15 +63,15 @@
 				<div class="featured-desc">
 					<div class="mini-info">
 						<small th:text="${ReleaseDate.certification}">certification |</small>
-						<small th:text="${ReleaseDate.releaseDate}">openDt |</small>
-						<small th:each="genre, iterStat : ${genre.name}">genres |</small>
+						<small th:text="${ReleaseDate.releaseDate}">releaseDate |</small>
+						<small th:each="genre, iterStat : ${movie.genres}" th:text="${genre.name}">genres |</small>
 						<small th:text="${movie.runtime} + ' 분'">runtime</small>
 					</div>
 					<h1 class="featured-title" th:text="${movie.title}">title</h1>
 										<p class="featured-title" th:text="${movie.originalTitle}">originalTitle</p>
 <p class="featured-title" th:text="${ReleaseDate.releaseDate}">(${ReleaseDate.releaseDate})</p>
 					<p class="like-dislike-count" style="text-align: center;">${view.likecnt} vs ${view.dislikecnt}</p>
-					<p style="text-align: center;"	>
+					<p style="text-align: center;">
 						<span th:text="${movie.voteAverage}">voteAverage</span>
 						<span th:text="${movie.voteCount}">voteCount</span>
 					</p>
@@ -127,14 +91,6 @@
     <div class="movie-details">
         <!-- 장르 -->
         <div class="detail-row">
-            <span class="detail-label">장르</span>
-            <div class="detail-value">
-                <span th:each="genre, iterStat : ${movie.genres}" th:text="${genre.name + (iterStat.last ? '' : ', ')}" class="genre-item">
-                </span>
-            </div>
-        </div>
-        </div>
-        <div class="detail-row">
             <span class="detail-label">장르:
             	<ul>
                 	<li th:each="genre : ${movie.genres}" th:text="${genre.genreNm}"></li>
@@ -153,7 +109,7 @@
         </div>
         <div class="detail-row">
             <span class="detail-label">러닝타임: <th:block th:text="${movie.showtime}"></th:block></span>
-            <span class="detail-value" ></span>
+            <span class="detail-value"></span>
         </div>
         <div class="detail-row">
             <span class="detail-label">제작 국가:
@@ -161,11 +117,11 @@
             	<li th:each="nation : ${movie.nations}" th:text="${nation.nationNm}"></li>
             </ul>
             </span>
-            <span class="detail-value" ></span>
+            <span class="detail-value"></span>
         </div>
         <div class="detail-row">
             <span class="detail-label">제작연도 : <th:block th:text="${movie.prdtYear}"></th:block></span>
-            <span class="detail-value" ></span>
+            <span class="detail-value"></span>
         </div>
     </div>
 </div>
