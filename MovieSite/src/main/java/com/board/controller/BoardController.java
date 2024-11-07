@@ -12,15 +12,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.board.dto.ReplyInterface;
-import com.board.dto.movie.ActorDetailDTO;
-import com.board.dto.movie.DirectorDetailDTO;
-import com.board.entity.movie.ActorEntity;
-import com.board.entity.movie.DirectorEntity;
-import com.board.entity.movie.MovieEntity;
+import com.board.dto.movie.MovieDTO;
 import com.board.service.BoardService;
-import com.board.service.KobisAPIService;
-import com.board.service.MovieAPIService;
-import com.board.service.TmdbAPIService;
+import com.board.service.MovieAPIServiceImpl;
+import com.board.service.TmdbAPIServiceImpl;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 
@@ -32,10 +27,8 @@ import lombok.extern.log4j.Log4j2;
 @RequestMapping("/board")
 @Log4j2
 public class BoardController {
-	private final MovieAPIService movieService;
+	private final MovieAPIServiceImpl movieService;
 	private final BoardService service;
-	private final TmdbAPIService tmdb;
-	private final KobisAPIService kobis;
 	
 	// 추천 장르
 	@GetMapping("/selectGenre")
@@ -44,7 +37,6 @@ public class BoardController {
 
 	@GetMapping("/list")
 	public void getList(Model model) throws JsonMappingException, JsonProcessingException {
-		model.addAttribute("dailyMovies",movieService.getDailyBoxOffice());
 	}
 	// 장르 필터
 	@PostMapping("/genreCheck")
@@ -56,42 +48,7 @@ public class BoardController {
 	//영화상세
 	@GetMapping("/movieDetail")
 	public void getView(Model model, @RequestParam("title") Long seqno) throws JsonMappingException, JsonProcessingException{
-//		MovieEntity entity = movieService.getMovieInfo(movieCd).block();
-		MovieEntity entity = movieService.getMovieByCode(seqno);
-		model.addAttribute("movie",entity);
-//		String posterOriginPath = "https://image.tmdb.org/t/p/original";
-		
-		//detail person으로 변경 dto/entity 다 person으로
-		int actorMax = 5;
-		List<ActorDetailDTO> actorList = new ArrayList<>();
-		for(ActorEntity actor : entity.getActors()) {
-			if(actorMax==0)break;
-			actorMax--;
-			String actorNm = actor.getPeopleNm();
-			String actorNmEn = actor.getPeopleNmEn();
-			ActorDetailDTO dto = tmdb.getActorDetailsByName(actorNmEn).block();
-			if(dto !=null) {
-				log.info(dto);
-				dto.setProfilePath(dto.getProfilePath());	
-				actorList.add(dto);
-			}
 		}
-		int directorMax=5;
-		List<DirectorDetailDTO> directorList = new ArrayList<>();
-		for(DirectorEntity director : entity.getDirectors()) {
-			if(directorMax==0) break;
-			directorMax--;
-			String directorNm = director.getPeopleNm();
-			String directorNmEn = director.getPeopleNmEn();
-			DirectorDetailDTO dto = tmdb.getDirectorDetailsByName(directorNmEn).block();
-			if(dto !=null) {
-				dto.setProfilePath(dto.getProfilePath());	
-				directorList.add(dto);
-			}
-		}
-		model.addAttribute("actors",actorList);
-		model.addAttribute("director",directorList);
-	}
 	
 //	public void getView(@RequestParam("seqno") Long seqno, @RequestParam("page") int pageNum,
 //			@RequestParam(name="keyword",defaultValue="",required=false) String keyword,
@@ -191,20 +148,20 @@ public class BoardController {
 	}
 
 	@GetMapping("/tmdb")
-	public void getAuthentication(Model model){
-		MovieEntity entity = movieService.getMovieByCode(777L);
-		String posterOriginPath = "https://image.tmdb.org/t/p/original";
-		List<ActorDetailDTO> actorList = new ArrayList<>();
-		for(ActorEntity actor : entity.getActors()) {
-			String actorNm = actor.getPeopleNm();
-			ActorDetailDTO dto = tmdb.getActorDetailsByName(actorNm).block();
-			dto.setProfilePath(posterOriginPath + dto.getProfilePath());	
-			actorList.add(dto);
+	public void getTmdb(Model model) {
+		//한글로 뽑고 영어로 뽑고 해야함 onErrorResume(en-US / ko-KR)
+		List<MovieDTO> trendList = movieService.getTrendingMovies("day", 1, "ko-KR").block();
+		List<MovieDTO> info = new ArrayList<>();
+		
+		int idx=5;
+		for(MovieDTO d : trendList) {
+			if(idx==0)break;
+			MovieDTO dto = movieService.getMovieDetails(d.getId(),"en-US").block();
+			dto.setTitle(d.getTitle());
+			info.add(dto);
+			idx--;
 		}
-			ActorDetailDTO director= tmdb.getActorDetails(21684).block();
-			director.setProfilePath(posterOriginPath + director.getProfilePath());
-		model.addAttribute("actors",actorList);
-		model.addAttribute("director",director);
+		model.addAttribute("movies",info);
 	}
 	
 //	@GetMapping("/daily")
