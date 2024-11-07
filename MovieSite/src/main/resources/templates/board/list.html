@@ -28,7 +28,7 @@
                     <li class="menu-list-item" style="position:relative; margin-top:17px;"><a href="#">인기 영화</a></li>         
                 </ul>
               <div class="search-box" style="position:relative; margin-top:27px;">
-  				<form action="." method="post">
+  				<form action="/board/list" method="">
     			<input class="search-txt" type="text" placeholder="  작품, 배우, 게시글, 태그를 검색해보세요" >
     			<button class="search-btn" type="submit">
 				  <i class="fas fa-search"></i>
@@ -98,7 +98,7 @@
                  <p class="featured-desc" style="color:#c92fb9">11월 빼빼로 데이 초특가 SALE EVENT!!!</p>
             </div>
             <div class="movie-list-container">
-                <h1 class="movie-list-title">일별 박스 오피스</h1>
+                <h1 class="movie-list-title">전세계가 주목하고 있는 Daily 인기 영화</h1>
                 <!-- 여기서
 				<div class="movie-list-wrapper">
 					<div class="movie-list">
@@ -116,17 +116,27 @@
 				</div>
                  -->
 			</div>
+		
+			
             <div class="movie-list-container">
+            
                 <h1 class="movie-list-title">회원이 선택한 영화!</h1>
                 <div class="movie-list-wrapper">
                     <div class="movie-list">
+                    
                         <div class="movie-list-item">
+                        
                         <!-- /board/movieDetail?title=${movie.movieNm} -->
                             <a href="/board/movieDetail?title=황해"><img class="movie-list-item-img" src="/img/8.jpg" alt=""></a>
-                            <span class="movie-list-item-title">Her</span>
-                            <p class="movie-list-item-desc">Lorem ipsum dolor sit amet consectetur adipisicing elit. At
-                                hic fugit similique accusantium.</p>
+                            <span class="movie-list-item-title">Herdfsdfdsf</span>
                             
+                          <div class= "movie-list-item-button">
+                            <a class="fas fa-bookmark"href="#"style="font-size:20px; margin-left:50px;"></a>
+                            </div>
+                          <div class= "movie-list-item-button">
+                            <a class="fas fa-shopping-cart"href="#"style="font-size:20px; margin-right:50px;"></a>
+                          </div>
+                          
                         </div>
                         <div class="movie-list-item">
                             <img class="movie-list-item-img" src="/img/9.jpg" alt="">
@@ -156,22 +166,94 @@
                                 hic fugit similique accusantium.</p>
                             
                         </div>
-                        <div class="movie-list-item">
-                            <img class="movie-list-item-img" src="/img/1.jpg" alt="">
+                       <div class="movie-list-item">
+                            <img class="movie-list-item-img" src="/img/9.jpg" alt="">
                             <span class="movie-list-item-title">Her</span>
                             <p class="movie-list-item-desc">Lorem ipsum dolor sit amet consectetur adipisicing elit. At
                                 hic fugit similique accusantium.</p>
                             
                         </div>
-                        <div class="movie-list-item">
-                            <img class="movie-list-item-img" src="/img/1.jpg" alt="">
+                       <div class="movie-list-item">
+                            <img class="movie-list-item-img" src="/img/9.jpg" alt="">
                             <span class="movie-list-item-title">Her</span>
                             <p class="movie-list-item-desc">Lorem ipsum dolor sit amet consectetur adipisicing elit. At
                                 hic fugit similique accusantium.</p>
                             
                         </div>
+                       
+                       <div class="movie-list-item">
+                            <img class="movie-list-item-img" src="/img/9.jpg" alt="">
+                            <span class="movie-list-item-title">Her</span>
+                            <p class="movie-list-item-desc">Lorem ipsum dolor sit amet consectetur adipisicing elit. At
+                                hic fugit similique accusantium.</p>
+                            
+                        </div>
+                        
+                         <div class="movie-list-item">
+                            <img class="movie-list-item-img" src="/img/12.jpg" alt="">
+                            <span class="movie-list-item-title">Her</span>
+                            <p class="movie-list-item-desc">Lorem ipsum dolor sit amet consectetur adipisicing elit. At
+                                hic fugit similique accusantium.</p>
+                            
+                        </div>
+                       <div class="movie-list-item">
+                            <img class="movie-list-item-img" src="/img/9.jpg" alt="">
+                            <span class="movie-list-item-title">Her</span>
+                            <p class="movie-list-item-desc">Lorem ipsum dolor sit amet consectetur adipisicing elit. At
+                                hic fugit similique accusantium.</p>
+                            
+                        </div>
+                       <div class="movie-list-item">
+                            <img class="movie-list-item-img" src="/img/9.jpg" alt="">
+                            <span class="movie-list-item-title">Her</span>
+                            <p class="movie-list-item-desc">Lorem ipsum dolor sit amet consectetur adipisicing elit. At
+                                hic fugit similique accusantium.</p>
+                            
+                        </div>
+                       
+                       <div class="movie-list-item">
+                            <img class="movie-list-item-img" src="/img/9.jpg" alt="">
+                            <span class="movie-list-item-title">Her</span>
+                            <p class="movie-list-item-desc">Lorem ipsum dolor sit amet consectetur adipisicing elit. At
+                                hic fugit similique accusantium.</p>
+                            
+                        </div>
+                        
+                         <div class="movie-list-item">
+                            <img class="movie-list-item-img" src="/img/12.jpg" alt="">
+                            <span class="movie-list-item-title">Her</span>
+                            <p class="movie-list-item-desc">Lorem ipsum dolor sit amet consectetur adipisicing elit. At
+                                hic fugit similique accusantium.</p>
+                            
+                        </div>
+                       <div class="movie-list-item">
+                            <img class="movie-list-item-img" src="/img/9.jpg" alt="">
+                            <span class="movie-list-item-title">Her</span>
+                            <p class="movie-list-item-desc">Lorem ipsum dolor sit amet consectetur adipisicing elit. At
+                                hic fugit similique accusantium.</p>
+                            
+                        </div>
+                       <div class="movie-list-item">
+                            <img class="movie-list-item-img" src="/img/9.jpg" alt="">
+                            <span class="movie-list-item-title">Her</span>
+                            <p class="movie-list-item-desc">Lorem ipsum dolor sit amet consectetur adipisicing elit. At
+                                hic fugit similique accusantium.</p>
+                            
+                        </div>
+                       
+                       <div class="movie-list-item">
+                            <img class="movie-list-item-img" src="/img/9.jpg" alt="">
+                            <span class="movie-list-item-title">Her</span>
+                            <p class="movie-list-item-desc">Lorem ipsum dolor sit amet consectetur adipisicing elit. At
+                                hic fugit similique accusantium.</p>
+                            
+                        </div>
+                        
                     </div>
+                    <i class="fas fa-chevron-left arrow"></i>
                     <i class="fas fa-chevron-right arrow"></i>
+                    
+                    
                 </div>
             </div>
             <div class="featured-content"
@@ -235,6 +317,7 @@
                        
                         </div>
                     </div>
+                    <i class="fas fa-chevron-left arrow"></i>
                     <i class="fas fa-chevron-right arrow"></i>
                 </div>
             </div>
@@ -292,6 +375,7 @@
                             
                         </div>
                     </div>
+                    <i class="fas fa-chevron-left arrow"></i>
                     <i class="fas fa-chevron-right arrow"></i>
                 </div>
             </div>

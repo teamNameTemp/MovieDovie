@@ -15,8 +15,8 @@ body {
 }
 
 .navbar {
-  width: 100%;
-  min-width:30%;
+  
+  width:100%;
   height: 50px;
   background-color: black;
   position: fixed;
@@ -172,6 +172,7 @@ body {
   align-items: center;
   height: 300px;
   transform: translateX(0);
+  position:relative;
   transition: all 1s ease-in-out;
 }
 
@@ -202,23 +203,26 @@ body {
   width: 270px;
   height: 200px;
   object-fit: cover;
-  border-radius: 20px;
+  border-radius: 30px;
 }
 
 .movie-list-item-title {
-  background-color: #333;
+  background-color: none;
+  
   padding: 0 10px;
   font-size: 32px;
   font-weight: bold;
   position: absolute;
-  top: 10%;
-  left: 50px;
+  top: 20%;
+  left: 50%;
+  transform: translateX(-50%);
   opacity: 0;
   transition: 1s all ease-in-out;
 }
 
+
 .movie-list-item-desc {
-  background-color: #333;
+  background-color: none;
   padding: 10px;
   font-size: 14px;
   position: absolute;
@@ -229,29 +233,48 @@ body {
   transition: 1s all ease-in-out;
 }
 
+
 .movie-list-item-button {
-  padding: 10px;
-  background-color: #4dbf00;
-  color: white;
-  border-radius: 10px;
+  padding:0 10px;
+  top:50%;
+  background-color: none;
+  color: none;
+  border-radius: 50%;
   outline: none;
   border: none;
   cursor: pointer;
   position: absolute;
-  bottom: 20px;
-  left: 50px;
+  bottom: 100px;
+  left: 50%;
+  transform: translateX(-50%);
   opacity: 0;
-  transition: 1s all ease-in-out;
+  transition: 0.3s all ease-in-out;
+}
+
+.movie-list-item-button:active,
+.movie-list-item-button:hover
+{
+	color:red;
 }
 
 .arrow {
-  font-size: 120px;
+  font-size: 40px;
   position: absolute;
-  top: 90px;
+  top: 120px;
   right: 0;
   color: lightgray;
   opacity: 0.5;
   cursor: pointer;
+}
+
+/* 왼쪽 화살표 */
+.arrow.fa-chevron-left {
+  left: 10px;  /* 왼쪽에 배치 */
+}
+
+/* 오른쪽 화살표 */
+.arrow.fa-chevron-right {
+  right: 10px;  /* 오른쪽에 배치 */
 }
 
 .container.active {
@@ -283,12 +306,6 @@ body {
 .toggle-ball.active{
     background-color: white;
     transform: translateX(-20px);
-}
-
-@media only screen and (max-width: 940px){
-    .menu-container{
-        display: none;
-    }
 }
 
 
