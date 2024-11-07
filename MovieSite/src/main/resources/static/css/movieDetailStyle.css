@@ -73,6 +73,18 @@ body {
     gap: 1rem;
 }
 
+.movie-list {
+    display: flex;
+    overflow-x: auto; /* 수평 스크롤바 추가 */
+    max-width: 100%; /* 최대 너비 설정 */
+    white-space: nowrap; /* 줄 바꿈 방지 */
+}
+
+.movie-list-item-img {
+    flex: 0 0 auto; /* 아이템이 줄어들지 않도록 설정 */
+    margin-right: 10px; /* 아이템 간격 */
+}
+
 .detail-row {
     display: flex;
     align-items: flex-start;
@@ -108,6 +120,26 @@ body {
     grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
     gap: 20px;
     width: 100%;
+}
+.arrow {
+    font-size: 40px;
+    position: absolute;
+    top: 120px;
+    right: 0;
+    color: lightgray;
+    opacity: 0.5;
+    cursor: pointer;
+}
+
+/* 왼쪽 화살표 */
+.arrow.fa-chevron-left {
+left: 10px;  /* 왼쪽에 배치 */
+
+}
+
+/* 오른쪽 화살표 */
+.arrow.fa-chevron-right {
+right: 10px;  /* 오른쪽에 배치 */
 }
 
 /* ===== 5. 리뷰 섹션 ===== */
