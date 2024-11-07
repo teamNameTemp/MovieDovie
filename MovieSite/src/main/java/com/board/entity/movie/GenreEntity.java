@@ -16,21 +16,16 @@ import lombok.NoArgsConstructor;
 
 @Entity(name="genres")
 @Table(name = "jpa_genre")
-@Data
 @NoArgsConstructor
-@AllArgsConstructor
+@Data
 public class GenreEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "GENRE_SEQ")
-    @SequenceGenerator(name="GENRE_SEQ",sequenceName = "jpa_genre_seq", initialValue = 1,allocationSize = 1)
-    private Long seqno;
-    
-    @Column(name="id", nullable = true)
-    private int id;
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Integer id;
 
     @Column(nullable = false, unique = true)
     private String name;
 
-    @ManyToMany(mappedBy = "genres")
-    private List<MovieEntity> movies;
+//    @ManyToMany(mappedBy = "genres")
+//    private List<MovieEntity> movies;
 }

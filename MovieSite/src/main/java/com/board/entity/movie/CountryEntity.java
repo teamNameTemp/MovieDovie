@@ -16,13 +16,12 @@ import lombok.NoArgsConstructor;
 
 @Data
 @Entity(name = "countrys")
-@Table(name = "tbl_country")
+@Table(name = "jpa_country")
 @NoArgsConstructor
-@AllArgsConstructor
 public class CountryEntity {
 	@Id
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "COUNTRY_SEQ")
-	@SequenceGenerator(name = "COUNTRY_SEQ", sequenceName = "tbl_country_seq", initialValue = 1, allocationSize = 1)
+	@SequenceGenerator(name = "COUNTRY_SEQ", sequenceName = "jpa_country_seq", initialValue = 1, allocationSize = 1)
 	private Long seqno;
 
 	// 국가 코드 (ISO 3166-1)
@@ -32,6 +31,6 @@ public class CountryEntity {
 	@Column(name="name",nullable = true)
 	private String name;
 	
-	@ManyToMany(mappedBy = "countrys")
-	private List<MovieEntity> movies;
+//	@ManyToMany(mappedBy = "countrys")
+//	private List<MovieEntity> movies;
 }

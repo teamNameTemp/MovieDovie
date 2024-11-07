@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>영화 목록 관리</title>
+    <style>
+        table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+        th, td {
+            border: 1px solid black;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+<body>
+    <h1>영화 목록 관리</h1>
+    
+    <button onclick="loadMovies()">영화 목록 불러오기</button>
+    <button onclick="saveAllMovies()">전체 영화 리스트 저장</button>
+    
+    <table id="movieTable" style="display:none;">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>제목</th>
+                <th>개봉일</th>
+                <th>액션</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- 영화 목록이 여기에 동적으로 추가됩니다 -->
+        </tbody>
+    </table>
+
+    <script th:inline="javascript">
+        function loadMovies() {
+            // AJAX를 사용하여 서버에서 영화 목록을 가져옵니다
+            fetch('/api/movies')
+                .then(response => response.json())
+                .then(movies => {
+                    const tableBody = document.querySelector('#movieTable tbody');
+                    tableBody.innerHTML = ''; // 기존 내용을 지웁니다
+                    movies.forEach(movie => {
+                        const row = `
+                            <tr>
+                                <td>${movie.id}</td>
+                                <td>${movie.title}</td>
+                                <td>${movie.releaseDate}</td>
+                                <td><button onclick="saveMovie(${movie.id})">저장</button></td>
+                            </tr>
+                        `;
+                        tableBody.innerHTML += row;
+                    });
+                    document.getElementById('movieTable').style.display = 'table';
+                });
+        }
+
+        function saveAllMovies() {
+            // AJAX를 사용하여 전체 영화 리스트를 저장합니다
+            fetch('/api/movies/save-all', { method: 'POST' })
+                .then(response => response.json())
+                .then(result => {
+                    alert('모든 영화가 저장되었습니다.');
+                });
+        }
+
+        function saveMovie(movieId) {
+            // AJAX를 사용하여 개별 영화를 저장합니다
+            fetch(`/api/movies/save/${movieId}`, { method: 'POST' })
+                .then(response => response.json())
+                .then(result => {
+                    alert(`영화 ID ${movieId}가 저장되었습니다.`);
+                });
+        }
+    </script>
+</body>
+</html>
