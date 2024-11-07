@@ -5,20 +5,13 @@ import java.util.List;
 import org.springframework.stereotype.Controller;
 
 import com.board.dto.ReplyInterface;
-import com.board.dto.movie.KobisMovieDTO;
 import com.board.entity.LikeEntity;
 
 @Controller
 public interface BoardService {
 	
-	//상품 상세 정보 보기
-	public KobisMovieDTO view(Long seqno) throws Exception;
-	
 	//게시물 조회수 증가
 	public void hitno(Long seqno) throws Exception;
-	
-	//게시물 좋아요/싫어요 갯수 수정
-	public void boardLikeUpdate(KobisMovieDTO board) throws Exception;
 	
 	//좋아요/싫어요 등록여부 확인
 	public LikeEntity likeCheckView(Long seqno,String email) throws Exception;

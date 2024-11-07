@@ -1,20 +1,13 @@
 package com.board.controller;
 
-import java.io.File;
-import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.springframework.data.domain.Page;
@@ -27,22 +20,13 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.multipart.MultipartFile;
 
-import com.board.dto.RequestDTO;
-import com.board.dto.movie.KobisMovieDTO;
-import com.board.entity.LikeEntity;
-import com.board.entity.MemberEntity;
 import com.board.entity.RequestEntity;
-import com.board.entity.repository.MemberRepository;
-import com.board.entity.repository.RentRepository;
 import com.board.service.MasterService;
 import com.board.service.RentService;
 import com.board.util.PageUtil;
 
-import jakarta.servlet.http.HttpSession;
 import lombok.AllArgsConstructor;
-import net.bytebuddy.description.field.FieldDescription.InGenericShape;
 
 
 @Controller

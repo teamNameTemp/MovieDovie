@@ -191,6 +191,7 @@
 		            <div class="movie-list" >
 		                <div class="movie-list-item-img" th:if="${directors}" th:each="director : ${directors}">
 		                    <img th:if="${director.profilePath}" th:src="@{'https://image.tmdb.org/t/p/original' + ${director.profilePath}}" alt="Director Profile" width= 100%; style="object-fit:contain">
+		                    <img th:unless="${director.profilePath}" src="/path/to/default/image.jpg" alt="Default Profile" class="person-image">
 		                    <h4 th:text="${director.name}"></h4>
 		                </div>
 		                <div class="movie-list-item-img" th:if="${actors}" th:each="actor : ${actors}">

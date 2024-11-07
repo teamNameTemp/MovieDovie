@@ -6,7 +6,6 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 
 import com.board.dto.ReplyInterface;
-import com.board.dto.movie.KobisMovieDTO;
 import com.board.entity.LikeEntity;
 import com.board.entity.MemberEntity;
 import com.board.entity.ReplyEntity;
@@ -115,16 +114,5 @@ public class BoardServiceImpl implements BoardService {
 		replyRepository.delete(replyEntity);	
 	}
 
-	@Override
-	public void boardLikeUpdate(KobisMovieDTO board) throws Exception {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public KobisMovieDTO view(Long seqno) throws Exception {
-		// TODO Auto-generated method stub
-		return null;
-	}
 
 }
