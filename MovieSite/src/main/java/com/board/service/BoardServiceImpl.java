@@ -41,7 +41,7 @@ public class BoardServiceImpl implements BoardService {
 	@Override
 	@Transactional
 	public void hitno(Long seqno) throws Exception {
-		movieRepository.hitno(seqno);
+//		movieRepository.hitno(seqno);
 	}
 	
 	//좋아요/싫어요 등록여부 확인
@@ -83,20 +83,20 @@ public class BoardServiceImpl implements BoardService {
 	@Override
     @Transactional
 	public void replyRegistry(ReplyInterface reply) throws Exception {
-		MovieEntity movieEntity = movieRepository.findById(reply.getSeqno())
-		.orElseThrow(() -> new EntityNotFoundException("영화를 찾을 수 없습니다"));
-		
-		MemberEntity memberEntity = memberRepository.findById(reply.getEmail())
-		.orElseThrow(() -> new EntityNotFoundException("회원을 찾을 수 없습니다"));
-		
-		ReplyEntity replyEntity = ReplyEntity.builder()
-											.seqno(movieEntity)
-											.email(memberEntity)
-											.replywriter(reply.getReplywriter())
-											.replycontent(reply.getReplycontent())
-											.replyregdate(LocalDateTime.now())
-											.build();
-		replyRepository.save(replyEntity);
+//		MovieEntity movieEntity = movieRepository.findById((reply.getSeqno()));
+//		.orElseThrow(() -> new EntityNotFoundException("영화를 찾을 수 없습니다"));
+//		
+//		MemberEntity memberEntity = memberRepository.findById(reply.getEmail())
+//		.orElseThrow(() -> new EntityNotFoundException("회원을 찾을 수 없습니다"));
+//		
+//		ReplyEntity replyEntity = ReplyEntity.builder()
+//											.seqno(movieEntity)
+//											.email(memberEntity)
+//											.replywriter(reply.getReplywriter())
+//											.replycontent(reply.getReplycontent())
+//											.replyregdate(LocalDateTime.now())
+//											.build();
+//		replyRepository.save(replyEntity);
 	}
 	
 	//댓글 수정

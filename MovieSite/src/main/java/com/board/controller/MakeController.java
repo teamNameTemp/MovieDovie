@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import com.board.dto.movie.MovieDTO;
 import com.board.entity.movie.MovieEntity;
 import com.board.service.MovieAPIServiceImpl;
+import com.board.service.TmdbAPIServiceImpl;
+import com.board.util.MovieMapper;
 
 import lombok.RequiredArgsConstructor;
 
@@ -17,6 +19,8 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class MakeController {
 	private final MovieAPIServiceImpl movie;
+	private final TmdbAPIServiceImpl tmdb;
+	private final MovieMapper mapper;
 	
 	@GetMapping("/make/movie")
 	public void getMake() {
@@ -26,22 +30,15 @@ public class MakeController {
 	@PostMapping("/make/movies/save")
 	public void postMovies() {
 		List<MovieDTO> list = movie.getTrendingMovies("day", 1, "ko-KR").block();
-		List<MovieEntity> listEntity = new ArrayList<>();
-		for(MovieDTO dto : list) {
-			MovieDTO detail = movie.getMovieDetails(dto.getId(), "ko-KR").block();
-
-			MovieEntity entity = detail.convertToEntity(dto);
-			entity.setGenres(detail.convertGenres());
-			entity.setActors(detail.convertActors());
-			entity.setCompanys(detail.convertCompanies());
-			entity.setCountrys(detail.convertCountries());
-			entity.setCrews(detail.convertCrews());
-			entity.setSpokenLanguages(detail.convertSpokenLanguages());
-			entity.setVideos(detail.convertVideos());
-			listEntity.add(entity);
-		}
+		List<MovieDTO> temp = new ArrayList<>();
 		
-		movie.saveTheDataBases(listEntity);
+		for(MovieDTO d : list) {
+			MovieDTO dto = movie.getMovieDetails(d.getId(), "ko-KR").block();
+			temp.add(dto);
+		}
+		List<MovieEntity> infoList = mapper.toEntityList(temp);
+		
+		movie.saveTheDataBases(infoList);
 		
 	}
 }
