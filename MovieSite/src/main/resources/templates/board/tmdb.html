@@ -2,183 +2,160 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Movie Title</title>
+    <title >Movie Details</title>
     <style>
         body { font-family: Arial, sans-serif; line-height: 1.6; margin: 0; padding: 20px; }
-        .container { max-width: 1200px; margin: 0 auto; }
-        .movie-header { display: flex; margin-bottom: 20px; }
-        .movie-poster { width: 300px; margin-right: 20px; }
-        .movie-info { flex: 1; }
+        h1, h2 { color: #333; }
+        .movie-poster { max-width: 300px; }
         .section { margin-bottom: 20px; }
-        .section-title { font-size: 1.2em; font-weight: bold; margin-bottom: 10px; }
-        .label { font-weight: bold; }
-        .genre-tag { background-color: #f0f0f0; padding: 5px 10px; margin-right: 5px; border-radius: 5px; }
-        .video-container { display: flex; overflow-x: auto; }
-        .video-item { margin-right: 10px; }
-        .cast-crew-list { display: flex; flex-wrap: wrap; }
-        .cast-crew-item { width: 150px; margin: 10px; text-align: center; }
-        .cast-crew-image { width: 100px; height: 100px; object-fit: cover; border-radius: 50%; }
+        .info-item { margin-bottom: 10px; }
+        .info-label { font-weight: bold; }
+        ul { padding-left: 20px; }
     </style>
 </head>
 <body>
-    <div class="container" th:each="movie : ${movies}">
-        <div class="movie-header">
-            <img th:src="${'https://image.tmdb.org/t/p/original' + movie.backdropPath}" alt="Movie Poster">
-            <img th:if="${movie.posterPath}" th:src="${'https://image.tmdb.org/t/p/w300' + movie.posterPath}" alt="Movie Poster" class="movie-poster">
-            <div class="movie-info">
-                <h1 th:text="${movie.title}">Movie Title</h1>
-                <p th:text="${movie.tagline}">Tagline</p>
-                <p><span class="label">Release Date:</span> <span th:text="${#temporals.format(movie.releaseDate, 'yyyy-MM-dd')}">Release Date</span></p>
-                <p><span class="label">Runtime:</span> <span th:text="${movie.runtime + ' minutes'}">Runtime</span></p>
-                <p><span class="label">Vote Average:</span> <span th:text="${movie.voteAverage + ' (' + movie.voteCount + ' votes)'}">Vote Average</span></p>
-                <p><span class="label">Genres:</span> 
-                    <span th:each="genre : ${movie.genres}" class="genre-tag" th:text="${genre.name}">Genre</span>
-                </p>
+<div th:each="movie : ${movies}">
+    <div th:if="${movie != null}">
+        <h1 th:text="${movie.title}">Movie Title</h1>
+        
+        <div class="section">
+            <img th:if="${movie.posterPath}" th:src="@{'https://image.tmdb.org/t/p/w500' + ${movie.posterPath}}" alt="Movie Poster" class="movie-poster">
+        </div>
+
+        <div class="section">
+            <div class="info-item">
+                <span class="info-label">Original Title:</span>
+                <span th:text="${movie.originalTitle}"></span>
+            </div>
+            <div class="info-item">
+                <span class="info-label">Tagline:</span>
+                <span th:text="${movie.tagline}"></span>
+            </div>
+            <div class="info-item">
+                <span class="info-label">Overview:</span>
+                <p th:text="${movie.overview}"></p>
+            </div>
+            <div class="info-item">
+                <span class="info-label">Runtime:</span>
+                <span th:text="${movie.runtime + ' minutes'}"></span>
+            </div>
+            <div class="info-item">
+                <span class="info-label">Original Language:</span>
+                <span th:text="${movie.originalLanguage}"></span>
+            </div>
+            <div class="info-item">
+                <span class="info-label">IMDB ID:</span>
+                <span th:text="${movie.imdbId}"></span>
+            </div>
+            <div class="info-item">
+                <span class="info-label">Popularity:</span>
+                <span th:text="${movie.popularity}"></span>
+            </div>
+            <div class="info-item">
+                <span class="info-label">Release Date:</span>
+                <span th:text="${#temporals.format(movie.releaseDate, 'dd MMMM yyyy')}"></span>
+            </div>
+            <div class="info-item">
+                <span class="info-label">Vote Average:</span>
+                <span th:text="${movie.voteAverage}"></span>
+            </div>
+            <div class="info-item">
+                <span class="info-label">Vote Count:</span>
+                <span th:text="${movie.voteCount}"></span>
+            </div>
+            <div class="info-item">
+                <span class="info-label">Status:</span>
+                <span th:text="${movie.status}"></span>
+            </div>
+            <div class="info-item">
+                <span class="info-label">Video:</span>
+                <span th:text="${movie.video ? 'Yes' : 'No'}"></span>
             </div>
         </div>
 
-        <div class="section">
-            <div class="section-title">Overview</div>
-            <p th:text="${movie.overview}">Overview</p>
-        </div>
-
-        <div class="section" th:if="${movie.belongsToCollection}">
-            <div class="section-title">Collection</div>
-            <p th:text="${movie.belongsToCollection.name}">Collection Name</p>
-        </div>
-
-        <div class="section">
-            <div class="section-title">Details</div>
-
-			<!-- 한국 개봉 정보 섹션 -->
-			<div class="section">
-			    <div class="section-title">Korean Release Information</div>
-			    <div th:with="krInfo=${movie.releaseDates.results.?[iso31661 == 'KR'].get(0)}">
-			        <p th:if="${krInfo != null && !#lists.isEmpty(krInfo.releaseDates)}">
-			            <span class="label">Certification:</span> <span th:text="${krInfo.releaseDates[0].certification}">Certification</span><br>
-			        </p>
-			        <p th:unless="${krInfo != null && !#lists.isEmpty(krInfo.releaseDates)}">No Korean release information available.</p>
-			    </div>
-			</div>
-            <p><span class="label">Adult:</span> <span th:text="${movie.adult}">Adult</span></p>
-            <p><span class="label">Budget:</span> <span th:text="${'$' + #numbers.formatDecimal(movie.budget, 0, 'COMMA', 2, 'POINT')}">Budget</span></p>
-            <p><span class="label">Revenue:</span> <span th:text="${'$' + #numbers.formatDecimal(movie.revenue, 0, 'COMMA', 2, 'POINT')}">Revenue</span></p>
-            <p><span class="label">Original Language:</span> <span th:text="${movie.originalLanguage}">Original Language</span></p>
-            <p><span class="label">Original Title:</span> <span th:text="${movie.originalTitle}">Original Title</span></p>
-            <p><span class="label">Popularity:</span> <span th:text="${movie.popularity}">Popularity</span></p>
-            <p><span class="label">Status:</span> <span th:text="${movie.status}">Status</span></p>
-            <p><span class="label">Video:</span> <span th:text="${movie.video}">Video</span></p>
-            <p><span class="label">IMDB ID:</span> <span th:text="${movie.imdbId}">IMDB ID</span></p>
-            <p><span class="label">Homepage:</span> <a th:href="${movie.homepage}" th:text="${movie.homepage}">Homepage</a></p>
-            <p><span class="label">등급:</span> <a th:href="${movie.homepage}" th:text="${movie.certification}">Homepage</a></p>
-        </div>
-
         <div class="section" th:if="${!#lists.isEmpty(movie.productionCompanies)}">
-            <div class="section-title">Production Companies</div>
+            <h2>Production Companies</h2>
             <ul>
-                <li th:each="company : ${movie.productionCompanies}">
-                    <span th:text="${company.name + ' (' + company.originCountry + ')'}">Company Name</span>
-                </li>
+                <li th:each="company : ${movie.productionCompanies}" th:text="${company.name}"></li>
             </ul>
         </div>
 
         <div class="section" th:if="${!#lists.isEmpty(movie.productionCountries)}">
-            <div class="section-title">Production Countries</div>
+            <h2>Production Countries</h2>
             <ul>
-                <li th:each="country : ${movie.productionCountries}" th:text="${country.name + ' (' + country.iso3166_1 + ')'}">Country</li>
+                <li th:each="country : ${movie.productionCountries}" th:text="${country.name}"></li>
             </ul>
         </div>
 
         <div class="section" th:if="${!#lists.isEmpty(movie.spokenLanguages)}">
-            <div class="section-title">Spoken Languages</div>
+            <h2>Spoken Languages</h2>
             <ul>
-                <li th:each="language : ${movie.spokenLanguages}" th:text="${language.englishName + ' (' + language.name + ')'}">Language</li>
+                <li th:each="language : ${movie.spokenLanguages}" th:text="${language.name}"></li>
             </ul>
         </div>
 
-        <div class="section" th:if="${movie.keywords != null && !#lists.isEmpty(movie.keywords.keywords)}">
-            <div class="section-title">Keywords</div>
-            <span th:each="keyword : ${movie.keywords.keywords}" class="genre-tag" th:text="${keyword.name}">Keyword</span>
+        <div class="section" th:if="${movie.belongsToCollection != null}">
+            <h2>Collection</h2>
+            <p th:text="${movie.belongsToCollection.name}"></p>
+        </div>
+
+        <div class="section" th:if="${!#lists.isEmpty(movie.genres)}">
+            <h2>Genres</h2>
+            <ul>
+                <li th:each="genre : ${movie.genres}" th:text="${genre.name}"></li>
+            </ul>
         </div>
 
         <div class="section" th:if="${movie.videos != null && !#lists.isEmpty(movie.videos.results)}">
-            <div class="section-title">Videos</div>
-            <div class="video-container">
-                <div th:each="video : ${movie.videos.results}" class="video-item">
-                    <iframe width="280" height="157" th:src="${'https://www.youtube.com/embed/' + video.key}" frameborder="0" allowfullscreen></iframe>
-                    <p th:text="${video.name}">Video Name</p>
-                </div>
-            </div>
+            <h2>Videos</h2>
+            <ul>
+                <li th:each="video : ${movie.videos.results}">
+                    <span th:text="${video.name}"></span>
+                    <a th:href="@{'https://www.youtube.com/watch?v=' + ${video.key}}" target="_blank">Watch</a>
+                </li>
+            </ul>
         </div>
 
-        <div class="section" th:if="${movie.images != null && (!#lists.isEmpty(movie.images.backdrops) || !#lists.isEmpty(movie.images.posters))}">
-            <div class="section-title">Images</div>
-            <div th:if="${!#lists.isEmpty(movie.images.backdrops)}">
-                <h3>Backdrops</h3>
-                <div class="video-container">
-                    <img th:each="backdrop : ${movie.images.backdrops}" th:src="${'https://image.tmdb.org/t/p/w300' + backdrop.filePath}" alt="Backdrop" style="margin-right: 10px;">
-                </div>
-            </div>
-            <div th:if="${!#lists.isEmpty(movie.images.posters)}">
-                <h3>Posters</h3>
-                <div class="video-container">
-                    <img th:each="poster : ${movie.images.posters}" th:src="${'https://image.tmdb.org/t/p/w185' + poster.filePath}" alt="Poster" style="margin-right: 10px;">
-                </div>
-            </div>
+        <div class="section" th:if="${movie.credits != null}">
+            <h2>Cast</h2>
+            <ul>
+                <li th:each="actor : ${movie.credits.cast}" th:text="${actor.name + ' as ' + actor.characterName}"></li>
+            </ul>
         </div>
 
-        <div class="section" th:if="${movie.credits != null && !#lists.isEmpty(movie.credits.cast)}">
-            <div class="section-title">Cast</div>
-            <div class="cast-crew-list">
-                <div th:each="actor : ${movie.credits.cast}" class="cast-crew-item">
-                    <img th:if="${actor.profilePath}" th:src="${'https://image.tmdb.org/t/p/w185' + actor.profilePath}" alt="Actor" class="cast-crew-image">
-                    <p th:text="${actor.name}">Actor Name</p>
-                    <p th:text="${actor.characterName}">Character Name</p>
-                </div>
-            </div>
-        </div>
-
-        <div class="section" th:if="${movie.credits != null && !#lists.isEmpty(movie.credits.crew)}">
-            <div class="section-title">Crew</div>
-            <div class="cast-crew-list">
-                <div th:each="crewMember : ${movie.credits.crew}" class="cast-crew-item">
-                    <img th:if="${crewMember.profilePath}" th:src="${'https://image.tmdb.org/t/p/w185' + crewMember.profilePath}" alt="Crew" class="cast-crew-image">
-                    <p th:text="${crewMember.name}">Crew Name</p>
-                    <p th:text="${crewMember.jobTitle}">Job Title</p>
-                </div>
-            </div>
+        <div class="section" th:if="${movie.credits != null}">
+            <h2>Crew</h2>
+            <ul>
+                <li th:each="crewMember : ${movie.credits.crew}" th:text="${crewMember.name + ' - ' + crewMember.jobTitle}"></li>
+            </ul>
         </div>
 
         <div class="section" th:if="${!#lists.isEmpty(movie.reviews)}">
-            <div class="section-title">Reviews</div>
+            <h2>Reviews</h2>
             <div th:each="review : ${movie.reviews}">
-                <h3 th:text="${review.author}">Author</h3>
-                <p th:text="${review.content}">Content</p>
-                <a th:href="${review.url}" target="_blank">Read full review</a>
+                <h3 th:text="${review.author}"></h3>
+                <p th:text="${review.content}"></p>
             </div>
         </div>
 
         <div class="section" th:if="${!#lists.isEmpty(movie.similarMovies)}">
-            <div class="section-title">Similar Movies</div>
-            <div class="video-container">
-                <div th:each="similarMovie : ${movie.similarMovies}" class="video-item">
-                    <img th:if="${similarMovie.posterPath}" th:src="${'https://image.tmdb.org/t/p/w185' + similarMovie.posterPath}" alt="Similar Movie">
-                    <p th:text="${similarMovie.title}">Similar Movie Title</p>
-                    <p th:text="${#temporals.format(similarMovie.releaseDate, 'yyyy-MM-dd')}">Release Date</p>
-                </div>
-            </div>
+            <h2>Similar Movies</h2>
+            <ul>
+                <li th:each="similarMovie : ${movie.similarMovies}" th:text="${similarMovie.title}"></li>
+            </ul>
         </div>
 
         <div class="section" th:if="${!#lists.isEmpty(movie.recommendedMovies)}">
-            <div class="section-title">Recommended Movies</div>
-            <div class="video-container">
-                <div th:each="recommendedMovie : ${movie.recommendedMovies}" class="video-item">
-                    <img th:if="${recommendedMovie.posterPath}" th:src="${'https://image.tmdb.org/t/p/w185' + recommendedMovie.posterPath}" alt="Recommended Movie">
-                    <p th:text="${recommendedMovie.title}">Recommended Movie Title</p>
-                    <p th:text="${#temporals.format(recommendedMovie.releaseDate, 'yyyy-MM-dd')}">Release Date</p>
-                </div>
-            </div>
+            <h2>Recommended Movies</h2>
+            <ul>
+                <li th:each="recommendedMovie : ${movie.recommendedMovies}" th:text="${recommendedMovie.title}"></li>
+            </ul>
         </div>
     </div>
+
+    <div th:unless="${movie != null}">
+        <p>No movie data available.</p>
+    </div>
+</div>
 </body>
 </html>

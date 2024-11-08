@@ -4,18 +4,8 @@ import java.util.List;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
-import com.board.entity.movie.ActorEntity;
-import com.board.entity.movie.CompanyEntity;
-import com.board.entity.movie.CountryEntity;
-import com.board.entity.movie.CrewEntity;
-import com.board.entity.movie.GenreEntity;
-import com.board.entity.movie.MovieEntity;
-import com.board.entity.movie.SpokenLanguageEntity;
-import com.board.entity.movie.VideoEntity;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.AllArgsConstructor;
@@ -331,7 +321,7 @@ public class MovieDTO {
 	// ================기본 프로퍼티=============
 
 	// 영화 ID
-	private int id;
+	private Long id;
 	// 제목
 	private String title;
 	// 원제
@@ -380,7 +370,11 @@ public class MovieDTO {
 	private String status;
 	// 비디오 여부
 	private boolean video;
-	public boolean getVideo() {return this.video;}
+
+	public boolean getVideo() {
+		return this.video;
+	}
+
 	// 소속 컬렉션 정보
 	@JsonProperty("belongs_to_collection")
 	private CollectionInfo belongsToCollection;
@@ -410,7 +404,7 @@ public class MovieDTO {
 	@Data
 	public static class Keyword {
 		// 키워드 ID
-		private int id;
+		private Long id;
 		// 키워드 이름
 		private String name;
 	}
@@ -418,12 +412,13 @@ public class MovieDTO {
 	// 비디오 정보
 	@JsonProperty("videos")
 	private Videos videos;
-	
+
 	@Data
 	public static class Videos {
 		// 비디오 목록
 		private List<Video> results;
 	}
+
 	@Data
 	public static class Video {
 		// 비디오 ID
@@ -445,7 +440,7 @@ public class MovieDTO {
 		// 비디오 유형
 		private String type;
 	}
-	
+
 	// 이미지 정보
 	@JsonProperty("images")
 	private Images images;
@@ -457,8 +452,6 @@ public class MovieDTO {
 		// 포스터 이미지 목록
 		private List<Image> posters;
 	}
-
-
 
 	// 영화 개봉 날짜 정보를 포함하는 클래스
 	@JsonProperty("release_dates")
@@ -519,7 +512,7 @@ public class MovieDTO {
 	@Data
 	public static class CollectionInfo {
 		// 컬렉션 ID
-		private int id;
+		private Long id;
 		// 컬렉션 이름
 		private String name;
 		// 컬렉션 포스터 경로
@@ -533,7 +526,7 @@ public class MovieDTO {
 	@Data
 	public static class Genre {
 		// 장르 ID
-		private int id;
+		private Long id;
 		// 장르 이름
 		private String name;
 	}
@@ -541,7 +534,7 @@ public class MovieDTO {
 	@Data
 	public static class ProductionCompany {
 		// 제작사 ID
-		private int id;
+		private Long id;
 		// 제작사 로고 경로
 		@JsonProperty("logo_path")
 		private String logoPath;
@@ -573,8 +566,6 @@ public class MovieDTO {
 		private String name;
 	}
 
-	
-
 	@Data
 	public static class Image {
 		// 이미지 종횡비
@@ -601,7 +592,7 @@ public class MovieDTO {
 	@Data
 	public static class Cast {
 		// 배우 ID
-		private int id;
+		private Long id;
 		// 배우 이름
 		private String name;
 		// 배역 이름
@@ -617,7 +608,7 @@ public class MovieDTO {
 	@Data
 	public static class Crew {
 		// 제작진 ID
-		private int id;
+		private Long id;
 		// 제작진 이름
 		private String name;
 		// 직책
@@ -645,7 +636,7 @@ public class MovieDTO {
 	@Data
 	public static class MovieBrief {
 		// 영화 ID
-		private int id;
+		private Long id;
 		// 영화 제목
 		private String title;
 		// 포스터 경로
@@ -655,154 +646,5 @@ public class MovieDTO {
 		@JsonProperty("release_date")
 		private LocalDate releaseDate;
 	}
-	
-	public MovieEntity convertToEntity(MovieDTO dto) {
-	    MovieEntity entity = new MovieEntity();
-	    
-	    entity.setId(dto.getId());
-	    entity.setTitle(dto.getTitle());
-	    entity.setOriginalTitle(dto.getOriginalTitle());
-	    entity.setTagline(dto.getTagline());
-	    entity.setOverview(dto.getOverview());
-	    entity.setRuntime(dto.getRuntime());
-	    entity.setBackdropPath(dto.getBackdropPath());
-	    entity.setPosterPath(dto.getPosterPath());
-	    entity.setVideo(dto.getVideo());
-	    entity.setOriginalLanguage(dto.getOriginalLanguage());
-	    entity.setImdbId(dto.getImdbId());
-	    entity.setPopularity(dto.getPopularity());
-	    entity.setReleaseDate(dto.getReleaseDate());
-	    entity.setStatus(dto.getStatus());
-	    entity.setVoteAverage(dto.getVoteAverage());
-	    entity.setVoteCount(dto.getVoteCount());
-	    // Note: The following relationships are commented out in the MovieEntity.
-	    // If you decide to uncomment and use them, you'll need to implement the conversion logic for these as well.
-	    
-	    entity.setCertification(covertCertification());
-	entity.setGenres(convertGenres());
-	entity.setVideos(convertVideos());
-	entity.setCompanys(convertCompanies());
-	entity.setCountrys(convertCountries());
-	entity.setSpokenLanguages(convertSpokenLanguages());
-	entity.setActors(convertActors());
-	entity.setCrews(convertCrews());
 
-		return entity;
-	}
-//	
-
-	public List<GenreEntity> convertGenres() {
-	    if (this.genres == null) return new ArrayList<>();
-	    return this.genres.stream()
-	        .map(genre -> {
-	            GenreEntity genreEntity = new GenreEntity();
-	            genreEntity.setId(genre.getId());
-	            genreEntity.setName(genre.getName());
-	            return genreEntity;
-	        })
-	        .collect(Collectors.toList());
-	}
-
-	public List<VideoEntity> convertVideos() {
-	    if (this.videos == null) return new ArrayList<>();
-	    return this.videos.getResults().stream()
-	        .map(video -> {
-	            VideoEntity videoEntity = new VideoEntity();
-	            videoEntity.setId(video.getId());
-	            videoEntity.setIso639_1(video.getIso639_1());
-	            videoEntity.setIso3166_1(video.getIso3166_1());
-	            videoEntity.setKey(video.getKey());
-	            videoEntity.setName(video.getName());
-	            videoEntity.setSite(video.getSite());
-	            videoEntity.setSize(video.getSize());
-	            return videoEntity;
-	        })
-	        .collect(Collectors.toList());
-	}
-
-	public List<CompanyEntity> convertCompanies() {
-	    if (this.productionCompanies == null) return new ArrayList<>();
-	    return this.productionCompanies.stream()
-	        .map(company -> {
-	            CompanyEntity companyEntity = new CompanyEntity();
-	            companyEntity.setId(company.getId());
-	            companyEntity.setName(company.getName());
-	            return companyEntity;
-	        })
-	        .collect(Collectors.toList());
-	}
-
-	public List<CountryEntity> convertCountries() {
-	    if (this.productionCountries == null) return new ArrayList<>();
-	    return this.productionCountries.stream()
-	        .map(country -> {
-	            CountryEntity countryEntity = new CountryEntity();
-	            countryEntity.setIso3166_1(country.getIso3166_1());
-	            countryEntity.setName(country.getName());
-	            return countryEntity;
-	        })
-	        .collect(Collectors.toList());
-	}
-
-	public List<SpokenLanguageEntity> convertSpokenLanguages() {
-	    if (this.spokenLanguages == null) return new ArrayList<>();
-	    return this.spokenLanguages.stream()
-	        .map(language -> {
-	        	SpokenLanguageEntity languageEntity = new SpokenLanguageEntity();
-	            languageEntity.setEnglishName(language.getEnglishName());
-	            languageEntity.setIso639_1(language.getIso639_1());
-	            languageEntity.setName(language.getName());
-	            return languageEntity;
-	        })
-	        .collect(Collectors.toList());
-	}
-
-	public List<ActorEntity> convertActors() {
-	    if (this.credits == null) return new ArrayList<>();
-	    
-	    if(this.credits.getCast() == null)return new ArrayList<>();
-	    else return this.credits.getCast().stream()
-	        .map(actor -> {
-	            ActorEntity actorEntity = new ActorEntity();
-	            actorEntity.setId(actor.getId());
-	            actorEntity.setName(actor.getName());
-	            actorEntity.setCharacterName(actor.getCharacterName());
-	            actorEntity.setProfilePath(actor.getProfilePath());
-	            actorEntity.setOrder(actor.getOrder());
-	            return actorEntity;
-	        })
-	        .collect(Collectors.toList());
-	}
-
-	public List<CrewEntity> convertCrews() {
-	    if (this.credits == null) return new ArrayList<>();
-	    
-	    if(this.credits.getCrew() == null)return new ArrayList<>();
-	    else return this.credits.getCrew().stream()
-	        .map(crew -> {
-	            CrewEntity crewEntity = new CrewEntity();
-	            crewEntity.setId(crew.getId());
-	            crewEntity.setName(crew.getName());
-	            crewEntity.setJobTitle(crew.getJobTitle());
-	            crewEntity.setDepartment(crew.getDepartment());
-	            crewEntity.setProfilePath(crew.getProfilePath());
-	            return crewEntity;
-	        })
-	        .collect(Collectors.toList());
-	}
-	
-	private String covertCertification() {
-		if(releaseDates == null)return "";
-		
-		if(releaseDates.getResults() == null)return "";
-		else{
-			String certi = "";
-			for(ReleaseDateInfo d : releaseDates.getResults()) {
-				if("KR".equals(d.iso31661)) {
-					certi = d.getReleaseDates().get(0).getCertification();
-				}
-			}
-			return certi;
-		}
-	}
 }
