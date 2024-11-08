@@ -138,7 +138,11 @@ public class MovieDTO {
 		private String name;
 	}
 
-	// 비디오 정보
+	// 비디오 정보 t
+//	<li th:each="video : ${movie.videos.results}">
+//    <span th:text="${video.name}"></span>
+//    <a th:href="@{'https://www.youtube.com/watch?v=' + ${video.key}}" target="_blank">Watch</a>
+//</li>
 	@JsonProperty("videos")
 	private Videos videos;
 
