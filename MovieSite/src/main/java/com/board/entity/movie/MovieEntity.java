@@ -65,4 +65,6 @@ public class MovieEntity {
     
     private String certification;
     
+    private String uploadCheck;
+    
 }
