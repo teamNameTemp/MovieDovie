@@ -58,12 +58,6 @@ public class MemberEntity {
 	@Column(name="role", length=50, nullable=false)
 	private String role;
 	
-	@Column(name = "logseqno", nullable = false)
-	private Long logseqno;
-	
-	@Column(name="genreseqno", nullable = false)
-	private Long genreseqno;
-	
 	
 	/*
 	//FK 만들기

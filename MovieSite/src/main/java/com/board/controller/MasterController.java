@@ -1,27 +1,15 @@
 package com.board.controller;
 
-import java.io.File;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
-import java.util.UUID;
-import java.util.stream.Collectors;
 
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
@@ -31,27 +19,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.multipart.MultipartFile;
 
-
-import com.board.dto.RequestDTO;
-<<<<<<< Updated upstream
 import com.board.dto.RequestReplyDTO;
-=======
-import com.board.dto.movie.KobisMovieDTO;
-import com.board.dto.movie.KobisMovieDTO.MovieInfo;
-import com.board.dto.movie.KobisMovieDTO.MovieInfo.Actor;
-import com.board.dto.movie.KobisMovieDTO.MovieInfo.Company;
-import com.board.dto.movie.KobisMovieDTO.MovieInfo.Director;
-import com.board.dto.movie.KobisMovieDTO.MovieInfo.Nation;
-import com.board.dto.movie.KobisMovieDTO.MovieInfoResult;
->>>>>>> Stashed changes
-import com.board.entity.LikeEntity;
-import com.board.entity.MemberEntity;
 import com.board.entity.RequestEntity;
 import com.board.entity.RequestReplyEntity;
-import com.board.entity.repository.MemberRepository;
-import com.board.entity.repository.RentRepository;
 import com.board.service.FavGenreService;
 import com.board.service.LikeService;
 import com.board.service.MasterService;
@@ -62,9 +33,7 @@ import com.board.service.RequestReplyService;
 import com.board.service.RequestService;
 import com.board.util.PageUtil;
 
-import jakarta.servlet.http.HttpSession;
 import lombok.AllArgsConstructor;
-import net.bytebuddy.description.field.FieldDescription.InGenericShape;
 
 
 @Controller
