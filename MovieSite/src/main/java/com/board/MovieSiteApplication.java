@@ -11,8 +11,4 @@ public class MovieSiteApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(MovieSiteApplication.class, args);
 	}
-	@Bean
-	public RestTemplate restTemplate() {
-		return new RestTemplate();
-	}
 }

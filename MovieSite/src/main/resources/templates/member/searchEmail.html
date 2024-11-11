@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>이메일 찾기</title>
+<style>
+body {
+    font-family: Arial, sans-serif;
+    background-color: rgba(20, 20, 20, 0.8); /* 배경을 투명하게 설정 */
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+}
+</style>
+
+<script>
+const EmailSearchCheck = async () => {
+	if(username.value == "") { alert("이름을 입력하세요."); username.focus();  return false; }
+	if(telno.value == '') { alert("전화번호를 입력하세요."); telno.focus(); return false; }
+	
+	let formData = new FormData(EmailSearchForm);
+	
+	await fetch("/member/searchEmail", {			
+		method: 'POST',
+		body: formData			
+		
+	}).then((response)=> response.json())
+	  .then((data) => {
+		  if(data.message !== 'ID_NOT_FOUND'){				
+			let result = "<br><br><h1>이메일 : " + data.message + "</h1>";					
+			EmailSearchResult.innerHTML = result;
+		  } else {
+			  alert("해당 조건에 맞는 이메일이 존재하지 않습니다.");
+		  }	
+	}).catch((error)=> {			
+		console.log((error)=> console.log("error = " + error))
+	});
+}
+
+const press = () => {
+	
+	if(event.keyCode == 13){ EmailSearchCheck (); }
+	
+}
+</script>
+</head>
+<body>
+	<div class="main" align="center"></div>
+	<div class="ModifyForm">
+				<form name="EmailSearchForm" class="EmailSearchForm" id="EmailSearchForm" method="post">
+	        		<h1>이메일 찾기</h1>
+	     			<div class="EmailSearchFormDivision">
+	         			<input type="text" name="username" id="username" class="input_field" placeholder="이름을 입력하세요."><br><br>
+	         			<input type="text" name="telno" id="telno" class="input_field" onkeydown="press(this.form)" placeholder="전화번호를 입력하세요."><br><br>
+	         			<input type="button" class="btn_write" value="이메일 찾기" onclick="EmailSearchCheck()"> <br><br>
+	            		<input type="button" class="btn_cancel" value="홈으로" onclick='javascript:location.href="/"'> 
+	     			</div> 
+				</form>
+				<div class='EmailSearchResult' id='EmailSearchResult'></div>
+	    	</div>
+	</div>
+</body>
+</html>
