@@ -3,6 +3,7 @@ package com.board.service;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -140,10 +141,19 @@ public class MasterServiceImpl implements MasterService{
             member.setGender(GENDERS[random.nextInt(GENDERS.length)]);
             
             // 1980년 1월 1일부터 2010년 12월 31일 사이의 랜덤 생일 생성
-            long minDay = LocalDateTime.of(1980, 1, 1, 0, 0).atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
-            long maxDay = LocalDateTime.of(2010, 12, 31, 23, 59).atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
-            long randomTime = minDay + (long)(random.nextDouble() * (maxDay - minDay));
-            LocalDateTime birth = LocalDateTime.ofInstant(new Date(randomTime).toInstant(), ZoneId.systemDefault());
+            LocalDate startDate = LocalDate.of(1980, 1, 1);
+            LocalDate endDate = LocalDate.of(2010, 12, 31);
+            long startEpochDay = startDate.toEpochDay(); // 1980-01-01의 epoch day
+            long endEpochDay = endDate.toEpochDay();     // 2010-12-31의 epoch day
+
+            // 랜덤한 epoch day 값 생성
+            long randomEpochDay = startEpochDay + (long) (random.nextDouble() * (endEpochDay - startEpochDay));
+            // 랜덤한 생일 날짜 생성
+            LocalDate randomBirthDate = LocalDate.ofEpochDay(randomEpochDay);
+            // 날짜 포맷터 생성 (yyyy-MM-dd 형식으로)
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+            // 포맷에 맞춰 문자열로 변환
+            String birth = randomBirthDate.format(formatter);
             member.setBirth(birth); // 생일 설정
             
             member.setTelno("010-" + (random.nextInt(9000) + 1000) + "-" + (random.nextInt(9000) + 1000));
