@@ -46,7 +46,7 @@ public class MemberDTO {
 											.build();
 		return memberEntity;
 	}
-	
+	 
 	//DTO -> Entity
 	public MemberDTO(MemberEntity memberEntity) {
 		this.email = memberEntity.getEmail();

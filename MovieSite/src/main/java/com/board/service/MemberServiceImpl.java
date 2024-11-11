@@ -42,6 +42,13 @@ public class MemberServiceImpl implements MemberService {
 		return memberRepository.findById(email).isEmpty()?0:1;
 	};
 	
+	//패스워드 수정
+	public void modifyMemberPassword(MemberDTO member) {
+		MemberEntity memberEntity = memberRepository.findById(member.getEmail()).get();
+		memberEntity.setPassword(member.getPassword());
+		memberRepository.save(memberEntity);	
+	}
+	
 	
 	//회원 로그인/로그아웃 로그 등록
 	@Override

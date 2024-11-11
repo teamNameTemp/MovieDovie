@@ -138,156 +138,155 @@
 
 </style>
 
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.0.0/crypto-js.min.js"></script>
 <script defer>
 window.onload = async () => {
-		
-	//쿠키 가져 오기 
-	const getCookie = (name) => {
-			
-		const cookies = document.cookie.split(`; `).map((el)=>el.split('='));
-		let getItem = []; 
-			
-		for(let i=0; i<cookies.length;i++){
-			if(cookies[i][0] === name){
-				getItem.push(cookies[i][1]);
-				break;
-			}
-		} 
-		if(getItem.length > 0) {
-			return decodeURIComponent(getItem[0]);
-		}
-	};
-		
-	const session_email = '[[${session.email}]]';
-	if(getCookie('remember-me') !== '' && session_email !== '')
-		document.location.href='/board/list?page=1';
-		
-	let email = getCookie('email');
-	let password = getCookie('password');
-				
-	//email 쿠키가 존재하면...
-	if(email !== undefined){
-		document.querySelector('#rememberEmail').checked = true;
-		document.querySelector('#email').value = email;
-	}else {
-		document.querySelector('#rememberEmail').checked = false;
-	}
-		
-	//패스워드 쿠키가 존재하면...
-	if(password !== undefined){
-		document.querySelector('#rememberPassword').checked = true;
-		//Base64로 인코딩 된 password를 디코딩
-		const decrypt = CryptoJS.enc.Base64.parse(password);
-		const hashData = decrypt.toString(CryptoJS.enc.Utf8);
-		password = hashData;
-			
-		document.querySelector('#password').value = password;
-	}else {
-		document.querySelector('#rememberPassword').checked = false;
-	}
-		
+    const getCookie = (name) => {
+        const cookies = document.cookie.split(`; `).map((el) => el.split('='));
+        let getItem = [];
+        
+        for (let i = 0; i < cookies.length; i++) {
+            if (cookies[i][0] === name) {
+                getItem.push(cookies[i][1]);
+                break;
+            }
+        }
+        if (getItem.length > 0) {
+            return decodeURIComponent(getItem[0]);
+        }
+    };
+
+    const session_email = '[[${session.email}]]';
+    if (getCookie('remember-me') === 'true' && session_email !== '') {
+        document.location.href = '/board/selectGenre'; // 로그인 유지 상태 시 자동으로 /board/selectGenre로 이동
+    }
+
+    let email = getCookie('email');
+    let password = getCookie('password');
+
+    if (email !== undefined) {
+        document.querySelector('#rememberEmail').checked = true;
+        document.querySelector('#email').value = email;
+    } else {
+        document.querySelector('#rememberEmail').checked = false;
+    }
+
+    if (password !== undefined) {
+        document.querySelector('#rememberPassword').checked = true;
+        const decrypt = CryptoJS.enc.Base64.parse(password);
+        const hashData = decrypt.toString(CryptoJS.enc.Utf8);
+        password = hashData;
+        document.querySelector('#password').value = password;
+    } else {
+        document.querySelector('#rememberPassword').checked = false;
+    }
 };
 
-//Spring Security가 진행하는 로그인
-//로그아웃 페이지로 이동
+// 이 함수는 로그인 성공 시 /board/selectGenre로 무조건 이동하게 함
 const login = () => {
-	document.location.href="/board/list";
-	//document.loginForm.action = '/member/login';
+    document.location.href = "/board/selectGenre"; // 로그인 성공 시 이동할 페이지 설정
 };
 
-//스프링 시큐리티에 의한 로그인 처리 전에 서버로 email,password를 보내서 인증 처리를 해야 함 
+// 로그인 체크 함수
 const loginCheck = async () => {
-	const email = document.querySelector('#email');
-	const password = document.querySelector('#password');
-	const msg = document.querySelector('#msg');
-			
-	if(email.value === ''){
-		alert("이메일을 입력하세요");
-		email.focus();
-		return false;
-	}
+    const email = document.querySelector('#email');
+    const password = document.querySelector('#password');
+    const msg = document.querySelector('#msg');
 
-	if(password.value === ''){
-		alert("비밀번호를 입력하세요");
-		password.focus();
-		return false;
-	}
-	
-	let formData = new FormData();
-	formData.append("email", email.value);
-	formData.append("password", password.value);
-	
-	await fetch('/member/loginCheck', {
-		method: 'POST',	
-		body:formData
-	}).then((response)=> response.json())
-      .then((data) => {
-		  if(data.message === 'good'){
-			  cookieManage(email.value,password.value);
-			  login();		  
-		  } else if(data.message == 'ID_NOT_FOUND') {
-			  msg.innerHTML = '존재하지 않는 아이디입니다.';
-		  } else if(data.message == 'PASSWORD_NOT_FOUND'){
-			  msg.innerHTML = '잘못된 비밀번호입니다.';
-		  }	else {
-			  alert("시스템 장애로 로그인이 실패했습니다.");
-		  }	  
-	}).catch((error) => {
-		console.log("error = " + error);
-	});
-	
+    if (email.value === '') {
+        alert("이메일을 입력하세요");
+        email.focus();
+        return false;
+    }
+
+    if (password.value === '') {
+        alert("비밀번호를 입력하세요");
+        password.focus();
+        return false;
+    }
+
+    let formData = new FormData();
+    formData.append("email", email.value);
+    formData.append("password", password.value);
+
+    await fetch('/member/loginCheck', {
+        method: 'POST',
+        body: formData
+    }).then((response) => response.json())
+    .then((data) => {
+        if (data.message === 'good') {
+            if (document.querySelector('#rememberMe').checked) {
+                cookieManage(email.value, password.value);
+            }
+            login(); // 로그인 성공 시 login 함수 호출
+        } else if (data.message === 'EMAIL_NOT_FOUND') {
+            msg.innerHTML = '존재하지 않는 이메일입니다.';
+        } else if (data.message === 'PASSWORD_NOT_FOUND') {
+            msg.innerHTML = '잘못된 비밀번호입니다.';
+        } else {
+            alert("시스템 장애로 로그인이 실패했습니다.");
+        }
+    }).catch((error) => {
+        console.log("error = " + error);
+    });
 };
 
-//이메일 체크 관리
+// 이메일 기억 체크박스와 자동 로그인 설정
 const checkRememberEmail = () => {
-	if(document.querySelector('#rememberEmail').checked)
-		document.querySelector('#rememberMe').checked = false;
+    if (document.querySelector('#rememberEmail').checked)
+        document.querySelector('#rememberMe').checked = false;
 };
 
-//패스워드 체크 관리
+// 비밀번호 기억 체크박스와 자동 로그인 설정
 const checkRememberPassword = () => {
-	if(document.querySelector('#rememberPassword').checked)
-		document.querySelector('#rememberMe').checked = false;
+    if (document.querySelector('#rememberPassword').checked)
+        document.querySelector('#rememberMe').checked = false;
 };
 
-//자동 로그인 체크 관리
+// 자동 로그인 체크박스를 클릭했을 때 이메일, 비밀번호 기억 체크박스를 해제
 const checkRememberMe = () => {
-	if(document.querySelector('#rememberMe').checked){
-		document.querySelector('#rememberEmail').checked = false;
-		document.querySelector('#rememberPassword').checked = false;
-	}
+    if (document.querySelector('#rememberMe').checked) {
+        document.querySelector('#rememberEmail').checked = false;
+        document.querySelector('#rememberPassword').checked = false;
+    }
 };
 
-//쿠키 관리
-const cookieManage = (email,password) => {
-	
-	const rememberEmail = document.querySelector('#rememberEmail');
-	const rememberPassword = document.querySelector('#rememberPassword');
-	
-	//email가 체크되었을 경우
-	if(rememberEmail.checked) {
-		document.cookie = 'email=' + email + '; path=/; expires=Tue, 31, Dec 2024 23:59:59 GMT';
-	}else {
-		document.cookie = 'email=' + email + '; path=/; max-age=0';
-	}
-	
-	//password가 체크되었을 경우
-	if(rememberPassword.checked) {
-		//Base64(양방향 복호화 알고리즘)로 패스워드 인코딩
-		const key = CryptoJS.enc.Utf8.parse(password);
-		const base64 = CryptoJS.enc.Base64.stringify(key);
-		password = base64;
-		document.cookie = 'password=' + password + '; path=/; expires=Tue, 31, Dec 2024 23:59:59 GMT';
-	}else {
-		document.cookie = 'password=' + password + '; path=/; max-age=0';
-	}		
+// 쿠키에 이메일, 비밀번호, 자동 로그인 상태를 저장하는 함수
+const cookieManage = (email, password) => {
+    const rememberEmail = document.querySelector('#rememberEmail');
+    const rememberPassword = document.querySelector('#rememberPassword');
+    const rememberMe = document.querySelector('#rememberMe');
+
+    if (rememberEmail.checked) {
+        document.cookie = 'email=' + email + '; path=/; expires=Tue, 31 Dec 2024 23:59:59 GMT';
+    } else {
+        document.cookie = 'email=' + email + '; path=/; max-age=0';
+    }
+
+    if (rememberPassword.checked) {
+        const key = CryptoJS.enc.Utf8.parse(password);
+        const base64 = CryptoJS.enc.Base64.stringify(key);
+        password = base64;
+        document.cookie = 'password=' + password + '; path=/; expires=Tue, 31 Dec 2024 23:59:59 GMT';
+    } else {
+        document.cookie = 'password=' + password + '; path=/; max-age=0';
+    }
+
+    if (rememberMe.checked) {
+        document.cookie = 'remember-me=true; path=/; expires=Tue, 31 Dec 2024 23:59:59 GMT';
+    } else {
+        document.cookie = 'remember-me=false; path=/; max-age=0';
+    }
 };
 
+// Enter 키로 로그인 시도
 const press = (event) => {
-	if(event.keyCode === 'Enter') loginCheck();
-};	
-
+    if (event.keyCode === 13) {
+        loginCheck(); // Enter 키를 누르면 loginCheck 함수 호출
+    }
+};
 </script>
+
 </head>
 
 <body>
@@ -295,10 +294,8 @@ const press = (event) => {
 	<div class="WriteForm">
 		<h1>로그인</h1><br><br>
 	<form name="loginForm" id="loginForm" method="POST">
-		<input type="text" name="email" id="email" class="input_field" placeholder="이메일을 입력하세요." 
-				onfocus="this.placeholder='';" onblur="if(this.value === '') this.placeholder='이메일을 입력하세요.';"><br><br>
-		<input type="password" name="password" id="password" class="input_field" onkeydown="press()"
-			placeholder="비밀번호 8자 이상 입력하세요." onfocus="this.placeholder='';" onblur="if(this.value === '') this.placeholder='비밀번호를 입력하세요.';">
+		<input type="text" class="input_field" id="email" name="email" placeholder="이메일을 입력하세요">
+		<input type="password" class="input_field" id="password" name="password" placeholder="비밀번호를 입력하세요" onkeydown="press()">
 		<p id="msg" style="color:red; text-align:center"></p>
 		<br>
 		<input type="checkbox" id="rememberEmail" onclick="checkRememberEmail()">이메일 기억
@@ -308,11 +305,20 @@ const press = (event) => {
 		<input type="button" id="btn_login"	class="btn_login" value="로그인" onclick="loginCheck()"><br><br><br><br>
 	
 		<div class="oauth-buttons">
-		               <button class="oauth-btn kakao">카카오로 시작하기</button>
-		               <button class="oauth-btn naver">네이버로 시작하기</button>
-		               <button class="oauth-btn facebook">페이스북으로 시작하기</button>
-		               <button class="oauth-btn apple">Apple로 시작하기</button>
-		           </div>
+			<button class="oauth-btn kakao" onclick="redirectToUrl(event, '/oauth2/authorization/kakao')">카카오로 시작하기</button>
+			<button class="oauth-btn naver" onclick="redirectToUrl(event, '/oauth2/authorization/naver')">네이버로 시작하기</button>
+			<button class="oauth-btn facebook" onclick="redirectToUrl(event, '/oauth2/authorization/facebook')">페이스북으로 시작하기</button>
+			<button class="oauth-btn apple" onclick="redirectToUrl(event, '/oauth2/authorization/google')">Apple로 시작하기</button>
+
+			<script>
+			    function redirectToUrl(event, url) {
+			        event.preventDefault(); // 기본 동작 방지
+			        console.log("Redirecting to:", url);
+			        window.location.href = url;
+			    }
+			</script>
+
+		</div>
 
 		
 	<div class="bottomText"><a href="/member/signup">회원가입<br><br></div>

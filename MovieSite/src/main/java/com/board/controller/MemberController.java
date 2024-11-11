@@ -4,6 +4,24 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import java.io.File;
+import java.net.PasswordAuthentication;
+import java.net.URLEncoder;
+import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
+import java.util.UUID;
+
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
+import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
+
+import org.springframework.boot.autoconfigure.jms.JmsProperties.Listener.Session;
+import org.springframework.data.domain.Page;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -23,6 +41,8 @@ import com.board.service.TmdbAPIServiceImpl;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import com.board.util.PasswordMaker;
+
 
 @Log4j2
 @Controller
@@ -34,6 +54,7 @@ public class MemberController {
 	private final BCryptPasswordEncoder pwdEncoder;
 	private final TmdbAPIServiceImpl tmdb;
 	private final FavGenreServiceImpl favGenre;
+
 		
 	//로그인 화면 보기
 	@GetMapping("/login")
@@ -89,7 +110,7 @@ public class MemberController {
 	@GetMapping("/signup")
 	public void getSignup() {	}
 	
-	//회원 가입 및 회원 일반 정보 수정
+	//회원 가입 
 	@ResponseBody
 	@PostMapping("/signup")
 	public Map<String,Object> postSignup(MemberDTO member) throws Exception {
@@ -138,13 +159,6 @@ public class MemberController {
 		return response;
 	}
 		
-		
-	//OAuth2 가입
-	@GetMapping("/board/oauth2Signup")
-	public void getOAuth2Signup() throws Exception {
-		
-	}
-	
 	//회원 가입 시 아이디 중복 확인
 	@ResponseBody
 	@PostMapping("/emailCheck")
@@ -153,6 +167,7 @@ public class MemberController {
 		int result = service.emailCheck(email);
 		return result;
 	}
+	
 	
 	//이메일 찾기 화면 보기
 	@GetMapping("/searchEmail")
@@ -167,17 +182,38 @@ public class MemberController {
 		return "{\"message\":\"" + email + "\"}";
 	}
 	
-	//비밀번호 찾기 화면 보기
+	//패스워드 임시 발급 화면 보기
 	@GetMapping("/searchPassword")
 	public void getSearchPassword() {}
 	
-	//이메일 찾기
+	//패스워드 임시 발급
 	@ResponseBody
 	@PostMapping("/searchPassword")
-	public String postSearchPassword(MemberDTO member) {
+	public String postSearchPassword(MemberDTO member) throws Exception{
+		//아이디 존재 여부 확인
+		if(service.emailCheck(member.getEmail()) == 0)
+			return "{\"status\":\"ID_NOT_FOUND\"}";
+		//TELNO 확인
+		if(!service.memberInfo(member.getEmail()).getTelno().equals(member.getTelno()))
+			return "{\"status\":\"TELNO_NOT_FOUND\"}";
 		
-		String password = service.searchPassword(member) == null?"ID_NOT_FOUND":service.searchPassword(member);		
-		return "{\"message\":\"" + password + "\"}";
+		//임시 패스워드 생성	
+		PasswordMaker pMaker = new PasswordMaker();
+		String rawTempPW = pMaker.tempPasswordMaker();
+		member.setPassword(pwdEncoder.encode(rawTempPW));
+		//임시 패스워드로 패스워드 수정
+		service.modifyMemberPassword(member);
+		//마지막 패스워드 변경일 등록
+		service.lastdateUpdate(member.getEmail(), "password");
+
+		return "{\"status\":\"good\",\"password\":\"" + rawTempPW + "\"}";
+	}
+	
+	
+	//OAuth2 가입
+	@GetMapping("/board/oauth2Signup")
+	public void getOAuth2Signup() throws Exception {
+		
 	}
 	
 }
