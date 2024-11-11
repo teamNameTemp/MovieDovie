@@ -35,9 +35,11 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.board.dto.MovieDTO;
 import com.board.dto.RequestDTO;
+import com.board.dto.RequestReplyDTO;
 import com.board.entity.LikeEntity;
 import com.board.entity.MemberEntity;
 import com.board.entity.RequestEntity;
+import com.board.entity.RequestReplyEntity;
 import com.board.entity.repository.MemberRepository;
 import com.board.entity.repository.RentRepository;
 import com.board.service.FavGenreService;
@@ -46,6 +48,7 @@ import com.board.service.MasterService;
 import com.board.service.MemberLogService;
 import com.board.service.MemberService;
 import com.board.service.RentService;
+import com.board.service.RequestReplyService;
 import com.board.service.RequestService;
 import com.board.util.PageUtil;
 
@@ -66,6 +69,7 @@ public class MasterController {
 	private final RentService rentService;
 	private final FavGenreService favGenreService;
 	private final RequestService requestService;
+	private final RequestReplyService requestReplyService;
 
 	
 	//회원의 요청 목록 보기
@@ -442,27 +446,54 @@ public class MasterController {
 	}
 	*/
 	
-	/*
+	
 	
 	//댓글 처리
 	@ResponseBody
-	@PostMapping("/master/memberRequestViewreply")
-	public List<ReplyInterface> postReply(ReplyInterface reply,@RequestParam("kind") String kind) 
+	@PostMapping("/requestReply")
+	public List<Map<String, Object>> postReply(@RequestBody RequestReplyDTO dto, @RequestParam("kind") String kind) 
 			throws Exception{
 		
-		switch(kind) {
+		List<RequestReplyEntity> replyDataList;
 		
-		case "I": service.replyRegistry(reply); //댓글 등록
-				  break;
-		case "U": service.replyUpdate(reply); //댓글 수정 
-			      break;
-		case "D": service.replyDelete(reply); //댓글 삭제
-				  break;
-		}
+		 switch(kind) {
+	        case "L":
+	            replyDataList = requestReplyService.replyList(dto.getReqseqno()); // 댓글 목록 보기
+	            break;
+	        case "I":
+	            requestReplyService.replyRegister(dto); // 댓글 등록
+	            replyDataList = requestReplyService.replyList(dto.getReqseqno()); // 등록 후 댓글 목록 반환
+	            break;
+	        case "U":
+	            requestReplyService.replyUpdate(dto); // 댓글 수정
+	            replyDataList = requestReplyService.replyList(dto.getReqseqno()); // 수정 후 댓글 목록 반환
+	            break;
+	        case "D":
+	            requestReplyService.replyDelete(dto.getSeqno()); // 댓글 삭제
+	            replyDataList = requestReplyService.replyList(dto.getReqseqno()); // 삭제 후 댓글 목록 반환
+	            break;
+	        default:
+	            throw new IllegalArgumentException("Invalid kind value: " + kind); // 잘못된 kind 값 처리
+	    }
 		
-		return service.replyView(reply);
+		 
+		// RequestReplyEntity 리스트를 Map<String, Object> 리스트로 변환
+	    List<Map<String, Object>> result = new ArrayList<>();
+	    for (RequestReplyEntity replyData : replyDataList) {
+	        Map<String, Object> map = new HashMap<>();
+	        map.put("seqno", replyData.getSeqno()); // 댓글 seqno
+	        map.put("email", replyData.getEmail()); // 댓글 email
+	        map.put("reqseqno", replyData.getReqseqno()); // Request Seqno
+	        map.put("replywriter", replyData.getReplywriter()); 
+	        map.put("replycontent", replyData.getReplycontent()); 
+	        map.put("replyregdate", replyData.getReplyregdate()); 
+
+	        result.add(map);
+	    }
+
+	    return result;
 	}
-	*/
+	
 	
 	
 	//더미 데이터 만들기 페이지

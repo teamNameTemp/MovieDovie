@@ -140,7 +140,7 @@
 	    #progress::-webkit-progress-bar {   /* 싫어요 -> (바탕색) */
 	        background: tomato;
 	        border-radius: 11px;
-	        border: 1px solid #eeeeee;
+	        border: 1px solid white;
 	        height: 15px;
 	        width: 100%;
 	        overflow: hidden;
@@ -368,7 +368,7 @@
 			  						const row = document.createElement('tr');
 			  						
 			  						// dislikePercentage 값을 기준으로 tr 색상 결정
-			  			            const rowColor = item.dislikePercentage > 50 ? '#FFF2F2' : '#F2F7FF';
+			  			            const rowColor = item.dislikePercentage > 50 ? '#FFD8D8' : '#C3DFFF';
 			  						
 			  						row.innerHTML = `
 			  							<td>${index + 1}</td>
