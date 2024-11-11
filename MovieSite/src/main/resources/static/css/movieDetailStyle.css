@@ -139,10 +139,9 @@ right: 10px;  /* 오른쪽에 배치 */
 }
 
 /* ===== 5. 리뷰 섹션 ===== */
-.review-section {
+.otherDiv {
     width: 100%;
     padding: 20px;
-    background: rgba(255, 255, 255, 0.05);
     border-radius: 8px;
     margin: 20px 0;
 }
@@ -184,13 +183,6 @@ right: 10px;  /* 오른쪽에 배치 */
 }
 
 /* ===== 7. 반응형 디자인 ===== */
-@media screen and (max-width: 1024px) {
-    .container {
-        margin-left: 200px;
-        width: calc(100% - 200px);
-    }
-}
-
 @media screen and (max-width: 768px) {
     .container {
         margin-left: 0;
