@@ -142,9 +142,12 @@ public class MemberController {
 			favGenreDTO.setGenre1(selectedGenres.get(0));
 			break;
 		case 2:
+			favGenreDTO.setGenre1(selectedGenres.get(0));
 			favGenreDTO.setGenre2(selectedGenres.get(1));
 			break;
 		case 3:
+			favGenreDTO.setGenre1(selectedGenres.get(0));
+			favGenreDTO.setGenre2(selectedGenres.get(1));
 			favGenreDTO.setGenre3(selectedGenres.get(2));
 			break;
 		}

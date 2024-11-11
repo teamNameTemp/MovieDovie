@@ -47,10 +47,6 @@ public class BoardController {
 	public Map<String,Boolean> postSelectGenres(@RequestBody Map<String, List<String>> payload){
 		List<String> selectedGenres = payload.get("genres");
 
-		for(String str : selectedGenres) {
-			log.info(str);
-		}
-		
 		Map<String, Boolean> response = new HashMap<>();
 		response.put("success", true);
 		return response;

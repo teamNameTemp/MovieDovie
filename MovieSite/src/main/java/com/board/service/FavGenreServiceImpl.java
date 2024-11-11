@@ -25,7 +25,11 @@ public class FavGenreServiceImpl implements FavGenreService {
 
 	@Override
 	public void saveTheFavGenre(FavGenreDTO favGenre) {
-		FavGenreEntity favGenreEntity = favGenre.dtoToEntity();
+		FavGenreEntity favGenreEntity = favGenreRepository.findByEmail(favGenre.getEmail());
+		
+		favGenreEntity.setGenre1(favGenre.getGenre1());
+		favGenreEntity.setGenre2(favGenre.getGenre2());
+		favGenreEntity.setGenre3(favGenre.getGenre3());
 		
 		favGenreRepository.save(favGenreEntity);
 	}
