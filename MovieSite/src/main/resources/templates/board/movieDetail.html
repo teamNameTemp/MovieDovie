@@ -10,13 +10,18 @@
     <script src="/js/detail.js"></script>
 </head>
 <body>
-      <div th:replace="~{/fragments/nav/menubar::menubar}"></div>
+    <div th:replace="~{/fragments/nav/menubar::menubar}"></div>
     <div th:replace="~{/fragments/nav/sidebar::sidebar}"></div>
     
     <div class="container">
         <div class="featured-content" th:style="'background: linear-gradient(to bottom, rgba(0,0,0,0), #151515), url(https://image.tmdb.org/t/p/original' + ${movie.backdropPath} + '); background-size: cover; background-position: center; background-repeat: no-repeat;'">
             <div class="featured-desc">
-
+                <p class="#" style="font-size: small; color: white;">
+                    <span>나이</span>
+                    <span>장르</span>
+                    <span>분</span>
+                    <span>날짜</span>
+                </p>
                 <h1 class="featured-title" th:text="${movie.title}"></h1>
                 <li th:each="video : ${movie.videos.results}">
                     <span th:text="${video.name}"></span>
@@ -31,7 +36,7 @@
                 <input type="button" class="featured-button" value="장바구니 담기 | 가격">
             </div>
         </div>
-        <div class="castCrewDiv">
+        <div class="featured-content">
             <div class="castCrewButton">
                 <button id="castButton" class="toggle-button">출연</button>
                 <button id="crewButton" class="toggle-button">제작진</button>
@@ -68,34 +73,26 @@
             </div>
         </div>
 
-        <div>
-            <h2 class="review-section">리뷰</h2>
+        <div class="featured-content">
+            <h2 class="featured-desc">리뷰</h2>
             <div th:each="review : ${movie.reviews}">
                 <h3 th:text="${review.author}"></h3>
                 <p th:text="${review.content}"></p>
             </div>
         </div>
 
-        <div class="previewDiv">
+        <div class="featured-content">
             <h2 class="featured-desc">영상/이미지</h2>
             <div class="image-container">
             </div>
         </div>
 
-        <div class="similarDiv">
-            <h2 class="featured-desc">유사한 영화</h2>
-            <div class="image-container">
-            </div>
-        </div>
-
-        <div class="recommendDiv">
+        <div class="featured-content">
             <h2 class="featured-desc">추천 영화</h2>
             <div class="image-container">
             </div>
         </div>
     </div>
-
-
 
 	<!-- 양식 -->
 	 <table border="1">
