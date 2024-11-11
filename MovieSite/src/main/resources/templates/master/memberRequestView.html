@@ -212,6 +212,23 @@
     color: white;
 }
 
+/* 수정 가능하도록 스타일 */
+.editable-content {
+    cursor: text;  /* 커서가 텍스트 입력 가능한 상태로 변경 */
+}
+
+.editable-content:focus {
+	background-color: #F7F7F7;
+    border: 2px solid #D8D8D8;
+    border-radius: 10px;
+    padding: 10px;
+    min-height: 30px;
+    max-width: 100%;
+    word-wrap: break-word;
+    color: black;
+    box-shadow: 0 0 5px rgba(255, 215, 0, 0.5);
+}
+
 /* 댓글 등록 폼 */
 .replyRegister {
     display: flex; /* 수평으로 배치 */
@@ -493,15 +510,16 @@ const boardDelete = () => {
 		            // 내가 작성한 댓글인지 확인
 		            const isMyComment = reply.replywriter === loggedInUser;
 
-		            // 댓글 HTML 구조
+		        	// 댓글 HTML 구조
 		            replyElement.innerHTML = `
 		                <div class="reply-wrapper ${isMyComment ? 'my-comment' : 'other-comment'}">
 		                    <div class="balloon">
-		                        <p><strong>${reply.replywriter}</strong>: ${reply.replycontent}</p>
+		                        <p><strong>${reply.replywriter}</strong>: 
+		                        <div class="editable-content" contenteditable="false" id="replyContent${reply.seqno}">${reply.replycontent}</div></p>
 		                        
 		                        <div class="reply-content">작성일: ${formattedDate}</div>
 		                        ${isMyComment ? `
-		                                <button onclick="editReply(${reply.seqno})">수정</button>&nbsp;
+		                                <button onclick="toggleEditReply(${reply.seqno})" id="editBtn${reply.seqno}">수정</button>&nbsp;
 		                                <button onclick="deleteReply(${reply.seqno})">삭제</button>
 		                          ` : ''}
 		                    </div>
@@ -509,8 +527,7 @@ const boardDelete = () => {
 		            `;
 		            replyListContainer.appendChild(replyElement);
 		        });
-		    }
-		    
+		     }
 
 			 // 날짜를 'yyyy-MM-dd HH:mm:ss' 형식으로 포맷하는 함수
 			 function formatDate(dateStr) {
@@ -561,30 +578,54 @@ const boardDelete = () => {
 		        });
 		    });
 		
-		    // 댓글 수정 함수
-		    function editReply(seqno) {
-		        const newContent = prompt('댓글을 수정하세요:');
-		        if (newContent) {
-		            fetch('/master/requestReply', {
-		                method: 'POST',
-		                headers: { 'Content-Type': 'application/json' },
-		                body: JSON.stringify({
-		                    kind: 'U', // 댓글 수정
-		                    seqno: seqno,
-		                    replycontent: newContent
-		                })
+		 	// 댓글 수정 모드로 전환 (수정 버튼 클릭 시 contenteditable="true")
+		    function toggleEditReply(seqno) {
+		        const editableContent = document.getElementById(`replyContent${seqno}`);
+		        const editButton = document.getElementById(`editBtn${seqno}`);
+		        
+		        // contenteditable을 true로 설정하여 수정 가능 상태로 바꿈
+		        editableContent.contentEditable = "true";
+		        editableContent.focus();  // 수정할 때 자동으로 포커스를 맞춰줌
+
+		        // 버튼 텍스트를 "수정 등록"으로 변경
+		        editButton.textContent = "수정 등록";
+		        editButton.setAttribute("onclick", `saveEditedReply(${seqno})`);
+		    }
+
+		    // 댓글 수정 후 저장 함수
+		    function saveEditedReply(seqno) {
+		        const editableContent = document.getElementById(`replyContent${seqno}`);
+		        const newContent = editableContent.innerText.trim();  // 수정된 텍스트
+
+		        if (newContent === '') { alert('댓글 내용을 입력해주세요.'); return;}
+
+		        // 서버로 수정된 내용 전송
+		        fetch('/master/requestReply', {
+		            method: 'POST',
+		            headers: { 'Content-Type': 'application/json' },
+		            body: JSON.stringify({
+		                kind: 'U', // 댓글 수정
+		                seqno: seqno,
+		                replycontent: newContent
 		            })
-		            .then(response => response.json())
-		            .then(data => {
-		                // 수정 후 목록을 다시 불러옵니다.
-		                loadReplies();
-		            })
-		            .catch(error => {
-		                console.error('댓글 수정 실패:', error);
-		            });
-		        }
+		        })
+		        .then(response => response.json())
+		        .then(data => {
+		            // 수정 후 목록을 다시 불러옵니다.
+		            loadReplies();
+		        })
+		        .catch(error => {console.error('댓글 수정 실패:', error);});
+
+		     	// 수정 후에는 다시 contenteditable을 false로 설정
+		        editableContent.contentEditable = "false";
+		        
+		     	// 버튼 텍스트를 "수정"으로 돌아가게 변경
+		        const editButton = document.getElementById(`editBtn${seqno}`);
+		        editButton.textContent = "수정";
+		        editButton.setAttribute("onclick", `toggleEditReply(${seqno})`);
 		    }
 		
+		    
 		    // 댓글 삭제 함수
 		    function deleteReply(seqno) {
 		        if (confirm('정말로 댓글을 삭제하시겠습니까?')) {
