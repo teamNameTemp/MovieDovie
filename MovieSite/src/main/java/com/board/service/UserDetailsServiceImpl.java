@@ -30,18 +30,12 @@ public class UserDetailsServiceImpl implements UserDetailsService{
 		MemberEntity memberInfo = memberRepository.findById(username)
 						.orElseThrow(()-> new UsernameNotFoundException("이메일이 존재하지 않습니다."));
 		
-		/*
-		if(memberInfo == null) {
-			throw new UsernameNotFoundException("아이디가 존재하지 않습니다.");
-		}
-		*/
-		
 		//SimpleGrantedAuthority : 여러개의 사용자 Role값을 받는 객체
 		List<SimpleGrantedAuthority> grantedAuthorities = new ArrayList<>();
 		SimpleGrantedAuthority grantedAuthority = new SimpleGrantedAuthority(memberInfo.getRole());		
 		grantedAuthorities.add(grantedAuthority);
 		
-		User user = new User(username, memberInfo.getPassword(), grantedAuthorities);
+		User user = new User(username, memberInfo.getPassword(), grantedAuthorities); //Security에서 인증된 사용자 정보 사용
 		
 		return user;
 	}
