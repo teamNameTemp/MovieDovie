@@ -6,6 +6,7 @@ import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -22,6 +23,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.board.dto.RequestDTO;
+import com.board.dto.movie.KobisMovieDTO;
 import com.board.entity.BookmarkEntity;
 import com.board.entity.FavGenreEntity;
 import com.board.entity.LikeEntity;
@@ -58,9 +60,7 @@ public class MasterServiceImpl implements MasterService{
     private final Random random;
     private static final String[] YorN = {"Y", "N"};
     private static final String[] INOUT = {"LOGIN", "LOGOUT"};
-    private static final String[] GENRES = {"드라마", "코미디", "멜로/로맨스", "스릴러", "미스터리", "전쟁", "뮤지컬", "공연", "기타", 
-    								"공포(호러)", "어드벤처", "범죄", "가족", "판타지", "SF", "서부극(웨스턴)", "사극", "애니메이션", "다큐멘터리"};
-	
+    
 	//요청 게시물 목록 보기
 	@Override
 	public Page<RequestEntity> list(int pageNum, int postNum, String keyword) throws Exception {	
@@ -123,6 +123,12 @@ public class MasterServiceImpl implements MasterService{
 		//return movieRepository.findById(movieNm).isEmpty()?0:1;
 	}
 	
+	//관리자 영화 직접 업로드
+	@Override
+	@Transactional
+	public void movieUpload(KobisMovieDTO dto) {
+		//movieRepository.save(dto.dtoToEntity(dto)); 
+	}
 	
 	//dummy 회원 대량으로 만들기
 	@Override
@@ -158,9 +164,9 @@ public class MasterServiceImpl implements MasterService{
             
             member.setTelno("010-" + (random.nextInt(9000) + 1000) + "-" + (random.nextInt(9000) + 1000));
             
-            // 2023년 1월 1일부터 2024년 10월 31일 사이의 랜덤 회원 가입일 생성
+            // 2023년 1월 1일부터 2024년 11월 15일 사이의 랜덤 회원 가입일 생성
             long regminDay = LocalDateTime.of(2023, 1, 1, 0, 0).atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
-            long regmaxDay = LocalDateTime.of(2024, 10, 31, 23, 59).atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
+            long regmaxDay = LocalDateTime.of(2024, 11, 15, 23, 59).atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
             long regrandomTime = regminDay + (long)(random.nextDouble() * (regmaxDay - regminDay));
             LocalDateTime regdate = LocalDateTime.ofInstant(new Date(regrandomTime).toInstant(), ZoneId.systemDefault());
             member.setRegdate(regdate); // 회원 가입일 설정
@@ -185,9 +191,9 @@ public class MasterServiceImpl implements MasterService{
         	RentEntity rent = new RentEntity();
             rent.setSeqno((long) i);
         	
-            // 2023년 9월 1일부터 2024년 11월 3일 사이의 랜덤 대여일 생성
-            long minDay = LocalDateTime.of(2023, 9, 1, 0, 0).atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
-            long maxDay = LocalDateTime.of(2024, 11, 3, 23, 59).atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
+            // 2023년 10월 1일부터 2024년 11월 15일 사이의 랜덤 대여일 생성
+            long minDay = LocalDateTime.of(2023, 10, 1, 0, 0).atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
+            long maxDay = LocalDateTime.of(2024, 11, 15, 23, 59).atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
             long randomTime = minDay + (long)(random.nextDouble() * (maxDay - minDay));
             LocalDateTime rentdate = LocalDateTime.ofInstant(new Date(randomTime).toInstant(), ZoneId.systemDefault());
             
@@ -245,9 +251,9 @@ public class MasterServiceImpl implements MasterService{
         	MemberLogEntity log = new MemberLogEntity();
             log.setSeqno((long) i);
             
-            // 2024년 10월 1일부터 2024년 11월 3일 사이의 랜덤 로그인 로그아웃일 생성
+            // 2024년 10월 1일부터 2024년 11월 15일 사이의 랜덤 로그인 로그아웃일 생성
             long minDay = LocalDateTime.of(2024, 10, 1, 0, 0).atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
-            long maxDay = LocalDateTime.of(2024, 11, 3, 23, 59).atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
+            long maxDay = LocalDateTime.of(2024, 11, 15, 23, 59).atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
             long randomTime = minDay + (long)(random.nextDouble() * (maxDay - minDay));
             LocalDateTime inouttime = LocalDateTime.ofInstant(new Date(randomTime).toInstant(), ZoneId.systemDefault());
             
@@ -270,9 +276,9 @@ public class MasterServiceImpl implements MasterService{
         	WatchEntity watch = new WatchEntity();
             watch.setSeqno((long) i);
             
-            // 2022년 1월 1일부터 2024년 10월 31일 사이의 랜덤 로그인 로그아웃일 생성
+            // 2022년 1월 1일부터 2024년 11월 15일 사이의 랜덤 로그인 로그아웃일 생성
             long minDay = LocalDateTime.of(2022, 1, 1, 0, 0).atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
-            long maxDay = LocalDateTime.of(2024, 10, 31, 23, 59).atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
+            long maxDay = LocalDateTime.of(2024, 11, 15, 23, 59).atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
             long randomTime = minDay + (long)(random.nextDouble() * (maxDay - minDay));
             LocalDateTime watchdate = LocalDateTime.ofInstant(new Date(randomTime).toInstant(), ZoneId.systemDefault());
             
@@ -309,9 +315,8 @@ public class MasterServiceImpl implements MasterService{
 	@Transactional
 	public void createDummyFavGenre(int count) {
 
-	    // 장르 배열 (18개)
-	    String[] GENRES = {"드라마", "코미디", "멜로/로맨스", "스릴러", "미스터리", "전쟁", "뮤지컬", "공연", "기타", 
-	                        "공포(호러)", "어드벤처", "범죄", "가족", "판타지", "SF", "서부극(웨스턴)", "사극", "애니메이션", "다큐멘터리"};
+	    // 장르 배열 (19개)
+	    String[] GENRES = {"드라마", "코미디", "로맨스", "스릴러", "미스터리", "공포", "모험", "범죄", "가족", "판타지", "SF", "서부", "역사", "애니메이션", "다큐멘터리", "전쟁", "음악", "액션", "TV영화"};
 
 	    for (int i = 1; i <= count; i++) {
 	        FavGenreEntity favGenre = new FavGenreEntity();
@@ -321,29 +326,16 @@ public class MasterServiceImpl implements MasterService{
 	        // 장르 선택을 위한 배열 복사
 	        List<String> availableGenres = new ArrayList<>(Arrays.asList(GENRES));
 
-	        // genre1 설정
-	        String genre1 = pickRandomGenre(availableGenres);
-	        favGenre.setGenre1(genre1);
+	        // 장르 목록을 무작위로 섞음
+	        Collections.shuffle(availableGenres);
 
-	        // genre2 설정: genre1을 제외한 목록에서 선택
-	        String genre2 = pickRandomGenre(availableGenres);
-	        favGenre.setGenre2(genre2);
-
-	        // genre3 설정: genre1과 genre2를 제외한 목록에서 선택
-	        String genre3 = pickRandomGenre(availableGenres);
-	        favGenre.setGenre3(genre3);
+	        // genre1, genre2, genre3 설정 (섞인 목록에서 순차적으로 선택)
+	        favGenre.setGenre1(availableGenres.get(0));
+	        favGenre.setGenre2(availableGenres.get(1));
+	        favGenre.setGenre3(availableGenres.get(2));
 
 	        favGenreRepository.save(favGenre);
 	    }
-	}
-	
-	// 장르 중복을 피하면서 랜덤으로 장르를 뽑는 메서드
-	private String pickRandomGenre(List<String> availableGenres) {
-	    Random random = new Random();
-	    int randomIndex = random.nextInt(availableGenres.size());
-	    String selectedGenre = availableGenres.get(randomIndex);
-	    availableGenres.remove(randomIndex); // 선택된 장르는 목록에서 제거
-	    return selectedGenre;
 	}
 	
 	

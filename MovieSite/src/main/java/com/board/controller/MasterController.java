@@ -33,9 +33,19 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.board.dto.MovieDTO;
+
 import com.board.dto.RequestDTO;
+<<<<<<< Updated upstream
 import com.board.dto.RequestReplyDTO;
+=======
+import com.board.dto.movie.KobisMovieDTO;
+import com.board.dto.movie.KobisMovieDTO.MovieInfo;
+import com.board.dto.movie.KobisMovieDTO.MovieInfo.Actor;
+import com.board.dto.movie.KobisMovieDTO.MovieInfo.Company;
+import com.board.dto.movie.KobisMovieDTO.MovieInfo.Director;
+import com.board.dto.movie.KobisMovieDTO.MovieInfo.Nation;
+import com.board.dto.movie.KobisMovieDTO.MovieInfoResult;
+>>>>>>> Stashed changes
 import com.board.entity.LikeEntity;
 import com.board.entity.MemberEntity;
 import com.board.entity.RequestEntity;
@@ -307,15 +317,28 @@ public class MasterController {
     	
     	List<Object[]> list = favGenreService.favGenreResult();
     	
-    	List<Map<String, Object>> response = new ArrayList<>();
-    	for(Object[] item : list) {
-    		Map<String, Object> map = new HashMap<>();
-    		map.put("genre", item[0]);
-    		map.put("count", item[1]);
-    		response.add(map);
-    	}
-    	return response;
+        // 만약 리스트가 비어있다면 빈 리스트를 반환하거나 기본 값을 넣어줄 수 있음
+        if (list.isEmpty()) {
+            Map<String, Object> defaultMap = new HashMap<>();
+            defaultMap.put("genre", "없음");
+            defaultMap.put("count", 0);
+            
+            List<Map<String, Object>> response = new ArrayList<>();
+            response.add(defaultMap); // 기본 데이터 추가
+            return response;
+        }
+        
+        // 리스트에 데이터가 있으면 정상 처리
+        List<Map<String, Object>> response = new ArrayList<>();
+        for (Object[] item : list) {
+            Map<String, Object> map = new HashMap<>();
+            map.put("genre", item[0]);
+            map.put("count", item[1]);
+            response.add(map);
+        }
+        return response;
     }
+
 	
     //관리자 페이지 - 통계 : 좋아요 % 높은 영화 순위 보여주기
     @GetMapping("/topLikeMovie")
@@ -399,50 +422,154 @@ public class MasterController {
 	
 	/*
 	//관리자 직접 영화 업로드
-	@ResponseBody
+	@ResponseBody //JSON 형식으로 응답을 반환할 때 사용.
 	@PostMapping("/movieUpload")
-	public Map<String, String> postMovieUpload(MovieDTO movie, @RequestParam("fileUpload") MultipartFile mpr) throws Exception {
+	public Map<String, String> postMovieUpload(
+			@RequestParam("posterUpload") MultipartFile poster,
+    		@RequestParam("backgroundUpload") MultipartFile background,
+		    @RequestParam("title") String title,
+		    @RequestParam("originalTitle") String originalTitle,
+		    @RequestParam("releaseDate") String releaseDate,
+		    @RequestParam("originalLanguage") String originalLanguage,
+		    @RequestParam("runtime") String runtime,
+		    @RequestParam("overview") String overview, 
+		    @RequestParam("certification") String certification,
+		    
+		    @RequestParam("genres") List<String> genres,
+		    @RequestParam("productionCompanies") String productionCompanies, // 쉼표로 구분된 제작사들
+		    @RequestParam("productionCountries") String productionCountries, // 쉼표로 구분된 제작국가들
+		    @RequestParam("spokenLanguages") String spokenLanguages, // 쉼표로 구분된 언어들
+		    
+	?	    @RequestParam("actors") String actors, // 쉼표로 구분된 배우들
+	?	    @RequestParam("directors") String directors // 쉼표로 구분된 감독들
+ 
+			) throws Exception {
+		
+		KobisMovieDTO dto = new KobisMovieDTO();
 	
+		//여기가 이상함.
+		dto.getMovieInfoResult().getMovieInfo().setMovieNm(movieNmEn);
+		dto.getMovieInfoResult().getMovieInfo().setMovieNmEn(movieNmEn);
+		dto.getMovieInfoResult().getMovieInfo().setPrdtYear(prdtYear);
+		dto.getMovieInfoResult().getMovieInfo().setOpenDt(openDt);
+		dto.getMovieInfoResult().getMovieInfo().setShowTm(showtime);
+		dto.getMovieInfoResult().getMovieInfo().getAudits().get(0).setWatchGradeNm(watchGradeNm);
+		dto.getMovieInfoResult().getMovieInfo().setOverview(overview);
+		dto.setUploadCheck(uploadCheck);
+		
+		dto.getMovieInfoResult().getMovieInfo().setActors(DtoToEntityMapper.convertToActorList(actors));
+		dto.getMovieInfoResult().getMovieInfo().setDirectors(DtoToEntityMapper.convertToDirectorList(directors));
+		dto.getMovieInfoResult().getMovieInfo().setCompanys(DtoToEntityMapper.convertToCompanyList(companys));
+		dto.getMovieInfoResult().getMovieInfo().setNations(DtoToEntityMapper.convertToNationList(nations));
+		
+		 // 변환 후 장르 설정
+	    dto.getMovieInfoResult().getMovieInfo().setGenres(DtoToEntityMapper.convertToGenreList(genres));
+
+		
 		//OS에 따라 이미지 저장될 디렉토리 구조 설정 시작
 		String os = System.getProperty("os.name").toLowerCase();
-		String path;
-		if(os.contains("win"))
-			path = "c:\\Repository\\profile\\";
-		else 
-			path = "/home/jiho/Repository/profile";
+		String path = os.contains("win") ? "c:\\Repository\\profile\\":"/home/jiho/Repository/profile";
+		File dir = new File(path);
+    	if (!dir.exists()) dir.mkdir();
 		
-		//디렉토리가 존재하는지 체크해서 없다면 생성
-		File p = new File(path);
-		if(!p.exists()) p.mkdir();
-		//운영체제에 따라 이미지가 저장될 디렉토리 구조 설정 종료
-		
-		File targetFile = null;
-		String imgPath = "";
-		
-		if(!mpr.isEmpty()) {
-			imgPath = mpr.getOriginalFilename();
-			try {
-				targetFile = new File(path + imgPath);				
-				mpr.transferTo(targetFile);
-				movie.setImgPath(imgPath);				
-			} catch(Exception e) {
-				e.printStackTrace();
-			}
-		}
-		
-		service.movieUpload(movie);
-		
-		Map<String, String> data = new HashMap<>();
-		data.put("message", "good");
-		
+		// 포스터 이미지 저장
+	    if (!poster.isEmpty()) {
+	        String posterPath = path + poster.getOriginalFilename();
+	        poster.transferTo(new File(posterPath));
+	        dto.setPosterPath(posterPath);
+	    }
+	
+	    // 백그라운드 이미지 저장
+	    if (!background.isEmpty()) {
+	        String backgroundPath = path + background.getOriginalFilename();
+	        background.transferTo(new File(backgroundPath));
+	        dto.setBackgroundPath(backgroundPath);
+	    }
+	
+	    // 서비스 호출하여 영화 정보 저장
+	    service.movieUpload(dto);
+	    Map<String, String> data = new HashMap<>();
+	    data.put("message", "good");
+	    return data;
 	}
 	
-	
-	//관리자 영화 업로드 시 영화 중복 체크
-	@ResponseBody
-	@PostMapping("/movieCheck")
-	public int postMovieCheck(@RequestBody String movieNm) throws Exception {
-		return service.movieCheck(movieNm);
+	public class DtoToEntityMapper {
+
+	    // 쉼표로 구분된 문자열을 받아서 List<Actor>로 변환하는 메소드
+	    public static List<Actor> convertToActorList(String actors) {
+	        List<Actor> actorList = new ArrayList<>();
+	        
+	        // 쉼표로 구분된 데이터 (공백도 제거하고)로 나눔
+	        String[] actorArray = actors.split("\\s*,\\s*");  // 쉼표 뒤에 공백 제거
+	        
+	        for (String actorString : actorArray) {
+	            Actor actor = new Actor();
+	            actor.setPeopleNm(actorString);  // 일단 단순하게 이름만 저장
+	            actor.setPeopleNmEn(null);  
+	            actor.setCast(null);  
+	            actor.setCastEn(null);  
+
+	            actorList.add(actor);
+	        }
+	        
+	        return actorList;
+	    }
+
+	    // Nations, Companys, Directors도 비슷하게 처리할 수 있음
+	    public static List<Nation> convertToNationList(String nations) {
+	        List<Nation> nationList = new ArrayList<>();
+	        String[] nationArray = nations.split("\\s*,\\s*");
+	        
+	        for (String nationString : nationArray) {
+	            Nation nation = new Nation();
+	            nation.setNationNm(nationString);  // 국가 이름을 저장
+	            nationList.add(nation);
+	        }
+
+	        return nationList;
+	    }
+
+	    public static List<Company> convertToCompanyList(String companies) {
+	        List<Company> companyList = new ArrayList<>();
+	        String[] companyArray = companies.split("\\s*,\\s*");
+	        
+	        for (String companyString : companyArray) {
+	            Company company = new Company();
+	            company.setCompanyNm(companyString);  // 회사 이름 저장
+	            company.setCompanyNmEn(null);
+	            company.setCompanyCd(null);
+	            company.setCompanyPartNm(null);
+	            companyList.add(company);
+	        }
+
+	        return companyList;
+	    }
+
+	    public static List<Director> convertToDirectorList(String directors) {
+	        List<Director> directorList = new ArrayList<>();
+	        String[] directorArray = directors.split("\\s*,\\s*");
+	        
+	        for (String directorString : directorArray) {
+	            Director director = new Director();
+	            director.setPeopleNm(directorString);  // 감독 이름 저장
+	            director.setPeopleNmEn(null);
+	            directorList.add(director);
+	        }
+
+	        return directorList;
+	    }
+	    
+	    // 장르 변환 메서드
+	    public static List<KobisMovieDTO.MovieInfo.Genre> convertToGenreList(List<String> genres) {
+	        List<KobisMovieDTO.MovieInfo.Genre> genreList = new ArrayList<>();
+	        for (String genreString : genres) {
+	            KobisMovieDTO.MovieInfo.Genre genre = new KobisMovieDTO.MovieInfo.Genre();
+	            genre.setGenreNm(genreString);  // 장르 이름을 설정
+	            genreList.add(genre);
+	        }
+	        return genreList;
+	    }
+	    
 	}
 	*/
 	
