@@ -3,6 +3,8 @@ package com.board.dto.movie;
 import java.time.LocalDate;
 import java.util.List;
 
+import com.board.entity.movie.CreditEntity;
+import com.board.entity.movie.MovieEntity;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.AllArgsConstructor;
@@ -17,7 +19,7 @@ import lombok.NoArgsConstructor;
 public class MovieDTO {
 
 	// ================기본 프로퍼티=============
-
+	private MovieEntity entity;
 	// 영화 ID
 	private Long id;
 	// 제목
@@ -53,7 +55,7 @@ public class MovieDTO {
 	private double voteAverage;
 	// 투표 수 투표한 회원 수!
 	@JsonProperty("vote_count")
-	private int voteCount;
+	private Integer voteCount;
 
 	// 제작사 목록
 	@JsonProperty("production_companies")
@@ -196,6 +198,7 @@ public class MovieDTO {
 		private List<Cast> cast;
 		// 제작진 목록
 		private List<Crew> crew;
+		private CreditEntity credit;
 	}
 
 	// 리뷰 목록
@@ -344,5 +347,7 @@ public class MovieDTO {
 		@JsonProperty("release_date")
 		private LocalDate releaseDate;
 	}
+	
+	
 
 }

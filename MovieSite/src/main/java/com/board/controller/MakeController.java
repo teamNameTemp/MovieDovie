@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import com.board.dto.movie.MovieDTO;
+import com.board.entity.movie.CrewEntity;
 import com.board.entity.movie.MovieEntity;
 import com.board.service.MovieAPIServiceImpl;
 import com.board.service.TmdbAPIServiceImpl;
@@ -20,7 +21,6 @@ import lombok.RequiredArgsConstructor;
 public class MakeController {
 	private final MovieAPIServiceImpl movie;
 	private final TmdbAPIServiceImpl tmdb;
-	private final MovieMapper mapper;
 	
 	@GetMapping("/make/movie")
 	public void getMake() {
@@ -36,9 +36,8 @@ public class MakeController {
 			MovieDTO dto = movie.getMovieDetails(d.getId(), "ko-KR").block();
 			temp.add(dto);
 		}
-		List<MovieEntity> infoList = mapper.toEntityList(temp);
-		
-		movie.saveTheDataBases(infoList);
+
+		movie.saveTheDataBases(temp);
 		
 	}
 }
