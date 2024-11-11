@@ -75,7 +75,7 @@ public class MovieAPIServiceImpl implements MovieAPIService {
 				castRepository.saveAll(casts);
 				languageRepository.saveAll(languages);
 			}
-		}
+	}
 		
 	
 	public void saveTheDataBase(MovieEntity movie) {
