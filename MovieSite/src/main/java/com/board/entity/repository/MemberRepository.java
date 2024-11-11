@@ -23,5 +23,6 @@ public interface MemberRepository extends JpaRepository<MemberEntity, String>{
 	public List<Object[]> signupResult();
 	
 	
-	
-}
+	public Optional<MemberEntity> findByUsernameAndTelno(String username, String telno);
+	public Optional<MemberEntity> findByEmailAndUsername(String email, String username);
+} 

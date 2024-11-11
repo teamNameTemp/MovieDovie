@@ -18,3 +18,4 @@ public interface MemberLogRepository extends JpaRepository<MemberLogEntity, Long
 	        " FROM tbl_member_log m WHERE m.status = 'LOGIN'", nativeQuery = true)
 	public List<Object[]> visitResult();
 }
+ 
