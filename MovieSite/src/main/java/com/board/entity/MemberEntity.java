@@ -40,8 +40,8 @@ public class MemberEntity {
 	@Column(name="gender", length=20, nullable=false)
 	private String gender;
 	
-	@Column(name="birth", nullable=false)
-	private LocalDateTime birth;
+	@Column(name="birth", nullable=true)
+	private String birth;
 	
 	@Column(name="telno", length=50, nullable=false)
 	private String telno;
