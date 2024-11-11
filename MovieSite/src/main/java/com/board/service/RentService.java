@@ -3,6 +3,9 @@ package com.board.service;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.jpa.repository.Query;
+
 public interface RentService {
 
 	//영화 대여 시작
@@ -14,9 +17,10 @@ public interface RentService {
 	//관리자페이지 - 통계 : 월별 대여 수 확인
 	public List<Object[]> RentCountByMonth(int year);
     
-	//관리자페이지 - 통계 : 이번 연도 대여 누적 수 확인
-	//public List<Object[]> RentCumulative();
+	//관리자 페이지 - 통계 : 올해 대여 status 수 확인
+	public List<Object[]> RentStatus();
+
+	//관리자 페이지 - 통계 : 올해 대여 TOP 회원 확인
+	public List<Object[]> findTopRenters();
 	
-
-
 }
