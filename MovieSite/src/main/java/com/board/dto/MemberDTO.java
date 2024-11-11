@@ -49,8 +49,6 @@ public class MemberDTO {
 		this.lastpwdate = memberEntity.getLastpwdate();
 		this.pwcheck = memberEntity.getPwcheck();
 		this.role = memberEntity.getRole();
-		this.logseqno = memberEntity.getLogseqno();
-		this.genreseqno = memberEntity.getGenreseqno();
 	}
 		
 	//DTO --> Entity 이동
@@ -68,8 +66,6 @@ public class MemberDTO {
 											.lastpwdate(dto.getLastpwdate())
 											.pwcheck(dto.getPwcheck())
 											.role(dto.getRole())
-											.logseqno(dto.getLogseqno())
-											.genreseqno(dto.getGenreseqno())
 											.build();									
 		return memberEntity;
 	}

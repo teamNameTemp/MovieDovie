@@ -172,9 +172,6 @@ public class MasterServiceImpl implements MasterService{
             member.setRegdate(regdate); // 회원 가입일 설정
             
             member.setRole("USER");
-            member.setLogseqno((long) i);
-            member.setGenreseqno((long) i);
-
             members.add(member);
         }
         memberRepository.saveAll(members); //일괄 저장
