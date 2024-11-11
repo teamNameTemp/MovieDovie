@@ -14,8 +14,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 
-@NoArgsConstructor
-@AllArgsConstructor
+
 @Getter
 @Setter
 @AllArgsConstructor
@@ -37,24 +36,6 @@ public class MemberDTO {
 	private Long genreseqno;
 	
 	
-	//Entity -> DTO
-	public MemberEntity dtoToEntity(MemberDTO memberDTO) {
-		MemberEntity memberEntity = MemberEntity.builder()
-											.email(memberDTO.getEmail())
-											.password(memberDTO.getPassword())
-											.username(memberDTO.getUsername())
-											.nickname(memberDTO.getNickname())
-											.gender(memberDTO.getGender())
-											.birth(memberDTO.getBirth())
-											.telno(memberDTO.getTelno())
-											.regdate(memberDTO.getRegdate())
-											.lastpwdate(memberDTO.getLastpwdate())
-											.pwcheck(memberDTO.getPwcheck())
-											.role(memberDTO.getRole())
-											.build();
-		return memberEntity;
-	}
-	 
 	//DTO -> Entity
 	public MemberDTO(MemberEntity memberEntity) {
 		this.email = memberEntity.getEmail();
@@ -91,13 +72,5 @@ public class MemberDTO {
 											.genreseqno(dto.getGenreseqno())
 											.build();									
 		return memberEntity;
-	}
-	
-		this.regdate= memberEntity.getRegdate();
-		this.lastpwdate = memberEntity.getLastpwdate();
-		this.pwcheck = memberEntity.getPwcheck();
-		this.role = memberEntity.getRole();
-		
-		
 	}
 }
