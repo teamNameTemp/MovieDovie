@@ -43,6 +43,7 @@ body {
   color: #4dbf00;
 }
 
+
 .menu-container {
   flex: 6;
 }
@@ -50,6 +51,20 @@ body {
 .menu-list {
   display: flex;
   list-style: none;
+}
+
+.bell-box{
+	position: relative;
+	height: 20px; 
+	background:#3C3D37; 
+	border:10px; 
+	border-radius:20px; 
+	width:80px; 
+	height:30px;
+	display:flex;
+	align-items: center;
+	margin-top: 10px;
+	margin-bottom: 10px;
 }
 
 .menu-list-item {
@@ -377,6 +392,19 @@ body {
 .dropdown-content.show{
   display : block;
 }
+
+ #notification-count {
+            position: absolute;
+            top: 5px;
+            right: 10px;
+            font-size: 18px;
+            color: white;
+        }
+        
+.dropdown-content .dropdown-item:hover {
+            color: red; /* 마우스를 올리면 빨간색으로 변경 */
+        }
+
 
 a {
   text-align: center;  

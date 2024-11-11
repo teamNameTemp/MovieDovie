@@ -22,6 +22,37 @@
         movieList.style.transform = `translateX(-${moveAmount}px)`;
       };
 
+	  
+
+           window.onload = function() {
+            // 갯수 업데이트 함수
+            function updateNotificationCount() {
+                const dropdownItems = document.querySelectorAll('.dropdown-content .dropdown-item'); // 드롭다운 항목들을 다시 선택
+                const notificationCount = document.getElementById('notification-count'); // 갯수를 표시할 요소
+                let itemCount = dropdownItems.length; // 항목 수를 가져옴
+                
+                // 항목 수가 99 이상일 경우 99+로 표시
+                if (itemCount >= 5) {
+                    notificationCount.textContent = '4+';
+                } else {
+                    notificationCount.textContent = itemCount;
+                }
+            }
+
+            // 각 드롭다운 항목에 클릭 이벤트 추가
+            const dropdownItems = document.querySelectorAll('.dropdown-content .dropdown-item');
+            dropdownItems.forEach(item => {
+                item.addEventListener('click', function(event) {
+                    event.preventDefault(); // 기본 동작 방지
+                    item.remove(); // 클릭한 항목 삭제
+                    updateNotificationCount(); // 항목 갯수 업데이트
+                });
+            });
+
+            // 초기 항목 갯수 표시
+            updateNotificationCount();
+        }
+        
       // 슬라이드 이동 함수 (오른쪽으로)
       const slideRight = () => {
        if(currentIndex < itemCount - 12){
