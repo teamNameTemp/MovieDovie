@@ -135,58 +135,56 @@
 
 <script>
 window.onload = () => {
-	
 	var imgCheck = "N";
-	var imgZone = document.querySelector('#imageZone');
-	var fileEvent = document.querySelector('#imageFile');
-	var btnRegister = document.querySelector('#btnRegister');
+	var posterZone = document.querySelector('#posterZone');
+    var posterFile = document.querySelector('#posterFile');
+    var backgroundZone = document.querySelector('#backgroundZone');
+    var backgroundFile = document.querySelector('#backgroundFile');
+    var btnRegister = document.querySelector('#btnRegister');
 	
-	//imageZone 영역 클릭 시 파일이벤트 작동.
-	imgZone.addEventListener('click', (e) => {
-		fileEvent.click(e);
-	})
+ 	// 포스터 및 백그라운드 이미지 클릭 시 파일 선택 이벤트
+    posterZone.addEventListener('click', () => posterFile.click());
+    backgroundZone.addEventListener('click', () => backgroundFile.click());
+    
+    // 파일 선택 시 이미지 미리보기 표시
+    posterFile.addEventListener('change', (e) => showImage(e.target.files, posterZone));
+    backgroundFile.addEventListener('change', (e) => showImage(e.target.files, backgroundZone));
+
 	
-	fileEvent.addEventListener('change', (e) => {
-		const files = e.target.files; //선택한 파일 정보가 e.target.files(배열)에 저장
-		showImage(files);
-	})
-	
-	const showImage = (files) => {
-		
-		imgZone.innerHTML = '';
-		const imgFile = files[0];
-		
-		if(imgFile.type.indexOf("image") < 0){
-			alert("이미지 파일만 업로드하세요");
-			return false;
-		}
-		
-		const reader = new FileReader(); //new 연산자를 통해서 FileReader 객체를 reader가 참조(상속)
-		reader.onload = function(event) { //reader.readAsDataURL(imgFile)로 이미지를 읽고 나서 해야 할 일
-			imgZone.innerHTML = "<img src=" + event.target.result + " id='uploadImg' style='width:350px;height:auto'>";
-		};
-		
-		reader.readAsDataURL(imgFile); //실제로 이미지 파일을 읽는 부분
-		imgCheck = "Y";	
-	};
+    const showImage = (files, zone) => {
+        const imgFile = files[0];
+        if (imgFile && imgFile.type.indexOf("image") >= 0) {
+            const reader = new FileReader();
+            reader.onload = (event) => {
+                zone.innerHTML = "<img src='" + event.target.result + "' style='width:350px;height:auto'>";
+            };
+            reader.readAsDataURL(imgFile);
+            imgCheck = "Y";
+        } else {
+            alert("이미지 파일만 업로드하세요");
+        }
+    };
 	
 	
 	btnRegister.addEventListener('click', async ()=> {
 		
 		//유효성 검사
 		if(imgCheck == 'N') {alert("영화 포스터 이미지를 등록하세요"); return false;}	
-		if(movieNm.value == '') {alert("영화제목(국문)을 입력하세요."); movieNm.focus(); return false;}
-		if(showtime.value == '') {alert("상영 시간을 입력하세요."); showtime.focus(); return false;}
-		if(nations.value == '') {alert("제작 국가를 입력하세요."); nations.focus(); return false;}
-		if(companys.value == '') {alert("제작사를 입력하세요."); companys.focus(); return false;}
-		if(actors.value == '') {alert("배우를 입력하세요."); actors.focus(); return false;}
+		if(title.value == '') {alert("영화제목(국문)을 입력하세요."); title.focus(); return false;}
+		if(originalTitle.value == '') {alert("영화제목(원어)을 입력하세요."); originalTitle.focus(); return false;}
+		if(releaseDate.value == '') {alert("개봉일을 입력하세요."); releaseDate.focus(); return false;}
+		if(runtime.value == '') {alert("상영 시간을 입력하세요."); runtime.focus(); return false;}
+		if(productionCountries.value == '') {alert("제작 국가를 입력하세요."); productionCountries.focus(); return false;}
+		if(productionCompanies.value == '') {alert("제작사를 입력하세요."); productionCompanies.focus(); return false;}
+		//if(actors.value == '') {alert("배우를 입력하세요."); actors.focus(); return false;}
 		if(overview.value == '') {alert("줄거리를 입력하세요."); overview.focus(); return false;}
-		if(directors.value == '') {alert("감독을 입력하세요."); directors.focus(); return false;}
+		//if(directors.value == '') {alert("감독을 입력하세요."); directors.focus(); return false;}
 		
 		const genres = document.querySelectorAll('input[name=genres]:checked'); //유사 배열
-		const watchGradeNm = document.querySelector('select[name=watchGradeNm] option:checked');
+		const certification = document.querySelector('select[name=watchGradeNm] option:checked');
 		if(genres.length == 0) { alert('장르를 선택하세요.'); return false; }
-		if(watchGradeNm.value == '00') { alert('관람등급을 선택하세요.'); return false; }
+		if(certification.value == '00') { alert('관람등급을 선택하세요.'); return false; }
+		
 		
 		const formData = new FormData(UploadForm);
 		
@@ -206,27 +204,6 @@ window.onload = () => {
 		  });	  
 		});
 }
-
-
-/* MasterService 및 MovieRepository 완성하고 열기. 
-const movieCheck = async () => {
-	const movieNm = document.querySelector("#movieNm");
-	
-	await fetch('/master/movieCheck',{
-		method: "POST",
-		body: movieNm.value,
-	}).then((response) => response.text())
-	  .then((data) => {
-		  const movieCheckNotice = document.querySelector('#movieCheckNotice');
-		  if (data == 0){
-			  movieCheckNotice.innerHTML = "영화 등록을 계속해주세요.";
-		  } else {
-			  movieCheckNotice.innerHTML = "이미 등록되어 있는 영화입니다.";
-			  movieNm.focus();
-		  }
-	  });
-}
-*/
 
 </script>
 
@@ -303,95 +280,57 @@ const movieCheck = async () => {
     	<br>
     	<form id="UploadForm" name="UploadForm" method="POST" enctype="multipart/form-data">
 	        
-	        <input type="file" name="fileUpload" id="imageFile" style="display:none"/>
-	        <div class="imageZone" id="imageZone"><br>영화포스터 업로드<br><br></div><br><br>
+	        <!-- 영화 포스터 업로드 영역 -->
+	        <input type="file" name="posterUpload" id="posterFile" style="display:none"/>
+	        <div class="imageZone" id="posterZone"><br>영화 포스터 업로드<br><br></div><br>
+
+			<!-- 백드롭 이미지 업로드 영역 -->
+	        <input type="file" name="backgroundUpload" id="backgroundFile" style="display:none"/>
+	        <div class="imageZone" id="backgroundZone"><br>백그라운드 이미지 업로드<br><br></div><br>
+			
 
 			<!-- 영화 제목 (한글) -->
 	        <div class="form-group">
-	            <label for="movieNm">영화 제목(한글):</label>
-	            <input type="text" class="input_field" id="movieNm" name="movieNm" placeholder="영화 제목(한글)" onchange="movieCheck()">
-	            <span id="movieCheckNotice"></span>
+	            <label for="title">영화 제목(한글):</label>
+	            <input type="text" class="input_field" id="title" name="title" placeholder="영화 제목(한글) (예: 해리 포터와 마법사의 돌)">
 	        </div>
 	        
-	        <!-- 영화 제목 (영어) -->
+	        <!-- 영화 제목 (원어) -->
 	        <div class="form-group">
-	            <label for="movieNmEn">영화 제목(영어):</label>
-	            <input type="text" class="input_field" id="movieNmEn" name="movieNmEn" placeholder="영화 제목(영어)">
+	            <label for="originalTitle">영화 제목(원어):</label>
+	            <input type="text" class="input_field" id="originalTitle" name="originalTitle" placeholder="영화 제목(영어) (예: Harry Potter and the Philosopher's Stone)">
 	        </div>
 	        
-	        <!-- 제작 연도 -->
-	        <div class="form-group">
-	            <label for="prdtYear">제작 연도:</label>
-	            <input type="text" class="input_field" id="prdtYear" name="prdtYear" placeholder="제작 연도">
-	        </div>
-	        
-	        <!-- 제작 국가 -->
-	        <div class="form-group">
-	            <label for="nations">제작 국가:</label>
-	            <input type="text" class="input_field" id="nations" name="nations" placeholder="제작 국가 (복수 국가 시, 쉼표(,)로 구분)">
-	        </div>
-	        
-	        <!-- 제작사 -->
-	        <div class="form-group">
-	            <label for="companys">제작사:</label>
-	            <input type="text" class="input_field" id="companys" name="companys" placeholder="제작사 (복수 제작사 시, 쉼표(,)로 구분)">
-	        </div>
-	        
-			<div class="form-group">
-			  <label>장르:</label>
-			  <div class="genres-box">
-			    <div class="row">
-			      <label><input type="checkbox" name="genres" value="드라마"> 드라마</label>
-			      <label><input type="checkbox" name="genres" value="코미디"> 코미디</label>
-			      <label><input type="checkbox" name="genres" value="멜로/로맨스"> 멜로/로맨스</label>
-			      <label><input type="checkbox" name="genres" value="스릴러"> 스릴러</label>
-			      <label><input type="checkbox" name="genres" value="미스터리"> 미스터리</label>
-			      <label><input type="checkbox" name="genres" value="공포(호러)"> 공포(호러)</label>
-			      <label><input type="checkbox" name="genres" value="어드벤처"> 어드벤처</label>
-			      <label><input type="checkbox" name="genres" value="범죄"> 범죄</label>
-			      <label><input type="checkbox" name="genres" value="가족"> 가족</label>
-			      <label><input type="checkbox" name="genres" value="판타지"> 판타지</label>
-			      <label><input type="checkbox" name="genres" value="SF"> SF</label>
-			      <label><input type="checkbox" name="genres" value="서부극(웨스턴)"> 서부극(웨스턴)</label>
-			      <label><input type="checkbox" name="genres" value="사극"> 사극</label>
-			      <label><input type="checkbox" name="genres" value="애니메이션"> 애니메이션</label>
-			      <label><input type="checkbox" name="genres" value="다큐멘터리"> 다큐멘터리</label>
-			      <label><input type="checkbox" name="genres" value="전쟁"> 전쟁</label>
-			      <label><input type="checkbox" name="genres" value="뮤지컬"> 뮤지컬</label>
-			      <label><input type="checkbox" name="genres" value="공연"> 공연</label>
-			      <label><input type="checkbox" name="genres" value="기타"> 기타</label>
-			    </div>
-			  </div>
-			</div>
-			 
-			<!-- 배우 -->
-	        <div class="form-group">
-	            <label for="actors">배우:</label>
-	            <input type="text" class="input_field" id="actors" name="actors" placeholder="배우 (쉼표(,)로 구분)">
-	        </div>
-      
 	        <!-- 개봉일 -->
 	        <div class="form-group">
-	            <label for="openDt">개봉일:</label>
-	            <input type="text" class="input_field" id="openDt" name="openDt" placeholder="개봉일">
+	            <label for="releaseDate">개봉일:</label>
+	            <input type="text" class="input_field" id="releaseDate" name="releaseDate" placeholder="제작 연도">
 	        </div>
-        
-	        <!-- 감독 -->
+	        
+	        <!-- 언어 -->
 	        <div class="form-group">
-	            <label for="directors">감독:</label>
-	            <input type="text" class="input_field" id="directors" name="directors" placeholder="감독 (복수 감독 시, 쉼표(,)로 구분)">
+	            <label for="originalLanguage">언어:</label>
+	            <input type="text" class="input_field" id="originalLanguage" name="originalLanguage" placeholder="언어">
 	        </div>
+	        
+	        
+	        <!-- 줄거리 -->
+	        <div class="form-group">
+	            <label for="overview">줄거리:</label>
+	            <textarea class="input_content" id="overview" cols="100" rows="500" name="overview" placeholder="1000자 이내로 줄거리를 입력하세요"></textarea>
+	        </div>
+	        
 	        
 	        <!-- 상영 시간 -->
 	        <div class="form-group">
-	            <label for="showtime">상영시간:</label>
-	            <input type="text" class="input_field" id="showtime" name="showtime" placeholder="상영시간">
+	            <label for="runtime">상영시간 (분):</label>
+	            <input type="text" class="input_field" id="runtime" name="runtime" placeholder="상영시간 (분 단위로 숫자만 입력하세요)">
 	        </div><br>
 	        
 	        <!-- 관람 등급 -->
 	        <div class="form-group">
-	            <label for="watchGradeNm">관람 등급:</label>
-	            <select name="watchGradeNm">
+	            <label for="certification">관람 등급:</label>
+	            <select name="certification">
 	                <option value="00" disabled selected>-- 선택 --</option>
 	                <option value="전체관람가">전체관람가</option>
 	                <option value="12세이상관람가">12세 이상 관람가</option>
@@ -400,13 +339,67 @@ const movieCheck = async () => {
 	            </select>
 	        </div><br>
 	        
-	        <!-- 줄거리 -->
+	        
+			<div class="form-group">
+			  <label>장르:</label>
+			  <div class="genres-box">
+			    <div class="row">
+			      <label><input type="checkbox" name="genres" value="드라마"> 드라마</label>
+			      <label><input type="checkbox" name="genres" value="코미디"> 코미디</label>
+			      <label><input type="checkbox" name="genres" value="로맨스"> 로맨스</label>
+			      <label><input type="checkbox" name="genres" value="스릴러"> 스릴러</label>
+			      <label><input type="checkbox" name="genres" value="미스터리"> 미스터리</label>
+			      <label><input type="checkbox" name="genres" value="공포"> 공포</label>
+			      <label><input type="checkbox" name="genres" value="모험"> 모험</label>
+			      <label><input type="checkbox" name="genres" value="범죄"> 범죄</label>
+			      <label><input type="checkbox" name="genres" value="가족"> 가족</label>
+			      <label><input type="checkbox" name="genres" value="판타지"> 판타지</label>
+			      <label><input type="checkbox" name="genres" value="SF"> SF</label>
+			      <label><input type="checkbox" name="genres" value="서부"> 서부</label>
+			      <label><input type="checkbox" name="genres" value="역사"> 역사</label>
+			      <label><input type="checkbox" name="genres" value="애니메이션"> 애니메이션</label>
+			      <label><input type="checkbox" name="genres" value="다큐멘터리"> 다큐멘터리</label>
+			      <label><input type="checkbox" name="genres" value="전쟁"> 전쟁</label>
+			      <label><input type="checkbox" name="genres" value="음악"> 음악</label>
+			      <label><input type="checkbox" name="genres" value="액션"> 액션</label>
+			      <label><input type="checkbox" name="genres" value="TV영화"> TV영화</label>
+			    </div>
+			  </div>
+			</div>
+			 
+	        <!-- 제작사 -->
 	        <div class="form-group">
-	            <label for="overview">줄거리:</label>
-	            <textarea class="input_content" id="overview" cols="100" rows="500" name="overview" placeholder="1000자 이내로 줄거리를 입력하세요"></textarea>
+	            <label for="productionCompanies">제작사:</label>
+	            <input type="text" class="input_field" id="productionCompanies" name="productionCompanies" placeholder="제작사가 여러 곳이면 쉼표(,)로 구분하세요 (예시: 컬럼비아 픽처스,마블 엔터테인먼트)">
 	        </div>
+	        
+	        <!-- 제작 국가 -->
+	        <div class="form-group">
+	            <label for="productionCountries">제작 국가:</label>
+	            <input type="text" class="input_field" id="productionCountries" name="productionCountries" placeholder="제작 국가가 여러 곳이면 쉼표(,)로 구분하세요 (예시: 한국,스웨덴,미국)">
+	        </div>
+	        
+	        <!-- 언어 -->
+	        <div class="form-group">
+	            <label for="spokenLanguages">사용된 언어:</label>
+	            <input type="text" class="input_field" id="spokenLanguages" name="spokenLanguages" placeholder="사용 언어가 여러 개면 쉼표(,)로 구분하세요 (예시: 한국어,영어,일본어)">
+	        </div>
+	        
+	        
+?			<!-- 배우 -->
+	        <div class="form-group">
+	            <label for="actors">배우:</label>
+	            <input type="text" class="input_field" id="actors" name="actors" placeholder="최대 10명 기재. 쉼표(,)로 구분하세요 (예시 : 톰 하디,미셸 윌리엄스,리즈 아메드)">
+	        </div>
+
         
-			<input type="hidden" class="input_field" id="uploadCheck" name="uploadCheck" value="Y">
+?	        <!-- 감독 -->
+	        <div class="form-group">
+	            <label for="directors">감독:</label>
+	            <input type="text" class="input_field" id="directors" name="directors" placeholder="감독이 여러 명이면 쉼표(,)로 구분하세요 (예시: 장항준,이명세)">
+	        </div>
+
+        
    		</form>
    		
    		<input type="button" id="btnRegister" class="btn_write" value="영화 업로드">	
