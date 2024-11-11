@@ -86,11 +86,16 @@
         function saveMovie(movieId) {
             fetch("/make/movies/save", { 
 	            	method: 'POST',
-	                body: `movieId=${movieId}`
+	            	 headers: {
+	                     'Content-Type': 'application/x-www-form-urlencoded',
+	                 },
+	                 body: `movieId=${encodeURIComponent(movieId)}`
             	})
                 .then(response => 	response.json())
                 .then(result => {
-                    alert(`영화 ID ${movieId}가 저장되었습니다.`);
+                	if(result.message == "good"){
+	                    alert(`영화 ID ${movieId}가 저장되었습니다.`);
+                	}
                 })
                 .catch(error => {
                     console.error('Error:', error);
@@ -142,6 +147,40 @@
         </tbody>
     </table>
 
+	<br>
+    <button onclick="searchTrend()">TMDB 최신 트렌드 영화 불러오기</button>
+	<br>
+    <button onclick="searchTrend()">TMDB 최신 트렌드 영화 불러오기</button>
+	<br>
+    <button onclick="searchTrend()">TMDB 최신 트렌드 영화 불러오기</button>
+	<br>
+    <button onclick="searchTrend()">TMDB 최신 트렌드 영화 불러오기</button>
+	<br>
+    <button onclick="searchTrend()">TMDB 최신 트렌드 영화 불러오기</button>
+	<br>
+    <button onclick="searchTrend()">TMDB 최신 트렌드 영화 불러오기</button>
+	<br>
+    <button onclick="searchTrend()">TMDB 최신 트렌드 영화 불러오기</button>
+	<br>
+    <button onclick="searchTrend()">TMDB 최신 트렌드 영화 불러오기</button>
+	<br>
+    <button onclick="searchTrend()">TMDB 최신 트렌드 영화 불러오기</button>
+	<br>
+    <button onclick="searchTrend()">TMDB 최신 트렌드 영화 불러오기</button>
+	<br>
+    <button onclick="searchTrend()">TMDB 최신 트렌드 영화 불러오기</button>
+	<br>
+    <button onclick="searchTrend()">TMDB 최신 트렌드 영화 불러오기</button>
+	<br>
+    <button onclick="searchTrend()">TMDB 최신 트렌드 영화 불러오기</button>
+	<br>
+    <button onclick="searchTrend()">TMDB 최신 트렌드 영화 불러오기</button>
+	<br>
+    <button onclick="searchTrend()">TMDB 최신 트렌드 영화 불러오기</button>
+	<br>
+    <button onclick="searchTrend()">TMDB 최신 트렌드 영화 불러오기</button>
+	<br>
+    <button onclick="searchTrend()">TMDB 최신 트렌드 영화 불러오기</button>
     
 </body>
 </html>

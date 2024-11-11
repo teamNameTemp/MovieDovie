@@ -1,7 +1,9 @@
 package com.board.controller;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -44,11 +46,15 @@ public class MakeController {
     
     @PostMapping("/make/movies/save")
     @ResponseBody
-    public void postMovies(@RequestParam("movieId") Long movieId) {
-    	
+    public Map<String,String> postMovies(@RequestParam("movieId") Long movieId) {
     	MovieDTO dto = movie.getMovieDetails(movieId, "ko-KR").block();
-
-        movie.saveTheDataBase(dto);
+    	Map<String,String> data = new HashMap<>();
+    	
+    	//todo : 저장이 안될 시 오류처리 코드 작성해야함
+    	data.put("message", "good");
+    	
+    	movie.saveTheDataBase(dto);
+    	return data;
     }
 	
 	
@@ -56,7 +62,6 @@ public class MakeController {
 	@ResponseBody
 	public List<MovieDTO> postSearchKeyword(@RequestParam("keyword") String keyword){
     	List<MovieDTO> list = tmdb.searchMovies(keyword).block();
-    	log.info(list);
     	
 //    	log.info(tmdb.searchPerson(keyword).block());
     	return list;

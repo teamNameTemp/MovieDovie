@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Movie Preference Selection</title>
+    <link rel="stylesheet" href="/css/movieSelectStyles.css">
+</head>
+
+<script defer>
+window.onload = () => {
+    const genres = document.querySelectorAll(".genre");
+    
+    const clicked = (elem)=>{
+        const clickedGenres = document.querySelectorAll('.genre.clicked').length;
+        
+    	if(elem.classList.contains("clicked")){
+            elem.classList.remove("clicked");
+        }else{
+            if(clickedGenres>=3){
+                alert("선택 가능 갯수를 초과하였습니다.");
+                return;
+            }
+            elem.classList.toggle("clicked");
+        }
+    }
+    genres.forEach((genre) => {
+        genre.addEventListener("click", ()=>clicked(genre));
+    });
+    
+}
+
+//선택한 장르들을 저장해 서버로 보낸다.
+const saveToGenres = () => {
+    const selectedGenres = Array.from(document.querySelectorAll('.genre.clicked'))
+                                .map(genre => genre.textContent);
+    
+    if (selectedGenres.length === 0) {
+        alert("장르를 선택해주세요.");
+        return;
+    }
+
+    fetch("/member/selectGenre", {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ genres: selectedGenres })
+    })
+    .then(response => response.json())
+    .then(result => {
+        if (result.success) {
+            alert("선호 장르가 저장되었습니다.");
+            location.href = "/board/list";
+        } else {
+            alert("저장 중 오류가 발생했습니다.");
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('저장 중 오류가 발생했습니다.');
+    });
+}
+</script>
+<body>
+<div class="overlay">
+    <h1>취향 선택</h1>
+    <p>좋아하는 영화 장르, 분야를 3개 선택해 주세요. 비슷한 취향의 영화를 추천해 드립니다.</p>
+    <div class="genres"> <!-- db 들어오고 tymeleaf로 바꿔주자 th:each -->
+	    <th:block th:each="genre : ${genres}">
+	       	<div class="genre" th:text="${genre.key}"></div>
+	    </th:block>
+    </div>
+    <div class="buttons">
+        <button onclick="location.href='/board/list'">건너뛰기</button>
+        <button onclick="saveToGenres()">저장하기</button>
+    </div>
+</div>
+</body>
+</html>

@@ -1,35 +1,28 @@
  package com.board.controller;
 
-import java.io.File;
-import java.net.URLEncoder;
-import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 
-import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.HttpSession;
-import lombok.AllArgsConstructor;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.log4j.Log4j2;
-
-import org.springframework.data.domain.Page;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.multipart.MultipartFile;
 
+import com.board.dto.FavGenreDTO;
 import com.board.dto.MemberDTO;
+import com.board.entity.repository.FavGenreRepository;
+import com.board.service.FavGenreServiceImpl;
 import com.board.service.MemberService;
+import com.board.service.TmdbAPIServiceImpl;
+
+import jakarta.servlet.http.HttpSession;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 
 @Log4j2
 @Controller
@@ -39,6 +32,8 @@ public class MemberController {
 
 	private final MemberService service;
 	private final BCryptPasswordEncoder pwdEncoder;
+	private final TmdbAPIServiceImpl tmdb;
+	private final FavGenreServiceImpl favGenre;
 		
 	//로그인 화면 보기
 	@GetMapping("/login")
@@ -108,12 +103,40 @@ public class MemberController {
 	}
 
 		
-	/*
-	 * //회원 등록시 if(kind.equals("I")) { //패스워드 암호화
-	 * member.setPassword(pwdEncoder.encode(member.getPassword())); //마지막 패스워드 변경일
-	 * --> 회원 가입 시 처음으로 패스워드 생성한 날도 포함 //member.setLastpwdate(new Date()); //회원 등록
-	 * service.signup(member); }
-	 */
+	// 추천 장르
+	@GetMapping("/selectGenre")
+	public void getMovieSelect(Model model) {
+		Map<String,Integer> map = tmdb.getGenreList().block();
+		
+		model.addAttribute("genres",map);
+	}
+	
+	@ResponseBody
+	@PostMapping("/selectGenre")
+	public Map<String,Boolean> postSelectGenres(@RequestBody Map<String, List<String>> payload, HttpSession session){
+		List<String> selectedGenres = payload.get("genres");
+		FavGenreDTO favGenreDTO = new FavGenreDTO();
+		switch(selectedGenres.size()) {
+		case 1:
+			favGenreDTO.setGenre1(selectedGenres.get(0));
+			break;
+		case 2:
+			favGenreDTO.setGenre2(selectedGenres.get(1));
+			break;
+		case 3:
+			favGenreDTO.setGenre3(selectedGenres.get(2));
+			break;
+		}
+		
+		String email = (String)session.getAttribute("email");
+		favGenreDTO.setEmail(email);
+
+		favGenre.saveTheFavGenre(favGenreDTO);
+		
+		Map<String, Boolean> response = new HashMap<>();
+		response.put("success", true);
+		return response;
+	}
 		
 		
 	//OAuth2 가입

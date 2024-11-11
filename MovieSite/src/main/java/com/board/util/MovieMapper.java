@@ -15,6 +15,7 @@ import com.board.entity.movie.CrewEntity;
 import com.board.entity.movie.GenreEntity;
 import com.board.entity.movie.LanguageEntity;
 import com.board.entity.movie.MovieEntity;
+import com.board.entity.movie.VideoEntity;
 
 @Component
 public class MovieMapper {
@@ -115,24 +116,22 @@ public class MovieMapper {
         }).collect(Collectors.toList());
     }
 
-    //todo : 비디오 테이블 만들기
-//    private MovieEntity.VideosEntity mapVideos(MovieDTO.Videos dto) {
-//        if (dto == null) return null;
-//        MovieEntity.VideosEntity entity = new MovieEntity.VideosEntity();
-//        entity.setResults(dto.getResults().stream().map(video -> {
-//            MovieEntity.VideoEntity videoEntity = new MovieEntity.VideoEntity();
-//            videoEntity.setId(video.getId());
-//            videoEntity.setIso639_1(video.getIso639_1());
-//            videoEntity.setIso3166_1(video.getIso3166_1());
-//            videoEntity.setVideoKey(video.getKey());
-//            videoEntity.setName(video.getName());
-//            videoEntity.setSite(video.getSite());
-//            videoEntity.setVideoSize(video.getSize());
-//            videoEntity.setVideoType(video.getType());
-//            return videoEntity;
-//        }).collect(Collectors.toList()));
-//        return entity;
-//    }
+    public List<VideoEntity> mapVideos(MovieDTO dto) {
+        if (dto.getVideos() == null) return null;
+        return dto.getVideos().getResults().stream().map(video->{
+        	return VideoEntity.builder()
+        			.movieId(dto.getEntity())
+        			.videoId(video.getId())
+        			.iso3166_1(video.getIso3166_1())
+        			.iso639_1(video.getIso639_1())
+        			.videoKey(video.getKey())
+        			.videoNm(video.getName())
+        			.videoSite(video.getSite())
+        			.videoSize(video.getSize())
+        			.videoType(video.getType())
+        			.build();
+        }).collect(Collectors.toList());
+    }
 
    
 

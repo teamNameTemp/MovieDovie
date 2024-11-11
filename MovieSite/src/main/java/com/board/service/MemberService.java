@@ -32,4 +32,5 @@ public interface MemberService {
 	//관리자페이지 - 통계 : 회원 가입한 날 확인
 	public List<Object[]> signupResult();
 	
+	
 }

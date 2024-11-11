@@ -68,7 +68,8 @@ public class WebSecurityConfig {
 		http
 			.authorizeHttpRequests((authz)-> authz
 					.requestMatchers("/member/**").permitAll()
-					.requestMatchers("/board/**").hasAnyAuthority("USER","MASTER")
+//					.requestMatchers("/board/**").hasAnyAuthority("USER","MASTER")
+					.requestMatchers("/board/**").permitAll()
 					.requestMatchers("/master/**").hasAnyAuthority("MASTER","USER")					
 					.anyRequest().authenticated());
 		//세션 설정

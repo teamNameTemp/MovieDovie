@@ -138,7 +138,7 @@
                     <div class="movie-list">
                         <div class="movie-list-item" th:each="movie : ${fantasy}">
 							<a th:href="@{/board/movieDetail(title=${movie.id})}"> <img
-								class="movie-list-item-img" th:src="${'https://image.tmdb.org/t/p/original' + movie.backdropPath}" alt="">
+								class="movie-list-item-img" th:src="${'https://image.tmdb.org/t/p/original' + movie.posterPath}" alt="">
 							</a> <span class="movie-list-item-title"
 								th:text="${movie.title}"></span>
 							<p class="movie-list-item-desc" th:text="${movie.overview}"></p>

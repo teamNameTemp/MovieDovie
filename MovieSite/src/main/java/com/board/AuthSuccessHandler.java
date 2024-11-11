@@ -55,7 +55,7 @@ public class AuthSuccessHandler extends SimpleUrlAuthenticationSuccessHandler{
 		 * lastpwDate.plusDays(30).toString(); String today =
 		 * LocalDateTime.now().toString();
 		 */
-		String url = "/board/selectGenre";
+		String url = "/member/selectGenre";
 		//String url = "/board/list?page=1";
 		
 		//compareTo : 두 문자가 같으면 0을, 첫번째 문자가 두번째 문자보다 작으면 음수, 첫번째 문자가 두번째 문자보다 크면 양수를 반환
