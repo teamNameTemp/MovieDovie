@@ -27,7 +27,7 @@ import lombok.NoArgsConstructor;
 public class CastEntity {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
-	private Long crewseqno;
+	private Long castseqno;
 	
 	@ManyToOne(fetch=FetchType.LAZY)
 	@OnDelete(action=OnDeleteAction.CASCADE)

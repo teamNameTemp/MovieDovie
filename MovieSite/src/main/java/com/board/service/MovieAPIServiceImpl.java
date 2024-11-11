@@ -23,7 +23,6 @@ import com.board.entity.repository.movie.LanguageRepository;
 import com.board.entity.repository.movie.MovieRepository;
 import com.board.util.MovieMapper;
 
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import reactor.core.publisher.Mono;
@@ -56,6 +55,7 @@ public class MovieAPIServiceImpl implements MovieAPIService {
 	}
 	
 	public void saveTheDataBases(List<MovieDTO> list) {
+		//todo : 영화 상세정보 뽑을 때 영어로 뽑기 줄거리만 한글
 		List<MovieEntity> movieEntities  = mapper.toEntityList(list);
 		movieRepository.saveAll(movieEntities);
 		for(MovieDTO dto : list) {
@@ -78,8 +78,10 @@ public class MovieAPIServiceImpl implements MovieAPIService {
 	}
 		
 	
-	public void saveTheDataBase(MovieEntity movie) {
-		movieRepository.save(movie);
+	public void saveTheDataBase(MovieDTO movie) {
+		MovieEntity movieEntity = mapper.toEntity(movie);
+		
+		movieRepository.save(movieEntity);
 	}
 
 

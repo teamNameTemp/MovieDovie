@@ -115,6 +115,7 @@ public class MovieMapper {
         }).collect(Collectors.toList());
     }
 
+    //todo : 비디오 테이블 만들기
 //    private MovieEntity.VideosEntity mapVideos(MovieDTO.Videos dto) {
 //        if (dto == null) return null;
 //        MovieEntity.VideosEntity entity = new MovieEntity.VideosEntity();
@@ -139,14 +140,17 @@ public class MovieMapper {
         if (dto == null) return "";
         String certi = "";
         
-        for(MovieDTO.ReleaseDateInfo info : dto.getResults()) {
-        	if(info.getIso31661()=="KR") {
-        		certi=info.getReleaseDates().get(0).getCertification();
-        	}
+        for (MovieDTO.ReleaseDateInfo info : dto.getResults()) {
+            if (info.getIso31661().equals("KR")) {
+                if (!info.getReleaseDates().isEmpty()) {
+                    certi = info.getReleaseDates().get(0).getCertification();
+                    break;
+                }
+            }
         }
         return certi;
     }
-
+    
     public CreditEntity mapCredits(MovieDTO dto) {
         if (dto.getCredits() == null) return null;
         CreditEntity entity = new CreditEntity();

@@ -161,4 +161,33 @@ public class TmdbAPIServiceImpl implements TmdbAPIService {
           			 });  
 				});
 	}
+    
+    public Mono<List<MovieDTO>> searchMovies(String query) {
+        return webClient.get()
+            .uri(uriBuilder -> uriBuilder
+                .path("/search/movie")
+                .queryParam("api_key", token)
+                .queryParam("query", query)
+                .queryParam("language", "ko-KR")
+                .build())
+            .retrieve()
+            .bodyToMono(TmdbResponse.class)
+            .map(TmdbResponse::getResults)
+            .onErrorResume(e->{
+            	 log.error("Error searching movie = ", e);
+  			     return Mono.empty();
+            });
+    }
+    
+//    public Mono<PersonResponse> searchPerson(String query) {
+//        return webClient.get()
+//            .uri(uriBuilder -> uriBuilder
+//                .path("/search/person")
+//                .queryParam("api_key", token)
+//                .queryParam("query", query)
+//                .queryParam("language", "ko-KR")
+//                .build())
+//            .retrieve()
+//            .bodyToMono(PersonResponse.class);
+//    }
 }
