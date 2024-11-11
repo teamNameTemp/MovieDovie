@@ -1,21 +1,13 @@
 package com.board.controller;
 
-import java.io.File;
-import java.sql.Timestamp;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
-import java.util.UUID;
-import java.util.stream.Collectors;
 
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
@@ -27,22 +19,18 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.multipart.MultipartFile;
 
-import com.board.dto.MovieDTO;
-import com.board.dto.RequestDTO;
-import com.board.entity.LikeEntity;
-import com.board.entity.MemberEntity;
 import com.board.entity.RequestEntity;
-import com.board.entity.repository.MemberRepository;
-import com.board.entity.repository.RentRepository;
+import com.board.service.FavGenreService;
+import com.board.service.LikeService;
 import com.board.service.MasterService;
+import com.board.service.MemberLogService;
+import com.board.service.MemberService;
 import com.board.service.RentService;
+import com.board.service.RequestService;
 import com.board.util.PageUtil;
 
-import jakarta.servlet.http.HttpSession;
 import lombok.AllArgsConstructor;
-import net.bytebuddy.description.field.FieldDescription.InGenericShape;
 
 
 @Controller
@@ -51,7 +39,12 @@ import net.bytebuddy.description.field.FieldDescription.InGenericShape;
 public class MasterController {
 
 	private final MasterService service;
+	private final LikeService likeService;
+	private final MemberLogService memberLogService;
+	private final MemberService memberService;
 	private final RentService rentService;
+	private final FavGenreService favGenreService;
+	private final RequestService requestService;
 
 	
 	//회원의 요청 목록 보기
@@ -59,7 +52,7 @@ public class MasterController {
 	public void getMemberRequest(Model model, @RequestParam(name="page", defaultValue = "1") int pageNum, 
 				@RequestParam(name="keyword", defaultValue="", required=false) String keyword) throws Exception {
 		
-		int postNum = 10; //한 화면에 보여지는 게시물 행의 갯수
+		int postNum = 15; //한 화면에 보여지는 게시물 행의 갯수
 		int pageListCount = 10; //화면 하단에 보여지는 페이지리스트의 페이지 갯수	
 	
 		PageUtil page = new PageUtil();
@@ -156,7 +149,6 @@ public class MasterController {
             map.put("date", result[0]); // 대여 날짜
             map.put("count", result[1] != null ? result[1] : 0); // 대여 수 (null 처리)
             response.add(map);
-            System.out.println(map);
         }
         
         return response; // JSON 형태로 반환
@@ -179,83 +171,198 @@ public class MasterController {
             map.put("date", result[0]); // 대여 날짜
             map.put("count", result[1] != null ? result[1] : 0); // 대여 수 (null 처리)
             response.add(map);
-            System.out.println(map);
         }
         
         return response; // JSON 형태로 반환
     }
     
-    // 관리자 페이지 - 통계 : 월별 대여 수 확인
+    //관리자 페이지 - 통계 : 올해 대여 status 수 확인
+    @GetMapping("/rentStatus")
     @ResponseBody
-    @GetMapping("/MonthlyRent")
-    public Map<String, List<Map<String, Object>>> getMonthlyRent(@RequestParam("year") int year, Model model) {
+    public List<Map<String, Object>> GetRentStatus(){
     	
-		Calendar calendar = Calendar.getInstance();
-	    int currentYear = calendar.get(Calendar.YEAR);
-	    int lastYear = currentYear - 1;
-		
-        List<Object[]> currentYearData = rentService.RentCountByMonth(currentYear);
-        List<Object[]> lastYearData = rentService.RentCountByMonth(lastYear);
-
-    	// 확인용 로그 추가
-        // 현재 연도 데이터 출력
-        System.out.println("Current Year Data:");
-        for (Object[] record : currentYearData) {
-            System.out.println(Arrays.toString(record));
-        }
-
-        // 작년 데이터 출력
-        System.out.println("Last Year Data:");
-        for (Object[] record : lastYearData) {
-            System.out.println(Arrays.toString(record));
-        }
-        
-        // Object[]를 Map으로 변환
-        List<Map<String, Object>> currentYearMap = currentYearData.stream()
-            .map(record -> {
-                Map<String, Object> map = new HashMap<>();
-                map.put("date", record[0]);
-                map.put("count", record[1]);
-                return map;
-            }).collect(Collectors.toList());
-
-        List<Map<String, Object>> lastYearMap = lastYearData.stream()
-            .map(record -> {
-                Map<String, Object> map = new HashMap<>();
-                map.put("date", record[0]);
-                map.put("count", record[1]);
-                return map;
-            }).collect(Collectors.toList());
-
-        Map<String, List<Map<String, Object>>> response = new HashMap<>();
-        response.put("currentYear", currentYearMap);
-        response.put("lastYear", lastYearMap);
-
-        return response; // JSON 형식으로 반환
+    	List<Object[]> rentStatus = rentService.RentStatus();
+    	List<Map<String, Object>> response = new ArrayList<>();
+    	
+    	for(Object[] result : rentStatus) {
+    		Map<String, Object> map = new HashMap<>();
+    		map.put("status", result[0]); //대여 상태 (Y 혹은 N)
+    		map.put("count", result[1] != null ? result[1] : 0); //count
+    		response.add(map);
+    	}
+    	return response;
     }
-
     
-
-	
-	/*
-	//관리자 페이지 - 통계 : 이번 연도 누적! 대여 수 확인 
-	@GetMapping("/RentCumulative")
-	@ResponseBody
-	public List<Map<String, Object>> getRentCumulative() {
-		List<Object[]> cumulativeRents = rentService.RentCumulative();
-        List<Map<String, Object>> response = new ArrayList<>();
-
-        for (Object[] result : cumulativeRents) {
-            Map<String, Object> map = new HashMap<>();
-            map.put("date", result[0]); // 대여 날짜
-            map.put("count", result[1]); // 누적 대여 수
-            response.add(map);
-        }
+    //관리자 페이지 - 통계 : 올해 대여 TOP 회원 확인
+    @GetMapping("/topRenters")
+    @ResponseBody
+    public List<Map<String, Object>> getTopRenters() {
+        List<Object[]> list = rentService.findTopRenters();
         
+        List<Map<String, Object>> response = new ArrayList<>();
+        for (Object[] item : list) {
+            Map<String, Object> map = new HashMap<>();
+            map.put("email", item[0]);
+            map.put("rentCount", item[1]);
+            response.add(map);
+        }      
         return response; // JSON 형태로 반환
     }
-	*/
+
+	//관리자 페이지 - 통계 : 회원 가입한 날 확인
+    @GetMapping("/signupResult")
+    @ResponseBody
+    public Map<String, Integer> getSignupResult() {
+
+        Map<String, Integer> response = new HashMap<>();
+        List<Object[]> results = memberService.signupResult();
+
+        if (!results.isEmpty()) {
+            Object[] counts = results.get(0);
+            response.put("yesterdaySignup", ((Number) counts[0]).intValue());
+            response.put("todaySignup", ((Number) counts[1]).intValue());
+            response.put("totalMember", ((Number) counts[2]).intValue());
+        } else {
+            response.put("yesterdaySignup", 0);
+            response.put("todaySignup", 0);
+            response.put("totalMember", 0);
+        }
+        return response;
+    }
+    
+    //관리자 페이지 - 통계 : 방문 수 확인
+    @GetMapping("/visitResult")
+    @ResponseBody
+    public Map<String, Integer> getVisitResult() {
+
+        Map<String, Integer> response = new HashMap<>();
+        List<Object[]> results = memberLogService.visitResult();
+
+        if (!results.isEmpty()) {
+            Object[] counts = results.get(0);
+            response.put("yesterdayVisitors", ((Number) counts[0]).intValue());
+            response.put("todayVisitors", ((Number) counts[1]).intValue());
+            response.put("totalVisitors", ((Number) counts[2]).intValue());
+        } else {
+            response.put("yesterdayVisitors", 0);
+            response.put("todayVisitors", 0);
+            response.put("totalVisitors", 0);
+        }
+        return response;
+    }
+    
+    //관리자 페이지 - 통계 : 회원 요청사항 처리 상태 확인하기
+    @GetMapping("/requestStatus")
+    @ResponseBody
+    public Map<String, Integer> getRequestStatus() {
+
+        Map<String, Integer> response = new HashMap<>();
+        List<Object[]> results = requestService.findStatus();
+
+        if (!results.isEmpty()) {
+            for (Object[] counts : results) {
+                String status = (String) counts[0]; // 상태 (예: PENDING, COMPLETED)
+                Integer count = ((Number) counts[1]).intValue(); // 해당 상태의 카운트
+
+                // 상태별로 count를 Map에 추가
+                response.put(status, count);
+            }
+        } else {
+            // 상태별 카운트가 없는 경우 기본값 설정
+            response.put("PENDING", 0);
+            response.put("COMPLETED", 0);
+        }
+        return response;
+    }
+    
+    //관리자 페이지 - 통계 : 회원들이 가장 좋아하는 장르 인기 순으로 보여주기
+    @GetMapping("/topFavGenre")
+    @ResponseBody
+    public List<Map<String, Object>> getTopFavGenre(){
+    	
+    	List<Object[]> list = favGenreService.favGenreResult();
+    	
+    	List<Map<String, Object>> response = new ArrayList<>();
+    	for(Object[] item : list) {
+    		Map<String, Object> map = new HashMap<>();
+    		map.put("genre", item[0]);
+    		map.put("count", item[1]);
+    		response.add(map);
+    	}
+    	return response;
+    }
 	
+    //관리자 페이지 - 통계 : 좋아요 % 높은 영화 순위 보여주기
+    @GetMapping("/topLikeMovie")
+    @ResponseBody
+    public List<Map<String, Object>> getTopLikeMovie(){
+    	
+    	List<Object[]> list = likeService.topLikeMovie();
+    	
+    	List<Map<String, Object>> response = new ArrayList<>();
+    	
+    	for(Object[] item : list) {
+    		Map<String, Object> map = new HashMap<>();
+    		map.put("movieseqno", item[0]);
+    		map.put("totalCount", item[1]);
+    		map.put("likeCount", item[2]);
+    		map.put("likePercentage", item[3]);
+    		response.add(map);
+    	}
+    	return response;
+    }
+    
+    //관리자 페이지 - 통계 : 싫어요 % 높은 영화 순위 보여주기
+    @GetMapping("/topDislikeMovie")
+    @ResponseBody
+    public List<Map<String, Object>> getTopDislikeMovie(){
+    	
+    	List<Object[]> list = likeService.topDislikeMovie();
+    	
+    	List<Map<String, Object>> response = new ArrayList<>();
+    	
+    	for(Object[] item : list) {
+    		Map<String, Object> map = new HashMap<>();
+    		map.put("movieseqno", item[0]);
+    		map.put("totalCount", item[1]);
+    		map.put("dislikeCount", item[2]);
+    		map.put("dislikePercentage", item[3]);
+    		response.add(map);
+    	}
+    	return response;
+    }
+    
+    //관리자 페이지 - 통계 : 호불호 높은 영화 순위 보여주기
+    @GetMapping("/topDivisiveMovie")
+    @ResponseBody
+    public List<Map<String, Object>> getTopDivisiveMovie(){
+    	
+    	List<Object[]> list = likeService.topDivisiveMovie();
+    	
+    	List<Map<String, Object>> response = new ArrayList<>();
+    	
+    	for(Object[] item : list) {
+    		Map<String, Object> map = new HashMap<>();
+    		map.put("movieseqno", item[0]);
+    		map.put("totalCount", item[1]);
+    		map.put("likeCount", item[2]);
+    		map.put("dislikeCount", item[3]);
+    		map.put("likePercentage", item[4]);
+    		map.put("dislikePercentage", item[5]);
+    		
+    		// item[4]와 item[5]가 BigDecimal타입이라 BigDecimal을 String으로 변환 (소수점 아예 없게.)
+            String likePercentage = ((BigDecimal)item[4]).setScale(0, RoundingMode.HALF_UP).toString();
+            String dislikePercentage = ((BigDecimal)item[5]).setScale(0, RoundingMode.HALF_UP).toString();
+            
+            // 비율 합성
+            String likeVsDislikeRatio = likePercentage + " : " + dislikePercentage;
+            map.put("ratio", likeVsDislikeRatio);
+    		
+    		response.add(map);
+    	}
+    	return response;
+    }
+    
 	
 	@GetMapping("/movieStats")
 	public void getMovieStats() {
@@ -355,7 +462,7 @@ public class MasterController {
 	@ResponseBody
     @PostMapping("/createDummyRents")
     public String createDummyRents() {
-        int count = 500; //원하는 대로 수 변경 가능
+        int count = 700; //원하는 대로 수 변경 가능
     	service.createDummyRents(count);
         return " ▶▷▶ " + count + "개의 더미 대여 현황이 생성되었습니다.";
     }
@@ -394,6 +501,15 @@ public class MasterController {
         int count = 500; //원하는 대로 수 변경 가능
     	service.createDummyBookmarks(count);
         return " ▶▷▶ " + count + "개의 더미 즐겨찾기가 생성되었습니다.";
+    }
+	
+	//Dummy 좋아하는 장르 만들기
+	@ResponseBody
+    @PostMapping("/createDummyFavGenre")
+    public String createDummyFavGenre() {
+        int count = 500; //원하는 대로 수 변경 가능
+    	service.createDummyFavGenre(count);
+        return " ▶▷▶ " + count + "개의 더미 좋아하는 장르가 생성되었습니다.";
     }
 
 }
