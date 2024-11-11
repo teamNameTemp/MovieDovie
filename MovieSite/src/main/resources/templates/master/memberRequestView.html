@@ -471,7 +471,16 @@ const boardDelete = () => {
 		        const replyListContainer = document.getElementById('replyList');
 		        replyListContainer.innerHTML = ''; // 기존 내용을 비웁니다.
 		
-		       
+		        // 댓글이 없을 때 메세지 표시
+		        if (replies.length === 0) {
+		            const noRepliesMessage = document.createElement('p');
+		            noRepliesMessage.textContent = '\n아직 작성된 댓글이 없습니다.';
+		            noRepliesMessage.style.textAlign = 'center';  // 가운데 정렬
+		            noRepliesMessage.style.color = '#888'; // 색상 설정 (예: 회색)
+		            replyListContainer.appendChild(noRepliesMessage);
+		            return;
+		        }
+		        
 		        // 댓글 목록을 반복하면서 표시
 		        replies.forEach(function(reply) {
 		            const replyElement = document.createElement('div');
