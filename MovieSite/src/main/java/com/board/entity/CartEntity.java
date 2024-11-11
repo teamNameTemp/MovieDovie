@@ -2,8 +2,6 @@ package com.board.entity;
 
 import java.time.LocalDateTime;
 
-import com.board.entity.movie.MovieEntity;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -43,4 +41,9 @@ public class CartEntity {
     
     @Column(name = "regdate")
     private LocalDateTime regDate;
+
+    public Object getCartSeqno() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getCartSeqno'");
+    }
 }
