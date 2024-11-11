@@ -6,14 +6,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 	<link rel="stylesheet" th:href="@{/css/styles.css}">
+	<link rel="stylesheet" href="/css/movieListStyle.css">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css">
 	<style>
-		 #wrap {width: 1200px; height: 1000px; font-size: 15px; text-align: center; margin : auto; }
-	 	
+		@import url('https://fonts.googleapis.com/css2?family=Jua&display=swap');
+		
+		 #wrap {width: 1200px; height: 1000px; font-size: 15px; text-align: center; margin : auto;}
 	 	.side {
 	 		display: flex;
 		 	float: left; width: 700px; height: 902px; text-align: center; 
 		 	flex-direction: column; /* 세로 방향으로 정렬 */
+	    	justify-content: center; /* 수직 중앙 정렬 */
 	    	align-items: center; /* 수평 중앙 정렬 */
 	    }
 	    
@@ -81,94 +86,12 @@
         }
         
 	    .positive {
-            color: tomato; /* 방문자 수 증가 */
+            color: red; /* 방문자 수 증가 */
         }
         .negative {
-            color: rgb(28, 177, 227); /* 방문자 수 감소 */
+            color: blue; /* 방문자 수 감소 */
         }
-        .nochange {
-        	color: gray;
-        }
-        
-        table {
-		  border-collapse: collapse;
-		  width: 220px;
-		  margin: 1rem auto;
-		  background-color: white;
-		}
-		
-		/* 테이블 행 */
-		th, td {
-		  padding: 1.2px;
-		  text-align: center;
-		  font-size: 13.5px;
-		  border-bottom: 1px solid #ddd;
-		  text-align: center;
-		}
-		
-		th {
-		  background-color: #1b1b1b;
-		  color: white;
-		}
-
-		/* 테이블 비율 */
-		th:nth-child(1),
-		td:nth-child(1) {
-		  width: 20%;
-		}
-		
-		th:nth-child(2),
-		td:nth-child(2) {
-		  width: 50%;
-		}
-		
-		th:nth-child(3),
-		td:nth-child(3) {
-		  width: 30%;
-		}
-		
-		tr:nth-child(even) {
-		  background-color: #4dbf0010;
-		}
-		
-		.statuscontent {
-            width: 100%; /* 부모 너비에 맞춤 */
-            height: 100%; /*부모 너비에 맞춤*/
-            text-align: center;
-            background-color: white;
-            padding: 3%; /* 패딩 10% */
-            border: 1.8px solid lightgray;
-            box-sizing: border-box; /* 패딩 포함한 크기 계산 */
-            display: flex; /* 콘텐츠를 flexbox로 설정 */
-		    flex-direction: column; /* 세로 정렬 */
-		    justify-content: center; /* 수직 중앙 정렬 */
-		    align-items: center; /* 수평 중앙 정렬 */
-        }
-		
-		.status-container {
-		    margin: auto;
-		    display: flex; /* 이미지를 왼쪽에, 텍스트를 오른쪽에 배치 */
-		    align-items: center; /* 수직 중앙 정렬 */
-		}
-		
-		.icon {
-		    width: 100px; /* 이미지 크기 설정 */
-		    height: 100px; /* 이미지 크기 설정 */
-		    margin-right: 15px; /* 이미지와 텍스트 간 간격 */
-		}
-		
-		.status-text {
-		    font-size: 16px; /* 텍스트 크기 */
-		    line-height: 1.5; /* 텍스트 간격 조정 */
-		}
-		
-		.pending-highlight {
-		    font-size: 25px; /* 텍스트 크기 키우기 */
-		    color: #FF6384; /* 빨간색으로 강조 */
-		    font-weight: bold; /* 텍스트 굵게 */
-		}
-			
-		
+	
 	</style>
 
 
@@ -183,6 +106,7 @@
          <div class="menu-container">
              <ul class="menu-list">
                  <li class="menu-list-item active">
+                 &nbsp;&nbsp;
                  	<a href="/master/memberStats">회원 활동 통계</a>
                  </li>
                  <li class="menu-list-item">
@@ -197,11 +121,42 @@
 			</ul>
 		</div>
 		<div class="profile-container">
-             <img class="profile-picture" src="/img/masterprofile.png" alt="">
-             <div class="profile-text-container">
-                 <span class="profile-text">관리자</span>
-                 <i class="fas fa-caret-down"></i>
+            <div class="dropdown">
+      				<i class="fas fa-bell" aria-hidden="true" style="font-size:20px;margin-top:15px; margin-bottom:15px;"></i>
+      				&nbsp;&nbsp;
+      				<div class="dropdown-content">
+            			<a href="/master/memberRequest">요청한 사항</a>
+                </div>
+           </div>
+                    <div class="dropdown">
+      				<img class="profile-picture" src="/img/masterprofile.png" alt="">
+      				<div class="dropdown-content">관리자
+      					<a href="/master/movieStats">사용자 통계 정보</a>
+            			<a href="#">프로필 정보</a>
+        				<a href="/member/logout">로그 아웃</a>
+        				<a href="/board/selectGenre">내 선호 장르</a>
+        				<a href="#">내 장바구니</a>
+        				<a href="#">내 찜목록</a>
+        				<a href="#">내 대여 현황</a>
+                </div>
              </div>
+          
+           <div class="profile-text-container">
+                  <div class="dropdown">
+      				<button class="dropbtn"> 
+        			<span class="fas fa-solid fa-caret-down"></span> 관리자</button>
+      				<div class="dropdown-content">
+      					<a href="/master/memberStats">회원 활동 통계</a>
+      					<a href="/master/memberRequest">회원 요청사항 관리</a>
+      					<a href="/master/movieStats">영화 통계</a>
+      					<a href="/master/movieUpload">영화 업로드</a>
+      				</div>
+    			</div>
+            </div>
+         
+           
+
+
              <div class="toggle">
                  <i class="fas fa-moon toggle-icon"></i> 
                  <i class="fas fa-sun toggle-icon"></i> 
@@ -209,15 +164,22 @@
              </div>
          </div>
      </div>
+     <script src="/js/app.js"></script>
  </div>
 <br><br><br>
-
-
+<!--  
+<ul>
+	<li>회원 증감 수 확인</li>
+	<li>로그인/아웃 현황</li>
+	<li>시청 여부 현황</li>
+	<li>대여 현황</li>
+	<li>즐겨찾기 현황</li>
+	<li>좋아요 싫어요 현황</li>
+</ul>
+-->
 
 <div id="wrap">
-<a onClick="window.location.reload()" style="cursor: pointer; position: absolute; top: 107px; right: 100px;">
-    <img class="reload" src="/img/reload.png" alt="" style="width: 35px; height: 35px;">
-</a>
+
 	<div class="side">
 		<div class="content"><b>대여 현황</b><br><br><br>
 				
@@ -261,11 +223,9 @@
 			  	.catch(error => console.error('Error fetching data:', error));
 		</script>
 		
-		<br><br>
-		<hr style="border-width:1.5px 0 0 0; border-style:dashed; border-color:#4dbf00;">
-		<br><br>	
+		<br><br><br>
 		
-		[월별 대여 현황]<br><br>
+		[월별 대여 현황]<br>
 		<div>
 		  <canvas id="MonthlyRent"></canvas>
 		</div>
@@ -332,142 +292,153 @@
 		  .catch(error => console.error('Error fetching data:', error));
 		</script>
 		
+		
+		
+		<!-- 
+		[누적 대여 현황]<br>
+		<div>
+		  <canvas id="RentCumulative"></canvas>
+		</div>
+		<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+		<script>
+		  fetch('/master/RentCumulative')
+		  	.then(response => response.json())
+		  	.then(data => {
+		  		 // 0이 아닌 누적 대여 수만 포함하도록 필터링
+		         const filteredData = data.filter(item => item.count > 0);
+
+		  		  const labels = filteredData.map(item => {
+		  			 const date = new Date(item.date);
+		  			 return (date.getMonth() + 1) + '/' + date.getDate(); // MM/DD 형식으로 변환
+		  		  });
+		  		  const cumulativeData = filteredData.map(item => item.count);
+		  	
+		  	
+				  const ctxx = document.getElementById('RentCumulative');
+				
+				  new Chart(ctxx, {
+				    type: 'line',
+				    data: {
+				      labels: labels,
+				      datasets: [
+				    	 {
+					        label: '누적 대여 수',
+					        data: cumulativeData,
+					        borderWidth: 1,
+					        borderColor: '#4dbf00',
+					        backgroundColor: '#4dbf0090'
+				         }
+				      ]
+				    },
+				    options: {
+				      scales: {
+				        y: {
+				          beginAtZero: true
+				        }
+				      }
+				    }
+				  });
+		  	})
+		  	.catch(error => console.error('Error fetching data:', error));
+		  
+		</script> -->
+		
 		</div>
 	</div>
 	
 	<div class="content2">
 		<div class="content">
-			<b>2024 대여 파이프라인</b>
+			<b>대여 파이프라인</b>
 			<div class="horicontent">
 				<div class="left-div">
-		        	<br><br>[대여 중 / 대여종료 비율]<br><br>
+		        	<br><br>[대여 중 / 대여종료 비율]<br><br><br>
 					<div>
-					  <canvas id="RentStatus" width="230"></canvas>
+					  <canvas id="RentPercent" width="230"></canvas>
 					</div>
 					<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 					<script>
-					  fetch('/master/rentStatus')
-					  	.then(response => response.json())
-					  	.then(data => {
-					  	  const labels = data.map(item => {
-					  		  if(item.status === 'N') {
-					  			  return "대여 종료";
-					  		  } else if (item.status === 'Y'){
-					  			  return "대여 중";
-					  		  }
-					  	  });
-					  	  const counts = data.map(item => item.count);
-					  		
-					  	  // 상태에 따라 색상 설정
-					      const backgroundColors = data.map(item => {
-					        return item.status === 'N' ? '#d2d2d2' : '#4dbf00';
-					      });
-					  	  
-					  	  const ctxz = document.getElementById('RentStatus');
-			
-						  new Chart(ctxz, {
-						    type: 'doughnut',
-						    data: {
-						      labels: labels,
-						      datasets: [{
-						        label: '대여 건수',
-						        data: counts,
-						        backgroundColor: backgroundColors,
-						        hoverOffset: 4,
-								borderRadius : 5,
-								spacing : 3
-						      }]
-						    },
-						    options: {
-						    	responsive: false,
-						    	cutout: 50
-						    }
-						  });
-					  
-					  	})
+					  const ctxz = document.getElementById('RentPercent');
+					
+					  new Chart(ctxz, {
+					    type: 'doughnut',
+					    data: {
+					      labels: ['대여 중', '대여 종료'],
+					      datasets: [{
+					        label: '대여 건수',
+					        data: [47, 91],
+					        backgroundColor: ['#4dbf00', '#d2d2d2'],
+					        hoverOffset: 4,
+							borderRadius : 5,
+							spacing : 3
+					      }]
+					    },
+					    options: {
+					    	responsive: false,
+					    	cutout: 60
+					    }
+					  });
 					</script>
 				</div>
 				
 	        	<div class="right-div">
-	        		<br><br>[대여 수 Top 10 회원]<br><br>
+	        		<br><br>[회원의 대여 현황 여부]<br><br>
 					<div>
-					  <table class="table table-sm">
-						  <thead class="table-light">
-						    <tr>
-						      <th scope="col">순위</th>
-						      <th scope="col">회원</th>
-						      <th scope="col">대여 수</th>
-						    </tr>
-						  </thead>
-						  <tbody id = "topRentersBody"></tbody>
-						</table>
-					  	
-					  	<script>
-					  		fetch('/master/topRenters')
-					  			.then(response => response.json())
-					  			.then(data => {
-					  				const tbody = document.getElementById('topRentersBody');
-					  				if (data.length === 0){
-					  					tbody.innerHTML = '<tr><td colspan="3">올해 대여한 회원이 없습니다.</td></tr>';
-					  				} else {
-					  					data.forEach((item, index) => {
-					  						if(index < 10){
-						  						const row = document.createElement('tr');
-						  						row.innerHTML = `
-						  							<td>${index + 1}</td>
-						  							<td>${item.email}</td>
-						  							<td>${item.rentCount}</td>
-						  						`;
-						  						tbody.appendChild(row);
-					  						}
-					  					});
-					  				}
-					  			}).catch(error => console.error('Error => ', error));
-					  	</script>
-					  
+					  <canvas id="MemberRentPercent" width="250"></canvas>
 					</div>
+					<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+					<script>
+					  const ctxzx = document.getElementById('MemberRentPercent');
+					
+					  new Chart(ctxzx, {
+					    type: 'doughnut',
+					    data: {
+					      labels: ['현재 대여 중인 회원', '대여 중이지 않은 회원'],
+					      datasets: [{
+					        label: '회원 수',
+					        data: [55, 79],
+					        backgroundColor: ['#4dbf00', '#d2d2d2'],
+					        hoverOffset: 4,
+							borderRadius : 5,
+							spacing : 3
+					      }]
+					    },
+					    options: {
+					    	responsive: false,
+					    	cutout: 60
+					    }
+					  });
+					</script>
 	        	</div>	
 			</div>
 		</div>
 	</div>
 	<div class="content1">
 		<div class="content">
-			<b>2024 구매 전환률</b><br><br>  
-			<!-- 구매 전환률 (Conversion Rate) = 영화 전체 대여 수 / 영화 상세페이지를 클릭한 전체 횟수(hitno) * 100% -->
+		전체 구매 전환률<br><br>  <!-- 구매 전환률 (Conversion Rate) = 영화 대여 수 / 영화 상세페이지를 클릭한 횟수(hitno) * 100% -->
 			<p><div class="progress-bar">           
-				<div class="progress" id="progress" style="width: 60%;">60%</div><br><br>
+			   <div class="progress" id="progress" style="width: 60%;">60%</div><br><br>
 			</div></p>
-		</div>
+	</div>
 	
 	<div class="content1">
 		<div class="content">
-			<b>회원 증감 수</b><br>
-			<p>· 금일 가입 회원 수 : <span id="todaySignupCount"></span> 명 <span id="resultSignup"></span></p>
-			<p>· 전체 누적 회원 수 : <span id="totalMemberCount"></span> 명</p>
-			<br>
-			<hr style="border-width:1.5px 0 0 0; border-style:dashed; border-color:#4dbf00;">
-			<br>
-			<b>방문 현황</b><br>
-			<p>· 금일 방문자 수 : <span id="todayVisitorsCount"></span> 명 <span id="resultVisit"></span><br></p>
-			<p>· 전체 누적 방문자 수 : <span id="totalVisitorsCount"></span> 명</p>
+		회원 증감 수<br><br>
+		<p>오늘 가입한 회원 수 : nn 명 <span id="resultSignup"></span></p>
+		<p>전체 누적 회원 수 : nnn 명</p>
 		</div>
 	</div>
 	
 	
 	<div class="content1">
-		<div class="statuscontent">
-			<b>회원 요청 사항 현황</b><br>
-			<div class="status-container">
-				<img class="icon" src="/img/RequestStatus.png" alt="">&nbsp;&nbsp;&nbsp;
-				<div class="status-text">
-					<span class="pending-highlight">· 처리 필요 : <span id="pendingCount"></span> 건</span>
-					<br><br>
-					· 처리 완료 : <span id="completedCount"></span> 건
-				</div>
-			</div>
+		<div class="content">
+			방문 현황<br><br>
+			<p>오늘 방문 횟수 : nn 명 </p>
+			<p>하루 평균 방문자 수 : nn 명 <span id="resultVisit"></span></p>
+			<p>전체 누적 방문자 수 : nnn 명</p>
 		</div>
 	</div>
-
+	
+	
 </div>
 
 </div>
@@ -476,7 +447,7 @@
 
 	//회원 구매 전환율 % 구하기
     const updateProgressBar = async() => {
-	    await fetch('/master/conversionRate', { //향후 컨트롤러에 작성 필요 ->tbl_movie 의 hitno 필요
+	    await fetch('/master/conversionRate', { //향후 컨트롤러에 작성 필요
 	        method: 'GET',
 	        headers: { "content-type": "application/json" }
 	    })
@@ -497,101 +468,37 @@
 	updateProgressBar(); // 페이지 로드 시 프로그레스 바 업데이트
     
 
-	//회원 가입 수 증감 색상 표시
-	const signupResult = async() => {
-		await fetch('/master/signupResult', {
-			method: 'GET',
-			headers: { "content-type": "application/json" }
-		}).then((response)=> response.json())
-		  .then((data)=> {
-			  const yesterdaySignup = data.yesterdaySignup;
-			  const todaySignup = data.todaySignup;
-			  const totalMember = data.totalMember;
-			  
-			  // HTML 요소에 값 설정
-		      document.getElementById('todaySignupCount').textContent = todaySignup;
-		      document.getElementById('totalMemberCount').textContent = totalMember;
-			  
-			  const differenceSignup = data.todaySignup - data.yesterdaySignup;
-			  const resultDivSignup = document.getElementById('resultSignup');
-				
-				if (differenceSignup > 0) {
-				    resultDivSignup.innerHTML = `<span class="positive">▲ +${differenceSignup}</span>`;
-				} else if (differenceSignup < 0) {
-				    resultDivSignup.innerHTML = `<span class="negative">▼ ${differenceSignup}</span>`;
-				} else {
-				    resultDivSignup.innerHTML = `<span class="nochange"> → 변동 없음</span>`;
-				}
-	  
-		  }).catch((error) => {
-		        console.error('============= Error :', error);
-		  });
+	//방문자 수 증감 색상 표시
+	const yesterdaySignup = 9; //임의로 작성, 서버로부터 가져오기 필요
+	const todaySignup = 6;		//임의로 작성, 서버로부터 가져오기 필요
+	
+	const differenceSignup = todaySignup - yesterdaySignup;
+	const resultDivSignup = document.getElementById('resultSignup');
+	
+	if (differenceSignup > 0) {
+	    resultDivSignup.innerHTML = `<span class="positive">▲ +${differenceSignup}</span>`;
+	} else if (differenceSignup < 0) {
+	    resultDivSignup.innerHTML = `<span class="negative">▼ ${differenceSignup}</span>`;
+	} else {
+	    resultDivSignup.innerHTML = '변화 X';
 	}
-	signupResult();
 	
 	
 	//방문자 수 증감 색상 표시
-	const visitResult = async() => {
-		await fetch('/master/visitResult', {
-			method: 'GET',
-			headers: { "content-type": "application/json" }
-		}).then((response)=> response.json())
-		  .then((data)=> {
-			  const yesterdayVisitors = data.yesterdayVisitors;
-			  const todayVisitors = data.todayVisitors;
-			  const totalVisitors = data.totalVisitors;
-			  
-			  // HTML 요소에 값 설정
-		      document.getElementById('todayVisitorsCount').textContent = todayVisitors;
-		      document.getElementById('totalVisitorsCount').textContent = totalVisitors;
-			  
-		      const differenceVisitors = todayVisitors - yesterdayVisitors;
-			  const resultDivSignup = document.getElementById('resultVisit');
-				
-			  if (differenceVisitors > 0) {
-				    resultDivSignup.innerHTML = `<span class="positive">▲ +${differenceVisitors}</span>`;
-				} else if (differenceVisitors < 0) {
-				    resultDivSignup.innerHTML = `<span class="negative">▼ ${differenceVisitors}</span>`;
-				} else {
-				    resultDivSignup.innerHTML = `<span class="nochange"> → 변동 없음</span>`;
-				}
-
-		  }).catch((error) => {
-		        console.error('============= Error :', error);
-		  });
-	}
-	visitResult();
+	const yesterdayAvgVisitors = 5; //임의로 작성, 서버로부터 가져오기 필요
+	const todayAvgVisitors = 6;		//임의로 작성, 서버로부터 가져오기 필요
 	
-	//회원 요청 사항 처리 상태 현황 표시
-	const requestStatus = async() => {
-		await fetch('/master/requestStatus', {
-			method: 'GET',
-			headers: { "content-type": "application/json" }
-		}).then((response)=> response.json())
-		  .then((data)=> {
-
-			  let pendingCount = 0;
-			  let completedCount = 0;
-			  
-			  
-			  // 객체에서 status와 count를 가져와서 처리
-	          Object.entries(data).forEach(([status, count]) => {
-	            if (status === 'PENDING') {
-	                pendingCount = count;  // PENDING 상태의 수 설정
-	            } else if (status === 'COMPLETED') {
-	                completedCount = count;  // COMPLETED 상태의 수 설정
-	            }
-	          });
-			  
-			  // HTML 요소에 값 설정
-		      document.getElementById('pendingCount').textContent = pendingCount;
-		      document.getElementById('completedCount').textContent = completedCount;
-
-		  }).catch((error) => {
-		        console.error('============= Error :', error);
-		  });
+	const differenceVisit = todayAvgVisitors - yesterdayAvgVisitors;
+	const resultDivVisit = document.getElementById('resultVisit');
+	
+	if (differenceVisit > 0) {
+	    resultDivVisit.innerHTML = `<span class="positive">▲ +${differenceVisit}</span>`;
+	} else if (differenceVisit < 0) {
+	    resultDivVisit.innerHTML = `<span class="negative">▼ ${differenceVisit}</span>`;
+	} else {
+	    resultDivVisit.innerHTML = '변화 X';
 	}
-	requestStatus();
+
 	
     
 </script>

@@ -99,19 +99,6 @@ const bookmarkMaker = async () => {
     	result.textContent = data; 
     }).catch(error => console.error("Error:", error));
 }
-
-const favGenreMaker = async () => {
-    let result = document.querySelector('#favGenreResult');
-    await fetch('/master/createDummyFavGenre', {
-        method: 'POST',
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify({})
-    }).then(response => {
-        return response.text(); // 메시지로 반환
-    }).then(data => {
-    	result.textContent = data; 
-    }).catch(error => console.error("Error:", error));
-}
 </script>
 
 </head>
@@ -126,7 +113,6 @@ const favGenreMaker = async () => {
 <input type="button" value="더미 로그 생성" class="button" onclick="logMaker()"> &nbsp;<span id="logResult"></span><br><br>
 <input type="button" value="더미 시청여부 생성" class="button" onclick="watchMaker()"> &nbsp;<span id="watchResult"></span><br><br>
 <input type="button" value="더미 즐겨찾기 생성" class="button" onclick="bookmarkMaker()"> &nbsp;<span id="bookmarkResult"></span><br><br>
-<input type="button" value="더미 좋아하는 장르 생성" class="button" onclick="favGenreMaker()"> &nbsp;<span id="favGenreResult"></span><br><br>
 
 
 </body>

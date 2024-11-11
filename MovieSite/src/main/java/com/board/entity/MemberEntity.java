@@ -41,7 +41,7 @@ public class MemberEntity {
 	private String gender;
 	
 	@Column(name="birth", nullable=false)
-	private String birth;
+	private LocalDateTime birth;
 	
 	@Column(name="telno", length=50, nullable=false)
 	private String telno;
@@ -57,6 +57,29 @@ public class MemberEntity {
 	
 	@Column(name="role", length=50, nullable=false)
 	private String role;
+	
+	@Column(name = "logseqno", nullable = false)
+	private Long logseqno;
+	
+	@Column(name="genreseqno", nullable = false)
+	private Long genreseqno;
+	
+	
+	/*
+	//FK 만들기
+	//FK 읽어올 때 Eager, Lazy 두 가지 타입이 있음.
+	//Eager : 부모키가 있는 테이블부터 검사해서 부모키가 제대로 되어 있는지 확인하고 자식키를 읽음 -> 정확도는 높지만 성능이 저하.
+	//Lazy : 자식키가 있는 테이블만 읽음 -> 정확도는 떨어지지만 성능이 향상.
+	@ManyToOne(fetch = FetchType.LAZY)
+	@OnDelete(action = OnDeleteAction.CASCADE)
+	@JoinColumn(name = "logseqno", referencedColumnName = "seqno", nullable = false)
+	private MemberLogEntity logseqno;
+	
+	@ManyToOne(fetch = FetchType.LAZY)
+	@OnDelete(action = OnDeleteAction.CASCADE)
+	@JoinColumn(name = "genreseqno", referencedColumnName = "seqno", nullable = false)
+	private GenreEntity genreseqno;
+	*/
 	
 	public void updateMemberInfo(MemberDTO member) {
 		
