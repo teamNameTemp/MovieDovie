@@ -21,7 +21,7 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler{
 		
 		log.debug("------------------------ OAuth2 로그인 성공 ------------------------");
 		
-		setDefaultTargetUrl("/board/list?page=1");		
+		setDefaultTargetUrl("/board/selectGenre");
 		super.onAuthenticationSuccess(request, response, authentication);
 	}
 }
