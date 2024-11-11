@@ -15,8 +15,8 @@ import com.board.entity.ReplyEntity;
 import com.board.entity.movie.MovieEntity;
 import com.board.entity.repository.LikeRepository;
 import com.board.entity.repository.MemberRepository;
-import com.board.entity.repository.MovieRepository;
 import com.board.entity.repository.ReplyRepository;
+import com.board.entity.repository.movie.MovieRepository;
 
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;

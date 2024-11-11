@@ -1,54 +1,25 @@
 package com.board.dto.movie;
+
 import java.time.LocalDate;
 import java.util.List;
 
-import com.board.dto.movie.MovieDTO.CollectionInfo;
-import com.board.dto.movie.MovieDTO.Credits;
-import com.board.dto.movie.MovieDTO.Genre;
-import com.board.dto.movie.MovieDTO.Images;
-import com.board.dto.movie.MovieDTO.Keyword;
-import com.board.dto.movie.MovieDTO.Keywords;
-import com.board.dto.movie.MovieDTO.MovieBrief;
-import com.board.dto.movie.MovieDTO.ProductionCompany;
-import com.board.dto.movie.MovieDTO.ProductionCountry;
-import com.board.dto.movie.MovieDTO.ReleaseDate;
-import com.board.dto.movie.MovieDTO.ReleaseDateInfo;
-import com.board.dto.movie.MovieDTO.ReleaseDates;
-import com.board.dto.movie.MovieDTO.Review;
-import com.board.dto.movie.MovieDTO.SpokenLanguage;
-import com.board.dto.movie.MovieDTO.Video;
-import com.board.dto.movie.MovieDTO.Videos;
-
-import com.board.dto.movie.MovieDTO.Cast;
-import com.board.dto.movie.MovieDTO.Crew;
-import com.board.dto.movie.MovieDTO.Genre;
-import com.board.dto.movie.MovieDTO.Image;
-import com.board.dto.movie.MovieDTO.Images;
-import com.board.dto.movie.MovieDTO.Keyword;
-import com.board.dto.movie.MovieDTO.Keywords;
-import com.board.dto.movie.MovieDTO.MovieBrief;
-import com.board.dto.movie.MovieDTO.ProductionCompany;
-import com.board.dto.movie.MovieDTO.ProductionCountry;
-import com.board.dto.movie.MovieDTO.ReleaseDate;
-import com.board.dto.movie.MovieDTO.ReleaseDateInfo;
-import com.board.dto.movie.MovieDTO.ReleaseDates;
-import com.board.dto.movie.MovieDTO.Review;
-import com.board.dto.movie.MovieDTO.SpokenLanguage;
-import com.board.dto.movie.MovieDTO.Video;
-import com.board.dto.movie.MovieDTO.Videos;
+import com.board.entity.movie.CreditEntity;
+import com.board.entity.movie.MovieEntity;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-
+@AllArgsConstructor
 @NoArgsConstructor
 @Data
+@Builder
 public class MovieDTO {
 
 	// ================기본 프로퍼티=============
-
+	private MovieEntity entity;
 	// 영화 ID
 	private Long id;
 	// 제목
@@ -84,7 +55,7 @@ public class MovieDTO {
 	private double voteAverage;
 	// 투표 수 투표한 회원 수!
 	@JsonProperty("vote_count")
-	private int voteCount;
+	private Integer voteCount;
 
 	// 제작사 목록
 	@JsonProperty("production_companies")
@@ -138,11 +109,7 @@ public class MovieDTO {
 		private String name;
 	}
 
-	// 비디오 정보 t
-//	<li th:each="video : ${movie.videos.results}">
-//    <span th:text="${video.name}"></span>
-//    <a th:href="@{'https://www.youtube.com/watch?v=' + ${video.key}}" target="_blank">Watch</a>
-//</li>
+	// 비디오 정보
 	@JsonProperty("videos")
 	private Videos videos;
 
@@ -231,6 +198,7 @@ public class MovieDTO {
 		private List<Cast> cast;
 		// 제작진 목록
 		private List<Crew> crew;
+		private CreditEntity credit;
 	}
 
 	// 리뷰 목록
@@ -379,5 +347,7 @@ public class MovieDTO {
 		@JsonProperty("release_date")
 		private LocalDate releaseDate;
 	}
+	
+	
 
 }
