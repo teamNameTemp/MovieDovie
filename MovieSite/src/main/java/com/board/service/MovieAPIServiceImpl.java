@@ -61,35 +61,41 @@ public class MovieAPIServiceImpl implements MovieAPIService {
 		//todo : 영화 상세정보 뽑을 때 영어로 뽑기 줄거리만 한글
 		List<MovieEntity> movieEntities  = mapper.toEntityList(list);
 		movieRepository.saveAll(movieEntities);
+		
+		
 		for(MovieDTO dto : list) {
-				List<CompanyEntity> companies = mapper.mapProductionCompanies(dto);
-				List<CountryEntity> countries = mapper.mapProductionCountries(dto);
-				List<GenreEntity> genres = mapper.mapGenres(dto);
-				CreditEntity credit = mapper.mapCredits(dto);
-				List<CrewEntity> crews = mapper.mapCrews(dto.getCredits());
-				List<CastEntity> casts = mapper.mapCasts(dto.getCredits());
-				List<LanguageEntity>languages = mapper.mapSpokenLanguages(dto);
-				List<VideoEntity> videos = mapper.mapVideos(dto);
-				
-				companyRepository.saveAll(companies);
-				countryRepository.saveAll(countries);
-				genreRepository.saveAll(genres);
-				creditRepository.save(credit);
-				crewRepository.saveAll(crews);
-				castRepository.saveAll(casts);
-				languageRepository.saveAll(languages);
-				videoRepository.saveAll(videos);
+				mapperListSave(dto);
 			}
 	}
 		
 	
 	public void saveTheDataBase(MovieDTO movie) {
 		MovieEntity movieEntity = mapper.toEntity(movie);
+		movieRepository.save(movieEntity);
 		
 		//todo : 리스트(배우,감독,크레딧,언어,비디오, 장르, 제작사, 나라)
+		mapperListSave(movie);
 		
-		movieRepository.save(movieEntity);
 	}
 
+	private void mapperListSave(MovieDTO dto) {
+		List<CompanyEntity> companies = mapper.mapProductionCompanies(dto);
+		List<CountryEntity> countries = mapper.mapProductionCountries(dto);
+		List<GenreEntity> genres = mapper.mapGenres(dto);
+		CreditEntity credit = mapper.mapCredits(dto);
+		List<CrewEntity> crews = mapper.mapCrews(dto.getCredits());
+		List<CastEntity> casts = mapper.mapCasts(dto.getCredits());
+		List<LanguageEntity>languages = mapper.mapSpokenLanguages(dto);
+		List<VideoEntity> videos = mapper.mapVideos(dto);
+		
+		companyRepository.saveAll(companies);
+		countryRepository.saveAll(countries);
+		genreRepository.saveAll(genres);
+		creditRepository.save(credit);
+		crewRepository.saveAll(crews);
+		castRepository.saveAll(casts);
+		languageRepository.saveAll(languages);
+		videoRepository.saveAll(videos);
+	}
 
 }
