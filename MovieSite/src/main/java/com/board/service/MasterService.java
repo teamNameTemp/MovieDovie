@@ -5,6 +5,7 @@ import com.board.dto.RequestDTO;
 import com.board.entity.RequestEntity;
 
 public interface MasterService {
+
 	
 	//요청 게시물 목록 보기
 	public Page<RequestEntity> list(int pageNum, int postNum, String keyword) throws Exception;
@@ -50,7 +51,4 @@ public interface MasterService {
 	
 	//Dummy 즐겨찾기 만들기
 	public void createDummyBookmarks(int count);
-	
-	//Dummy 좋아하는 장르 만들기
-	public void createDummyFavGenre(int count);
 }
