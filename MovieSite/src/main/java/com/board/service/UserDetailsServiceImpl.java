@@ -15,6 +15,7 @@ import com.board.entity.MemberEntity;
 import com.board.entity.repository.MemberRepository;
 
 import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 
 @Service
 @AllArgsConstructor

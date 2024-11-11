@@ -18,7 +18,7 @@
     <div class="navbar">
         <div class="navbar-container">
             <div class="logo-container">
-                <h1 class="logo">Movie</h1>
+                <h1 class="logo">MovieDovie</h1>
             </div>
             <div class="menu-list">
                 <ul class="menu-list">
@@ -28,28 +28,34 @@
                     <li class="menu-list-item" style="position:relative; margin-top:17px;"><a href="#">인기 영화</a></li>         
                 </ul>
               <div class="search-box" style="position:relative; margin-top:27px;">
-  				<form action="." method="post">
+  				<form action="/board/list" method="">
     			<input class="search-txt" type="text" placeholder="  작품, 배우, 게시글, 태그를 검색해보세요" >
     			<button class="search-btn" type="submit">
 				  <i class="fas fa-search"></i>
 			  	</button>
 			  </form>    
-        </div>
- 			  
- 			  
+        </div>	  
 </div>
-            
           <div class="profile-container">
+          
             <div class="dropdown">
-      				<i class="fas fa-bell" aria-hidden="true" style="font-size:20px;margin-top:15px; margin-bottom:15px;"></i>
-      				&nbsp;&nbsp;
+            
+            <div class="bell-box">
+            		
+      				<i class="fas fa-bell" style="position:relative; font-size:20px; margin-top:15px; margin-bottom:15px; margin-left:10px;margin-right:25px;"></i>
+      				<p id="notification-count"></p>
+      				</div>
       				<div class="dropdown-content">
-            			<a href="/master/memberRequest">요청한 사항</a>
+            			<a href="#" class="dropdown-item">새 알림 1</a>
+			            <a href="#" class="dropdown-item">새 알림 2</a>
+			            <a href="#" class="dropdown-item">새 알림 3</a>
+			            <a href="#" class="dropdown-item">새 알림 4</a>
+			            <a href="#" class="dropdown-item">새 알림 5</a>
                 </div>
-           </div>
                 
+           </div>
            
-
+           &nbsp;&nbsp;&nbsp;
             <div class="dropdown">
       				<img class="profile-picture" src="/img/profile.jpg" alt="">
       				<div class="dropdown-content">
@@ -62,9 +68,6 @@
         				<a href="#">내 대여 현황</a>
                 </div>
              </div>
-             	
-             
-             
                 <div class="profile-text-container">
                   <div class="dropdown">
       				<button class="dropbtn"> 
@@ -83,7 +86,6 @@
                 </div>
             </div>
         </div>
-        
     <div class="sidebar">
         <a style="text-decoration:none" href="#" class="left-menu-icon fas fa-home"></a>
         <a style="text-decoration:none" href="#" class="left-menu-icon fas fa-bookmark"></a>
@@ -98,314 +100,403 @@
                  <p class="featured-desc" style="color:#c92fb9">11월 빼빼로 데이 초특가 SALE EVENT!!!</p>
             </div>
             <div class="movie-list-container">
-                <h1 class="movie-list-title">일별 박스 오피스</h1>
+                <h1 class="movie-list-title">전세계가 주목하고 있는 Daily 인기 영화</h1>
+                <!-- 여기서
 				<div class="movie-list-wrapper">
 					<div class="movie-list">
 						<div class="movie-list-item" th:each="movie : ${dailyMovies}">
-                        <!-- 
                         이미지 클릭 시 상세 페이지로 JS 작성 onclick="javescript()"
                         controller에서 post로 응답받고 RequestParam 영화이름이나 ID값 받아서 DailyMovieEntity 값 연동
                         그 후 상세정보 나열
-                         -->
-							<a th:href="@{/board/movieDetail(title=${movie.id})}"> <img
-								class="movie-list-item-img" th:src="${'https://image.tmdb.org/t/p/original' + movie.backdropPath}" alt="">
-							</a> <span class="movie-list-item-title"
-								th:text="${movie.title}"></span>
+							<img class="movie-list-item-img" th:src="${movie.posterPath}"
+								alt=""> <span class="movie-list-item-title"
+								th:text="${movie.movieNm}"></span>
 							<p class="movie-list-item-desc" th:text="${movie.overview}"></p>
 						</div>
 					</div>
 					<i class="fas fa-chevron-right arrow"></i>
 				</div>
+                 -->
 			</div>
             <div class="movie-list-container">
-                <h1 class="movie-list-title">음악</h1>
+            
+                <h1 class="movie-list-title">회원이 선택한 영화!</h1>
                 <div class="movie-list-wrapper">
                     <div class="movie-list">
-                        <div class="movie-list-item" th:each="movie : ${music}">
-							<a th:href="@{/board/movieDetail(title=${movie.id})}"> <img
-								class="movie-list-item-img" th:src="${'https://image.tmdb.org/t/p/original' + movie.backdropPath}" alt="">
-							</a> <span class="movie-list-item-title"
-								th:text="${movie.title}"></span>
-							<p class="movie-list-item-desc" th:text="${movie.overview}"></p>
-						</div>
+                    
+                        <div class="movie-list-item">
+                        
+                        <!-- /board/movieDetail?title=${movie.movieNm} -->
+                            <a href="/board/movieDetail?title=황해"><img class="movie-list-item-img" src="/img/8.jpg" alt=""></a>
+                            <span class="movie-list-item-title">Herdfsdfdsf</span>
+                            
+                          <div class= "movie-list-item-button">
+                            <a class="fas fa-bookmark"href="#"style="font-size:20px; margin-left:50px;"></a>
+                            </div>
+                          <div class= "movie-list-item-button">
+                            <a class="fas fa-shopping-cart"href="#"style="font-size:20px; margin-right:50px;"></a>
+                          </div>
+                          
+                        </div>
+                        <div class="movie-list-item">
+                            <img class="movie-list-item-img" src="/img/9.jpg" alt="">
+                            <span class="movie-list-item-title">Her</span>
+                            <p class="movie-list-item-desc">Lorem ipsum dolor sit amet consectetur adipisicing elit. At
+                                hic fugit similique accusantium.</p>
+                            
+                        </div>
+                        <div class="movie-list-item">
+                            <img class="movie-list-item-img" src="/img/10.jpg" alt="">
+                            <span class="movie-list-item-title">Her</span>
+                            <p class="movie-list-item-desc">Lorem ipsum dolor sit amet consectetur adipisicing elit. At
+                                hic fugit similique accusantium.</p>
+                            
+                        </div>
+                        <div class="movie-list-item">
+                            <img class="movie-list-item-img" src="/img/11.jpg" alt="">
+                            <span class="movie-list-item-title">Her</span>
+                            <p class="movie-list-item-desc">Lorem ipsum dolor sit amet consectetur adipisicing elit. At
+                                hic fugit similique accusantium.</p>
+                            
+                        </div>
+                        <div class="movie-list-item">
+                            <img class="movie-list-item-img" src="/img/12.jpg" alt="">
+                            <span class="movie-list-item-title">Her</span>
+                            <p class="movie-list-item-desc">Lorem ipsum dolor sit amet consectetur adipisicing elit. At
+                                hic fugit similique accusantium.</p>
+                            
+                        </div>
+                       <div class="movie-list-item">
+                            <img class="movie-list-item-img" src="/img/9.jpg" alt="">
+                            <span class="movie-list-item-title">Her</span>
+                            <p class="movie-list-item-desc">Lorem ipsum dolor sit amet consectetur adipisicing elit. At
+                                hic fugit similique accusantium.</p>
+                            
+                        </div>
+                       <div class="movie-list-item">
+                            <img class="movie-list-item-img" src="/img/9.jpg" alt="">
+                            <span class="movie-list-item-title">Her</span>
+                            <p class="movie-list-item-desc">Lorem ipsum dolor sit amet consectetur adipisicing elit. At
+                                hic fugit similique accusantium.</p>
+                            
+                        </div>
+                       
+                       <div class="movie-list-item">
+                            <img class="movie-list-item-img" src="/img/9.jpg" alt="">
+                            <span class="movie-list-item-title">Her</span>
+                            <p class="movie-list-item-desc">Lorem ipsum dolor sit amet consectetur adipisicing elit. At
+                                hic fugit similique accusantium.</p>
+                            
+                        </div>
+                        
+                         <div class="movie-list-item">
+                            <img class="movie-list-item-img" src="/img/12.jpg" alt="">
+                            <span class="movie-list-item-title">Her</span>
+                            <p class="movie-list-item-desc">Lorem ipsum dolor sit amet consectetur adipisicing elit. At
+                                hic fugit similique accusantium.</p>
+                            
+                        </div>
+                       <div class="movie-list-item">
+                            <img class="movie-list-item-img" src="/img/9.jpg" alt="">
+                            <span class="movie-list-item-title">Her</span>
+                            <p class="movie-list-item-desc">Lorem ipsum dolor sit amet consectetur adipisicing elit. At
+                                hic fugit similique accusantium.</p>
+                            
+                        </div>
+                       <div class="movie-list-item">
+                            <img class="movie-list-item-img" src="/img/9.jpg" alt="">
+                            <span class="movie-list-item-title">Her</span>
+                            <p class="movie-list-item-desc">Lorem ipsum dolor sit amet consectetur adipisicing elit. At
+                                hic fugit similique accusantium.</p>
+                            
+                        </div>
+                       
+                       <div class="movie-list-item">
+                            <img class="movie-list-item-img" src="/img/9.jpg" alt="">
+                            <span class="movie-list-item-title">Her</span>
+                            <p class="movie-list-item-desc">Lorem ipsum dolor sit amet consectetur adipisicing elit. At
+                                hic fugit similique accusantium.</p>
+                            
+                        </div>
+                        
+                         <div class="movie-list-item">
+                            <img class="movie-list-item-img" src="/img/12.jpg" alt="">
+                            <span class="movie-list-item-title">Her</span>
+                            <p class="movie-list-item-desc">Lorem ipsum dolor sit amet consectetur adipisicing elit. At
+                                hic fugit similique accusantium.</p>
+                            
+                        </div>
+                       <div class="movie-list-item">
+                            <img class="movie-list-item-img" src="/img/9.jpg" alt="">
+                            <span class="movie-list-item-title">Her</span>
+                            <p class="movie-list-item-desc">Lorem ipsum dolor sit amet consectetur adipisicing elit. At
+                                hic fugit similique accusantium.</p>
+                            
+                        </div>
+                       <div class="movie-list-item">
+                            <img class="movie-list-item-img" src="/img/9.jpg" alt="">
+                            <span class="movie-list-item-title">Her</span>
+                            <p class="movie-list-item-desc">Lorem ipsum dolor sit amet consectetur adipisicing elit. At
+                                hic fugit similique accusantium.</p>
+                            
+                        </div>
+                       
+                       <div class="movie-list-item">
+                            <img class="movie-list-item-img" src="/img/9.jpg" alt="">
+                            <span class="movie-list-item-title">Her</span>
+                            <p class="movie-list-item-desc">Lorem ipsum dolor sit amet consectetur adipisicing elit. At
+                                hic fugit similique accusantium.</p>
+                            
+                        </div>
+                        
                     </div>
+                    <i class="fas fa-chevron-left arrow"></i>
                     <i class="fas fa-chevron-right arrow"></i>
-                </div>
-            </div>
-              <div class="movie-list-container">
-                <h1 class="movie-list-title">판타지</h1>
-                <div class="movie-list-wrapper">
-                    <div class="movie-list">
-                        <div class="movie-list-item" th:each="movie : ${fantasy}">
-							<a th:href="@{/board/movieDetail(title=${movie.id})}"> <img
-								class="movie-list-item-img" th:src="${'https://image.tmdb.org/t/p/original' + movie.backdropPath}" alt="">
-							</a> <span class="movie-list-item-title"
-								th:text="${movie.title}"></span>
-							<p class="movie-list-item-desc" th:text="${movie.overview}"></p>
-						</div>
-                    </div>
-                    <i class="fas fa-chevron-right arrow"></i>
-                </div>
-            </div>
-              <div class="movie-list-container">
-                <h1 class="movie-list-title">공포</h1>
-                <div class="movie-list-wrapper">
-                    <div class="movie-list">
-                        <div class="movie-list-item" th:each="movie : ${fear}">
-							<a th:href="@{/board/movieDetail(title=${movie.id})}"> <img
-								class="movie-list-item-img" th:src="${'https://image.tmdb.org/t/p/original' + movie.backdropPath}" alt="">
-							</a> <span class="movie-list-item-title"
-								th:text="${movie.title}"></span>
-							<p class="movie-list-item-desc" th:text="${movie.overview}"></p>
-						</div>
-                    </div>
-                    <i class="fas fa-chevron-right arrow"></i>
-                </div>
-            </div>
-              <div class="movie-list-container">
-                <h1 class="movie-list-title">다큐멘터리</h1>
-                <div class="movie-list-wrapper">
-                    <div class="movie-list">
-                        <div class="movie-list-item" th:each="movie : ${documentary}">
-							<a th:href="@{/board/movieDetail(title=${movie.id})}"> <img
-								class="movie-list-item-img" th:src="${'https://image.tmdb.org/t/p/original' + movie.backdropPath}" alt="">
-							</a> <span class="movie-list-item-title"
-								th:text="${movie.title}"></span>
-							<p class="movie-list-item-desc" th:text="${movie.overview}"></p>
-						</div>
-                    </div>
-                    <i class="fas fa-chevron-right arrow"></i>
-                </div>
-            </div>
-              <div class="movie-list-container">
-                <h1 class="movie-list-title">가족</h1>
-                <div class="movie-list-wrapper">
-                    <div class="movie-list">
-                        <div class="movie-list-item" th:each="movie : ${family}">
-							<a th:href="@{/board/movieDetail(title=${movie.id})}"> <img
-								class="movie-list-item-img" th:src="${'https://image.tmdb.org/t/p/original' + movie.backdropPath}" alt="">
-							</a> <span class="movie-list-item-title"
-								th:text="${movie.title}"></span>
-							<p class="movie-list-item-desc" th:text="${movie.overview}"></p>
-						</div>
-                    </div>
-                    <i class="fas fa-chevron-right arrow"></i>
-                </div>
-            </div>
-              <div class="movie-list-container">
-                <h1 class="movie-list-title">전쟁</h1>
-                <div class="movie-list-wrapper">
-                    <div class="movie-list">
-                        <div class="movie-list-item" th:each="movie : ${war}">
-							<a th:href="@{/board/movieDetail(title=${movie.id})}"> <img
-								class="movie-list-item-img" th:src="${'https://image.tmdb.org/t/p/original' + movie.backdropPath}" alt="">
-							</a> <span class="movie-list-item-title"
-								th:text="${movie.title}"></span>
-							<p class="movie-list-item-desc" th:text="${movie.overview}"></p>
-						</div>
-                    </div>
-                    <i class="fas fa-chevron-right arrow"></i>
-                </div>
-            </div>
-              <div class="movie-list-container">
-                <h1 class="movie-list-title">모험</h1>
-                <div class="movie-list-wrapper">
-                    <div class="movie-list">
-                        <div class="movie-list-item" th:each="movie : ${adventure}">
-							<a th:href="@{/board/movieDetail(title=${movie.id})}"> <img
-								class="movie-list-item-img" th:src="${'https://image.tmdb.org/t/p/original' + movie.backdropPath}" alt="">
-							</a> <span class="movie-list-item-title"
-								th:text="${movie.title}"></span>
-							<p class="movie-list-item-desc" th:text="${movie.overview}"></p>
-						</div>
-                    </div>
-                    <i class="fas fa-chevron-right arrow"></i>
-                </div>
-            </div>
-              <div class="movie-list-container">
-                <h1 class="movie-list-title">범죄</h1>
-                <div class="movie-list-wrapper">
-                    <div class="movie-list">
-                        <div class="movie-list-item" th:each="movie : ${crime}">
-							<a th:href="@{/board/movieDetail(title=${movie.id})}"> <img
-								class="movie-list-item-img" th:src="${'https://image.tmdb.org/t/p/original' + movie.backdropPath}" alt="">
-							</a> <span class="movie-list-item-title"
-								th:text="${movie.title}"></span>
-							<p class="movie-list-item-desc" th:text="${movie.overview}"></p>
-						</div>
-                    </div>
-                    <i class="fas fa-chevron-right arrow"></i>
-                </div>
-            </div>
-              <div class="movie-list-container">
-                <h1 class="movie-list-title">역사</h1>
-                <div class="movie-list-wrapper">
-                    <div class="movie-list">
-                        <div class="movie-list-item" th:each="movie : ${history}">
-							<a th:href="@{/board/movieDetail(title=${movie.id})}"> <img
-								class="movie-list-item-img" th:src="${'https://image.tmdb.org/t/p/original' + movie.backdropPath}" alt="">
-							</a> <span class="movie-list-item-title"
-								th:text="${movie.title}"></span>
-							<p class="movie-list-item-desc" th:text="${movie.overview}"></p>
-						</div>
-                    </div>
-                    <i class="fas fa-chevron-right arrow"></i>
-                </div>
-            </div>
-              <div class="movie-list-container">
-                <h1 class="movie-list-title">애니메이션</h1>
-                <div class="movie-list-wrapper">
-                    <div class="movie-list">
-                        <div class="movie-list-item" th:each="movie : ${animation}">
-							<a th:href="@{/board/movieDetail(title=${movie.id})}"> <img
-								class="movie-list-item-img" th:src="${'https://image.tmdb.org/t/p/original' + movie.backdropPath}" alt="">
-							</a> <span class="movie-list-item-title"
-								th:text="${movie.title}"></span>
-							<p class="movie-list-item-desc" th:text="${movie.overview}"></p>
-						</div>
-                    </div>
-                    <i class="fas fa-chevron-right arrow"></i>
-                </div>
-            </div>
-              <div class="movie-list-container">
-                <h1 class="movie-list-title">스릴러</h1>
-                <div class="movie-list-wrapper">
-                    <div class="movie-list">
-                        <div class="movie-list-item" th:each="movie : ${thriller}">
-							<a th:href="@{/board/movieDetail(title=${movie.id})}"> <img
-								class="movie-list-item-img" th:src="${'https://image.tmdb.org/t/p/original' + movie.backdropPath}" alt="">
-							</a> <span class="movie-list-item-title"
-								th:text="${movie.title}"></span>
-							<p class="movie-list-item-desc" th:text="${movie.overview}"></p>
-						</div>
-                    </div>
-                    <i class="fas fa-chevron-right arrow"></i>
-                </div>
-            </div>
-              <div class="movie-list-container">
-                <h1 class="movie-list-title">미스터리</h1>
-                <div class="movie-list-wrapper">
-                    <div class="movie-list">
-                        <div class="movie-list-item" th:each="movie : ${mystery}">
-							<a th:href="@{/board/movieDetail(title=${movie.id})}"> <img
-								class="movie-list-item-img" th:src="${'https://image.tmdb.org/t/p/original' + movie.backdropPath}" alt="">
-							</a> <span class="movie-list-item-title"
-								th:text="${movie.title}"></span>
-							<p class="movie-list-item-desc" th:text="${movie.overview}"></p>
-						</div>
-                    </div>
-                    <i class="fas fa-chevron-right arrow"></i>
-                </div>
-            </div>
-              <div class="movie-list-container">
-                <h1 class="movie-list-title">액션</h1>
-                <div class="movie-list-wrapper">
-                    <div class="movie-list">
-                        <div class="movie-list-item" th:each="movie : ${action}">
-							<a th:href="@{/board/movieDetail(title=${movie.id})}"> <img
-								class="movie-list-item-img" th:src="${'https://image.tmdb.org/t/p/original' + movie.backdropPath}" alt="">
-							</a> <span class="movie-list-item-title"
-								th:text="${movie.title}"></span>
-							<p class="movie-list-item-desc" th:text="${movie.overview}"></p>
-						</div>
-                    </div>
-                    <i class="fas fa-chevron-right arrow"></i>
-                </div>
-            </div>
-              <div class="movie-list-container">
-                <h1 class="movie-list-title">코미디</h1>
-                <div class="movie-list-wrapper">
-                    <div class="movie-list">
-                        <div class="movie-list-item" th:each="movie : ${comedy}">
-							<a th:href="@{/board/movieDetail(title=${movie.id})}"> <img
-								class="movie-list-item-img" th:src="${'https://image.tmdb.org/t/p/original' + movie.backdropPath}" alt="">
-							</a> <span class="movie-list-item-title"
-								th:text="${movie.title}"></span>
-							<p class="movie-list-item-desc" th:text="${movie.overview}"></p>
-						</div>
-                    </div>
-                    <i class="fas fa-chevron-right arrow"></i>
-                </div>
-            </div>
-              <div class="movie-list-container">
-                <h1 class="movie-list-title">TV 영화</h1>
-                <div class="movie-list-wrapper">
-                    <div class="movie-list">
-                        <div class="movie-list-item" th:each="movie : ${tvMovie}">
-							<a th:href="@{/board/movieDetail(title=${movie.id})}"> <img
-								class="movie-list-item-img" th:src="${'https://image.tmdb.org/t/p/original' + movie.backdropPath}" alt="">
-							</a> <span class="movie-list-item-title"
-								th:text="${movie.title}"></span>
-							<p class="movie-list-item-desc" th:text="${movie.overview}"></p>
-						</div>
-                    </div>
-                    <i class="fas fa-chevron-right arrow"></i>
-                </div>
-            </div>
-              <div class="movie-list-container">
-                <h1 class="movie-list-title">로맨스</h1>
-                <div class="movie-list-wrapper">
-                    <div class="movie-list">
-                        <div class="movie-list-item" th:each="movie : ${romance}">
-							<a th:href="@{/board/movieDetail(title=${movie.id})}"> <img
-								class="movie-list-item-img" th:src="${'https://image.tmdb.org/t/p/original' + movie.backdropPath}" alt="">
-							</a> <span class="movie-list-item-title"
-								th:text="${movie.title}"></span>
-							<p class="movie-list-item-desc" th:text="${movie.overview}"></p>
-						</div>
-                    </div>
-                    <i class="fas fa-chevron-right arrow"></i>
-                </div>
-            </div>
-              <div class="movie-list-container">
-                <h1 class="movie-list-title">SF</h1>
-                <div class="movie-list-wrapper">
-                    <div class="movie-list">
-                        <div class="movie-list-item" th:each="movie : ${sf}">
-							<a th:href="@{/board/movieDetail(title=${movie.id})}"> <img
-								class="movie-list-item-img" th:src="${'https://image.tmdb.org/t/p/original' + movie.backdropPath}" alt="">
-							</a> <span class="movie-list-item-title"
-								th:text="${movie.title}"></span>
-							<p class="movie-list-item-desc" th:text="${movie.overview}"></p>
-						</div>
-                    </div>
-                    <i class="fas fa-chevron-right arrow"></i>
-                </div>
-            </div>
-              <div class="movie-list-container">
-                <h1 class="movie-list-title">드라마</h1>
-                <div class="movie-list-wrapper">
-                    <div class="movie-list">
-                        <div class="movie-list-item" th:each="movie : ${drama}">
-							<a th:href="@{/board/movieDetail(title=${movie.id})}"> <img
-								class="movie-list-item-img" th:src="${'https://image.tmdb.org/t/p/original' + movie.backdropPath}" alt="">
-							</a> <span class="movie-list-item-title"
-								th:text="${movie.title}"></span>
-							<p class="movie-list-item-desc" th:text="${movie.overview}"></p>
-						</div>
-                    </div>
-                    <i class="fas fa-chevron-right arrow"></i>
-                </div>
-            </div>
-              <div class="movie-list-container">
-                <h1 class="movie-list-title">west</h1>
-                <div class="movie-list-wrapper">
-                    <div class="movie-list">
-                        <div class="movie-list-item" th:each="movie : ${west}">
-							<a th:href="@{/board/movieDetail(title=${movie.id})}"> <img
-								class="movie-list-item-img" th:src="${'https://image.tmdb.org/t/p/original' + movie.backdropPath}" alt="">
-							</a> <span class="movie-list-item-title"
-								th:text="${movie.title}"></span>
-							<p class="movie-list-item-desc" th:text="${movie.overview}"></p>
-						</div>
-                    </div>
-                    <i class="fas fa-chevron-right arrow"></i>
+                    
+                    
                 </div>
             </div>
             <div class="featured-content"
                 style="background:url('/img/PromotionBanner-001.png') center no-repeat; background-size: cover;">
                 <img class="featured-title" src="/img/PromotionBanner-001.png" alt="">
                 
+
+                
+            </div>
+            <div class="movie-list-container">
+                <h1 class="movie-list-title">좋아요 순</h1>
+                <div class="movie-list-wrapper">
+                    <div class="movie-list">
+                        <div class="movie-list-item">
+                            <img class="movie-list-item-img" src="/img/1.jpeg" alt="">
+                            <span class="movie-list-item-title">Her</span>
+                            <p class="movie-list-item-desc">Lorem ipsum dolor sit amet consectetur adipisicing elit. At
+                                hic fugit similique accusantium.</p>
+                            
+                        </div>
+                        <div class="movie-list-item">
+                            <img class="movie-list-item-img" src="/img/2.jpeg" alt="">
+                            <span class="movie-list-item-title">Her</span>
+                            <p class="movie-list-item-desc">Lorem ipsum dolor sit amet consectetur adipisicing elit. At
+                                hic fugit similique accusantium.</p>
+                            
+                        </div>
+                        <div class="movie-list-item">
+                            <img class="movie-list-item-img" src="/img/15.jpg" alt="">
+                            <span class="movie-list-item-title">Her</span>
+                            <p class="movie-list-item-desc">Lorem ipsum dolor sit amet consectetur adipisicing elit. At
+                                hic fugit similique accusantium.</p>
+                            
+                        </div>
+                        <div class="movie-list-item">
+                            <img class="movie-list-item-img" src="/img/3.jpg" alt="">
+                            <span class="movie-list-item-title">Her</span>
+                            <p class="movie-list-item-desc">Lorem ipsum dolor sit amet consectetur adipisicing elit. At
+                                hic fugit similique accusantium.</p>
+                            
+                        </div>
+                        <div class="movie-list-item">
+                            <img class="movie-list-item-img" src="/img/4.jpg" alt="">
+                            <span class="movie-list-item-title">Her</span>
+                            <p class="movie-list-item-desc">Lorem ipsum dolor sit amet consectetur adipisicing elit. At
+                                hic fugit similique accusantium.</p>
+                       
+                        </div>
+                        <div class="movie-list-item">
+                            <img class="movie-list-item-img" src="/img/5.jpg" alt="">
+                            <span class="movie-list-item-title">Her</span>
+                            <p class="movie-list-item-desc">Lorem ipsum dolor sit amet consectetur adipisicing elit. At
+                                hic fugit similique accusantium.</p>
+                           
+                        </div>
+                        <div class="movie-list-item">
+                            <img class="movie-list-item-img" src="/img/1.jpg" alt="">
+                            <span class="movie-list-item-title">Her</span>
+                            <p class="movie-list-item-desc">Lorem ipsum dolor sit amet consectetur adipisicing elit. At
+                                hic fugit similique accusantium.</p>
+                       
+                        </div>
+                    </div>
+                    <i class="fas fa-chevron-left arrow"></i>
+                    <i class="fas fa-chevron-right arrow"></i>
+                </div>
+            </div>
+            <div class="movie-list-container">
+                <h1 class="movie-list-title">댓글 순</h1>
+                <div class="movie-list-wrapper">
+                    <div class="movie-list">
+                        <div class="movie-list-item">
+                            <img class="movie-list-item-img" src="/img/17.jpg" alt="">
+                            <span class="movie-list-item-title">Her</span>
+                            <p class="movie-list-item-desc">Lorem ipsum dolor sit amet consectetur adipisicing elit. At
+                                hic fugit similique accusantium.</p>
+                            
+                        </div>
+                        <div class="movie-list-item">
+                            <img class="movie-list-item-img" src="/img/18.jpg" alt="">
+                            <span class="movie-list-item-title">Her</span>
+                            <p class="movie-list-item-desc">Lorem ipsum dolor sit amet consectetur adipisicing elit. At
+                                hic fugit similique accusantium.</p>
+                            
+                        </div>
+                        <div class="movie-list-item">
+                            <img class="movie-list-item-img" src="/img/19.jpg" alt="">
+                            <span class="movie-list-item-title">Her</span>
+                            <p class="movie-list-item-desc">Lorem ipsum dolor sit amet consectetur adipisicing elit. At
+                                hic fugit similique accusantium.</p>
+                            
+                        </div>
+                        <div class="movie-list-item">
+                            <img class="movie-list-item-img" src="/img/7.jpg" alt="">
+                            <span class="movie-list-item-title">Her</span>
+                            <p class="movie-list-item-desc">Lorem ipsum dolor sit amet consectetur adipisicing elit. At
+                                hic fugit similique accusantium.</p>
+                            
+                        </div>
+                        <div class="movie-list-item">
+                            <img class="movie-list-item-img" src="/img/1.jpg" alt="">
+                            <span class="movie-list-item-title">Her</span>
+                            <p class="movie-list-item-desc">Lorem ipsum dolor sit amet consectetur adipisicing elit. At
+                                hic fugit similique accusantium.</p>
+                            
+                        </div>
+                        <div class="movie-list-item">
+                            <img class="movie-list-item-img" src="/img/1.jpg" alt="">
+                            <span class="movie-list-item-title">Her</span>
+                            <p class="movie-list-item-desc">Lorem ipsum dolor sit amet consectetur adipisicing elit. At
+                                hic fugit similique accusantium.</p>
+                            
+                        </div>
+                        <div class="movie-list-item">
+                            <img class="movie-list-item-img" src="/img/1.jpg" alt="">
+                            <span class="movie-list-item-title">Her</span>
+                            <p class="movie-list-item-desc">Lorem ipsum dolor sit amet consectetur adipisicing elit. At
+                                hic fugit similique accusantium.</p>
+                            
+                        </div>
+                    </div>
+                    <i class="fas fa-chevron-left arrow"></i>
+                    <i class="fas fa-chevron-right arrow"></i>
+                </div>
+            </div>
+        <div class="movie-list-container">
+            <h1 class="movie-list-title">조회 순</h1>
+                <div class="movie-list-wrapper">
+                    <div class="movie-list">
+                        <div class="movie-list-item">
+                            <img class="movie-list-item-img" src="/img/17.jpg" alt="">
+                            <span class="movie-list-item-title">Her</span>
+                            <p class="movie-list-item-desc">Lorem ipsum dolor sit amet consectetur adipisicing elit. At
+                                hic fugit similique accusantium.</p>
+                            
+                        </div>
+                        <div class="movie-list-item">
+                            <img class="movie-list-item-img" src="/img/18.jpg" alt="">
+                            <span class="movie-list-item-title">Her</span>
+                            <p class="movie-list-item-desc">Lorem ipsum dolor sit amet consectetur adipisicing elit. At
+                                hic fugit similique accusantium.</p>
+                           
+                        </div>
+                        <div class="movie-list-item">
+                            <img class="movie-list-item-img" src="/img/19.jpg" alt="">
+                            <span class="movie-list-item-title">Her</span>
+                            <p class="movie-list-item-desc">Lorem ipsum dolor sit amet consectetur adipisicing elit. At
+                                hic fugit similique accusantium.</p>
+                            
+                        </div>
+                        <div class="movie-list-item">
+                            <img class="movie-list-item-img" src="/img/7.jpg" alt="">
+                            <span class="movie-list-item-title">Her</span>
+                            <p class="movie-list-item-desc">Lorem ipsum dolor sit amet consectetur adipisicing elit. At
+                                hic fugit similique accusantium.</p>
+                           
+                        </div>
+                        <div class="movie-list-item">
+                            <img class="movie-list-item-img" src="/img/1.jpg" alt="">
+                            <span class="movie-list-item-title">Her</span>
+                            <p class="movie-list-item-desc">Lorem ipsum dolor sit amet consectetur adipisicing elit. At
+                                hic fugit similique accusantium.</p>
+                            
+                        </div>
+                        <div class="movie-list-item">
+                            <img class="movie-list-item-img" src="/img/1.jpg" alt="">
+                            <span class="movie-list-item-title">Her</span>
+                            <p class="movie-list-item-desc">Lorem ipsum dolor sit amet consectetur adipisicing elit. At
+                                hic fugit similique accusantium.</p>
+                            
+                        </div>
+                        <div class="movie-list-item">
+                            <img class="movie-list-item-img" src="/img/1.jpg" alt="">
+                            <span class="movie-list-item-title">Her</span>
+                            <p class="movie-list-item-desc">Lorem ipsum dolor sit amet consectetur adipisicing elit. At
+                                hic fugit similique accusantium.</p>
+                            
+                        </div>
+                    </div>
+                    <i class="fas fa-chevron-right arrow"></i>
+                </div>
+            </div>
+        
+        <div class="movie-list-container">
+            <h1 class="movie-list-title">대여 순</h1>
+                <div class="movie-list-wrapper">
+                    <div class="movie-list">
+                        <div class="movie-list-item">
+                            <img class="movie-list-item-img" src="/img/17.jpg" alt="">
+                            <span class="movie-list-item-title">Her</span>
+                            <p class="movie-list-item-desc">Lorem ipsum dolor sit amet consectetur adipisicing elit. At
+                                hic fugit similique accusantium.</p>
+                            
+                        </div>
+                        <div class="movie-list-item">
+                            <img class="movie-list-item-img" src="/img/18.jpg" alt="">
+                            <span class="movie-list-item-title">Her</span>
+                            <p class="movie-list-item-desc">Lorem ipsum dolor sit amet consectetur adipisicing elit. At
+                                hic fugit similique accusantium.</p>
+                            
+                        </div>
+                        <div class="movie-list-item">
+                            <img class="movie-list-item-img" src="/img/19.jpg" alt="">
+                            <span class="movie-list-item-title">Her</span>
+                            <p class="movie-list-item-desc">Lorem ipsum dolor sit amet consectetur adipisicing elit. At
+                                hic fugit similique accusantium.</p>
+                            
+                        </div>
+                        <div class="movie-list-item">
+                            <img class="movie-list-item-img" src="/img/7.jpg" alt="">
+                            <span class="movie-list-item-title">Her</span>
+                            <p class="movie-list-item-desc">Lorem ipsum dolor sit amet consectetur adipisicing elit. At
+                                hic fugit similique accusantium.</p>
+                            
+                        </div>
+                        <div class="movie-list-item">
+                            <img class="movie-list-item-img" src="/img/1.jpg" alt="">
+                            <span class="movie-list-item-title">Her</span>
+                            <p class="movie-list-item-desc">Lorem ipsum dolor sit amet consectetur adipisicing elit. At
+                                hic fugit similique accusantium.</p>
+                            
+                        </div>
+                        <div class="movie-list-item">
+                            <img class="movie-list-item-img" src="/img/1.jpg" alt="">
+                            <span class="movie-list-item-title">Her</span>
+                            <p class="movie-list-item-desc">Lorem ipsum dolor sit amet consectetur adipisicing elit. At
+                                hic fugit similique accusantium.</p>
+                            
+                        </div>
+                        <div class="movie-list-item">
+                            <img class="movie-list-item-img" src="/img/1.jpg" alt="">
+                            <span class="movie-list-item-title">Her</span>
+                            <p class="movie-list-item-desc">Lorem ipsum dolor sit amet consectetur adipisicing elit. At
+                                hic fugit similique accusantium.</p>
+                            
+                        </div>
+                    </div>
+                    <i class="fas fa-chevron-right arrow"></i>
+                </div>
+            </div>
+            
+            
+            
             <div class="movie-list-container" style="background:url('/img/admin-001.png') center no-repeat; background-size: cover;">
             <h1 class="movie-list-title" style=color:#8756b0>관리자가 등록한 영화</h1>
                 <div class="movie-list-wrapper">
