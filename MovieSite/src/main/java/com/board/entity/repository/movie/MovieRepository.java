@@ -1,4 +1,4 @@
-package com.board.entity.repository;
+package com.board.entity.repository.movie;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
