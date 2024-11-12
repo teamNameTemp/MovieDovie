@@ -22,10 +22,9 @@
             </div>
             <div class="menu-list">
                 <ul class="menu-list">
-                    <li class="menu-list-item active" style="position:relative; margin-top:16px;"><a href="#">홈</a></li>
-                    <li class="menu-list-item" style="position:relative; margin-top:17px;"><a href="#">추천 영화</a></li>
-                    <li class="menu-list-item" style="position:relative; margin-top:17px;"><a href="#">장르</a></li>
-                    <li class="menu-list-item" style="position:relative; margin-top:17px;"><a href="#">인기 영화</a></li>         
+                    <li class="menu-list-item" style="position:relative; margin-top:18.5px;"><a href="#">추천 영화</a></li>
+                    <li class="menu-list-item" style="position:relative; margin-top:18.5px;"><a href="#">장르</a></li>
+                    <li class="menu-list-item" style="position:relative; margin-top:18.5px;"><a href="#">인기 영화</a></li>         
                 </ul>
               <div class="search-box" style="position:relative; margin-top:27px;">
   				<form action="/board/list" method="">
@@ -79,11 +78,7 @@
             </div>
                 </div>
             
-                <div class="toggle">
-                    <i class="fas fa-moon toggle-icon"></i>
-                    <i class="fas fa-sun toggle-icon"></i>
-                    <div class="toggle-ball"></div>
-                </div>
+                
             </div>
         </div>
     <div class="sidebar">
@@ -92,14 +87,16 @@
         <a style="text-decoration:none" href="#" class="left-menu-icon fas fa-shopping-cart"></a>
         <a style="text-decoration:none" href="#" class="left-menu-icon fas fa-user"></a>
     </div>
+   
     <div class="container">
-        <div class="content-container">
-            <div class="featured-content"
-                style="background: linear-gradient(to bottom, rgba(0,0,0,0), #FFF), url('img/PromotionBanner-001.png') center no-repeat; background-size: cover;">
-                <img class="featured-title" src="img/PromotionBanner-001.png" alt="">
-                 <p class="featured-desc" style="color:#c92fb9">11월 빼빼로 데이 초특가 SALE EVENT!!!</p>
-            </div>
-            <div class="movie-list-container">
+	        <div class="featured-content"
+	     th:style="'background: linear-gradient(to bottom, rgba(255, 255, 255, 0), #000), url(' + 'https://image.tmdb.org/t/p/original' + ${dailyMovies.get(5
+	     ).backdropPath} + ') center no-repeat; background-size:cover;'">
+	    &nbsp;&nbsp;&nbsp;
+	    <p class="featured-desc" style="color: #c92fb9">
+	     </p>
+	       
+	       <div class="movie-list-container" style="margin-top:550px; margin-left:0px; margin-right:0px">
                 <h1 class="movie-list-title">전세계가 주목하고 있는 Daily 인기 영화</h1>
 				<div class="movie-list-wrapper">
 					<div class="movie-list">
@@ -123,8 +120,13 @@
 					<i class="fas fa-chevron-right arrow"></i>
 				</div>
 			</div>
-            <div class="movie-list-container">
+	       
+	       
+	</div>
             
+			
+			
+            <div class="movie-list-container">
                 <h1 class="movie-list-title">회원이 선택한 영화!</h1>
                 <div class="movie-list-wrapper">
                     <div class="movie-list">
