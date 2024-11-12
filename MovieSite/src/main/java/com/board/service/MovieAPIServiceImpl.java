@@ -1,6 +1,7 @@
 package com.board.service;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
@@ -58,14 +59,15 @@ public class MovieAPIServiceImpl implements MovieAPIService {
 	}
 	
 	public void saveTheDataBases(List<MovieDTO> list) {
-		//todo : 영화 상세정보 뽑을 때 영어로 뽑기 줄거리만 한글
-		List<MovieEntity> movieEntities  = mapper.toEntityList(list);
-		movieRepository.saveAll(movieEntities);
-		
-		
 		for(MovieDTO dto : list) {
+			MovieEntity entity = movieRepository.findById(dto.getId()).get();
+			if(entity == null) {
+				saveTheDataBase(dto);
+			}
+			else {
 				mapperListSave(dto);
 			}
+		}
 	}
 		
 	
