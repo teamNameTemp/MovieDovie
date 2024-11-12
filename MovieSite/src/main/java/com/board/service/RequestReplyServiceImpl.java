@@ -33,16 +33,13 @@ public class RequestReplyServiceImpl implements RequestReplyService{
 	
 	
 	//댓글 등록
+	@Override
 	public void replyRegister(RequestReplyDTO requestReplyDTO) {
 		
-		RequestEntity requestEntity = requestRepository.findById(requestReplyDTO.getSeqno())
-															.orElseThrow(() -> new EntityNotFoundException("Request not found"));
-		MemberEntity memberEntity = memberRepository.findById(requestReplyDTO.getEmail())
-															.orElseThrow(() -> new EntityNotFoundException("Request not found"));
 		
 		RequestReplyEntity requestReplyEntity = RequestReplyEntity.builder()
-																.reqseqno(requestEntity.getSeqno())
-																.email(memberEntity.getEmail())
+																.reqseqno(requestReplyDTO.getReqseqno())
+																.email(requestReplyDTO.getEmail())
 																.replywriter(requestReplyDTO.getReplywriter())
 																.replyregdate(LocalDateTime.now())
 																.replycontent(requestReplyDTO.getReplycontent())
@@ -52,6 +49,7 @@ public class RequestReplyServiceImpl implements RequestReplyService{
 	
 	
 	//댓글 수정
+	@Override
 	public void replyUpdate(RequestReplyDTO requestReplyDTO) {
 		RequestReplyEntity requestReplyEntity = requestReplyRepository.findById(requestReplyDTO.getSeqno())
 																		.orElseThrow(() -> new EntityNotFoundException("Request not found"));
@@ -62,6 +60,7 @@ public class RequestReplyServiceImpl implements RequestReplyService{
 	
 	
 	//댓글 삭제
+	@Override
 	public void replyDelete(Long seqno) {
 		requestReplyRepository.deleteById(seqno);
 	}

@@ -37,7 +37,7 @@ public class RequestReplyEntity {
 	private Long reqseqno;
 	
 	@Column(name = "replywriter", length = 50, nullable = false)
-	private String replywriter;
+	private String replywriter; //memberEntity 의 nickname
 	
 	@Column(name = "replycontent", length = 1000, nullable = false)
 	private String replycontent;

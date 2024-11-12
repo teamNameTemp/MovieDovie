@@ -12,7 +12,6 @@ public interface MemberService {
 	//회원 정보 가져오기
 	public MemberDTO memberInfo(String email);
 
-	
 	//이메일 중복 확인
 	public int emailCheck(String email);
 	

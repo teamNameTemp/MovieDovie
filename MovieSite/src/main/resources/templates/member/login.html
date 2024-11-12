@@ -182,9 +182,10 @@ window.onload = async () => {
     }
 };
 
-// 이 함수는 로그인 성공 시 /board/selectGenre로 무조건 이동하게 함
+
 const login = () => {
-    document.location.href = "/board/selectGenre"; // 로그인 성공 시 이동할 페이지 설정
+	document.loginForm.action = "/member/login";
+	document.loginForm.submit();
 };
 
 // 로그인 체크 함수
@@ -217,6 +218,7 @@ const loginCheck = async () => {
         if (data.message === 'good') {
             if (document.querySelector('#rememberMe').checked) {
                 cookieManage(email.value, password.value);
+                login();
             }
             login(); // 로그인 성공 시 login 함수 호출
         } else if (data.message === 'EMAIL_NOT_FOUND') {
@@ -271,7 +273,7 @@ const cookieManage = (email, password) => {
     } else {
         document.cookie = 'password=' + password + '; path=/; max-age=0';
     }
-
+ 
     if (rememberMe.checked) {
         document.cookie = 'remember-me=true; path=/; expires=Tue, 31 Dec 2024 23:59:59 GMT';
     } else {
