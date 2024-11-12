@@ -15,8 +15,8 @@
     <div th:replace="~{/fragments/nav/sidebar::sidebar}"></div>
     
     <div class="container"> <!-- 영화 정보 -->
-        <div class="featured-content featured-background" th:style="'background: url(https://image.tmdb.org/t/p/original' + ${movie.backdropPath} + '); background-size: cover; background-position: 20% center; background-repeat: no-repeat; display: flex; align-items: flex-start;'">
-            <div class="featured-desc" style="flex: 1; padding-right: 45%;">
+        <div class="featured-content featured-background" th:style="'background: linear-gradient(to left, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.8) 70%, rgba(0, 0, 0, 0.8) 100%), url(https://image.tmdb.org/t/p/original' + ${movie.backdropPath} + '); background-size: cover; background-position: 20% center; display: flex; align-items: flex-start;'">
+            <div class="featured-desc" style="flex: 1; padding-right: 5%; padding-right: 40%;">
                 <p class="#" style="font-size: small; color: white;"> <!-- 제목위 미니정보 -->
                     <span th:each="releaseInfo : ${movie.releaseDates.results}" th:if="${releaseInfo.iso31661 == 'KR'}">
                         <span th:if="${#lists.size(releaseInfo.releaseDates) > 0}" 
@@ -27,57 +27,56 @@
                     <span th:text="'  |  ' +${movie.runtime + '분'}"></span>
                     <span th:text="'  |  ' + ${#temporals.format(movie.releaseDate, 'yyyy-MM-dd')}"></span>
                 </p> <!-- 제목위 미니정보 -->
-                <h1 class="featured-title" th:text="${movie.title}"></h1>
-                <span class="original-title" th:text="${movie.originalTitle}" style="font-size: smaller;"></span> <br>
+                <h1 class="featured-title" th:text="${movie.title}" style="display: inline;"></h1>
+                <span class="original-title" th:text="${movie.originalTitle}" style="font-size: smaller; display: inline;"></span> <br>
                 <p th:text="${movie.tagline}"></p>
                 <hr><br>
                 <p th:text="${movie.overview}"></p>
                 
                 <h2>TMDB 평점: <span th:text="${movie.voteAverage}"></span> (투표 수: <span th:text="${movie.voteCount}"></span>)</h2>
-                <div></div>
+            </div>
+            <div class="action-buttons" style="position: absolute; top: 5%; right: 15%;">
+                <button class="btn btn-light">공유</button>
+                <button class="btn btn-danger">찜</button>
             </div>
             <aside class="poster-container"> <!-- 포스터 + 버튼 영역 -->
-                <div class="action-buttons">
-                    <button class="btn btn-light">공유</button>
-                    <button class="btn btn-danger">찜</button>
-                </div>
                 <img th:if="${movie.posterPath}" 
                      th:src="${'https://image.tmdb.org/t/p/w200' + movie.posterPath}" 
                      th:alt="${movie.title}"> <br>
                 <span th:if="${#lists.size(movie.videos.results) > 0}">
                     <a th:href="@{'https://www.youtube.com/watch?v=' + ${movie.videos.results[0].key}}" target="_blank" style="color: white; text-decoration: none;">
-                        <button class="featured-button">
-                            <i class="fab fa-youtube"></i> 트레일러 보기
+                        <button class="btn-trailer">
+                            <i class="fab fa-youtube"></i> <p style="color: white;">트레일러 보기</p>
                         </button>
                     </a>
-                </span> <br><br>
+                </span>
                 <input type="button" class="featured-button" value="장바구니 담기 | 가격">
             </aside>
         </div>
 
-        <div class="featured-content">
+        <div class="featured-content-others">
             <div class="cast-crew-tabs">
-            <div class="tab-container">
-                <button id="castButton" class="tab-button active">출연</button>
-                <button id="crewButton" class="tab-button">제작진</button>
+                <div class="tab-container">
+                    <button id="castButton" class="tab-button active">출연</button>
+                    <button id="crewButton" class="tab-button">제작진</button>
                 </div>  
             </div>
             <div id="castSection" class="movie-list" style="display: block;">
                 <div class="scroll-container">
-                    <div th:each="actor, iterStat : ${#lists.size(movie.credits.cast) > 9 ? movie.credits.cast.subList(0, 9) : movie.credits.cast}" 
-                         class="person-card">
+                    <div th:each="actor, iterStat : ${#lists.size(movie.credits.cast) > 15 ? movie.credits.cast.subList(0, 15) : movie.credits.cast}" 
+                        class="person-card">
                         <div class="card">
                             <img th:if="${actor.profilePath}" 
-                                 th:src="@{'https://image.tmdb.org/t/p/w200' + ${actor.profilePath}}" 
-                                 th:alt="${actor.name + ' Profile'}">
-                            <img th:unless="${actor.profilePath}" 
-                                 src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png" 
-                                 th:alt="${actor.name + ' Profile'}">
+                                th:src="@{'https://image.tmdb.org/t/p/w200' + ${actor.profilePath}}" 
+                                th:alt="${actor.name + ' Profile'}">
+                        <img th:unless="${actor.profilePath}" 
+                                src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png" 
+                                th:alt="${actor.name + ' Profile'}">
                             <h4 th:text="${actor.name}"></h4>
                             <p th:text="${actor.characterName}"></p>
                         </div>
                     </div>
-                    <div th:if="${#lists.size(movie.credits.cast) > 9}" class="more-button-container">
+                    <div th:if="${#lists.size(movie.credits.cast) > 15}" class="more-button-container">
                         <a href="/all-actors" class="more-button">더보기</a>
                     </div>
                 </div>
@@ -85,8 +84,8 @@
 
             <div id="crewSection" class="movie-list" style="display: none;">
                 <div class="scroll-container">
-                    <div th:each="crewMember, iterStat : ${#lists.size(movie.credits.crew) > 9 ? movie.credits.crew.subList(0, 9) : movie.credits.crew}" 
-                         class="person-card">
+                    <div th:each="crewMember, iterStat : ${#lists.size(movie.credits.crew) > 15 ? movie.credits.crew.subList(0, 15) : movie.credits.crew}" 
+                        class="person-card">
                         <div class="card">
                             <img th:if="${crewMember.profilePath}" th:src="@{'https://image.tmdb.org/t/p/w200' + ${crewMember.profilePath}}" th:alt="${crewMember.name + ' Profile'}" style="width: 100%; object-fit: contain;">
                             <img th:unless="${crewMember.profilePath}" src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png" th:alt="${crewMember.name + ' Profile'}" class="person-image">
@@ -94,14 +93,14 @@
                             <p th:text="${crewMember.jobTitle}"></p>
                         </div>
                     </div>
-                    <div th:if="${#lists.size(movie.credits.crew) > 9}" class="more-button-container">
+                    <div th:if="${#lists.size(movie.credits.crew) > 15}" class="more-button-container">
                         <a href="/all-crew" class="more-button">더보기</a>
                     </div>
                 </div>
             </div>
         </div>
 
-        <div class="featured-content">
+        <div class="featured-content-others">
             <h2>리뷰</h2>
             <div class="review-header">
                 <button id="likeButton" class="btn btn-like">
@@ -119,18 +118,20 @@
             </div>
         </div>
         
-        <div class="featured-content">
+        <div class="featured-content-others">
             <h2>영상/이미지</h2>
             <div class="image-container">
             </div>
         </div>
 
-        <div class="featured-content">
+        <div class="featured-content-others">
             <h2>추천 영화</h2>
-            <div class="image-container">
-                <ul th:if="${movie.recommendedMovies != null}">
-                    <li th:each="recommendedMovie : ${movie.recommendedMovies}" th:text="${recommendedMovie.title}"></li>
-                </ul>
+            <div class="movie-list-item" th:each="movie : ${fear}">
+                <a th:href="@{/board/movieDetail(title=${movie.id})}"> <img
+                    class="movie-list-item-img" th:src="${'https://image.tmdb.org/t/p/original' + movie.backdropPath}" alt="">
+                </a> <span class="movie-list-item-title"
+                    th:text="${movie.title}"></span>
+                <p class="movie-list-item-desc" th:text="${movie.overview}"></p>
             </div>
         </div>
     </div>
