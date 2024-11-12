@@ -55,7 +55,7 @@ public class BoardController {
 	@GetMapping("/list")
 	public void getList(Model model) throws JsonMappingException, JsonProcessingException {
 		List<MovieDTO> trendList = movie.getTrendingMovies("day", 1, "ko-KR").block();
-//		List<MovieDTO> musicList = tmdb.getMoviesByGenreName("음악", 1).block();
+		List<MovieDTO> musicList = tmdb.getMoviesByGenreName("음악", 1).block();
 //		List<MovieDTO> fantasyList = tmdb.getMoviesByGenreName("판타지", 1).block();
 //		List<MovieDTO> fearList = tmdb.getMoviesByGenreName("공포", 1).block();
 //		List<MovieDTO> documentaryList = tmdb.getMoviesByGenreName("다큐멘터리", 1).block();
@@ -76,7 +76,7 @@ public class BoardController {
 //		List<MovieDTO> westList = tmdb.getMoviesByGenreName("서부", 1).block();
 //		
 		model.addAttribute("dailyMovies",trendList);
-//		model.addAttribute("music",musicList);
+		model.addAttribute("music",musicList);
 //		model.addAttribute("fantasy",fantasyList);
 //		model.addAttribute("fear",fearList);
 //		model.addAttribute("documentary",documentaryList);
