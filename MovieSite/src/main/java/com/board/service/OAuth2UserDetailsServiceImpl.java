@@ -63,7 +63,7 @@ public class OAuth2UserDetailsServiceImpl extends DefaultOAuth2UserService {
             case "facebook":
                 providerId = oAuth2User.getAttribute("id");
                 email = oAuth2User.getAttribute("email");
-                phoneNumber = oAuth2User.getAttribute("phone"); // 페이스북은 기본적으로 전화번호 제공을 제한하므로 주의
+                //phoneNumber = oAuth2User.getAttribute("phone"); // 페이스북은 기본적으로 전화번호 제공을 제한하므로 주의
                 gender = oAuth2User.getAttribute("gender");
                 birthdate = oAuth2User.getAttribute("birthday");
                 break;
@@ -99,7 +99,7 @@ public class OAuth2UserDetailsServiceImpl extends DefaultOAuth2UserService {
         session.setAttribute("birthdate", birthdate);
 
         // 회원 정보 저장 또는 업데이트
-        MemberEntity member = saveOrUpdateMember(email, provider, gender, phoneNumber);
+        MemberEntity member = saveOrUpdateMember(email, provider, gender, phoneNumber, birthdate);
 
         // 권한 설정
         List<SimpleGrantedAuthority> grantedAuthorities = List.of(new SimpleGrantedAuthority(member.getRole()));
@@ -113,12 +113,13 @@ public class OAuth2UserDetailsServiceImpl extends DefaultOAuth2UserService {
         session.setAttribute("username", member.getUsername());
         session.setAttribute("role", member.getRole());
 
+
         log.info("세션 정보 설정 완료: {}", session.getAttribute("email"));
 
         return memberOAuth2DTO;
     }
 
-    private MemberEntity saveOrUpdateMember(String email, String provider, String gender, String phoneNumber) {
+    private MemberEntity saveOrUpdateMember(String email, String provider, String gender, String phoneNumber, String birthdate) {
         return memberRepository.findById(email).orElseGet(() -> {
             MemberEntity member = MemberEntity.builder()
                     .email(email)
@@ -129,6 +130,7 @@ public class OAuth2UserDetailsServiceImpl extends DefaultOAuth2UserService {
                     .nickname("oauth")
                     .gender(gender != null ? gender : "여자") // 사용자가 지정한 값 또는 기본값 설정
                     .telno(phoneNumber != null ? phoneNumber : "01012345678") // 사용자가 지정한 값 또는 기본값 설정
+                    .birth(birthdate != null ? birthdate : "1997-01-01" )
                     .build();
             return memberRepository.save(member);
         });
