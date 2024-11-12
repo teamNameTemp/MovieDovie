@@ -1,4 +1,4 @@
-/* ===== 1. 기본 설정 ===== */
+===== 1. 기본 설정 =====
 * {
     margin: 0;
     padding: 0;
@@ -25,7 +25,9 @@ body {
 
 /* ===== 3. 영화 헤더 섹션 ===== */
 .featured-content {
-    width: 100%;
+    display: flex;
+    align-items: flex-start;
+    width: calc(100% - 20px);
     height: 0;
     background-size: cover;
     background-position: center;
@@ -33,7 +35,8 @@ body {
 }
 
 .featured-desc {
-    padding: 1px;
+    flex: 1;
+    padding-right: 20px;
     width: 100%;
 }
 
@@ -69,16 +72,16 @@ body {
 
 .movie-list {
     display: flex;
-    overflow-x: auto; /* 수평 스크롤바 추가 */
-    max-width: 100%; /* 최대 너비 설정 */
-    white-space: nowrap; /* 줄 바꿈 방지 */
+    overflow-x: auto;
+    max-width: 100%;
+    white-space: nowrap;
     overflow: hidden;
     margin-top: 20px;
 }
 
 .movie-list-item-img {
-    flex: 0 0 auto; /* 아이템이 줄어들지 않도록 설정 */
-    margin-right: 10px; /* 아이템 간격 */
+    flex: 0 0 auto;
+    margin-right: 10px;
 }
 
 .detail-row {
@@ -115,8 +118,8 @@ body {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
     gap: 20px;
-    width: 100%;
 }
+
 .arrow {
     font-size: 40px;
     position: absolute;
@@ -127,15 +130,12 @@ body {
     cursor: pointer;
 }
 
-/* 왼쪽 화살표 */
 .arrow.fa-chevron-left {
-left: 10px;  /* 왼쪽에 배치 */
-
+    left: 10px;
 }
 
-/* 오른쪽 화살표 */
 .arrow.fa-chevron-right {
-right: 10px;  /* 오른쪽에 배치 */
+    right: 10px;
 }
 
 /* ===== 5. 리뷰 섹션 ===== */
@@ -209,40 +209,100 @@ right: 10px;  /* 오른쪽에 배치 */
 }
 
 .card {
-    background: rgba(255, 255, 255, 0.1); /* 카드 배경색 */
-    border-radius: 8px; /* 모서리 둥글게 */
-    padding: 10px; /* 내부 여백 */
-    text-align: center; /* 텍스트 중앙 정렬 */
-    transition: transform 0.2s; /* 호버 효과 */
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    padding: 10px;
+    text-align: center;
+    transition: transform 0.2s;
 }
 
 .card:hover {
-    transform: scale(1.05); /* 호버 시 확대 효과 */
+    transform: scale(1.05);
 }
 
 .person-image {
-    width: 100%; /* 부모 요소의 너비에 맞춤 */
-    height: auto; /* 비율에 맞춰 높이 자동 조정 */
-    object-fit: cover; /* 비율 유지하며 잘림 방지 */
-    border-radius: 8px; /* 모서리 둥글게 */
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+    border-radius: 8px;
 }
 
 .button-container {
-    margin-bottom: 20px; /* 버튼과 섹션 간의 여백 */
+    margin-bottom: 20px;
 }
 
 .toggle-button {
-    background-color: #ff0000; /* 버튼 배경색 */
-    color: white; /* 버튼 텍스트 색상 */
-    border: none; /* 테두리 제거 */
-    padding: 10px 20px; /* 패딩 */
-    cursor: pointer; /* 커서 변경 */
-    margin-right: 10px; /* 버튼 간격 */
-    border-radius: 5px; /* 모서리 둥글게 */
+    background-color: #ff0000;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+    margin-right: 10px;
+    border-radius: 5px;
+    font-size: 1.5rem; /* h2 사이즈에 맞게 폰트 크기 조정 */
 }
 
 .toggle-button:hover {
-    background-color: #cc0000; /* 호버 시 색상 변경 */
-    cursor: pointer; /* 커서 변경 */
+    background-color: #cc0000;
 }
 
+.featured-button {
+    position: relative;
+    z-index: 10;
+}
+
+.action-buttons {
+    display: flex;
+    gap: 10px;
+    z-index: 10;
+}
+
+.poster-container {
+    flex-shrink: 0;
+}
+
+.movie-poster {
+    width: 200px;
+    height: auto;
+    max-height: 100%;
+}
+
+.original-title {
+    font-size: 0.8em;
+    color: gray;
+}
+
+.review-section {
+    margin-top: 10px;
+}
+
+textarea {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    resize: none;
+}
+
+.btn {
+    margin-top: 10px;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.btn-like {
+    background-color: #28a745;
+    color: white;
+}
+
+.btn-dislike {
+    background-color: #dc3545;
+    color: white;
+}
+
+.btn-primary {
+    background-color: #007bff;
+    color: white;
+}

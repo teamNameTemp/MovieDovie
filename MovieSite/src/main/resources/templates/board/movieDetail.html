@@ -10,40 +10,69 @@
     <script src="/js/detail.js"></script>
 </head>
 <body>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <div th:replace="~{/fragments/nav/menubar::menubar}"></div>
     <div th:replace="~{/fragments/nav/sidebar::sidebar}"></div>
     
-    <div class="container">
-        <div class="featured-content" th:style="'background: linear-gradient(to bottom, rgba(0,0,0,0), #151515), url(https://image.tmdb.org/t/p/original' + ${movie.backdropPath} + '); background-size: cover; background-position: center; background-repeat: no-repeat;'">
-            <div class="featured-desc">
-                <p class="#" style="font-size: small; color: white;">
-                    <span>나이</span>
-                    <span>장르</span>
-                    <span>분</span>
-                    <span>날짜</span>
-                </p>
+    <div class="container"> <!-- 영화 정보 -->
+        <div class="featured-content featured-background" th:style="'background: url(https://image.tmdb.org/t/p/original' + ${movie.backdropPath} + '); background-size: cover; background-position: 20% center; background-repeat: no-repeat; display: flex; align-items: flex-start;'">
+            <div class="featured-desc" style="flex: 1; padding-right: 45%;">
+                <p class="#" style="font-size: small; color: white;"> <!-- 제목위 미니정보 -->
+                    <span th:each="releaseInfo : ${movie.releaseDates.results}" th:if="${releaseInfo.iso31661 == 'KR'}">
+                        <span th:if="${#lists.size(releaseInfo.releaseDates) > 0}" 
+                                th:text="${releaseInfo.releaseDates[0].certification}" 
+                                class="badge bg-primary me-1"></span>
+                    </span>
+                    <span th:each="genre, iterStat : ${movie.genres}" th:text="${genre.name} + (iterStat.last ? '' : ' · ')"></span>
+                    <span th:text="'  |  ' +${movie.runtime + '분'}"></span>
+                    <span th:text="'  |  ' + ${#temporals.format(movie.releaseDate, 'yyyy-MM-dd')}"></span>
+                </p> <!-- 제목위 미니정보 -->
                 <h1 class="featured-title" th:text="${movie.title}"></h1>
-                <li th:each="video : ${movie.videos.results}">
-                    <span th:text="${video.name}"></span>
-                    <a th:href="@{'https://www.youtube.com/watch?v=' + ${video.key}}" target="_blank" style="color: white;">Watch</a>
-                </li><!--tmdb.html | 어떻게 이미지 파일을 클릭버튼으로 할까 -->
+                <span class="original-title" th:text="${movie.originalTitle}" style="font-size: smaller;"></span> <br>
                 <p th:text="${movie.tagline}"></p>
+                <hr><br>
                 <p th:text="${movie.overview}"></p>
-                <p th:text="${#temporals.format(movie.releaseDate, 'yyyy-MM-dd')}"></p>
-                <p>평점: <span th:text="${movie.voteAverage}"></span> (투표 수: <span th:text="${movie.voteCount}"></span>)</p>
+                
+                <h2>TMDB 평점: <span th:text="${movie.voteAverage}"></span> (투표 수: <span th:text="${movie.voteCount}"></span>)</h2>
+                <div></div>
             </div>
-            <div>
+            <aside class="poster-container"> <!-- 포스터 + 버튼 영역 -->
+                <div class="action-buttons">
+                    <button class="btn btn-light">공유</button>
+                    <button class="btn btn-danger">찜</button>
+                </div>
+                <img th:if="${movie.posterPath}" 
+                     th:src="${'https://image.tmdb.org/t/p/w200' + movie.posterPath}" 
+                     th:alt="${movie.title}"> <br>
+                <span th:if="${#lists.size(movie.videos.results) > 0}">
+                    <a th:href="@{'https://www.youtube.com/watch?v=' + ${movie.videos.results[0].key}}" target="_blank" style="color: white; text-decoration: none;">
+                        <button class="featured-button">
+                            <i class="fab fa-youtube"></i> 트레일러 보기
+                        </button>
+                    </a>
+                </span> <br><br>
                 <input type="button" class="featured-button" value="장바구니 담기 | 가격">
-            </div>
+            </aside>
         </div>
+
         <div class="featured-content">
+            <div>
+                <ul>
+                    <li>
+                        <a href="/all-actors" class="more-button">더 보기 ></a>
+                    </li>
+                    <li>
+                        <a href="/all-crew" class="more-button">더 보기 ></a>
+                    </li>
+                </ul>
+            </div>
+
             <div class="castCrewButton">
                 <button id="castButton" class="toggle-button">출연</button>
                 <button id="crewButton" class="toggle-button">제작진</button>
             </div>  
-
-            <div id="castSection" class="movie-list" style="display: block;"> <!--초기상태: 표시-->
-                <h2 class="featured-desc">출연</h2>
+            <br><hr>
+            <div id="castSection" class="movie-list" style="display: block;"> <!-- 초기상태: 표시 -->
                 <div th:each="actor, iterStat : ${#lists.size(movie.credits.cast) > 9 ? movie.credits.cast.subList(0, 9) : movie.credits.cast}" class="movie-list-item-img" style="display: inline-block; width: 150px; margin-right: 10px;">
                     <div class="card">
                         <img th:if="${actor.profilePath}" th:src="@{'https://image.tmdb.org/t/p/w200' + ${actor.profilePath}}" th:alt="${actor.name + ' Profile'}" style="width: 100%; object-fit: contain;">
@@ -57,8 +86,7 @@
                 </div>
             </div>
 
-            <div id="crewSection" class="movie-list" style="display: none;"> <!--초기상태: 숨김-->
-                <h2 class="featured-desc">제작진</h2>
+            <div id="crewSection" class="movie-list" style="display: none;"> <!-- 초기상태: 숨김 -->
                 <div th:each="crewMember, iterStat : ${#lists.size(movie.credits.crew) > 9 ? movie.credits.crew.subList(0, 9) : movie.credits.crew}" class="movie-list-item-img" style="display: inline-block; width: 150px; margin-right: 10px;">
                     <div class="card">
                         <img th:if="${crewMember.profilePath}" th:src="@{'https://image.tmdb.org/t/p/w200' + ${crewMember.profilePath}}" th:alt="${crewMember.name + ' Profile'}" style="width: 100%; object-fit: contain;">
@@ -74,103 +102,30 @@
         </div>
 
         <div class="featured-content">
-            <h2 class="featured-desc">리뷰</h2>
-            <div th:each="review : ${movie.reviews}">
-                <h3 th:text="${review.author}"></h3>
-                <p th:text="${review.content}"></p>
+            <h2>리뷰</h2>
+            <button id="likeButton" class="btn btn-like">좋아요</button>
+            <button id="dislikeButton" class="btn btn-dislike">싫어요</button>
+            <div id="reviewSection" class="review-section" style="display: none;">
+                <textarea id="reviewText" placeholder="감상평을 작성하세요..." rows="4"></textarea>
+                <button id="submitReview" class="btn btn-primary">제출</button>
             </div>
         </div>
-
+        
         <div class="featured-content">
-            <h2 class="featured-desc">영상/이미지</h2>
+            <h2>영상/이미지</h2>
             <div class="image-container">
             </div>
         </div>
 
         <div class="featured-content">
-            <h2 class="featured-desc">추천 영화</h2>
+            <h2>추천 영화</h2>
             <div class="image-container">
+                <ul th:if="${movie.recommendedMovies != null}">
+                    <li th:each="recommendedMovie : ${movie.recommendedMovies}" th:text="${recommendedMovie.title}"></li>
+                </ul>
             </div>
         </div>
     </div>
-
-	<!-- 양식 -->
-	 <table border="1">
-        <thead>
-            <tr>
-                <th>Property Name</th>
-                <th>Value</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <td>Movie Code</td>
-                <td th:text="${movie.id}"></td>
-            </tr>
-            <tr>
-                <td>title</td>
-                <td th:text="${movie.title}"></td>
-            </tr>
-            <tr>
-                <td>original title</td>
-                <td th:text="${movie.originalTitle}"></td>
-            </tr>
-            <tr>
-                <td>tagline</td>
-                <td th:text="${movie.tagline}"></td>
-            </tr>
-            <tr>
-                <td>overview</td>
-                <td th:text="${movie.overview}"></td>
-            </tr>
-            <tr>
-                <td>runtime</td>
-                <td th:text="${movie.runtime}"></td>
-            </tr>
-            <tr>
-                <td>releaseDate</td>
-                <td th:text="${movie.releaseDate}"></td>
-            </tr>
-            <tr>
-                <td>genres</td>
-                <td>
-                    <ul>
-                        <li th:each="genre : ${movie.genres}" th:text="${genre.name}"></li>
-                    </ul>
-                </td>
-            </tr>
-            <tr>
-                <td>Companies</td>
-                <td>
-                    <ul>
-                        <li th:each="company : ${movie.productionCompanies}" th:text="${company.name}"></li>
-                    </ul>
-                </td>
-            </tr>
-           <tr>
-			    <td>관람등급</td>
-			</tr>
-            <tr>
-		    <td>출연진</td>
-		    <td>
-		        <ul th:if="${movie.credits != null and movie.credits.cast != null and !movie.credits.cast.empty}">
-		            <li th:each="actor : ${movie.credits.cast}" th:text="${actor.name + ' as ' + actor.characterName}"></li>
-		        </ul>
-		        <span th:if="${movie.credits == null or movie.credits.cast == null or movie.credits.cast.empty}">정보 없음</span>
-		    </td>
-			</tr>
-		
-			<tr>
-			    <td>제작진</td>
-			    <td>
-			        <ul th:if="${movie.credits != null and movie.credits.crew != null and !movie.credits.crew.empty}">
-			            <li th:each="member : ${movie.credits.crew}" th:text="${member.name + ' - ' + member.jobTitle}"></li>
-			        </ul>
-			        <span th:if="${movie.credits == null or movie.credits.crew == null or movie.credits.crew.empty}">정보 없음</span>
-			    </td>
-			</tr>
-        </tbody>
-    </table>
 </body>
 </html>
 
