@@ -56,12 +56,7 @@
       // 슬라이드 이동 함수 (오른쪽으로)
       const slideRight = () => {
        if(currentIndex < itemCount - 12){
-    	 	currentIndex++;
-    	 	currentIndex++;
-    	 	currentIndex++;
-    	 	currentIndex++;
-    	 	currentIndex++;
-    	 	currentIndex++;
+			currentIndex+=6;
 		}
 		else if(currentIndex == itemCount - 11) {
 			currentIndex++;

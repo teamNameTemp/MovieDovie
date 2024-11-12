@@ -95,8 +95,8 @@
     <div class="container">
         <div class="content-container">
             <div class="featured-content"
-                style="background: linear-gradient(to bottom, rgba(0,0,0,0), #FFF), url('/img/PromotionBanner-001.png') center no-repeat; background-size: cover;">
-                <img class="featured-title" src="/img/PromotionBanner-001.png" alt="">
+                style="background: linear-gradient(to bottom, rgba(0,0,0,0), #FFF), url('img/PromotionBanner-001.png') center no-repeat; background-size: cover;">
+                <img class="featured-title" src="img/PromotionBanner-001.png" alt="">
                  <p class="featured-desc" style="color:#c92fb9">11월 빼빼로 데이 초특가 SALE EVENT!!!</p>
             </div>
             <div class="movie-list-container">
@@ -105,12 +105,21 @@
 					<div class="movie-list">
 						<div class="movie-list-item" th:each="movie : ${dailyMovies}">
 							<a th:href="@{/board/movieDetail(title=${movie.id})}"> <img
-								class="movie-list-item-img" th:src="${'https://image.tmdb.org/t/p/original' + movie.backdropPath}" alt="">
-							</a> <span class="movie-list-item-title"
-								th:text="${movie.title}"></span>
+								class="movie-list-item-img" th:src="${'https://image.tmdb.org/t/p/original' + movie.posterPath}" alt="">
+							</a>
+							<div class="movie-list-item-buttons">
+							    <div class="movie-list-item-button">
+							        <a class="fas fa-shopping-cart" href="#" style="font-size:20px;"></a>
+							    </div>
+							    <div class="movie-list-item-button">
+							        <a class="fas fa-bookmark" href="#" style="font-size:20px;"></a>
+							    </div>
+							</div>
 							<p class="movie-list-item-desc" th:text="${movie.overview}"></p>
 						</div>
+						
 					</div>
+					<i class="fas fa-chevron-left arrow"></i>
 					<i class="fas fa-chevron-right arrow"></i>
 				</div>
 			</div>
