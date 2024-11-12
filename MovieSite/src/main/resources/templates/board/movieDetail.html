@@ -56,58 +56,66 @@
         </div>
 
         <div class="featured-content">
-            <div>
-                <ul>
-                    <li>
-                        <a href="/all-actors" class="more-button">더 보기 ></a>
-                    </li>
-                    <li>
-                        <a href="/all-crew" class="more-button">더 보기 ></a>
-                    </li>
-                </ul>
+            <div class="cast-crew-tabs">
+            <div class="tab-container">
+                <button id="castButton" class="tab-button active">출연</button>
+                <button id="crewButton" class="tab-button">제작진</button>
+                </div>  
             </div>
-
-            <div class="castCrewButton">
-                <button id="castButton" class="toggle-button">출연</button>
-                <button id="crewButton" class="toggle-button">제작진</button>
-            </div>  
-            <br><hr>
-            <div id="castSection" class="movie-list" style="display: block;"> <!-- 초기상태: 표시 -->
-                <div th:each="actor, iterStat : ${#lists.size(movie.credits.cast) > 9 ? movie.credits.cast.subList(0, 9) : movie.credits.cast}" class="movie-list-item-img" style="display: inline-block; width: 150px; margin-right: 10px;">
-                    <div class="card">
-                        <img th:if="${actor.profilePath}" th:src="@{'https://image.tmdb.org/t/p/w200' + ${actor.profilePath}}" th:alt="${actor.name + ' Profile'}" style="width: 100%; object-fit: contain;">
-                        <img th:unless="${actor.profilePath}" src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png" th:alt="${actor.name + ' Profile'}" class="person-image">
-                        <h4 th:text="${actor.name}"></h4>
-                        <p th:text="${actor.characterName}"></p>
+            <div id="castSection" class="movie-list" style="display: block;">
+                <div class="scroll-container">
+                    <div th:each="actor, iterStat : ${#lists.size(movie.credits.cast) > 9 ? movie.credits.cast.subList(0, 9) : movie.credits.cast}" 
+                         class="person-card">
+                        <div class="card">
+                            <img th:if="${actor.profilePath}" 
+                                 th:src="@{'https://image.tmdb.org/t/p/w200' + ${actor.profilePath}}" 
+                                 th:alt="${actor.name + ' Profile'}">
+                            <img th:unless="${actor.profilePath}" 
+                                 src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png" 
+                                 th:alt="${actor.name + ' Profile'}">
+                            <h4 th:text="${actor.name}"></h4>
+                            <p th:text="${actor.characterName}"></p>
+                        </div>
                     </div>
-                </div>
-                <div th:if="${#lists.size(movie.credits.cast) > 9}">
-                    <a href="/all-actors" class="more-button">더 보기 ></a>
+                    <div th:if="${#lists.size(movie.credits.cast) > 9}" class="more-button-container">
+                        <a href="/all-actors" class="more-button">더보기</a>
+                    </div>
                 </div>
             </div>
 
-            <div id="crewSection" class="movie-list" style="display: none;"> <!-- 초기상태: 숨김 -->
-                <div th:each="crewMember, iterStat : ${#lists.size(movie.credits.crew) > 9 ? movie.credits.crew.subList(0, 9) : movie.credits.crew}" class="movie-list-item-img" style="display: inline-block; width: 150px; margin-right: 10px;">
-                    <div class="card">
-                        <img th:if="${crewMember.profilePath}" th:src="@{'https://image.tmdb.org/t/p/w200' + ${crewMember.profilePath}}" th:alt="${crewMember.name + ' Profile'}" style="width: 100%; object-fit: contain;">
-                        <img th:unless="${crewMember.profilePath}" src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png" th:alt="${crewMember.name + ' Profile'}" class="person-image">
-                        <h4 th:text="${crewMember.name}"></h4>
-                        <p th:text="${crewMember.jobTitle}"></p>
+            <div id="crewSection" class="movie-list" style="display: none;">
+                <div class="scroll-container">
+                    <div th:each="crewMember, iterStat : ${#lists.size(movie.credits.crew) > 9 ? movie.credits.crew.subList(0, 9) : movie.credits.crew}" 
+                         class="person-card">
+                        <div class="card">
+                            <img th:if="${crewMember.profilePath}" th:src="@{'https://image.tmdb.org/t/p/w200' + ${crewMember.profilePath}}" th:alt="${crewMember.name + ' Profile'}" style="width: 100%; object-fit: contain;">
+                            <img th:unless="${crewMember.profilePath}" src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png" th:alt="${crewMember.name + ' Profile'}" class="person-image">
+                            <h4 th:text="${crewMember.name}"></h4>
+                            <p th:text="${crewMember.jobTitle}"></p>
+                        </div>
                     </div>
-                </div>
-                <div th:if="${#lists.size(movie.credits.crew) > 9}">
-                    <a href="/all-crew" class="more-button">더 보기 ></a>
+                    <div th:if="${#lists.size(movie.credits.crew) > 9}" class="more-button-container">
+                        <a href="/all-crew" class="more-button">더보기</a>
+                    </div>
                 </div>
             </div>
         </div>
 
         <div class="featured-content">
             <h2>리뷰</h2>
-            <button id="likeButton" class="btn btn-like">좋아요</button>
-            <button id="dislikeButton" class="btn btn-dislike">싫어요</button>
-            <div id="reviewSection" class="review-section" style="display: none;">
-                <textarea id="reviewText" placeholder="감상평을 작성하세요..." rows="4"></textarea>
-                <button id="submitReview" class="btn btn-primary">제출</button>
+            <div class="review-header">
+                <button id="likeButton" class="btn btn-like">
+                    <i class="fas fa-thumbs-up"></i>
+                    좋아요
+                </button>
+                <button id="dislikeButton" class="btn btn-dislike">
+                    <i class="fas fa-thumbs-down"></i>
+                    싫어요
+                </button>
+            </div>
+            <div id="reviewSection" class="review-section">
+                <textarea id="reviewText" placeholder="이 영화에 대한 감상평을 작성해주세요..." rows="4"></textarea>
+                <button id="submitReview">리뷰 등록</button>
             </div>
         </div>
         
@@ -128,6 +136,3 @@
     </div>
 </body>
 </html>
-
-
-	
