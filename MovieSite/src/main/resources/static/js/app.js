@@ -59,30 +59,20 @@
 			currentIndex+=6;
 		}
 		else if(currentIndex == itemCount - 11) {
-			currentIndex++;
-    	 	currentIndex++;
-    	 	currentIndex++;
-    	 	currentIndex++;
-    	 	currentIndex++;
+			currentIndex+=5;
 		}
 		
 		else if(currentIndex == itemCount - 10) {
-			currentIndex++;
-    	 	currentIndex++;
-    	 	currentIndex++;
-    	 	currentIndex++;
+			currentIndex+=4;
 		}
 		
 		else if(currentIndex == itemCount - 9) {
-			currentIndex++;
-    	 	currentIndex++;
-    	 	currentIndex++;
+			currentIndex+=3;
     	 	
 		}
 		
 		else if(currentIndex == itemCount - 8) {
-			currentIndex++;
-    	 	currentIndex++;
+			currentIndex+=2;
 		}
 		
 		else if(currentIndex == itemCount - 7) {
