@@ -73,8 +73,11 @@
         }
 
         function saveAllMovies() {
-        	fetch("/make/movies/save-all",{
-        		method:"post"
+        	fetch("/make/movie/save-all",{
+        		method:"post",
+        		headers: {
+	                     'Content-Type': 'application/json',
+	                 }
         	}).then(response => response.json())
         	.then(result =>{
         		
@@ -84,7 +87,7 @@
         }
 
         function saveMovie(movieId) {
-            fetch("/make/movies/save", { 
+            fetch("/make/movie/save", { 
 	            	method: 'POST',
 	            	 headers: {
 	                     'Content-Type': 'application/x-www-form-urlencoded',
@@ -103,17 +106,30 @@
                 });
         }
         
-        function press (){
-        	 if (event.key === 'Enter') {
-        	       	 searchKeyword();
-        	        }
+        function saveGenre(genreNm) {
+            fetch("/make/movie/genre", {
+                method: "POST",
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({ genre: genreNm })
+            }).then(response => response.json())
+            .then(result => {
+                if(result.message === "good") {
+                    alert(`영화 장르 "${genreNm}"의 최신 20개 영화가 저장되었습니다.`);
+                } else {
+                    alert('장르 저장에 실패했습니다.');
+                }
+            }).catch(error => {
+                console.error('Error:', error);
+                alert('장르 저장 중 오류가 발생했습니다.');
+            });
         }
+        
         
     </script>
 </head>
 <body>
 	<label for="searchKeyword">검색 키워드</label>
-	<input type="text" id="searchKeyword" onkeydown="press()">
+	<input type="text" id="searchKeyword" onkeydown="if(event.key === 'Enter') searchKeyword()">
 	<button onclick="searchKeyword()">검색</button>
 
 	<table id="movieTbl" style="display:none;">
@@ -147,40 +163,18 @@
         </tbody>
     </table>
 
-	<br>
-    <button onclick="searchTrend()">TMDB 최신 트렌드 영화 불러오기</button>
-	<br>
-    <button onclick="searchTrend()">TMDB 최신 트렌드 영화 불러오기</button>
-	<br>
-    <button onclick="searchTrend()">TMDB 최신 트렌드 영화 불러오기</button>
-	<br>
-    <button onclick="searchTrend()">TMDB 최신 트렌드 영화 불러오기</button>
-	<br>
-    <button onclick="searchTrend()">TMDB 최신 트렌드 영화 불러오기</button>
-	<br>
-    <button onclick="searchTrend()">TMDB 최신 트렌드 영화 불러오기</button>
-	<br>
-    <button onclick="searchTrend()">TMDB 최신 트렌드 영화 불러오기</button>
-	<br>
-    <button onclick="searchTrend()">TMDB 최신 트렌드 영화 불러오기</button>
-	<br>
-    <button onclick="searchTrend()">TMDB 최신 트렌드 영화 불러오기</button>
-	<br>
-    <button onclick="searchTrend()">TMDB 최신 트렌드 영화 불러오기</button>
-	<br>
-    <button onclick="searchTrend()">TMDB 최신 트렌드 영화 불러오기</button>
-	<br>
-    <button onclick="searchTrend()">TMDB 최신 트렌드 영화 불러오기</button>
-	<br>
-    <button onclick="searchTrend()">TMDB 최신 트렌드 영화 불러오기</button>
-	<br>
-    <button onclick="searchTrend()">TMDB 최신 트렌드 영화 불러오기</button>
-	<br>
-    <button onclick="searchTrend()">TMDB 최신 트렌드 영화 불러오기</button>
-	<br>
-    <button onclick="searchTrend()">TMDB 최신 트렌드 영화 불러오기</button>
-	<br>
-    <button onclick="searchTrend()">TMDB 최신 트렌드 영화 불러오기</button>
+	<br><br><br>
+	<h2>장르 별 영화 데이터 저장 (각 장르별 최신 20개 저장)</h2>
+	<!-- 
+		<div class="genre-buttons">
+		    <th:block th:each="genre : ${genres}">
+		        <button class="btn btn-genre" th:text="${genre.key}"
+		                th:onclick="saveGenre([[${genre.key}]])">
+		        </button>
+		    </th:block>
+		</div>
+	 -->
+</div>
     
 </body>
 </html>

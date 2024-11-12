@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -26,11 +27,11 @@ public class MakeController {
     private final TmdbAPIServiceImpl tmdb;
     
     @GetMapping("/make/movie")
-    public void getMake() {
-        
+    public void getMake(Model model) {
+    	model.addAttribute("genres",tmdb.getGenreList().block());
     }
     
-    @PostMapping("/make/movies/save-all")
+    @PostMapping("/make/movie/save-all")
     public void postSaveAll(){
     	  List<MovieDTO> list = movie.getTrendingMovies("day", 1, "ko-KR").block();
           List<MovieDTO> temp = new ArrayList<>();
@@ -44,7 +45,7 @@ public class MakeController {
     	
     }
     
-    @PostMapping("/make/movies/save")
+    @PostMapping("/make/movie/save")
     @ResponseBody
     public Map<String,String> postMovies(@RequestParam("movieId") Long movieId) {
     	MovieDTO dto = movie.getMovieDetails(movieId, "ko-KR").block();
@@ -73,5 +74,18 @@ public class MakeController {
     public List<MovieDTO> postSearchTrend() {
     	List<MovieDTO> list = tmdb.getTrendingMovies("day", 1, "ko-KR").block();
     	return list;
+    }
+    
+    @PostMapping("/make/movie/genre")
+    @ResponseBody
+    public Map<String,String> postSaveGenre(@RequestParam("genre") String genreNm){
+        log.info(genreNm);
+        Map<String,String> map = new HashMap<>();
+        
+        List<MovieDTO> list = tmdb.getMoviesByGenreName(genreNm, 1).block();
+        movie.saveTheDataBases(list);
+        
+        map.put("message", "good");
+        return map;
     }
 }
