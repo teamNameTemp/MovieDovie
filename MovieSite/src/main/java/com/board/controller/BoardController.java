@@ -39,46 +39,46 @@ public class BoardController {
 	@GetMapping("/list")
 	public void getList(Model model) throws JsonMappingException, JsonProcessingException {
 		List<MovieDTO> trendList = movie.getTrendingMovies("day", 1, "ko-KR").block();
-		List<MovieDTO> musicList = tmdb.getMoviesByGenreName("음악", 1).block();
-		List<MovieDTO> fantasyList = tmdb.getMoviesByGenreName("판타지", 1).block();
-		List<MovieDTO> fearList = tmdb.getMoviesByGenreName("공포", 1).block();
-		List<MovieDTO> documentaryList = tmdb.getMoviesByGenreName("다큐멘터리", 1).block();
-		List<MovieDTO> familyList = tmdb.getMoviesByGenreName("가족", 1).block();
-		List<MovieDTO> warList = tmdb.getMoviesByGenreName("전쟁", 1).block();
-		List<MovieDTO> adventureList = tmdb.getMoviesByGenreName("모험", 1).block();
-		List<MovieDTO> crimeList = tmdb.getMoviesByGenreName("범죄", 1).block();
-		List<MovieDTO> historyList = tmdb.getMoviesByGenreName("역사", 1).block();
-		List<MovieDTO> animationList = tmdb.getMoviesByGenreName("애니메이션", 1).block();
-		List<MovieDTO> thrillerList = tmdb.getMoviesByGenreName("스릴러", 1).block();
-		List<MovieDTO> mysteryList = tmdb.getMoviesByGenreName("미스터리", 1).block();
-		List<MovieDTO> actionList = tmdb.getMoviesByGenreName("액션", 1).block();
-		List<MovieDTO> comedyList = tmdb.getMoviesByGenreName("코미디", 1).block();
-		List<MovieDTO> tvMovieList = tmdb.getMoviesByGenreName("TV 영화", 1).block();
-		List<MovieDTO> romanceList = tmdb.getMoviesByGenreName("로맨스", 1).block();
-		List<MovieDTO> sfList = tmdb.getMoviesByGenreName("SF", 1).block();
-		List<MovieDTO> dramaList = tmdb.getMoviesByGenreName("드라마", 1).block();
-		List<MovieDTO> westList = tmdb.getMoviesByGenreName("서부", 1).block();
-		
+//		List<MovieDTO> musicList = tmdb.getMoviesByGenreName("음악", 1).block();
+//		List<MovieDTO> fantasyList = tmdb.getMoviesByGenreName("판타지", 1).block();
+//		List<MovieDTO> fearList = tmdb.getMoviesByGenreName("공포", 1).block();
+//		List<MovieDTO> documentaryList = tmdb.getMoviesByGenreName("다큐멘터리", 1).block();
+//		List<MovieDTO> familyList = tmdb.getMoviesByGenreName("가족", 1).block();
+//		List<MovieDTO> warList = tmdb.getMoviesByGenreName("전쟁", 1).block();
+//		List<MovieDTO> adventureList = tmdb.getMoviesByGenreName("모험", 1).block();
+//		List<MovieDTO> crimeList = tmdb.getMoviesByGenreName("범죄", 1).block();
+//		List<MovieDTO> historyList = tmdb.getMoviesByGenreName("역사", 1).block();
+//		List<MovieDTO> animationList = tmdb.getMoviesByGenreName("애니메이션", 1).block();
+//		List<MovieDTO> thrillerList = tmdb.getMoviesByGenreName("스릴러", 1).block();
+//		List<MovieDTO> mysteryList = tmdb.getMoviesByGenreName("미스터리", 1).block();
+//		List<MovieDTO> actionList = tmdb.getMoviesByGenreName("액션", 1).block();
+//		List<MovieDTO> comedyList = tmdb.getMoviesByGenreName("코미디", 1).block();
+//		List<MovieDTO> tvMovieList = tmdb.getMoviesByGenreName("TV 영화", 1).block();
+//		List<MovieDTO> romanceList = tmdb.getMoviesByGenreName("로맨스", 1).block();
+//		List<MovieDTO> sfList = tmdb.getMoviesByGenreName("SF", 1).block();
+//		List<MovieDTO> dramaList = tmdb.getMoviesByGenreName("드라마", 1).block();
+//		List<MovieDTO> westList = tmdb.getMoviesByGenreName("서부", 1).block();
+//		
 		model.addAttribute("dailyMovies",trendList);
-		model.addAttribute("music",musicList);
-		model.addAttribute("fantasy",fantasyList);
-		model.addAttribute("fear",fearList);
-		model.addAttribute("documentary",documentaryList);
-		model.addAttribute("family",familyList);
-		model.addAttribute("war",warList);
-		model.addAttribute("adventure",adventureList);
-		model.addAttribute("crime",crimeList);
-		model.addAttribute("history",historyList);
-		model.addAttribute("animation",animationList);
-		model.addAttribute("thriller",thrillerList);
-		model.addAttribute("mystery",mysteryList);
-		model.addAttribute("action",actionList);
-		model.addAttribute("comedy",comedyList);
-		model.addAttribute("tvMovie",tvMovieList);
-		model.addAttribute("romance",romanceList);
-		model.addAttribute("sf",sfList);
-		model.addAttribute("drama",dramaList);
-		model.addAttribute("west",westList);
+//		model.addAttribute("music",musicList);
+//		model.addAttribute("fantasy",fantasyList);
+//		model.addAttribute("fear",fearList);
+//		model.addAttribute("documentary",documentaryList);
+//		model.addAttribute("family",familyList);
+//		model.addAttribute("war",warList);
+//		model.addAttribute("adventure",adventureList);
+//		model.addAttribute("crime",crimeList);
+//		model.addAttribute("history",historyList);
+//		model.addAttribute("animation",animationList);
+//		model.addAttribute("thriller",thrillerList);
+//		model.addAttribute("mystery",mysteryList);
+//		model.addAttribute("action",actionList);
+//		model.addAttribute("comedy",comedyList);
+//		model.addAttribute("tvMovie",tvMovieList);
+//		model.addAttribute("romance",romanceList);
+//		model.addAttribute("sf",sfList);
+//		model.addAttribute("drama",dramaList);
+//		model.addAttribute("west",westList);
 		
 	}
 	// 장르 필터
