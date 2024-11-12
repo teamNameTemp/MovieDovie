@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.board.dto.ReplyInterface;
 import com.board.dto.movie.MovieDTO;
+import com.board.entity.movie.MovieEntity;
 import com.board.service.BoardService;
 import com.board.service.MovieAPIServiceImpl;
 import com.board.service.TmdbAPIServiceImpl;
@@ -75,6 +76,11 @@ public class BoardController {
 //		List<MovieDTO> dramaList = tmdb.getMoviesByGenreName("드라마", 1).block();
 //		List<MovieDTO> westList = tmdb.getMoviesByGenreName("서부", 1).block();
 //		
+		
+		Map<String,Object> map = movie.getMovieDetails(trendList.get(0).getId());
+		log.info(map);
+		log.info(map.get("movie"));
+		
 		model.addAttribute("dailyMovies",trendList);
 		model.addAttribute("music",musicList);
 //		model.addAttribute("fantasy",fantasyList);
@@ -106,9 +112,11 @@ public class BoardController {
 	
 	//영화상세
 	@GetMapping("/movieDetail")
-	public void getView(Model model, @RequestParam("title") Long id) throws JsonMappingException, JsonProcessingException{
-		MovieDTO detail = tmdb.getMovieDetails(id, "ko-KR").block();
-		model.addAttribute("movie",detail);
+	public void getView(Model model, @RequestParam("movieId") Long id) throws JsonMappingException, JsonProcessingException{
+//		MovieDTO detail = tmdb.getMovieDetails(id, "ko-KR").block();
+		Map<String,Object> map = movie.getMovieDetails(id);
+		log.info(map);
+		log.info(map.get("movie"));
 	}
 	
 //	public void getmovie(@RequestParam("seqno") Long seqno, @RequestParam("page") int pageNum,

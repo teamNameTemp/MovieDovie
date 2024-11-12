@@ -74,14 +74,18 @@
 
         function saveAllMovies() {
         	fetch("/make/movie/save-all",{
-        		method:"post",
+        		method:"POST",
         		headers: {
 	                     'Content-Type': 'application/json',
 	                 }
         	}).then(response => response.json())
         	.then(result =>{
-        		
-        		alert("데이터가 저장되었습니다.");
+        		if(result.message == "good"){
+	        		alert("데이터가 저장되었습니다.");
+        		}
+        		else{
+        			alert("서버 오류로 저장하지 못했습니다.")
+        		}
         	})
         	
         }
@@ -165,15 +169,6 @@
 
 	<br><br><br>
 	<h2>장르 별 영화 데이터 저장 (각 장르별 최신 20개 저장)</h2>
-	<!-- 
-		<div class="genre-buttons">
-		    <th:block th:each="genre : ${genres}">
-		        <button class="btn btn-genre" th:text="${genre.key}"
-		                th:onclick="saveGenre([[${genre.key}]])">
-		        </button>
-		    </th:block>
-		</div>
-	 -->
 </div>
     
 </body>

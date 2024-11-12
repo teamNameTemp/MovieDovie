@@ -122,7 +122,7 @@
 				<div class="movie-list-wrapper">
 					<div class="movie-list">
 						<div class="movie-list-item" th:each="movie : ${dailyMovies}">
-							<a th:href="@{/board/movieDetail(title=${movie.id})}"> <img
+							<a th:href="@{/board/movieDetail(movieId=${movie.id})}"> <img
 								class="movie-list-item-img"
 								th:src="${'https://image.tmdb.org/t/p/original' + movie.posterPath}"
 								alt="">
