@@ -32,7 +32,8 @@ public class MakeController {
     }
     
     @PostMapping("/make/movie/save-all")
-    public void postSaveAll(){
+    @ResponseBody
+    public Map<String,Object> postSaveAll(){
     	  List<MovieDTO> list = movie.getTrendingMovies("day", 1, "ko-KR").block();
           List<MovieDTO> temp = new ArrayList<>();
           
@@ -42,7 +43,11 @@ public class MakeController {
           }
 
           movie.saveTheDataBases(temp);
+    	Map<String,Object> data = new HashMap<>();
     	
+    	data.put("message", "good");
+    	
+    	return data;
     }
     
     @PostMapping("/make/movie/save")

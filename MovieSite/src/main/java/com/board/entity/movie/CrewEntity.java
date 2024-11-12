@@ -11,6 +11,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -25,13 +26,14 @@ import lombok.NoArgsConstructor;
 @Builder
 public class CrewEntity {
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
+	@GeneratedValue(strategy = GenerationType.SEQUENCE,generator="CREW_SEQ")
+	@SequenceGenerator(name="CREW_SEQ",sequenceName = "crew_seq",initialValue = 1,allocationSize = 1)
 	private Long crewseqno;
 	
 	@ManyToOne(fetch=FetchType.LAZY)
 	@OnDelete(action=OnDeleteAction.CASCADE)
-	@JoinColumn(name="seqno")
-	private CreditEntity creditId;
+	@JoinColumn(name="movieId")
+	private MovieEntity movieId;
 	
 	@Column(name="crewid")
 	private Long crewId;
