@@ -11,9 +11,10 @@ import com.board.entity.MemberEntity;
 //각 Repository에 extends JpaRepository<entity,반환 값(String)> 상속 받아서 사용할 것
 public interface MemberRepository extends JpaRepository<MemberEntity, String>{
 
-	Optional<MemberEntity> findByEmail(String email);
-	//쿼리문 구현
-	//JPA 구문(ORM) , native sql 등
+	public Optional<MemberEntity> findByEmail(String email);
+	public Optional<MemberEntity> findByUsernameAndTelno(String username, String telno);
+	public Optional<MemberEntity> findByEmailAndUsername(String email, String username);
+
 	
 	//관리자페이지 - 통계 : 회원 가입한 날 확인
 	@Query(value = "SELECT " +
@@ -22,7 +23,4 @@ public interface MemberRepository extends JpaRepository<MemberEntity, String>{
 	        "  COUNT(m.email) AS totalMember FROM tbl_member m", nativeQuery = true)
 	public List<Object[]> signupResult();
 	
-	
-	public Optional<MemberEntity> findByUsernameAndTelno(String username, String telno);
-	public Optional<MemberEntity> findByEmailAndUsername(String email, String username);
 } 

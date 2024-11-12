@@ -460,8 +460,8 @@ const boardDelete = () => {
 		        loadReplies();
 		    });
 		
-		 	// 로그인한 사용자의 ID (예시로 'user1'을 사용, 실제로는 로그인한 사용자의 ID로 설정)
-		    const loggedInUser = 'user1'; 
+		 	// 로그인한 사용자의 이메일
+		    const loggedInUser = '[[${email}]]'; 
 		    
 		    
 		    // 댓글 목록을 불러오는 함수
@@ -491,7 +491,7 @@ const boardDelete = () => {
 		        // 댓글이 없을 때 메세지 표시
 		        if (replies.length === 0) {
 		            const noRepliesMessage = document.createElement('p');
-		            noRepliesMessage.textContent = '\n아직 작성된 댓글이 없습니다.';
+		            noRepliesMessage.textContent = '아직 작성된 댓글이 없습니다.';
 		            noRepliesMessage.style.textAlign = 'center';  // 가운데 정렬
 		            noRepliesMessage.style.color = '#888'; // 색상 설정 (예: 회색)
 		            replyListContainer.appendChild(noRepliesMessage);
@@ -508,7 +508,7 @@ const boardDelete = () => {
 		            
 
 		            // 내가 작성한 댓글인지 확인
-		            const isMyComment = reply.replywriter === loggedInUser;
+		            const isMyComment = reply.email === loggedInUser;
 
 		        	// 댓글 HTML 구조
 		            replyElement.innerHTML = `
@@ -546,32 +546,29 @@ const boardDelete = () => {
 			 
 		    // 댓글 등록 함수
 		    document.getElementById('registerReplyBtn').addEventListener('click', function() {
-		        const writer = document.getElementById('replyWriter').value;
 		        const content = document.getElementById('replyContent').value;
 		
-		        if (!writer || !content) {
-		            alert("작성자와 댓글 내용을 입력하세요.");
+		        if (!content) {
+		            alert("댓글 내용을 입력하세요.");
 		            return;
 		        }
 		
-		        fetch('/master/requestReply', {
+		        fetch('/master/requestReply?kind=I', {
 		            method: 'POST',
 		            headers: {
 		                'Content-Type': 'application/json'
 		            },
 		            body: JSON.stringify({
-		                kind: 'I', // 댓글 등록
 		                reqseqno: Number('[[${view.seqno}]]'), // 게시글 seqno 
-		                replywriter: writer,
-		                replycontent: content
+		                replywriter: '[[${nickname}]]',
+		                replycontent: content,
+		                email: '[[${email}]]'
 		            })
 		        })
 		        .then(response => response.json())
 		        .then(data => {
-		            // 댓글 등록 후 목록을 다시 불러옵니다.
-		            loadReplies();
-		            document.getElementById('replyWriter').value = '';
-		            document.getElementById('replyContent').value = '';
+		            loadReplies(); //댓글 목록 새로 고침
+		            document.getElementById('replyContent').value = ''; //텍스트박스 초기화
 		        })
 		        .catch(error => {
 		            console.error('댓글 등록 실패:', error);
@@ -590,6 +587,7 @@ const boardDelete = () => {
 		        // 버튼 텍스트를 "수정 등록"으로 변경
 		        editButton.textContent = "수정 등록";
 		        editButton.setAttribute("onclick", `saveEditedReply(${seqno})`);
+		        
 		    }
 
 		    // 댓글 수정 후 저장 함수
@@ -598,20 +596,18 @@ const boardDelete = () => {
 		        const newContent = editableContent.innerText.trim();  // 수정된 텍스트
 
 		        if (newContent === '') { alert('댓글 내용을 입력해주세요.'); return;}
-
+		        
 		        // 서버로 수정된 내용 전송
-		        fetch('/master/requestReply', {
+		        fetch('/master/requestReply?kind=U', {
 		            method: 'POST',
 		            headers: { 'Content-Type': 'application/json' },
 		            body: JSON.stringify({
-		                kind: 'U', // 댓글 수정
 		                seqno: seqno,
 		                replycontent: newContent
 		            })
 		        })
 		        .then(response => response.json())
 		        .then(data => {
-		            // 수정 후 목록을 다시 불러옵니다.
 		            loadReplies();
 		        })
 		        .catch(error => {console.error('댓글 수정 실패:', error);});
@@ -620,7 +616,7 @@ const boardDelete = () => {
 		        editableContent.contentEditable = "false";
 		        
 		     	// 버튼 텍스트를 "수정"으로 돌아가게 변경
-		        const editButton = document.getElementById(`editBtn${seqno}`);
+		     	const editButton = document.getElementById(`editBtn${seqno}`);
 		        editButton.textContent = "수정";
 		        editButton.setAttribute("onclick", `toggleEditReply(${seqno})`);
 		    }
@@ -629,13 +625,12 @@ const boardDelete = () => {
 		    // 댓글 삭제 함수
 		    function deleteReply(seqno) {
 		        if (confirm('정말로 댓글을 삭제하시겠습니까?')) {
-		            fetch('/master/requestReply', {
+		            fetch('/master/requestReply?kind=D', {
 		                method: 'POST',
 		                headers: {
 		                    'Content-Type': 'application/json'
 		                },
 		                body: JSON.stringify({
-		                    kind: 'D', // 댓글 삭제
 		                    seqno: seqno
 		                })
 		            })

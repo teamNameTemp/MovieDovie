@@ -2,7 +2,6 @@ package com.board.service;
 
 import java.time.LocalDateTime;
 import java.util.*;
-
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
@@ -10,123 +9,129 @@ import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
-
 import com.board.dto.MemberOAuth2DTO;
 import com.board.entity.MemberEntity;
 import com.board.entity.repository.MemberRepository;
-
 import jakarta.servlet.http.HttpSession;
 import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import lombok.AllArgsConstructor;
+import lombok.extern.log4j.Log4j2;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
+import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
+import org.springframework.security.oauth2.core.user.OAuth2User;
+import org.springframework.stereotype.Service;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 @Service
 @AllArgsConstructor
 @Log4j2
-public class OAuth2UserDetailsServiceImpl extends DefaultOAuth2UserService{
-	
-	private final PasswordEncoder pwdEncoder;
-	private final MemberRepository memberRepository;
-	private final HttpSession session;
-	
-	@Override
-	public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
-		
-		OAuth2User oAuth2User = super.loadUser(userRequest);
-		
-		String provider = userRequest.getClientRegistration().getRegistrationId();
-		String providerId = oAuth2User.getAttribute("sub");
-		String email = null;
-		
-        // 네이버
-        if ("naver".equals(provider)) {
-            Map<String, Object> response = oAuth2User.getAttribute("response");
-            providerId = (String) response.get("id");
-            email = (String) response.get("email");
-        }
-        // 페이스북
-        else if ("facebook".equals(provider)) {
-            // 페이스북에서 제공하는 속성 확인 및 예외 처리
-            providerId = oAuth2User.getAttribute("id");
-            email = oAuth2User.getAttribute("email");
-            
-            if (email == null) {
-                throw new OAuth2AuthenticationException("Facebook OAuth2 authentication failed: Email permission is required.");
-            }
-        }
-        // 카카오
-        else if ("kakao".equals(provider)) {
-            Map<String, Object> kakaoAccount = oAuth2User.getAttribute("kakao_account");
-            providerId = String.valueOf(oAuth2User.getAttribute("id"));
-            email = (String) kakaoAccount.get("email");
-        }
-        // 기본 제공자 설정 (구글)
-        else {
-            providerId = oAuth2User.getAttribute("sub");
-            email = oAuth2User.getAttribute("email");
-        }
-		
-		log.info("------------------------ OAuth2 로그인 단계 : Provider 정보 확보({})  ------------------------",provider); //로그인 제공자 예)네이버, 구글
-		log.info("------------------------ OAuth2 로그인 단계 : ProviderID 정보 확보({})  ------------------------",providerId); //로그인 제공자에서 받은 ID
-		log.info("------------------------ OAuth2 로그인 단계 : email 정보 확보({})  ------------------------",email);
-				
-		oAuth2User.getAttributes().forEach((k,v)-> { 
-			log.info(k + ":" + v);
-		});
-		
-		//회원 정보를 읽어 들임
-		MemberEntity member = saveSocialMember(email,provider);
-		
-		//Role 값 읽어 들임...
-		List<SimpleGrantedAuthority> grantedAuthorities = new ArrayList<>();
-		SimpleGrantedAuthority grantedAuthority = new SimpleGrantedAuthority(member.getRole());
-		grantedAuthorities.add(grantedAuthority);
-		
-		log.info("------------------------ OAuth2 로그인 단계 : Role 설정 ------------------------");
-		
-		MemberOAuth2DTO memberOAuth2DTO = new MemberOAuth2DTO();
-		//attributes, authorities, name을 MemberOAuth2DTO에 넣어 줌. 
-		memberOAuth2DTO.setAttribute(oAuth2User.getAttributes());
-		memberOAuth2DTO.setAuthorities(grantedAuthorities);
-		memberOAuth2DTO.setName(member.getUsername());
-		
-		session.setAttribute("email", email);
-		session.setAttribute("username", member.getUsername());
-		session.setAttribute("role", member.getRole());
+public class OAuth2UserDetailsServiceImpl extends DefaultOAuth2UserService {
 
-		
-		log.info("------------------------ OAuth2 로그인 단계 : 세션 설정 ------------------------");
-		log.info("------------------------ 세션 email : {}", (String)session.getAttribute("email"));
-		log.info("------------------------ 세션 username : {}", (String)session.getAttribute("username"));
-	
-		
-		return memberOAuth2DTO;		
-		
-	}
-	
-	private MemberEntity saveSocialMember(String email,String provider) {
-		
-		//구글 회원 계정으로 로그인 한 회원의 경우 사이트 운영에 필요한 최소한의 정보를 
-		//가공해서 tbl_member에 입력해야 함.
-		
-		//기존 회원이 SNS 로그인을 할 경우 기존 회원 정보를 리턴함
-		Optional<MemberEntity> result = memberRepository.findById(email);
-		if(result.isPresent()) {
-			return result.get();
-		}
-		
-		MemberEntity member = MemberEntity.builder()
-										.email(email)
-										.username(provider.toUpperCase() + "회원")
-										.password(pwdEncoder.encode("12345"))
-										.role("USER")
-										.regdate(LocalDateTime.now())
-										.nickname(provider)
-										.gender(provider)
-										.telno(provider)
-										.build();
-		memberRepository.save(member);   
-		return member;
-	}
+    private final PasswordEncoder pwdEncoder;
+    private final MemberRepository memberRepository;
+    private final HttpSession session;
 
+    @Override
+    public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
+        OAuth2User oAuth2User = super.loadUser(userRequest);
+
+        String provider = userRequest.getClientRegistration().getRegistrationId();
+        String providerId = null;
+        String email = null;
+        String phoneNumber = null;
+        String gender = null;
+        String birthdate = null;
+
+        // 제공자별 사용자 정보 매핑
+        switch (provider) {
+            case "naver":
+                Map<String, Object> naverResponse = oAuth2User.getAttribute("response");
+                providerId = (String) naverResponse.get("id");
+                email = (String) naverResponse.get("email");
+                phoneNumber = (String) naverResponse.get("mobile");
+                gender = (String) naverResponse.get("gender");
+                birthdate = (String) naverResponse.get("birthyear") + "-" + (String) naverResponse.get("birthday");
+                break;
+
+            case "facebook":
+                providerId = oAuth2User.getAttribute("id");
+                email = oAuth2User.getAttribute("email");
+                //phoneNumber = oAuth2User.getAttribute("phone"); // 페이스북은 기본적으로 전화번호 제공을 제한하므로 주의
+                gender = oAuth2User.getAttribute("gender");
+                birthdate = oAuth2User.getAttribute("birthday");
+                break;
+
+//            case "kakao":
+//                Map<String, Object> kakaoAccount = oAuth2User.getAttribute("kakao_account");
+//                providerId = String.valueOf(oAuth2User.getAttribute("id"));
+//                email = (String) kakaoAccount.get("email");
+//                phoneNumber = (String) kakaoAccount.get("phone_number");
+//                gender = (String) kakaoAccount.get("gender");
+//                birthdate = (String) kakaoAccount.get("birthday");
+//                break;
+
+            default: // 기본은 구글
+                providerId = oAuth2User.getAttribute("sub");
+                email = oAuth2User.getAttribute("email");
+                gender = oAuth2User.getAttribute("gender");
+                birthdate = oAuth2User.getAttribute("birthdate");
+                break;
+        }
+
+        log.info("=========================================== OAuth2 로그인 단계: Provider 정보 ({})", provider);
+        log.info("=========================================== OAuth2 로그인 단계: ProviderID 정보 ({})", providerId);
+        log.info("=========================================== OAuth2 로그인 단계: Email 정보 ({})", email);
+        log.info("=========================================== OAuth2 로그인 단계: phoneNum 정보 ({})", phoneNumber);
+        log.info("=========================================== OAuth2 로그인 단계: gender 정보 ({})", gender);
+        log.info("=========================================== OAuth2 로그인 단계: birth 정보 ({})", birthdate);
+
+        // 세션에 사용자 정보 저장
+        session.setAttribute("email", email);
+        session.setAttribute("phoneNumber", phoneNumber);
+        session.setAttribute("gender", gender);
+        session.setAttribute("birthdate", birthdate);
+
+        // 회원 정보 저장 또는 업데이트
+        MemberEntity member = saveOrUpdateMember(email, provider, gender, phoneNumber, birthdate);
+
+        // 권한 설정
+        List<SimpleGrantedAuthority> grantedAuthorities = List.of(new SimpleGrantedAuthority(member.getRole()));
+
+        // OAuth2User DTO 생성 및 세션 설정
+        MemberOAuth2DTO memberOAuth2DTO = new MemberOAuth2DTO();
+        memberOAuth2DTO.setAttribute(oAuth2User.getAttributes());
+        memberOAuth2DTO.setAuthorities(grantedAuthorities);
+        memberOAuth2DTO.setName(member.getUsername());
+
+        session.setAttribute("username", member.getUsername());
+        session.setAttribute("role", member.getRole());
+
+        log.info("세션 정보 설정 완료: {}", session.getAttribute("email"));
+
+        return memberOAuth2DTO;
+    }
+
+    private MemberEntity saveOrUpdateMember(String email, String provider, String gender, String phoneNumber, String birthdate) {
+        return memberRepository.findById(email).orElseGet(() -> {
+            MemberEntity member = MemberEntity.builder()
+                    .email(email)
+                    .username(provider.toUpperCase() + "회원")
+                    .password(pwdEncoder.encode("12345")) // 임시 비밀번호 설정
+                    .role("USER")
+                    .regdate(LocalDateTime.now())
+                    .nickname("oauth")
+                    .gender(gender != null ? gender : "여자") // 사용자가 지정한 값 또는 기본값 설정
+                    .telno(phoneNumber != null ? phoneNumber : "01012345678") // 사용자가 지정한 값 또는 기본값 설정
+                    .birth(birthdate != null ? birthdate : "1997-01-01" )
+                    .build();
+            return memberRepository.save(member);
+        });
+    }
 }

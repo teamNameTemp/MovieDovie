@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.board.dto.MemberDTO;
 import com.board.dto.RequestReplyDTO;
 import com.board.entity.RequestEntity;
 import com.board.entity.RequestReplyEntity;
@@ -33,6 +34,7 @@ import com.board.service.RequestReplyService;
 import com.board.service.RequestService;
 import com.board.util.PageUtil;
 
+import jakarta.servlet.http.HttpSession;
 import lombok.AllArgsConstructor;
 
 
@@ -76,8 +78,17 @@ public class MasterController {
 	//회원 요청 내용 상세 보기
 	@GetMapping("/memberRequestView")
 	public void getMemberRequestView(Model model, @RequestParam(name="seqno", required = false) Long seqno, @RequestParam("page") int pageNum,
-				@RequestParam(name="keyword", defaultValue = "", required = false) String keyword) throws Exception {
+				@RequestParam(name="keyword", defaultValue = "", required = false) String keyword,
+				HttpSession session) throws Exception {
 	
+		//세션 이메일 값 가져오기
+		String SessionEmail = (String)session.getAttribute("email"); //현재 로그인 중인 사람의 이메일
+		model.addAttribute("email", SessionEmail);
+		
+		//이메일로 회원 정보 가져오기
+		MemberDTO memberDTO = memberService.memberInfo(SessionEmail);
+		model.addAttribute("nickname", memberDTO.getNickname());
+		
 		model.addAttribute("view", service.view(seqno));
 		model.addAttribute("status", service.statusCheck(seqno));
 		model.addAttribute("page", pageNum);
@@ -109,6 +120,55 @@ public class MasterController {
 		service.delete(seqno);
 		return "redirect:/master/memberRequest?page=1";
 	}
+	
+	
+
+	//댓글 처리
+	@ResponseBody
+	@PostMapping("/requestReply")
+	public List<Map<String, Object>> postReply(@RequestBody RequestReplyDTO dto, @RequestParam("kind") String kind) 
+			throws Exception{
+		
+		List<RequestReplyEntity> replyDataList;
+		
+		 switch(kind) {
+	        case "L":
+	            replyDataList = requestReplyService.replyList(dto.getReqseqno()); // 댓글 목록 보기
+	            break;
+	        case "I":
+	            requestReplyService.replyRegister(dto); // 댓글 등록
+	            replyDataList = requestReplyService.replyList(dto.getReqseqno()); // 등록 후 댓글 목록 반환
+	            break;
+	        case "U":
+	            requestReplyService.replyUpdate(dto); // 댓글 수정
+	            replyDataList = requestReplyService.replyList(dto.getReqseqno()); // 수정 후 댓글 목록 반환
+	            break;
+	        case "D":
+	            requestReplyService.replyDelete(dto.getSeqno()); // 댓글 삭제
+	            replyDataList = requestReplyService.replyList(dto.getReqseqno()); // 삭제 후 댓글 목록 반환
+	            break;
+	        default:
+	            throw new IllegalArgumentException("Invalid kind value: " + kind); // 잘못된 kind 값 처리
+	    }
+		
+		 
+		// RequestReplyEntity 리스트를 Map<String, Object> 리스트로 변환
+	    List<Map<String, Object>> result = new ArrayList<>();
+	    for (RequestReplyEntity replyData : replyDataList) {
+	        Map<String, Object> map = new HashMap<>();
+	        map.put("seqno", replyData.getSeqno()); // 댓글 seqno
+	        map.put("email", replyData.getEmail()); // 댓글 email
+	        map.put("reqseqno", replyData.getReqseqno()); // Request Seqno
+	        map.put("replywriter", replyData.getReplywriter()); 
+	        map.put("replycontent", replyData.getReplycontent()); 
+	        map.put("replyregdate", replyData.getReplyregdate()); 
+
+	        result.add(map);
+	    }
+
+	    return result;
+	}
+	
 	
 	
 	@GetMapping("/memberStats")
@@ -543,52 +603,6 @@ public class MasterController {
 	*/
 	
 	
-	
-	//댓글 처리
-	@ResponseBody
-	@PostMapping("/requestReply")
-	public List<Map<String, Object>> postReply(@RequestBody RequestReplyDTO dto, @RequestParam("kind") String kind) 
-			throws Exception{
-		
-		List<RequestReplyEntity> replyDataList;
-		
-		 switch(kind) {
-	        case "L":
-	            replyDataList = requestReplyService.replyList(dto.getReqseqno()); // 댓글 목록 보기
-	            break;
-	        case "I":
-	            requestReplyService.replyRegister(dto); // 댓글 등록
-	            replyDataList = requestReplyService.replyList(dto.getReqseqno()); // 등록 후 댓글 목록 반환
-	            break;
-	        case "U":
-	            requestReplyService.replyUpdate(dto); // 댓글 수정
-	            replyDataList = requestReplyService.replyList(dto.getReqseqno()); // 수정 후 댓글 목록 반환
-	            break;
-	        case "D":
-	            requestReplyService.replyDelete(dto.getSeqno()); // 댓글 삭제
-	            replyDataList = requestReplyService.replyList(dto.getReqseqno()); // 삭제 후 댓글 목록 반환
-	            break;
-	        default:
-	            throw new IllegalArgumentException("Invalid kind value: " + kind); // 잘못된 kind 값 처리
-	    }
-		
-		 
-		// RequestReplyEntity 리스트를 Map<String, Object> 리스트로 변환
-	    List<Map<String, Object>> result = new ArrayList<>();
-	    for (RequestReplyEntity replyData : replyDataList) {
-	        Map<String, Object> map = new HashMap<>();
-	        map.put("seqno", replyData.getSeqno()); // 댓글 seqno
-	        map.put("email", replyData.getEmail()); // 댓글 email
-	        map.put("reqseqno", replyData.getReqseqno()); // Request Seqno
-	        map.put("replywriter", replyData.getReplywriter()); 
-	        map.put("replycontent", replyData.getReplycontent()); 
-	        map.put("replyregdate", replyData.getReplyregdate()); 
-
-	        result.add(map);
-	    }
-
-	    return result;
-	}
 	
 	
 	
