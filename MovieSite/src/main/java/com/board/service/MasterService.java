@@ -2,7 +2,6 @@ package com.board.service;
 
 import org.springframework.data.domain.Page;
 import com.board.dto.RequestDTO;
-import com.board.dto.movie.KobisMovieDTO;
 import com.board.entity.RequestEntity;
 
 public interface MasterService {
@@ -33,9 +32,6 @@ public interface MasterService {
 	
 	//영화 중복 체크
 	public void movieCheck(String movieNm);
-	
-	//관리자 영화 직접 업로드
-	public void movieUpload(KobisMovieDTO dto);
 	
 	//Dummy Members 만들기
 	public void createDummyMembers(int count);

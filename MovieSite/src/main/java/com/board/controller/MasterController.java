@@ -20,21 +20,16 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.board.dto.MemberDTO;
-import com.board.dto.RequestReplyDTO;
 import com.board.entity.RequestEntity;
-import com.board.entity.RequestReplyEntity;
 import com.board.service.FavGenreService;
 import com.board.service.LikeService;
 import com.board.service.MasterService;
 import com.board.service.MemberLogService;
 import com.board.service.MemberService;
 import com.board.service.RentService;
-import com.board.service.RequestReplyService;
 import com.board.service.RequestService;
 import com.board.util.PageUtil;
 
-import jakarta.servlet.http.HttpSession;
 import lombok.AllArgsConstructor;
 
 
@@ -50,7 +45,6 @@ public class MasterController {
 	private final RentService rentService;
 	private final FavGenreService favGenreService;
 	private final RequestService requestService;
-	private final RequestReplyService requestReplyService;
 
 	
 	//회원의 요청 목록 보기
@@ -78,17 +72,8 @@ public class MasterController {
 	//회원 요청 내용 상세 보기
 	@GetMapping("/memberRequestView")
 	public void getMemberRequestView(Model model, @RequestParam(name="seqno", required = false) Long seqno, @RequestParam("page") int pageNum,
-				@RequestParam(name="keyword", defaultValue = "", required = false) String keyword,
-				HttpSession session) throws Exception {
+				@RequestParam(name="keyword", defaultValue = "", required = false) String keyword) throws Exception {
 	
-		//세션 이메일 값 가져오기
-		String SessionEmail = (String)session.getAttribute("email"); //현재 로그인 중인 사람의 이메일
-		model.addAttribute("email", SessionEmail);
-		
-		//이메일로 회원 정보 가져오기
-		MemberDTO memberDTO = memberService.memberInfo(SessionEmail);
-		model.addAttribute("nickname", memberDTO.getNickname());
-		
 		model.addAttribute("view", service.view(seqno));
 		model.addAttribute("status", service.statusCheck(seqno));
 		model.addAttribute("page", pageNum);
@@ -107,21 +92,7 @@ public class MasterController {
 		
 		//tbl_request 테이블에 status 업데이트
 		service.updateStatus(seqno, status);
-	}
-	
-	
-	//회원 닉네임 찾기
-	@GetMapping("/findNickname")
-	@ResponseBody
-	public Map<String, String> getFindNickname(@RequestParam("email") String email) throws Exception {
-	    
-		// 이메일로 회원 정보 가져오기
-	    MemberDTO memberDTO = memberService.memberInfo(email);
-
-	    // requestNickname을 JSON 응답으로 반환
-	    Map<String, String> response = new HashMap<>();
-	    response.put("requestNickname", memberDTO.getNickname());
-	    return response;
+		
 	}
 		
 
@@ -134,55 +105,6 @@ public class MasterController {
 		service.delete(seqno);
 		return "redirect:/master/memberRequest?page=1";
 	}
-	
-	
-
-	//댓글 처리
-	@ResponseBody
-	@PostMapping("/requestReply")
-	public List<Map<String, Object>> postReply(@RequestBody RequestReplyDTO dto, @RequestParam("kind") String kind) 
-			throws Exception{
-		
-		List<RequestReplyEntity> replyDataList;
-		
-		 switch(kind) {
-	        case "L":
-	            replyDataList = requestReplyService.replyList(dto.getReqseqno()); // 댓글 목록 보기
-	            break;
-	        case "I":
-	            requestReplyService.replyRegister(dto); // 댓글 등록
-	            replyDataList = requestReplyService.replyList(dto.getReqseqno()); // 등록 후 댓글 목록 반환
-	            break;
-	        case "U":
-	            requestReplyService.replyUpdate(dto); // 댓글 수정
-	            replyDataList = requestReplyService.replyList(dto.getReqseqno()); // 수정 후 댓글 목록 반환
-	            break;
-	        case "D":
-	            requestReplyService.replyDelete(dto.getSeqno()); // 댓글 삭제
-	            replyDataList = requestReplyService.replyList(dto.getReqseqno()); // 삭제 후 댓글 목록 반환
-	            break;
-	        default:
-	            throw new IllegalArgumentException("Invalid kind value: " + kind); // 잘못된 kind 값 처리
-	    }
-		
-		 
-		// RequestReplyEntity 리스트를 Map<String, Object> 리스트로 변환
-	    List<Map<String, Object>> result = new ArrayList<>();
-	    for (RequestReplyEntity replyData : replyDataList) {
-	        Map<String, Object> map = new HashMap<>();
-	        map.put("seqno", replyData.getSeqno()); // 댓글 seqno
-	        map.put("email", replyData.getEmail()); // 댓글 email
-	        map.put("reqseqno", replyData.getReqseqno()); // Request Seqno
-	        map.put("replywriter", replyData.getReplywriter()); 
-	        map.put("replycontent", replyData.getReplycontent()); 
-	        map.put("replyregdate", replyData.getReplyregdate()); 
-
-	        result.add(map);
-	    }
-
-	    return result;
-	}
-	
 	
 	
 	@GetMapping("/memberStats")
@@ -360,28 +282,15 @@ public class MasterController {
     	
     	List<Object[]> list = favGenreService.favGenreResult();
     	
-        // 만약 리스트가 비어있다면 빈 리스트를 반환하거나 기본 값을 넣어줄 수 있음
-        if (list.isEmpty()) {
-            Map<String, Object> defaultMap = new HashMap<>();
-            defaultMap.put("genre", "없음");
-            defaultMap.put("count", 0);
-            
-            List<Map<String, Object>> response = new ArrayList<>();
-            response.add(defaultMap); // 기본 데이터 추가
-            return response;
-        }
-        
-        // 리스트에 데이터가 있으면 정상 처리
-        List<Map<String, Object>> response = new ArrayList<>();
-        for (Object[] item : list) {
-            Map<String, Object> map = new HashMap<>();
-            map.put("genre", item[0]);
-            map.put("count", item[1]);
-            response.add(map);
-        }
-        return response;
+    	List<Map<String, Object>> response = new ArrayList<>();
+    	for(Object[] item : list) {
+    		Map<String, Object> map = new HashMap<>();
+    		map.put("genre", item[0]);
+    		map.put("count", item[1]);
+    		response.add(map);
+    	}
+    	return response;
     }
-
 	
     //관리자 페이지 - 통계 : 좋아요 % 높은 영화 순위 보여주기
     @GetMapping("/topLikeMovie")
@@ -465,159 +374,74 @@ public class MasterController {
 	
 	/*
 	//관리자 직접 영화 업로드
-	@ResponseBody //JSON 형식으로 응답을 반환할 때 사용.
+	@ResponseBody
 	@PostMapping("/movieUpload")
-	public Map<String, String> postMovieUpload(
-			@RequestParam("posterUpload") MultipartFile poster,
-    		@RequestParam("backgroundUpload") MultipartFile background,
-		    @RequestParam("title") String title,
-		    @RequestParam("originalTitle") String originalTitle,
-		    @RequestParam("releaseDate") String releaseDate,
-		    @RequestParam("originalLanguage") String originalLanguage,
-		    @RequestParam("runtime") String runtime,
-		    @RequestParam("overview") String overview, 
-		    @RequestParam("certification") String certification,
-		    
-		    @RequestParam("genres") List<String> genres,
-		    @RequestParam("productionCompanies") String productionCompanies, // 쉼표로 구분된 제작사들
-		    @RequestParam("productionCountries") String productionCountries, // 쉼표로 구분된 제작국가들
-		    @RequestParam("spokenLanguages") String spokenLanguages, // 쉼표로 구분된 언어들
-		    
-	?	    @RequestParam("actors") String actors, // 쉼표로 구분된 배우들
-	?	    @RequestParam("directors") String directors // 쉼표로 구분된 감독들
- 
-			) throws Exception {
-		
-		KobisMovieDTO dto = new KobisMovieDTO();
+	public Map<String, String> postMovieUpload(MovieDTO movie, @RequestParam("fileUpload") MultipartFile mpr) throws Exception {
 	
-		//여기가 이상함.
-		dto.getMovieInfoResult().getMovieInfo().setMovieNm(movieNmEn);
-		dto.getMovieInfoResult().getMovieInfo().setMovieNmEn(movieNmEn);
-		dto.getMovieInfoResult().getMovieInfo().setPrdtYear(prdtYear);
-		dto.getMovieInfoResult().getMovieInfo().setOpenDt(openDt);
-		dto.getMovieInfoResult().getMovieInfo().setShowTm(showtime);
-		dto.getMovieInfoResult().getMovieInfo().getAudits().get(0).setWatchGradeNm(watchGradeNm);
-		dto.getMovieInfoResult().getMovieInfo().setOverview(overview);
-		dto.setUploadCheck(uploadCheck);
-		
-		dto.getMovieInfoResult().getMovieInfo().setActors(DtoToEntityMapper.convertToActorList(actors));
-		dto.getMovieInfoResult().getMovieInfo().setDirectors(DtoToEntityMapper.convertToDirectorList(directors));
-		dto.getMovieInfoResult().getMovieInfo().setCompanys(DtoToEntityMapper.convertToCompanyList(companys));
-		dto.getMovieInfoResult().getMovieInfo().setNations(DtoToEntityMapper.convertToNationList(nations));
-		
-		 // 변환 후 장르 설정
-	    dto.getMovieInfoResult().getMovieInfo().setGenres(DtoToEntityMapper.convertToGenreList(genres));
-
-		
 		//OS에 따라 이미지 저장될 디렉토리 구조 설정 시작
 		String os = System.getProperty("os.name").toLowerCase();
-		String path = os.contains("win") ? "c:\\Repository\\profile\\":"/home/jiho/Repository/profile";
-		File dir = new File(path);
-    	if (!dir.exists()) dir.mkdir();
+		String path;
+		if(os.contains("win"))
+			path = "c:\\Repository\\profile\\";
+		else 
+			path = "/home/jiho/Repository/profile";
 		
-		// 포스터 이미지 저장
-	    if (!poster.isEmpty()) {
-	        String posterPath = path + poster.getOriginalFilename();
-	        poster.transferTo(new File(posterPath));
-	        dto.setPosterPath(posterPath);
-	    }
-	
-	    // 백그라운드 이미지 저장
-	    if (!background.isEmpty()) {
-	        String backgroundPath = path + background.getOriginalFilename();
-	        background.transferTo(new File(backgroundPath));
-	        dto.setBackgroundPath(backgroundPath);
-	    }
-	
-	    // 서비스 호출하여 영화 정보 저장
-	    service.movieUpload(dto);
-	    Map<String, String> data = new HashMap<>();
-	    data.put("message", "good");
-	    return data;
+		//디렉토리가 존재하는지 체크해서 없다면 생성
+		File p = new File(path);
+		if(!p.exists()) p.mkdir();
+		//운영체제에 따라 이미지가 저장될 디렉토리 구조 설정 종료
+		
+		File targetFile = null;
+		String imgPath = "";
+		
+		if(!mpr.isEmpty()) {
+			imgPath = mpr.getOriginalFilename();
+			try {
+				targetFile = new File(path + imgPath);				
+				mpr.transferTo(targetFile);
+				movie.setImgPath(imgPath);				
+			} catch(Exception e) {
+				e.printStackTrace();
+			}
+		}
+		
+		service.movieUpload(movie);
+		
+		Map<String, String> data = new HashMap<>();
+		data.put("message", "good");
+		
 	}
 	
-	public class DtoToEntityMapper {
-
-	    // 쉼표로 구분된 문자열을 받아서 List<Actor>로 변환하는 메소드
-	    public static List<Actor> convertToActorList(String actors) {
-	        List<Actor> actorList = new ArrayList<>();
-	        
-	        // 쉼표로 구분된 데이터 (공백도 제거하고)로 나눔
-	        String[] actorArray = actors.split("\\s*,\\s*");  // 쉼표 뒤에 공백 제거
-	        
-	        for (String actorString : actorArray) {
-	            Actor actor = new Actor();
-	            actor.setPeopleNm(actorString);  // 일단 단순하게 이름만 저장
-	            actor.setPeopleNmEn(null);  
-	            actor.setCast(null);  
-	            actor.setCastEn(null);  
-
-	            actorList.add(actor);
-	        }
-	        
-	        return actorList;
-	    }
-
-	    // Nations, Companys, Directors도 비슷하게 처리할 수 있음
-	    public static List<Nation> convertToNationList(String nations) {
-	        List<Nation> nationList = new ArrayList<>();
-	        String[] nationArray = nations.split("\\s*,\\s*");
-	        
-	        for (String nationString : nationArray) {
-	            Nation nation = new Nation();
-	            nation.setNationNm(nationString);  // 국가 이름을 저장
-	            nationList.add(nation);
-	        }
-
-	        return nationList;
-	    }
-
-	    public static List<Company> convertToCompanyList(String companies) {
-	        List<Company> companyList = new ArrayList<>();
-	        String[] companyArray = companies.split("\\s*,\\s*");
-	        
-	        for (String companyString : companyArray) {
-	            Company company = new Company();
-	            company.setCompanyNm(companyString);  // 회사 이름 저장
-	            company.setCompanyNmEn(null);
-	            company.setCompanyCd(null);
-	            company.setCompanyPartNm(null);
-	            companyList.add(company);
-	        }
-
-	        return companyList;
-	    }
-
-	    public static List<Director> convertToDirectorList(String directors) {
-	        List<Director> directorList = new ArrayList<>();
-	        String[] directorArray = directors.split("\\s*,\\s*");
-	        
-	        for (String directorString : directorArray) {
-	            Director director = new Director();
-	            director.setPeopleNm(directorString);  // 감독 이름 저장
-	            director.setPeopleNmEn(null);
-	            directorList.add(director);
-	        }
-
-	        return directorList;
-	    }
-	    
-	    // 장르 변환 메서드
-	    public static List<KobisMovieDTO.MovieInfo.Genre> convertToGenreList(List<String> genres) {
-	        List<KobisMovieDTO.MovieInfo.Genre> genreList = new ArrayList<>();
-	        for (String genreString : genres) {
-	            KobisMovieDTO.MovieInfo.Genre genre = new KobisMovieDTO.MovieInfo.Genre();
-	            genre.setGenreNm(genreString);  // 장르 이름을 설정
-	            genreList.add(genre);
-	        }
-	        return genreList;
-	    }
-	    
+	
+	//관리자 영화 업로드 시 영화 중복 체크
+	@ResponseBody
+	@PostMapping("/movieCheck")
+	public int postMovieCheck(@RequestBody String movieNm) throws Exception {
+		return service.movieCheck(movieNm);
 	}
 	*/
 	
+	/*
 	
-	
+	//댓글 처리
+	@ResponseBody
+	@PostMapping("/master/memberRequestViewreply")
+	public List<ReplyInterface> postReply(ReplyInterface reply,@RequestParam("kind") String kind) 
+			throws Exception{
+		
+		switch(kind) {
+		
+		case "I": service.replyRegistry(reply); //댓글 등록
+				  break;
+		case "U": service.replyUpdate(reply); //댓글 수정 
+			      break;
+		case "D": service.replyDelete(reply); //댓글 삭제
+				  break;
+		}
+		
+		return service.replyView(reply);
+	}
+	*/
 	
 	
 	//더미 데이터 만들기 페이지

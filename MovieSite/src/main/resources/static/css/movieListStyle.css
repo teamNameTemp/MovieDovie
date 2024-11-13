@@ -220,23 +220,6 @@ body {
   object-fit: contain;
   z-index: 1;
   cursor: pointer;
-  height: 200px;
-  object-fit: cover;
-  border-radius: 30px;
-}
-
-.movie-list-item-title {
-  background-color: none;
-  
-  padding: 0 10px;
-  font-size: 32px;
-  font-weight: bold;
-  position: absolute;
-  top: 20%;
-  left: 50%;
-  transform: translateX(-50%);
-  opacity: 0;
-  transition: 1s all ease-in-out;
 }
 
 
