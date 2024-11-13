@@ -225,6 +225,7 @@ public class BoardController {
 		for(MovieDTO d : trendList) {
 			if(idx==0)break;
 			MovieDTO dto = movie.getMovieDetails(d.getId(),"ko-KR").block();
+			log.info(dto);
 			dto.setTitle(d.getTitle());
 			info.add(dto);
 			idx--;

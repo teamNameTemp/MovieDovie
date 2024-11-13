@@ -3,7 +3,6 @@ package com.board.dto.movie;
 import java.time.LocalDate;
 import java.util.List;
 
-import com.board.entity.movie.CreditEntity;
 import com.board.entity.movie.MovieEntity;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -198,7 +197,6 @@ public class MovieDTO {
 		private List<Cast> cast;
 		// 제작진 목록
 		private List<Crew> crew;
-		private CreditEntity credit;
 	}
 
 	// 리뷰 목록
