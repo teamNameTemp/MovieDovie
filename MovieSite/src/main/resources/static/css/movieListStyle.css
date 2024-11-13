@@ -15,8 +15,8 @@ body {
 }
 
 .navbar {
-  width: 100%;
-  min-width:30%;
+  
+  width:100%;
   height: 50px;
   background-color: black;
   position: fixed;
@@ -43,6 +43,7 @@ body {
   color: #4dbf00;
 }
 
+
 .menu-container {
   flex: 6;
 }
@@ -50,6 +51,20 @@ body {
 .menu-list {
   display: flex;
   list-style: none;
+}
+
+.bell-box{
+	position: relative;
+	height: 20px; 
+	background:#3C3D37; 
+	border:10px; 
+	border-radius:20px; 
+	width:80px; 
+	height:30px;
+	display:flex;
+	align-items: center;
+	margin-top: 10px;
+	margin-bottom: 10px;
 }
 
 .menu-list-item {
@@ -170,8 +185,9 @@ body {
 .movie-list {
   display: flex;
   align-items: center;
-  height: 300px;
+  height: 500px;
   transform: translateX(0);
+  position:relative;
   transition: all 1s ease-in-out;
 }
 
@@ -200,61 +216,95 @@ body {
 .movie-list-item-img {
   transition: all 1s ease-in-out;
   width: 270px;
-  height: 200px;
-  object-fit: cover;
-  border-radius: 20px;
+  height: 400px;
+  object-fit: contain;
+  z-index: 1;
+  cursor: pointer;
 }
 
-.movie-list-item-title {
-  padding: 0 10px;
-  font-size: 32px;
-  font-weight: bold;
-  position: absolute;
-  top: 10%;
-  left: 50px;
-  opacity: 0;
-  transition: 1s all ease-in-out;
-}
 
 .movie-list-item-desc {
-	 display: -webkit-box;
-  -webkit-line-clamp: 3; /* 표시할 줄 수 */
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-  
+  background-color: none;
   padding: 10px;
-  font-size: 14px;
+  font-size: 18px;
   position: absolute;
   top: 30%;
   left: 50px;
   width: 230px;
   opacity: 0;
   transition: 1s all ease-in-out;
+  display: -webkit-box;        /* Flexbox를 사용한 박스 모델 */
+  -webkit-box-orient: vertical; /* 텍스트를 세로로 배치 */
+  -webkit-line-clamp: 3;       /* 3줄로 제한 */
+  overflow: hidden;            /* 넘치는 텍스트 숨기기 */
+  text-overflow: ellipsis;     /* 넘친 텍스트에 "..." 표시 */
+  
+  /* 줄 간격 설정 */
+  line-height: 1.5em;                /* 줄 간격 조정 (기본적으로 1.5배로 설정) */
+  max-height: 5.3em;                 /* 3줄 높이에 맞춰 고정 (line-height × 3) */
 }
 
+
+/* 버튼들을 감싸는 부모 컨테이너 */
+.movie-list-item-buttons {
+  position: absolute;
+  bottom: 100px; /* 아래쪽에서 100px 위치 */
+  left: 50%; /* 왼쪽에서 50% 위치 */
+  transform: translateX(-50%); /* 중앙 정렬 */
+  display: flex; /* 버튼들을 가로로 정렬 */
+  justify-content: space-between; /* 두 버튼을 양쪽 끝에 배치 */
+  width: 100px; /* 버튼들이 차지할 전체 너비 (각 버튼 간 50px 여백을 포함한 크기) */
+}
+
+/* 개별 버튼 스타일 */
 .movie-list-item-button {
-  padding: 10px;
-  background-color: #4dbf00;
-  color: white;
-  border-radius: 10px;
+  padding: 0 10px;
+  color: inherit; /* 기본 색상 유지 */
+  border-radius: 50%;
   outline: none;
   border: none;
+  opacity:0;
   cursor: pointer;
-  position: absolute;
-  bottom: 20px;
-  left: 50px;
-  opacity: 0;
-  transition: 1s all ease-in-out;
+  transition: color 0.3s ease-in-out;
 }
 
+/* 버튼에 마우스를 올렸을 때 스타일 */
+.movie-list-item-button:hover,
+.movie-list-item-button:active {
+  color: red; /* 버튼을 빨간색으로 변경 */
+}
+
+/* <a> 태그 내의 아이콘 스타일 */
+.movie-list-item-button a {
+  color: inherit;  /* 부모 요소의 색상을 그대로 상속 */
+  text-decoration: none; /* 기본 밑줄 제거 */
+  font-size: 20px;
+  transition: color 0.3s ease-in-out; /* 색상에 transition을 적용 */
+}
+
+/* 북마크 버튼에만 적용되는 스타일 */
+.movie-list-item-button .fa-bookmark {
+  margin-left: 25px; /* 북마크 버튼의 오른쪽 여백 */
+}
+
+
 .arrow {
-  font-size: 120px;
-  position: absolute;
-  top: 90px;
-  right: 0;
-  color: lightgray;
-  opacity: 0.5;
-  cursor: pointer;
+  font-size:40px;
+  position: absolute;   /* 절대 위치 */
+  top: 50%;              /* Y축 중앙 */
+  transform: translateY(-50%); /* 정확히 중앙 정렬 */
+  z-index: 2;            /* 이미지 위로 올리기 */
+  cursor: pointer;      /* 화살표에 커서를 올리면 클릭 가능 */
+}
+
+/* 왼쪽 화살표 */
+.arrow.fa-chevron-left {
+  left: 10px;  /* 왼쪽에 배치 */
+}
+
+/* 오른쪽 화살표 */
+.arrow.fa-chevron-right {
+  right: 10px;  /* 오른쪽에 배치 */
 }
 
 .container.active {
@@ -286,12 +336,6 @@ body {
 .toggle-ball.active{
     background-color: white;
     transform: translateX(-20px);
-}
-
-@media only screen and (max-width: 940px){
-    .menu-container{
-        display: none;
-    }
 }
 
 
@@ -363,6 +407,19 @@ body {
 .dropdown-content.show{
   display : block;
 }
+
+ #notification-count {
+            position: absolute;
+            top: 5px;
+            right: 10px;
+            font-size: 18px;
+            color: white;
+        }
+        
+.dropdown-content .dropdown-item:hover {
+            color: red; /* 마우스를 올리면 빨간색으로 변경 */
+        }
+
 
 a {
   text-align: center;  

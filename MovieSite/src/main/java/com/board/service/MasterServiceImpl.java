@@ -306,7 +306,7 @@ public class MasterServiceImpl implements MasterService{
 	    for (int i = 1; i <= count; i++) {
 	        FavGenreEntity favGenre = new FavGenreEntity();
 	        favGenre.setSeqno((long) i);
-	        favGenre.setEmail("user" + i + "@example.com");
+//	        favGenre.setEmail("user" + i + "@example.com");
 
 	        // 장르 선택을 위한 배열 복사
 	        List<String> availableGenres = new ArrayList<>(Arrays.asList(GENRES));

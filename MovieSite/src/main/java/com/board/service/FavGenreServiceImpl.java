@@ -4,8 +4,10 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
+import com.board.dto.FavGenreDTO;
+import com.board.entity.FavGenreEntity;
+import com.board.entity.MemberEntity;
 import com.board.entity.repository.FavGenreRepository;
-import com.board.entity.repository.LikeRepository;
 
 import lombok.AllArgsConstructor;
 
@@ -20,4 +22,16 @@ public class FavGenreServiceImpl implements FavGenreService {
 	public List<Object[]> favGenreResult(){
 		return favGenreRepository.favGenreResult();
 	}
+
+	@Override
+	public void saveTheFavGenre(FavGenreDTO favGenre) {
+		FavGenreEntity favGenreEntity = favGenreRepository.findByEmail(favGenre.getEmail());
+		
+		favGenreEntity.setGenre1(favGenre.getGenre1());
+		favGenreEntity.setGenre2(favGenre.getGenre2());
+		favGenreEntity.setGenre3(favGenre.getGenre3());
+		
+		favGenreRepository.save(favGenreEntity);
+	}
+
 }

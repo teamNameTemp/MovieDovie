@@ -16,7 +16,7 @@ import lombok.Data;
 public class CreditEntity {
 	@Id
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "CREDIT_SEQ")
-	@SequenceGenerator(name = "CREDIT_SEQ", sequenceName = "credit_seq", allocationSize = 1)
+	@SequenceGenerator(name = "CREDIT_SEQ", sequenceName = "credit_seq", allocationSize = 1,initialValue = 1)
 	private Long seqno;
 
 	@OneToOne

@@ -25,5 +25,4 @@ public interface MemberRepository extends JpaRepository<MemberEntity, String>{
 	public List<Object[]> signupResult();
 	
 	
-	
 }
