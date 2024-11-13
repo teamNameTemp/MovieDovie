@@ -82,35 +82,6 @@ document.addEventListener("DOMContentLoaded", function() {
 			// 초기 항목 갯수 표시
 			updateNotificationCount();
 		}
-<<<<<<< HEAD
-=======
-		else if(currentIndex == itemCount - 11) {
-			currentIndex+=5;
-		}
-		
-		else if(currentIndex == itemCount - 10) {
-			currentIndex+=4;
-		}
-		
-		else if(currentIndex == itemCount - 9) {
-			currentIndex+=3;
-    	 	
-		}
-		
-		else if(currentIndex == itemCount - 8) {
-			currentIndex+=2;
-		}
-		
-		else if(currentIndex == itemCount - 7) {
-			currentIndex++;
-    	 	
-		} else {
-          currentIndex = 0;  // 처음으로 돌아가기
-        }
-        const moveAmount = currentIndex * totalItemWidth;
-        movieList.style.transform = `translateX(-${moveAmount}px)`;
-      };
->>>>>>> bbkim
 
 		// 왼쪽 화살표 클릭 이벤트
 		arrowsLeft[index].addEventListener("click", slideLeft);
