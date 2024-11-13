@@ -58,25 +58,4 @@ public interface RequestRepository extends JpaRepository<RequestEntity, Long>{ /
 	@Query("select r.status, count(r) from request r group by status")
 	public List<Object[]> findStatus();
 	
-	//내가 작성한 게시물 목록 보기
-	@Query("select r from request r where r.email = :email and "
-			+ "(r.title like %:keyword1% or r.content like %:keyword2%)")
-	public Page<RequestEntity> findByEmailAndTitleContainingOrContentContaining
-		(@Param("email") String email, @Param("keyword1") String keyword1, 
-				@Param("keyword2") String keyword2, Pageable pageable);
-	
-	//내가 작성한 게시물 이전 보기 --> JPQL
-	@Query("select max(r.seqno) from request r " 
-			+ "where r.seqno < :seqno and r.email = :email and "
-			+ "(r.title like %:keyword1% or r.content like %:keyword2%)")
-	public Long my_pre_seqno(@Param("seqno") Long seqno, @Param("email") String email,
-			@Param("keyword1") String keyword1, @Param("keyword2") String keyword2);
-
-	//내가 작성한 게시물 다음 보기 --> JPQL
-	@Query("select min(r.seqno) from request r "
-			+ "where r.seqno > :seqno and r.email = :email and "
-			+ "(r.title like %:keyword1% or r.content like %:keyword2%)")
-	public Long my_next_seqno(@Param("seqno") Long seqno, @Param("email") String email,
-			@Param("keyword1") String keyword1, @Param("keyword2") String keyword2);
-
 }

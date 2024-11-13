@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html xmlns="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="/css/display.css">
+    <script src="/js/moviejs.js" defer></script>
+    <script defer src="app.js"></script>
+    <title>한국 박스오피스 포스터</title>
+</head>
+
+<style>
+#targetDt {
+  font-family: Arial, sans-serif;
+  font-size: 18px;
+  padding: 12px 20px;
+  border: 2px solid #ccc;
+  border-radius: 4px;
+  background-color: #f8f8f8;
+  color: #333;
+}
+
+#targetDt::-webkit-calendar-picker-indicator {
+  color: #333;
+  font-size: 16px;
+  padding: 5px;
+}
+</style>
+
+<body>
+    <header>
+        <h1>KOBOP(KOrean Box Office Poster)</h1>
+<br>
+            <input type="date" id="targetDt"></input>
+    </header>
+
+    <main>
+        <section>
+            <h2>일간 박스오피스 (<span id="targetDate"></span> 기준)</h2>
+            <table id="boxOffice">
+                <thead>
+                    <tr>
+                        <th>순위</th>
+                        <th>영화명(국문)</th>
+                        <th>영화 대표코드</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- 호출된 영화 박스오피스 -->
+                </tbody>
+            </table>
+        </section>
+
+        <section>
+            <h2>영화 상세정보</h2>
+            <table id="movieInfo">
+                <thead>
+                    <tr>
+                        <th>영화 대표코드</th>
+                        <th>영화명 영문(영문)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- 호출된 영화 상세정보 -->
+                </tbody>
+            </table>
+        </section>
+
+        <section>
+            <h2>SEARCH - Movie</h2>
+            <table id="posterLink">
+                <thead>
+                    <tr>
+                        <th>영화명(영문)</th>
+                        <th>포스터 이미지 링크</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- 호출된 영화 포스터 이미지 링크 -->
+                </tbody>
+            </table>
+        </section>
+
+        <section>
+            <h2>호출 결과</h2>
+            <ol id="posterImg">
+                <!-- 호출 결과 -->
+            </ol>
+        </section>
+    </main>
+
+    <footer>
+        <p>Developed by <a href="https://github.com/Builter251/KOBOP">builter251</a></p>
+    </footer>
+</body>
+
+</html>
