@@ -13,25 +13,25 @@
 }
 
 .field {
-  width: 90%;
+  width: 88%;
   height:25px;
   outline:none;
   color: #636e72;
   font-size:16px;
   background: none;
   border-bottom: 2px solid #adadad;
-  margin: 30px;
-  padding: 10px 10px;
+  margin: 40px;
+  padding: 10px;
 }
 
 .content {
   width: 90%;
-  height: 350px;
+  height: 200px;
   overflow: auto;
-  margin: 22px;
+  margin: 40px;
   padding: 10px;
   box-sizing: border-box;
-  border: solid #adadad;
+  border: solid #adadad 2px;
   text-align: left;
   font-size: 16px;
   resize: both;
@@ -39,13 +39,15 @@
 
 .boardView {
   width:60%;
+  text-align: center;
   height:auto;
-  margin:auto;
+  margin:0 auto;
   text-align: left;
-  padding: 20px, 20px;
+  padding: 20px;
   background-color:#FFFFFF;
-  border:4px solid gray;
+  border: 2px solid #adadad;
   border-radius: 20px;
+  box-sizing: border-box; 
 }
 
 
@@ -79,7 +81,7 @@
 }
 
 .button:hover {
-    background-color: black; /* 마우스 오버 시 색상 변경 */
+    background-color: black;
 }
 
 /* 댓글 창 */
@@ -319,26 +321,24 @@ const sendDataToServer = async (status) => {
 		seqno: Number('[[${view.seqno}]]'),
 		status: status
 	};
-	
 	 try {
-	        const response = await fetch('/master/updateStatus', {
-	            method: 'POST',
-	            headers: { "Content-Type": "application/json" },
-	            body: JSON.stringify(queryString)
-	        });
+        const response = await fetch('/master/updateStatus', {
+            method: 'POST',
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(queryString)
+        });
 
-	        if (!response.ok) {
-	            throw new Error(`HTTP error! status: ${response.status}`);
-	        }
-	        
-	        // 필요시 응답 처리
-	        const data = await response.json();
-	        console.log(data);
-	    } catch (error) {
-	        console.log("error = " + error);
-	    }
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        
+        // 필요시 응답 처리
+        const data = await response.json();
+        console.log(data);
+	  } catch (error) {
+	    console.log("error = " + error);
+	  }
 }
-
 
 //회원 요청 사항에 대한 상태 변경 처리 (PENDING or COMPLETED)
 const statusChange = () => {
@@ -360,6 +360,37 @@ const statusChange = () => {
 }
 
 
+//회원 닉네임 가져오기
+ let requestEmail = '[[${view.email}]]';  // 타임리프가 처리해서 실제 값으로 변환됨
+
+ const findNickname = async (requestEmail) => {
+     try {
+         // GET 요청으로 email을 쿼리 파라미터로 전달
+         const response = await fetch(`/master/findNickname?email=${encodeURIComponent(requestEmail)}`, {
+             method: 'GET',
+             headers: { "Content-Type": "application/json" }
+         });
+
+         if (response.ok) {
+             // 서버에서 반환한 응답 처리
+             const data = await response.json();
+             const requestNickname = data.requestNickname;
+             console.log("Received requestNickname: " + requestNickname);
+
+             // 받은 닉네임을 HTML에 동적으로 반영
+             document.querySelector("#nickname").textContent = requestNickname;
+         } else {
+             console.error("Failed to fetch requestNickname");
+         }
+     } catch (error) {
+         console.log("Error: " + error);
+     }
+ }
+ // 함수 호출
+ findNickname(requestEmail);
+
+ 
+ 
 //게시물 삭제
 const boardDelete = () => {
     if(confirm("정말 삭제 하시겠습니까?")==true) 
@@ -370,7 +401,7 @@ const boardDelete = () => {
 
 </head>
 <body style="background-color: white">
-<div th:replace = "/fragments/nav/sidebar::sidebar"></div>
+<div th:replace="~{/fragments/nav/sidebar::sidebar}"></div>
  <div class="navbar">
      <div class="navbar-container">
 
@@ -406,26 +437,24 @@ const boardDelete = () => {
          </div>
      </div>
  </div>
-<div class="main">
+<div class="main" >
         <br><br><br>
-        <h2 style="text-align: center; color: white;">요청 사항 보기</h2>
+        <h2 style="text-align: center;">요청 사항 보기</h2>
         <br><br>
 
         <div class="boardView">
-            <div class="field">글쓴이 : [[${view.email}]]</div>
+            <div class="field">글쓴이 : <span id="nickname"></span></div>
             <div class="field">제목 : [[${view.title}]]</div>
             <div class="field">날짜 : [[${#temporals.format(view.reqdate,'yyyy-MM-dd HH:mm:ss')}]]</div>
             <div class="content"><pre th:text="${view.content}"></pre></div>
-
-			
-			<br><br>
-			
+		
+			<br>
 			<div class="statusBox">
-				<a href='javascript:statusChange()' id="status" class="status"><b>&nbsp;√&nbsp;</b></a>
-			</div>
-			<div class="statusBox">
-				<br><b><span id='statusText' style='text-align:center; color:#4dbf00'></span></b><br><br><br><br>
+				<b><span id='statusText' style='text-align:center; color:#4dbf00'></span></b>
       		</div>
+      		<div class="statusBox">
+				<a href='javascript:statusChange()' id="status" class="status"><b>&nbsp;√&nbsp;</b></a><br><br><br><br><br>
+			</div>
         </div>
 		 <br>
         <div id="bottom_menu">
@@ -443,8 +472,8 @@ const boardDelete = () => {
         <div class="replyView" style="overflow: auto;">
 			<!-- 댓글 목록 -->
 			<div id="replyListContainer">
-			    <h3>댓글 목록</h3><br>
-			    <div id="replyList"></div><br>
+			    <h3>[ 댓글 목록 ]</h3><br>
+			    <div id="replyList"></div>
 			</div>
 			
 			<!-- 댓글 등록 폼 -->
@@ -491,7 +520,7 @@ const boardDelete = () => {
 		        // 댓글이 없을 때 메세지 표시
 		        if (replies.length === 0) {
 		            const noRepliesMessage = document.createElement('p');
-		            noRepliesMessage.textContent = '아직 작성된 댓글이 없습니다.';
+		            noRepliesMessage.innerHTML = '<br>아직 작성된 댓글이 없습니다.';
 		            noRepliesMessage.style.textAlign = 'center';  // 가운데 정렬
 		            noRepliesMessage.style.color = '#888'; // 색상 설정 (예: 회색)
 		            replyListContainer.appendChild(noRepliesMessage);

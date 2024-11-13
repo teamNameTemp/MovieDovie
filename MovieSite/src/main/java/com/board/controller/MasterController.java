@@ -107,7 +107,21 @@ public class MasterController {
 		
 		//tbl_request 테이블에 status 업데이트
 		service.updateStatus(seqno, status);
-		
+	}
+	
+	
+	//회원 닉네임 찾기
+	@GetMapping("/findNickname")
+	@ResponseBody
+	public Map<String, String> getFindNickname(@RequestParam("email") String email) throws Exception {
+	    
+		// 이메일로 회원 정보 가져오기
+	    MemberDTO memberDTO = memberService.memberInfo(email);
+
+	    // requestNickname을 JSON 응답으로 반환
+	    Map<String, String> response = new HashMap<>();
+	    response.put("requestNickname", memberDTO.getNickname());
+	    return response;
 	}
 		
 
