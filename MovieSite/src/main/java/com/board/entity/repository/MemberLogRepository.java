@@ -6,8 +6,9 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
 import com.board.entity.MemberLogEntity;
+import com.board.entity.MemberLogEntityID;
 
-public interface MemberLogRepository extends JpaRepository<MemberLogEntity, Long>{
+public interface MemberLogRepository extends JpaRepository<MemberLogEntity, Long> {
 
 
 	//관리자페이지 - 통계 : 방문 수 확인

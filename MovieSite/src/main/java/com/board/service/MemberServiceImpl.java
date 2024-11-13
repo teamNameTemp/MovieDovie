@@ -63,6 +63,12 @@ public class MemberServiceImpl implements MemberService {
 														 .build();		
 		memberLogRepository.save(memberLogEntity);
 	}
+	//관리자페이지 - 통계 : 회원 가입한 날 확인
+	@Override
+	public List<Object[]> signupResult(){
+		return memberRepository.signupResult();
+	}
+
 	
 	//마지막 로그인/로그아웃/패스워드 변경일 등록 하기
 	@Override
@@ -97,13 +103,5 @@ public class MemberServiceImpl implements MemberService {
 		return memberRepository.findByEmailAndUsername(member.getEmail(),member.getUsername())
 					.map(m-> m.getEmail()).orElse("ID_NOT_FOUND");
 	}
-
-
-	//관리자페이지 - 통계 : 회원 가입한 날 확인
-	@Override
-	public List<Object[]> signupResult(){
-		return memberRepository.signupResult();
-	}
-
 
 }
