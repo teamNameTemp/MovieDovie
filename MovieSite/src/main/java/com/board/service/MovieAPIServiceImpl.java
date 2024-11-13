@@ -12,15 +12,16 @@ import com.board.entity.movie.CompanyEntity;
 import com.board.entity.movie.CountryEntity;
 import com.board.entity.movie.CrewEntity;
 import com.board.entity.movie.GenreEntity;
+import com.board.entity.movie.ImageEntity;
 import com.board.entity.movie.LanguageEntity;
 import com.board.entity.movie.MovieEntity;
 import com.board.entity.movie.VideoEntity;
 import com.board.entity.repository.movie.CastRepository;
 import com.board.entity.repository.movie.CompanyRepository;
 import com.board.entity.repository.movie.CountryRepository;
-import com.board.entity.repository.movie.CreditRepository;
 import com.board.entity.repository.movie.CrewRepository;
 import com.board.entity.repository.movie.GenreRepository;
+import com.board.entity.repository.movie.ImageRepository;
 import com.board.entity.repository.movie.LanguageRepository;
 import com.board.entity.repository.movie.MovieRepository;
 import com.board.entity.repository.movie.VideoRepository;
@@ -39,11 +40,11 @@ public class MovieAPIServiceImpl implements MovieAPIService {
 	private final CompanyRepository companyRepository;
 	private final CountryRepository countryRepository;
 	private final GenreRepository genreRepository;
-	private final CreditRepository creditRepository;
 	private final CrewRepository crewRepository;
 	private final CastRepository castRepository;
 	private final LanguageRepository languageRepository;
 	private final VideoRepository videoRepository;
+	private final ImageRepository imageRepository;
 	private final MovieMapper mapper;
 
 	public Map<String, Object> getMovieDetails(Long id) {
@@ -54,17 +55,18 @@ public class MovieAPIServiceImpl implements MovieAPIService {
 			data.put("movie", tmdb.getMovieDetails(id, "ko-KR").block());
 			return data;
 		} else {
-
 			data.put("movie", entity);
 			
 			//아래 엔티티들 리스트로 뽑을 수 있게 리포지토리 쿼리문 변경
-//			data.put("company", mapper.toMapEntity(companyRepository.findById(id).get()));
-//			data.put("country", mapper.toMapEntity(countryRepository.findById(id).get()));
-//			data.put("cast", mapper.toMapEntity(castRepository.findById(id).get()));
-//			data.put("crew", mapper.toMapEntity(crewRepository.findById(id).get()));
-//			data.put("genre", mapper.toMapEntity(genreRepository.findById(id).get()));
-//			data.put("video", mapper.toMapEntity(videoRepository.findById(id).get()));
-//			data.put("language", mapper.toMapEntity(languageRepository.findById(id).get()));
+			data.put("company", mapper.getCompanyList(companyRepository.findByMovieId(entity)));
+			data.put("country", mapper.getCountryList(countryRepository.findByMovieId(entity)));
+			data.put("cast", mapper.getCastList(castRepository.findByMovieId(entity)));
+			data.put("crew", mapper.getCrewList(crewRepository.findByMovieId(entity)));
+			data.put("genre", mapper.getGenreList(genreRepository.findByMovieId(entity)));
+			data.put("video", mapper.getVideoList(videoRepository.findByMovieId(entity)));
+			data.put("language", mapper.getLanguageList(languageRepository.findByMovieId(entity)));
+			data.put("backdrop", mapper.getBackdropList(imageRepository.findByMovieId(entity)));
+			data.put("poster", mapper.getPosterList(imageRepository.findByMovieId(entity)));
 			
 			return data;
 		}
@@ -86,16 +88,17 @@ public class MovieAPIServiceImpl implements MovieAPIService {
 	//todo : 저장 및 업데이트
 	public void saveTheDataBases(List<MovieDTO> list) {
 	    for (MovieDTO dto : list) {
-	    	//DB에 없으면(저장)
+	    	MovieEntity entity = new MovieEntity();
 	    	if(movieRepository.findById(dto.getId()).isEmpty()) {
 	    		saveTheDataBase(dto);
 	    	}
 	    	else { // 있으면(업데이트)
-	    		MovieEntity entity = movieRepository.findById(dto.getId()).get();
+	    		entity.setOverview(dto.getOverview());
 	    		movieRepository.save(entity);
-	    		
-	    		mapperListSave(dto);
+	    		dto.setEntity(entity);
 	    	}
+	    	
+	    	mapperListSave(dto);
 	    }
 	}
 
@@ -103,45 +106,72 @@ public class MovieAPIServiceImpl implements MovieAPIService {
 	public void saveTheDataBase(MovieDTO movie) {
 		MovieEntity movieEntity = mapper.toEntity(movie);
 		movieRepository.save(movieEntity);
-
-		// todo : 리스트(배우,감독,크레딧,언어,비디오, 장르, 제작사, 나라)
-		mapperListSave(movie);
-
 	}
 
+	//저장 및 업데이트
 	private void mapperListSave(MovieDTO dto) {
-		//중복 체크 (있으면 업데이트)
-		List<CompanyEntity> companies = companyRepository.findByMovieId(dto.getId());
-//		List<CountryEntity> countries = countryRepository.findById(dto.getId())
-//		List<GenreEntity> genres = genreRepository.findById(dto.getId())
-//		List<CastEntity> casts = castRepository.findById(dto.getId())
-//		List<CrewEntity> crews = crewRepository.findById(dto.getId())
-//		List<LanguageEntity> languages = languageRepository.findById(dto.getId())
-//		List<VideoEntity> videos = videoRepository.findById(dto.getId())
 
+		//있는지 확인
+		MovieEntity movie = movieRepository.findById(dto.getId()).get();
+		if(movie == null) return;
 		
-		//없으면 저장
-//		List<CompanyEntity> companies = mapper.mapProductionCompanies(dto);
-		List<CountryEntity> countries = mapper.mapProductionCountries(dto);
-		List<GenreEntity> genres = mapper.mapGenres(dto);
-
+		//제작사 유무
+		List<CompanyEntity> companies = companyRepository.findByMovieId(movie);
+		if(companies.isEmpty()) {
+			companies = mapper.mapProductionCompanies(dto);
+		}
+		companyRepository.saveAll(companies);
+		
+		//나라 유무
+		List<CountryEntity> countries = countryRepository.findByMovieId(movie);
+		if(countries.isEmpty()) {
+			countries = mapper.mapProductionCountries(dto);
+		}
+		countryRepository.saveAll(countries);
+		
+		//장르 유무
+		List<GenreEntity> genres = genreRepository.findByMovieId(movie);
+		if(genres.isEmpty()) {
+			genres = mapper.mapGenres(dto);
+		}
+		genreRepository.saveAll(genres);
+		
+		//크레딧 유무
 		if(dto.getCredits() != null) {
-			
-			List<CrewEntity> crews = mapper.mapCrews(dto);
-			List<CastEntity> casts = mapper.mapCasts(dto);
-			
+			//제작진 유무
+			List<CrewEntity> crews = crewRepository.findByMovieId(movie);
+			if(crews.isEmpty()) {
+				crews = mapper.mapCrews(dto);
+			}
 			crewRepository.saveAll(crews);
+			//출연진 유무
+			List<CastEntity> casts = castRepository.findByMovieId(movie);
+			if(casts.isEmpty()) {
+				casts = mapper.mapCasts(dto);
+			}
 			castRepository.saveAll(casts);
 		}
 		
-		List<LanguageEntity> languages = mapper.mapSpokenLanguages(dto);
-		List<VideoEntity> videos = mapper.mapVideos(dto);
-
-//		companyRepository.saveAll(companies);
-		countryRepository.saveAll(countries);
-		genreRepository.saveAll(genres);
+		//언어 유무
+		List<LanguageEntity> languages = languageRepository.findByMovieId(movie);
+		if(languages.isEmpty()) {
+			languages = mapper.mapSpokenLanguages(dto);
+		}
 		languageRepository.saveAll(languages);
+		
+		//비디오 유무
+		List<VideoEntity> videos = videoRepository.findByMovieId(movie);
+		if(videos.isEmpty()) {
+			videos = mapper.mapVideos(dto);
+		}
 		videoRepository.saveAll(videos);
-	}
 
+		//이미지 유무
+		List<ImageEntity> images = imageRepository.findByMovieId(movie);
+		if(images.isEmpty()) {
+			images.addAll(mapper.mapBackdropImage(dto));
+			images.addAll(mapper.mapPosterImage(dto));
+		}
+		imageRepository.saveAll(images);
+	}
 }

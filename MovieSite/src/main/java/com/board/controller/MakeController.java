@@ -68,7 +68,7 @@ public class MakeController {
 	@ResponseBody
 	public List<MovieDTO> postSearchKeyword(@RequestParam("keyword") String keyword){
     	List<MovieDTO> list = tmdb.searchMovies(keyword).block();
-    	
+    	log.info(tmdb.getMovieDetails(list.get(0).getId(),"ko-KR").block());
 //    	log.info(tmdb.searchPerson(keyword).block());
     	return list;
     }
