@@ -41,6 +41,14 @@
     display: flex;
     align-items: center;
     gap: 20px;
+.featured-button {
+  background-color: #4dbf00;
+  color: white;
+  padding: 10px 10px;
+  border-radius: none;
+  border: auto;
+  outline: none;
+  font-weight: bold;
 }
 
 .tab-button {
@@ -153,6 +161,11 @@
 /* ===== 6. 섹션 표시/숨김 ===== */
 .movie-list {
     transition: opacity 0.3s ease;
+  display: flex;
+  align-items: center;
+  height: 300px;
+  transform: translateX(0);
+  transition: all 1s ease-in-out;
 }
 
 /* ===== 리뷰 섹션 스타일 ===== */
@@ -229,4 +242,31 @@
 
 #submitReview:hover {
     background-color: var(--primary-hover);
+.navbar-container.active {
+  background-color: white;
+
+  color: black;
+}
+
+.sidebar.active{
+    background-color: white;
+}
+
+.left-menu-icon.active{
+    color: black;
+}
+
+.toggle.active{
+    background-color: black;
+}
+
+.toggle-ball.active{
+    background-color: white;
+    transform: translateX(-20px);
+}
+
+@media only screen and (max-width: 940px){
+    .menu-container{
+        display: none;
+    }
 }
