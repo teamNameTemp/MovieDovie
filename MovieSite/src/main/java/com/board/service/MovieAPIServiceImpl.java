@@ -57,7 +57,6 @@ public class MovieAPIServiceImpl implements MovieAPIService {
 		} else {
 			data.put("movie", entity);
 			
-			//아래 엔티티들 리스트로 뽑을 수 있게 리포지토리 쿼리문 변경
 			data.put("company", mapper.getCompanyList(companyRepository.findByMovieId(entity)));
 			data.put("country", mapper.getCountryList(countryRepository.findByMovieId(entity)));
 			data.put("cast", mapper.getCastList(castRepository.findByMovieId(entity)));

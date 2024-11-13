@@ -21,7 +21,6 @@ import com.board.entity.movie.VideoEntity;
 
 @Component
 public class MovieMapper {
-		
 	public List<Map<String, Object>> getCompanyList(List<CompanyEntity> companies) {
 	    if (companies == null || companies.isEmpty()) return new ArrayList<>();
 	    return companies.stream()
@@ -367,7 +366,6 @@ public class MovieMapper {
     				.build();
     			}).collect(Collectors.toList());
     }
-    
     public List<ImageEntity> mapPosterImage(MovieDTO dto){
     	if(dto.getImages() == null)return new ArrayList<>();
     	
