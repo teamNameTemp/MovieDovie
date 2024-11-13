@@ -9,21 +9,16 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
-import java.util.Optional;
 import java.util.Random;
-
-import javax.crypto.spec.DHPrivateKeySpec;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.board.dto.RequestDTO;
-import com.board.dto.movie.KobisMovieDTO;
 import com.board.entity.BookmarkEntity;
 import com.board.entity.FavGenreEntity;
 import com.board.entity.LikeEntity;
@@ -41,7 +36,6 @@ import com.board.entity.repository.RentRepository;
 import com.board.entity.repository.RequestRepository;
 import com.board.entity.repository.WatchReopository;
 
-import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 
 @Service
@@ -121,13 +115,6 @@ public class MasterServiceImpl implements MasterService{
 	@Override
 	public void movieCheck(String movieNm) {
 		//return movieRepository.findById(movieNm).isEmpty()?0:1;
-	}
-	
-	//관리자 영화 직접 업로드
-	@Override
-	@Transactional
-	public void movieUpload(KobisMovieDTO dto) {
-		//movieRepository.save(dto.dtoToEntity(dto)); 
 	}
 	
 	//dummy 회원 대량으로 만들기

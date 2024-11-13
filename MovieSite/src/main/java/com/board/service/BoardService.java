@@ -4,8 +4,8 @@ import java.util.List;
 
 import org.springframework.stereotype.Controller;
 
-import com.board.dto.MovieDTO;
 import com.board.dto.ReplyInterface;
+import com.board.dto.movie.MovieDTO;
 import com.board.entity.LikeEntity;
 
 @Controller
