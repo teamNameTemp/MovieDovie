@@ -1,0 +1,54 @@
+.tab-container {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap; /* 요소가 줄 바꿈되도록 설정 */
+
+}
+
+.tab-button {
+    background: none;
+    border: none;
+    color: #333;
+    font-size: 16px;
+    font-weight: 600;
+    padding: 10px 20px;
+    cursor: pointer;
+    transition: color 0.3s;
+}
+
+.tab-button:hover {
+    color: #4dbf00;
+}
+
+.tab-button.active {
+    color: #4dbf00;
+}
+
+.movie-details {
+    border: 1px solid #ddd;
+    padding: 15px;
+    margin-bottom: 15px;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+}
+
+.movie-header {
+    font-weight: bold;
+    font-size: 18px;
+}
+
+.age-rating {
+    color: #ff0000; /* 연령 등급 색상 */
+}
+
+.movie-info {
+    font-size: 14px;
+    color: #555;
+    margin-top: 5px;
+}
+
+.movie-snippet {
+    margin-top: 10px;
+    font-size: 13px;
+    color: #333;
+}

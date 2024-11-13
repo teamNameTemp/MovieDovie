@@ -186,7 +186,7 @@ public class BoardController {
 			case "U" : service.replyUpdate(reply); //댓글 수정
 						break;
 			case "D" : service.replyDelete(reply); //댓글 삭제
-					   break;
+						break;
 		}
 	
 		return service.replyView(reply);
