@@ -33,7 +33,7 @@ public class MovieEntity {
 
     private String tagline;
 
-    @Column(columnDefinition = "CLOB")
+    @Column(name = "overview", length=2000)
     private String overview;
 
     private Integer runtime;
@@ -64,5 +64,7 @@ public class MovieEntity {
     private String status;
     
     private String certification;
+    
+    private String uploadCheck;
     
 }

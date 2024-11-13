@@ -20,5 +20,7 @@ public interface FavGenreRepository extends JpaRepository<FavGenreEntity, Long>{
                  "GROUP BY genre " +
                  "ORDER BY count DESC", nativeQuery = true)
 	public List<Object[]> favGenreResult();
+
+	public FavGenreEntity findByEmail(String email);
 	
 }
