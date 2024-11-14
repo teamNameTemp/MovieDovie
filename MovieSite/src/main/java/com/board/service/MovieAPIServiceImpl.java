@@ -48,6 +48,7 @@ public class MovieAPIServiceImpl implements MovieAPIService {
 	private final MovieMapper mapper;
 
 	//DB에 저장되있는거 가져오기
+	@Override
 	public Map<String, Object> getMovieDetails(Long id) {
 		Map<String, Object> data = new HashMap<>();
 		MovieEntity entity = movieRepository.findById(id).get();
@@ -72,7 +73,7 @@ public class MovieAPIServiceImpl implements MovieAPIService {
 			return data;
 		}
 	}
-	
+	@Override
 	public List<GenreEntity> getGenreList(String genre){
 		List<GenreEntity> genres = genreRepository.findByGenreNm(genre).stream().limit(20).toList();
 		if(genres == null) return new ArrayList<>();
@@ -81,6 +82,7 @@ public class MovieAPIServiceImpl implements MovieAPIService {
 	}
 	
 	//같은 장르의 영화리스트 가져오기
+	@Override
 	public List<Map<String,Object>> findByGenreGetMovieList(List<GenreEntity> genres){
 		List<Map<String,Object>> data = new ArrayList<>();
 		
@@ -91,6 +93,7 @@ public class MovieAPIServiceImpl implements MovieAPIService {
 		return data;
 	}
 	//todo : 저장 및 업데이트
+	@Override
 	public void saveTheDataBases(List<MovieDTO> list) {
 	    for (MovieDTO dto : list) {
 	    	if(movieRepository.findById(dto.getId()).isEmpty()) {
@@ -106,7 +109,7 @@ public class MovieAPIServiceImpl implements MovieAPIService {
 	    }
 	}
 
-	
+	@Override
 	public void saveTheDataBase(MovieDTO movie) {
 		MovieEntity movieEntity = mapper.toEntity(movie);
 		movieRepository.save(movieEntity);
@@ -177,5 +180,20 @@ public class MovieAPIServiceImpl implements MovieAPIService {
 			images.addAll(mapper.mapPosterImage(dto));
 		}
 		imageRepository.saveAll(images);
+	}
+
+	@Override
+	public List<Map<String, Object>> findByKeywordMovieList(String keyword) {
+		List<Map<String,Object>> data = new ArrayList<>();
+		
+		List<MovieEntity> entityList = movieRepository.findByTitleContaining(keyword);
+		if(entityList == null) return data;
+		
+		for(MovieEntity entity : entityList) {
+			Map<String,Object> movie = mapper.getMovieSimpleInfo(entity);
+			data.add(movie);
+		}
+		
+		return data;
 	}
 }
