@@ -2,12 +2,12 @@
 document.addEventListener("DOMContentLoaded", function() {
     // 검색 폼 제출 이벤트 리스너
     const searchForm = document.querySelector('.search-box form');
-    const searchBtn = document.querySelector('.search-btn');
-    const searchInput = document.querySelector('.search-txt');
+    const searchBtn = document.querySelector('.search-box button');
+    const searchInput = document.querySelector('#searchKeyword');
 
     // 검색 실행 함수
     const searchKeyword = () => {
-        const keyword = document.querySelector('#searchKeyword').value;
+        const keyword = searchInput.value;
 
         if (!keyword.trim()) {
             alert('검색어를 입력해주세요.');
