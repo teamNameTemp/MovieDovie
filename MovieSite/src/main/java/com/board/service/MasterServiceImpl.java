@@ -21,6 +21,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.board.dto.RequestDTO;
+import com.board.dto.movie.MovieDTO;
 import com.board.entity.BookmarkEntity;
 import com.board.entity.FavGenreEntity;
 import com.board.entity.LikeEntity;
@@ -335,8 +336,7 @@ public class MasterServiceImpl implements MasterService{
 	    availableGenres.remove(randomIndex); // 선택된 장르는 목록에서 제거
 	    return selectedGenre;
 	}
-	
-	
+
 
 	
 }

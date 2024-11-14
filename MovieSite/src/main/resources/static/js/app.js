@@ -1,4 +1,3 @@
-
 document.addEventListener("DOMContentLoaded", function() {
 	// 공통 변수 설정
 	const movieLists = document.querySelectorAll(".movie-list");  // 모든 .movie-list 요소 선택

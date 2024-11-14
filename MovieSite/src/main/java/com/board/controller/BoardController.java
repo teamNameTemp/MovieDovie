@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.server.ResponseStatusException;
 
 import com.board.dto.ReplyInterface;
 import com.board.dto.movie.MovieDTO;
@@ -77,9 +79,6 @@ public class BoardController {
 //		List<MovieDTO> westList = tmdb.getMoviesByGenreName("서부", 1).block();
 //		
 		
-		Map<String,Object> map = movie.getMovieDetails(trendList.get(0).getId());
-		log.info(map);
-		log.info(map.get("movie"));
 		
 		model.addAttribute("dailyMovies",trendList);
 		model.addAttribute("music",musicList);
@@ -266,4 +265,25 @@ public class BoardController {
 //		String movieInfoResult = kobis.getMovieInfo(movieCd);
 //		return convertToMapper.getMovieInfo(movieInfoResult);
 //	}
+
+//---------검색trying-------------------------
+	@GetMapping("/search")
+	public String searchPage() {
+		return "board/search"; // templates/board/search.html을 찾음
+	}
+
+	@PostMapping("/search/movies")
+	@ResponseBody
+	public List<MovieDTO> searchMovies(@RequestParam ("keyword") String keyword) {
+
+		try {
+			List<MovieDTO> movies = tmdb.searchMovies(keyword).block();
+			return movies;
+		} catch (Exception e) {
+			log.error("Error fetching movies: ", e);
+			throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "영화 검색 중 오류 발생");
+		}
+	}
+//----------------------------------
+
 }

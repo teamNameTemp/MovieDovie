@@ -45,7 +45,7 @@
         
         
         function searchKeyword() {
-            const keyword = document.getElementById('searchKeyword').value;
+            const keyword = document.getElementById('searchKeyword').value; //id="searchKeyword"
             fetch('/make/movie/searchKeyword', {
                 method: "POST",
                 headers: {
@@ -54,10 +54,10 @@
                 body: `keyword=${encodeURIComponent(keyword)}`
             })
             .then(response => response.json())
-            .then(movies => {
+            .then(movies => { //포스트 보넀을떄 반환하는 리설트값
                 const tableBody = document.querySelector('#movieTbl tbody');
                 tableBody.innerHTML = '';
-                movies.forEach(movie => {
+                movies.forEach(movie => { //리스트형태로 반환
                     const row = `
                         <tr>
                             <td>${movie.id}</td>
@@ -127,8 +127,7 @@
                 alert('장르 저장 중 오류가 발생했습니다.');
             });
         }
-        
-        
+  
     </script>
 </head>
 <body>
