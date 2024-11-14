@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.board.dto.MemberDTO;
 import com.board.dto.RequestReplyDTO;
+import com.board.dto.movie.MovieDTO;
 import com.board.entity.RequestEntity;
 import com.board.entity.RequestReplyEntity;
 import com.board.entity.movie.MovieEntity;
@@ -38,7 +39,9 @@ import com.board.util.PageUtil;
 
 import jakarta.servlet.http.HttpSession;
 import lombok.AllArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 
+@Log4j2
 @Controller
 @AllArgsConstructor
 @RequestMapping("/master")
@@ -457,11 +460,17 @@ public class MasterController {
 	//todo : movieUpload로 되어있는 곳 update로 다 변경
 	@PostMapping("/movieUpdate")
 	@ResponseBody
-	public Map<String,String> postMovieUpdate(MovieEntity movie){
+	public Map<String,String> postMovieUpdate(MovieDTO movie,
+			@RequestParam("certification") String certi){
 		Map<String,String> result = new HashMap<>();
+
+		MovieEntity entity = movieRepository.findByTitle(movie.getTitle());
+
+		entity.setOverview(movie.getOverview());
+		entity.setCertification(certi);
 		
-		movieRepository.save(movie);
-		result.put("message","good");
+		movieRepository.save(entity);
+		result.put("message","good");	
 		
 		return result;
 	}
