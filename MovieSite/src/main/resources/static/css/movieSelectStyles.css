@@ -61,6 +61,11 @@ p {
     background-color:black;
 }
 
+.clicked{
+	background-color:white;
+	color:black;
+}
+
 .buttons {
     margin-top: 30px;
 }

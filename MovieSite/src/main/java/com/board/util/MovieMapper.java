@@ -21,6 +21,21 @@ import com.board.entity.movie.VideoEntity;
 
 @Component
 public class MovieMapper {
+	
+	public Map<String,Object> getMovieSimpleInfo(MovieEntity movie){
+		Map<String,Object> data= new HashMap<>();
+		
+		data.put("id", movie.getMovieId());
+		data.put("title", movie.getTitle());
+		data.put("overview", movie.getOverview());
+		data.put("runtime", movie.getRuntime());
+		data.put("posterPath", movie.getPosterPath());
+		data.put("releaseDate", movie.getReleaseDate());
+		data.put("certification", movie.getCertification());
+		
+		return data;
+	}
+	
 	public List<Map<String, Object>> getCompanyList(List<CompanyEntity> companies) {
 	    if (companies == null || companies.isEmpty()) return new ArrayList<>();
 	    return companies.stream()
@@ -178,6 +193,7 @@ public class MovieMapper {
 	
     public List<MovieEntity> toEntityList(List<MovieDTO> dtoList) {
         return dtoList.stream()
+        		.filter(movie -> "released".equals(movie.getStatus()))
                 .map(this::toEntity)
                 .collect(Collectors.toList());
     }
@@ -352,7 +368,7 @@ public class MovieMapper {
     	
     	if(dto.getImages() == null)return new ArrayList<>();
     	
-    	return dto.getImages().getBackdrops().stream()
+    	return dto.getImages().getBackdrops().stream().limit(10)
     			.map(backdrop -> { return ImageEntity.builder()
     				.movieId(dto.getEntity())
     				.aspectRatio(backdrop.getAspectRatio())
@@ -369,7 +385,7 @@ public class MovieMapper {
     public List<ImageEntity> mapPosterImage(MovieDTO dto){
     	if(dto.getImages() == null)return new ArrayList<>();
     	
-    	return dto.getImages().getPosters().stream()
+    	return dto.getImages().getPosters().stream().limit(10)
     			.map(poster -> { return ImageEntity.builder()
     				.movieId(dto.getEntity())
     				.aspectRatio(poster.getAspectRatio())

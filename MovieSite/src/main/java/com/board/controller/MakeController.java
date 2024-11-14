@@ -34,11 +34,11 @@ public class MakeController {
     @PostMapping("/make/movie/save-all")
     @ResponseBody
     public Map<String,Object> postSaveAll(){
-    	  List<MovieDTO> list = movie.getTrendingMovies("day", 1, "ko-KR").block();
+    	  List<MovieDTO> list = tmdb.getTrendingMovies("day", 1, "ko-KR").block();
           List<MovieDTO> temp = new ArrayList<>();
           
           for(MovieDTO d : list) {
-              MovieDTO dto = movie.getMovieDetails(d.getId(), "ko-KR").block();
+              MovieDTO dto = tmdb.getMovieDetails(d.getId(), "ko-KR").block();
               temp.add(dto);
           }
 
@@ -53,7 +53,7 @@ public class MakeController {
     @PostMapping("/make/movie/save")
     @ResponseBody
     public Map<String,String> postMovies(@RequestParam("movieId") Long movieId) {
-    	MovieDTO dto = movie.getMovieDetails(movieId, "ko-KR").block();
+    	MovieDTO dto = tmdb.getMovieDetails(movieId, "ko-KR").block();
     	Map<String,String> data = new HashMap<>();
     	
     	//todo : 저장이 안될 시 오류처리 코드 작성해야함
@@ -81,16 +81,20 @@ public class MakeController {
     	return list;
     }
     
-    @PostMapping("/make/movie/genre")
+    @PostMapping("/api/movies/save-by-genre")
     @ResponseBody
-    public Map<String,String> postSaveGenre(@RequestParam("genre") String genreNm){
-        log.info(genreNm);
-        Map<String,String> map = new HashMap<>();
-        
-        List<MovieDTO> list = tmdb.getMoviesByGenreName(genreNm, 1).block();
-        movie.saveTheDataBases(list);
-        
-        map.put("message", "good");
-        return map;
+    public String saveMoviesByGenre(@RequestParam("genreId") Long genreId) {
+        try {
+            List<MovieDTO> movies = tmdb.getMoviesByGenre(genreId, 1).block();
+            List<MovieDTO> list = new ArrayList<>();
+            for(MovieDTO dto : movies) {
+            	MovieDTO d = tmdb.getMovieDetails(dto.getId(), "ko-KR").block();
+            	list.add(d);
+            }
+            movie.saveTheDataBases(list);
+            return  genreId + ":" + list.size() + "개가 성공적으로 저장되었습니다.";
+        } catch (Exception e) {
+            return "영화 저장 중 오류가 발생했습니다: " + e.getMessage();
+        }
     }
 }

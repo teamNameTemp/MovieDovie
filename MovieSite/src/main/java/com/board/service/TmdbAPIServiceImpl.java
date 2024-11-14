@@ -102,7 +102,7 @@ public class TmdbAPIServiceImpl implements TmdbAPIService {
                 .bodyToMono(MovieDTO.class);
     }
     
-    public Mono<List<MovieDTO>> getMoviesByGenre(int genreId, int page) {
+    public Mono<List<MovieDTO>> getMoviesByGenre(Long genreId, int page) {
         return webClient.get()
                 .uri(uriBuilder -> uriBuilder
                     .path("/discover/movie")

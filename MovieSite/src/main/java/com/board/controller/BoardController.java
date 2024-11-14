@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
@@ -23,7 +24,9 @@ import com.board.dto.RequestReplyDTO;
 import com.board.dto.movie.MovieDTO;
 import com.board.entity.RequestEntity;
 import com.board.entity.RequestReplyEntity;
+import com.board.entity.movie.GenreEntity;
 import com.board.service.BoardService;
+import com.board.service.FavGenreService;
 import com.board.service.MasterService;
 import com.board.service.MemberService;
 import com.board.service.MovieAPIServiceImpl;
@@ -50,6 +53,7 @@ public class BoardController {
 	private final MasterService masterService;
 	private final RequestService requestService;
 	private final RequestReplyService requestReplyService;
+	private final FavGenreService favGenre;
 	
 	//추천 장르
 	@GetMapping("/selectGenre")
@@ -71,53 +75,23 @@ public class BoardController {
 
 	@GetMapping("/list")
 	public void getList(Model model) throws JsonMappingException, JsonProcessingException {
-		List<MovieDTO> trendList = movie.getTrendingMovies("day", 1, "ko-KR").block();
-		List<MovieDTO> musicList = tmdb.getMoviesByGenreName("음악", 1).block();
-//		List<MovieDTO> fantasyList = tmdb.getMoviesByGenreName("판타지", 1).block();
-//		List<MovieDTO> fearList = tmdb.getMoviesByGenreName("공포", 1).block();
-//		List<MovieDTO> documentaryList = tmdb.getMoviesByGenreName("다큐멘터리", 1).block();
-//		List<MovieDTO> familyList = tmdb.getMoviesByGenreName("가족", 1).block();
-//		List<MovieDTO> warList = tmdb.getMoviesByGenreName("전쟁", 1).block();
-//		List<MovieDTO> adventureList = tmdb.getMoviesByGenreName("모험", 1).block();
-//		List<MovieDTO> crimeList = tmdb.getMoviesByGenreName("범죄", 1).block();
-//		List<MovieDTO> historyList = tmdb.getMoviesByGenreName("역사", 1).block();
-//		List<MovieDTO> animationList = tmdb.getMoviesByGenreName("애니메이션", 1).block();
-//		List<MovieDTO> thrillerList = tmdb.getMoviesByGenreName("스릴러", 1).block();
-//		List<MovieDTO> mysteryList = tmdb.getMoviesByGenreName("미스터리", 1).block();
-//		List<MovieDTO> actionList = tmdb.getMoviesByGenreName("액션", 1).block();
-//		List<MovieDTO> comedyList = tmdb.getMoviesByGenreName("코미디", 1).block();
-//		List<MovieDTO> tvMovieList = tmdb.getMoviesByGenreName("TV 영화", 1).block();
-//		List<MovieDTO> romanceList = tmdb.getMoviesByGenreName("로맨스", 1).block();
-//		List<MovieDTO> sfList = tmdb.getMoviesByGenreName("SF", 1).block();
-//		List<MovieDTO> dramaList = tmdb.getMoviesByGenreName("드라마", 1).block();
-//		List<MovieDTO> westList = tmdb.getMoviesByGenreName("서부", 1).block();
-//		
+		List<MovieDTO> trendList = tmdb.getTrendingMovies("day", 1, "ko-KR").block();
 		
-		Map<String,Object> map = movie.getMovieDetails(trendList.get(0).getId());
-		log.info(map);
-		log.info(map.get("movie"));
-		
+		Map<String,Object> favGenreList = new HashMap<>();
+		Optional<Map<String,Object>> genre = favGenre.getFavGenre();
+		if(genre.isPresent()) {
+			for(int i = 0; i<genre.get().size(); i++) {
+				//장르 컬럼 이름
+				String genreNm = (String)genre.get().get("genre" +(i+1));
+				//인자로 받은 장르이름을 가진 모든 장르엔티티를 가져온다.
+				List<GenreEntity> genres = movie.getGenreList(genreNm);
+				//해당 장르를 포함하고 있는 영화리스트를 가져온다.
+				favGenreList.put(genreNm,movie.findByGenreGetMovieList(genres));
+			}
+		}
 		model.addAttribute("dailyMovies",trendList);
-		model.addAttribute("music",musicList);
-//		model.addAttribute("fantasy",fantasyList);
-//		model.addAttribute("fear",fearList);
-//		model.addAttribute("documentary",documentaryList);
-//		model.addAttribute("family",familyList);
-//		model.addAttribute("war",warList);
-//		model.addAttribute("adventure",adventureList);
-//		model.addAttribute("crime",crimeList);
-//		model.addAttribute("history",historyList);
-//		model.addAttribute("animation",animationList);
-//		model.addAttribute("thriller",thrillerList);
-//		model.addAttribute("mystery",mysteryList);
-//		model.addAttribute("action",actionList);
-//		model.addAttribute("comedy",comedyList);
-//		model.addAttribute("tvMovie",tvMovieList);
-//		model.addAttribute("romance",romanceList);
-//		model.addAttribute("sf",sfList);
-//		model.addAttribute("drama",dramaList);
-//		model.addAttribute("west",westList);
-		
+		model.addAttribute("favGenre",genre.get());
+		model.addAttribute("favGenreList",favGenreList);
 	}
 	// 장르 필터
 	@PostMapping("/genreCheck")
@@ -128,10 +102,9 @@ public class BoardController {
 	//영화상세
 	@GetMapping("/movieDetail")
 	public void getView(Model model, @RequestParam("movieId") Long id) throws JsonMappingException, JsonProcessingException{
-//		MovieDTO detail = tmdb.getMovieDetails(id, "ko-KR").block();
-		Map<String,Object> map = movie.getMovieDetails(id);
-		log.info(map);
-		log.info(map.get("movie"));
+		MovieDTO detail = tmdb.getMovieDetails(id, "ko-KR").block();
+		
+		model.addAttribute("movie",detail);
 	}
 	
 	
@@ -156,12 +129,12 @@ public class BoardController {
 	@GetMapping("/tmdb")
 	public void getTmdb(Model model) {
 		//한글로 뽑고 영어로 뽑고 해야함 onErrorResume(en-US / ko-KR)
-		List<MovieDTO> trendList = movie.getTrendingMovies("day", 1, "ko-KR").block();
+		List<MovieDTO> trendList = tmdb.getTrendingMovies("day", 1, "ko-KR").block();
 		List<MovieDTO> info = new ArrayList<>();
 		int idx=5;
 		for(MovieDTO d : trendList) {
 			if(idx==0)break;
-			MovieDTO dto = movie.getMovieDetails(d.getId(),"ko-KR").block();
+			MovieDTO dto = tmdb.getMovieDetails(d.getId(),"ko-KR").block();
 			log.info(dto);
 			dto.setTitle(d.getTitle());
 			info.add(dto);

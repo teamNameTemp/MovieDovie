@@ -1,5 +1,6 @@
 package com.board.service;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -29,7 +30,6 @@ import com.board.util.MovieMapper;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import reactor.core.publisher.Mono;
 
 @RequiredArgsConstructor
 @Log4j2
@@ -47,6 +47,7 @@ public class MovieAPIServiceImpl implements MovieAPIService {
 	private final ImageRepository imageRepository;
 	private final MovieMapper mapper;
 
+	//DB에 저장되있는거 가져오기
 	public Map<String, Object> getMovieDetails(Long id) {
 		Map<String, Object> data = new HashMap<>();
 		MovieEntity entity = movieRepository.findById(id).get();
@@ -57,6 +58,7 @@ public class MovieAPIServiceImpl implements MovieAPIService {
 		} else {
 			data.put("movie", entity);
 			
+			//아래 엔티티들 리스트로 뽑을 수 있게 리포지토리 쿼리문 변경
 			data.put("company", mapper.getCompanyList(companyRepository.findByMovieId(entity)));
 			data.put("country", mapper.getCountryList(countryRepository.findByMovieId(entity)));
 			data.put("cast", mapper.getCastList(castRepository.findByMovieId(entity)));
@@ -69,30 +71,33 @@ public class MovieAPIServiceImpl implements MovieAPIService {
 			
 			return data;
 		}
-
 	}
-
-	public Mono<List<MovieDTO>> getTrendingMovies(String timeWindow, int page, String language) {
-		return tmdb.getTrendingMovies(timeWindow, page, language);
+	
+	public List<GenreEntity> getGenreList(String genre){
+		List<GenreEntity> genres = genreRepository.findByGenreNm(genre).stream().limit(20).toList();
+		if(genres == null) return new ArrayList<>();
+		
+		return genres;
 	}
-
-	public Mono<MovieDTO> getDiscoverMovies(String sortBy, String withGenres, int page, String language) {
-		return tmdb.getDiscoverMovies(sortBy, withGenres, page, language);
+	
+	//같은 장르의 영화리스트 가져오기
+	public List<Map<String,Object>> findByGenreGetMovieList(List<GenreEntity> genres){
+		List<Map<String,Object>> data = new ArrayList<>();
+		
+		for(GenreEntity genre : genres) {
+			data.add(mapper.getMovieSimpleInfo(genre.getMovieId()));
+		}
+		
+		return data;
 	}
-
-	public Mono<MovieDTO> getMovieDetails(Long movieId, String language) {
-		return tmdb.getMovieDetails(movieId, language);
-	}
-
 	//todo : 저장 및 업데이트
 	public void saveTheDataBases(List<MovieDTO> list) {
 	    for (MovieDTO dto : list) {
-	    	MovieEntity entity = new MovieEntity();
 	    	if(movieRepository.findById(dto.getId()).isEmpty()) {
 	    		saveTheDataBase(dto);
 	    	}
 	    	else { // 있으면(업데이트)
-	    		entity.setOverview(dto.getOverview());
+	    		MovieEntity entity = movieRepository.findById(dto.getId()).get();	    		entity.setOverview(dto.getOverview());
 	    		movieRepository.save(entity);
 	    		dto.setEntity(entity);
 	    	}

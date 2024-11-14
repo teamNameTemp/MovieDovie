@@ -460,7 +460,8 @@ public class MasterController {
 	}
 	
 	@GetMapping("/movieUpload")
-	public void getMovieUpload() {
+	public void getMovieUpload(Model model) {
+		
 	}
 	
 	/*

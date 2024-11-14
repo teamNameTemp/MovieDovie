@@ -58,7 +58,27 @@ document.addEventListener("DOMContentLoaded", function () {
         crewSection.style.display = 'block';
         castSection.style.display = 'none';
     });
-    
+
+//백드롭-포스터 탭전환
+    const backdropButton = document.getElementById('backdropButton');
+    const posterButton = document.getElementById('posterButton');
+    const backdropSection = document.getElementById('backdropSection');
+    const posterSection = document.getElementById('posterSection');
+
+    backdropButton.addEventListener('click', function() {
+        backdropButton.classList.add('active');
+        posterButton.classList.remove('active');
+        backdropSection.style.display = 'block';
+        posterSection.style.display = 'none';
+    });
+
+    posterButton.addEventListener('click', function() {
+        posterButton.classList.add('active');
+        backdropButton.classList.remove('active');
+        posterSection.style.display = 'block';
+        backdropSection.style.display = 'none';
+    });
+	    
     //리뷰 좋아요/싫어요
     const likeButton = document.getElementById('likeButton');
     const dislikeButton = document.getElementById('dislikeButton');
