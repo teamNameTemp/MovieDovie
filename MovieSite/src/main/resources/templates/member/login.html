@@ -182,7 +182,7 @@ window.onload = async () => {
     }
 };
 
-// 이 함수는 로그인 성공 시 /board/selectGenre로 무조건 이동하게 함
+
 const login = () => {
 	document.loginForm.action = '/member/login';
 	document.loginForm.submit();
@@ -273,7 +273,7 @@ const cookieManage = (email, password) => {
     } else {
         document.cookie = 'password=' + password + '; path=/; max-age=0';
     }
-
+ 
     if (rememberMe.checked) {
         document.cookie = 'remember-me=true; path=/; expires=Tue, 31 Dec 2024 23:59:59 GMT';
     } else {
@@ -284,6 +284,7 @@ const cookieManage = (email, password) => {
 // Enter 키로 로그인 시도
 const press = (event) => {
     if (event.keyCode === 13) {
+    	preventDefault();
         loginCheck(); // Enter 키를 누르면 loginCheck 함수 호출
     }
 };

@@ -1,9 +1,10 @@
 package com.board.service;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 import com.board.dto.FavGenreDTO;
-import com.board.entity.MemberEntity;
 
 public interface FavGenreService {
 
@@ -11,4 +12,6 @@ public interface FavGenreService {
 	public List<Object[]> favGenreResult();
 	
 	public void saveTheFavGenre(FavGenreDTO favGenre);
+	
+	public Optional<Map<String,Object>> getFavGenre();
 }

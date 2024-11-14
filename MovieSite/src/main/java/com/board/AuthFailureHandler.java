@@ -16,14 +16,14 @@ import lombok.extern.log4j.Log4j2;
 @Log4j2
 public class AuthFailureHandler extends SimpleUrlAuthenticationFailureHandler{
 
-	@Override
-	public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response,
-			AuthenticationException exception) throws IOException, ServletException {
-		
-		log.info("------------------------ 로그인 실패 ------------------------ ");
-		setDefaultFailureUrl("/member/login");
-	
-		super.onAuthenticationFailure(request, response, exception);
-	}
-	
+   @Override
+   public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response,
+         AuthenticationException exception) throws IOException, ServletException {
+      
+      log.info("------------------------ 로그인 실패 ------------------------ ");
+      setDefaultFailureUrl("/member/login");
+   
+      super.onAuthenticationFailure(request, response, exception);
+   }
+   
 }

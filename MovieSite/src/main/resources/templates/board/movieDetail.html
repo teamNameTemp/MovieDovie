@@ -5,6 +5,9 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="/css/movieDetailStyle.css">
+     <link rel="stylesheet" href="/css/movieListStyle.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@100;300;400;500;700;900&family=Sen:wght@400;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css">
     <title th:text="${movie.title}">영화 상세</title>
     <th:block th:replace="~{/fragments/header::header}"></th:block>
     <script src="/js/detail.js"></script>
@@ -28,7 +31,8 @@
                     <span th:text="'  |  ' + ${#temporals.format(movie.releaseDate, 'yyyy-MM-dd')}"></span>
                 </p> <!-- 제목위 미니정보 -->
                 <h1 class="featured-title" th:text="${movie.title}" style="display: inline;"></h1>
-                <span class="original-title" th:text="${movie.originalTitle}" style="font-size: smaller; display: inline;"></span> <br>
+                <span class="original-title" th:text="${movie.originalTitle}" style="font-size: smaller; display: inline;"></span>
+                <button style="width:50px; height:auto;">수정</button><br>
                 <p th:text="${movie.tagline}"></p>
                 <hr><br>
                 <p th:text="${movie.overview}"></p>
@@ -101,28 +105,46 @@
         </div>
 
         <div class="featured-content-others">
-            <h2>리뷰</h2>
-            <div class="review-header">
-                <button id="likeButton" class="btn btn-like">
-                    <i class="fas fa-thumbs-up"></i>
-                    좋아요
-                </button>
-                <button id="dislikeButton" class="btn btn-dislike">
-                    <i class="fas fa-thumbs-down"></i>
-                    싫어요
-                </button>
+    <h2>영상/이미지</h2>
+    <div class="cast-crew-tabs">
+        <div class="tab-container">
+            <button id="backdropButton" class="tab-button active">Backdrop</button>
+            <button id="posterButton" class="tab-button">Poster</button>
+        </div>  
+    </div>
+    <div id="backdropSection" class="movie-list" style="display: block;">
+        <div class="scroll-container">
+            <div th:each="backdrop, iterStat : ${#lists.size(movie.images.backdrops) > 9 ? movie.images.backdrops.subList(0, 10) : movie.images.backdrops}" 
+                class="image-card">
+                <div class="card">
+                  <img th:if="${backdrop.filePath}" 
+                  		th:src="@{'https://image.tmdb.org/t/p/original' + ${backdrop.filePath}}" 
+                  		th:alt="backdrop" style="width: 640px; height:360px; clear:both;" >
+                </div>
             </div>
-            <div id="reviewSection" class="review-section">
-                <textarea id="reviewText" placeholder="이 영화에 대한 감상평을 작성해주세요..." rows="4"></textarea>
-                <button id="submitReview">리뷰 등록</button>
+            <div th:if="${#lists.size(movie.images.backdrops) > 10}" class="more-button-container">
+                <a href="/all-backdrops" class="more-button">더보기</a>
             </div>
         </div>
-        
-        <div class="featured-content-others">
-            <h2>영상/이미지</h2>
-            <div class="image-container">
+    </div>
+
+    <div id="posterSection" class="movie-list" style="display: none;">
+        <div class="scroll-container">
+            <div th:each="poster, iterStat : ${#lists.size(movie.images.posters) > 9 ? movie.images.posters.subList(0, 10) : movie.images.posters}" 
+                class="image-card">
+                <div class="card">
+                    <img th:if="${poster.filePath}" 
+                        th:src="@{'https://image.tmdb.org/t/p/original' + ${poster.filePath}}" 
+                        th:alt="'Poster Image'" 
+                        style="width: 320px; height:480px;">
+                </div>
+            </div>
+            <div th:if="${#lists.size(movie.images.posters) > 10}" class="more-button-container">
+                <a href="/all-posters" class="more-button">더보기</a>
             </div>
         </div>
+    </div>
+</div>
 
         <div class="featured-content-others">
             <h2>추천 영화</h2>
