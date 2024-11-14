@@ -85,7 +85,18 @@
 	.button:hover {
 	    background-color:black;
 	}
-
+	
+	textarea::placeholder {
+	    white-space: pre-wrap; /* 줄바꿈 처리 */
+	    word-wrap: break-word; /* 긴 단어가 줄을 넘지 않도록 처리 */
+	}
+	
+	textarea {
+	  height: 100px;
+	  line-height: 1.5;
+	}
+	
+	
     </style>
 </head>
 <body>
@@ -179,8 +190,9 @@
 		        </div>
 		        <div class="form-group">
 		            <label for="content">내용:</label>
-		            <textarea class="input_content" id="content" cols="100" rows="1000" name="content" placeholder="1000자 이내로 내용을 입력하세요"></textarea>
-		        </div><br>
+		            <textarea class="input_content" id="content" cols="100" rows="1000" name="content" placeholder="1000자 이내로 내용을 입력하세요."></textarea>
+		        </div>
+		        <br><p> 글 작성 이후 수정은 불가능하오니, 이 점 참고해주세요.</p><br>
 	        <div id="bottom_menu">
 			    <input type="button" id="btnRegister" class="button" value="등록"/>&nbsp;
 			    <input type="button" id="btnCancel" class="button" value="취소"/>

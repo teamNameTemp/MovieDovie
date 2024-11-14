@@ -9,7 +9,7 @@ import com.board.entity.FavGenreEntity;
 
 public interface FavGenreRepository extends JpaRepository<FavGenreEntity, Long>{
 
-	//회원들이 좋아하는 장르 인기 순으로 뽑아내기
+	//관리자페이지 - 통계 : 회원들이 좋아하는 장르 인기 순으로 뽑아내기
 	@Query(value = "SELECT genre, COUNT(genre) AS count FROM (" +
                  "SELECT genre1 AS genre FROM tbl_fav_genre " +
                  "UNION ALL " +

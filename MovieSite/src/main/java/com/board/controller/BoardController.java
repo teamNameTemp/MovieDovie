@@ -6,6 +6,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.swing.border.TitledBorder;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.convert.DtoInstantiatingConverter;
 import org.springframework.data.domain.Page;
@@ -25,11 +27,14 @@ import com.board.dto.ReplyInterface;
 import com.board.dto.RequestDTO;
 import com.board.dto.RequestReplyDTO;
 import com.board.entity.LikeEntity;
+import com.board.entity.NotificationEntity;
 import com.board.entity.RequestEntity;
 import com.board.entity.RequestReplyEntity;
+import com.board.entity.repository.MemberRepository;
 import com.board.service.BoardService;
 import com.board.service.MasterService;
 import com.board.service.MemberService;
+import com.board.service.NotificationService;
 import com.board.service.RequestReplyService;
 import com.board.service.RequestService;
 import com.board.util.PageUtil;
@@ -47,6 +52,7 @@ public class BoardController {
 	private final MasterService masterService;
 	private final RequestService requestService;
 	private final RequestReplyService requestReplyService;
+	private final NotificationService notificationService;
 	
 	//추천 장르
 	@GetMapping("/selectGenre")
@@ -221,6 +227,7 @@ public class BoardController {
 		model.addAttribute("pageList", page.getBoardRequestPageList(pageNum, postNum, pageListCount,totalCount,keyword));
 	}
 	
+	
 	//회원이 자신의 요청사항 상세보기
 	@GetMapping("/requestView")
 	public void getRequestView(Model model, @RequestParam(name="seqno", required = false) Long seqno, @RequestParam("page") int pageNum,
@@ -268,14 +275,6 @@ public class BoardController {
 	        case "I":
 	            requestReplyService.replyRegister(dto); // 댓글 등록
 	            replyDataList = requestReplyService.replyList(dto.getReqseqno()); // 등록 후 댓글 목록 반환
-	            break;
-	        case "U":
-	            requestReplyService.replyUpdate(dto); // 댓글 수정
-	            replyDataList = requestReplyService.replyList(dto.getReqseqno()); // 수정 후 댓글 목록 반환
-	            break;
-	        case "D":
-	            requestReplyService.replyDelete(dto.getSeqno()); // 댓글 삭제
-	            replyDataList = requestReplyService.replyList(dto.getReqseqno()); // 삭제 후 댓글 목록 반환
 	            break;
 	        default:
 	            throw new IllegalArgumentException("Invalid kind value: " + kind); // 잘못된 kind 값 처리
