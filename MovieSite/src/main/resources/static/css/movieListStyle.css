@@ -1,7 +1,7 @@
 * {
   box-sizing: border-box;
   margin: 0;
-  padding: 0
+  padding: 0px;
 }
 
 body {
@@ -151,7 +151,7 @@ body {
 
 .featured-content {
   height: 1200px;
-  padding: 50px;
+  padding-left:50px;
 }
 
 .featured-title {
@@ -175,6 +175,7 @@ body {
 }
 
 .movie-list-container {
+  border-radius:30px;
   margin:20px;
   margin-left:60px;
   padding: 0 20px;
@@ -195,6 +196,9 @@ body {
 }
 
 .movie-list-item {
+  box-shadow:0px 0px 30px 10px #151515;
+  border-radius:30px;
+  background-color:#151515;
   margin-right: 30px;
   position: relative;
 }
@@ -217,10 +221,11 @@ body {
 }
 
 .movie-list-item-img {
+  border-radius:30px;
   transition: all 1s ease-in-out;
   width: 270px;
   height: 400px;
-  object-fit: contain;
+  object-fit: cover;
   z-index: 1;
   cursor: pointer;
 }
