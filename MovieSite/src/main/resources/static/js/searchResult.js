@@ -1,28 +1,45 @@
-let viewType = 'list'; // 기본 보기 형태
+// 검색 기능 구현
+document.addEventListener("DOMContentLoaded", function() {
+    // 검색 폼 제출 이벤트 리스너
+    const searchForm = document.querySelector('.search-box form');
+    const searchBtn = document.querySelector('.search-btn');
+    const searchInput = document.querySelector('.search-txt');
 
-function sortResults(criteria) {
-    // 모든 탭 버튼에서 active 클래스를 제거
-    const buttons = document.querySelectorAll('.tab-button');
-    buttons.forEach(button => {
-        button.classList.remove('active');
-    });
+    // 검색 실행 함수
+    const searchKeyword = () => {
+        const keyword = document.querySelector('#searchKeyword').value;
 
-    // 클릭한 버튼에 active 클래스 추가
-    const activeButton = document.querySelector(`button[onclick="sortResults('${criteria}')"]`);
-    activeButton.classList.add('active');
+        if (!keyword.trim()) {
+            alert('검색어를 입력해주세요.');
+            return;
+        }
 
-    // 정렬 로직 구현
-    // 예: AJAX 요청으로 서버에 정렬 기준을 전달하고 결과를 업데이트
-}
+        window.location.href = `/searchResult?keyword=${encodeURIComponent(keyword)}`;
+    };
 
-function toggleView(type) {
-    viewType = type;
-    const results = document.getElementById('results');
-    if (type === 'album') {
-        results.classList.add('album-view');
-        results.classList.remove('list-view');
-    } else {
-        results.classList.add('list-view');
-        results.classList.remove('album-view');
+    // 폼 제출 이벤트
+    if (searchForm) {
+        searchForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            searchKeyword();
+        });
     }
-}
+
+    // 검색 버튼 클릭 이벤트
+    if (searchBtn) {
+        searchBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            searchKeyword();
+        });
+    }
+
+    // 엔터 키 이벤트
+    if (searchInput) {
+        searchInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                searchKeyword();
+            }
+        });
+    }
+});

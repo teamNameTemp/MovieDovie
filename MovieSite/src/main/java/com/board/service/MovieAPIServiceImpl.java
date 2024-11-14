@@ -68,7 +68,6 @@ public class MovieAPIServiceImpl implements MovieAPIService {
 			
 			return data;
 		}
-
 	}
 
 	public Mono<List<MovieDTO>> getTrendingMovies(String timeWindow, int page, String language) {

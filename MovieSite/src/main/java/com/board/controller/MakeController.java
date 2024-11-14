@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.data.convert.DtoInstantiatingConverter;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -63,16 +64,13 @@ public class MakeController {
     	return data;
     }
 	
-	
     @PostMapping("/make/movie/searchKeyword")
 	@ResponseBody
 	public List<MovieDTO> postSearchKeyword(@RequestParam("keyword") String keyword){
     	List<MovieDTO> list = tmdb.searchMovies(keyword).block();
-    	
 //    	log.info(tmdb.searchPerson(keyword).block());
     	return list;
     }
-
 
     @PostMapping("/make/movie/searchTrend")
     @ResponseBody
