@@ -62,16 +62,14 @@
             .then(movies => {
                 const resultsDiv = document.getElementById('searchResult');
                 resultsDiv.innerHTML = '';
-
+                //console.log(movies);
                 movies.forEach(movie => {
                     const card = `
                     <div class ="movie-card">
-                        <img src="https://image.tmdb.org/t/p/w500${movie.posterPath}" 
-                            alt="${movie.title}"
-                            onerror="this.src = 'MovieSite\src\main\resources\static\images\blankProfile.jpg'"
-                        >
+                        <img src="${movie.poster_path ? 'https://image.tmdb.org/t/p/w200' + movie.poster_path : '/images/blankPoster.jpg'}" 
+                            alt="${movie.title}">
                         <h3>${movie.title}</h3>
-                        <p>${movie.releaseDate || '개봉일 미정'}</p>
+                        <p>${movie.release_date || '개봉일 미정'}</p>
                         </div>
                     `;
                     resultsDiv.innerHTML += card;// +=를 사용해서 검색 결과를 하나씩 추가
