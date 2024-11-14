@@ -1,8 +1,9 @@
-.body {
+body {
     background-color: #151515;
     font-family: Arial, sans-serif;
-    margin: 20px;
+    margin: 60px;
 }
+
 .movie-card {
     border: 1px solid #ccc;
     border-radius: 8px;
@@ -83,6 +84,10 @@
     grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
     gap: 20px;
     padding: 20px;
+}
+
+.searchResult {
+    margin: 60px;
 }
 
 .search-box {
