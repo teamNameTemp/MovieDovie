@@ -177,7 +177,6 @@ public class MasterServiceImpl implements MasterService{
         memberRepository.saveAll(members); //일괄 저장
     }
 
-	
 	//Dummy Rents 만들기
 	@Override
     @Transactional
@@ -289,7 +288,6 @@ public class MasterServiceImpl implements MasterService{
 		}
 	}
 	
-	
 	//Dummy 즐겨찾기 만들기
 	@Override
     @Transactional	
@@ -305,7 +303,6 @@ public class MasterServiceImpl implements MasterService{
             bookmarkRepository.save(bookmark);
 		}
 	}
-	
 	
 	//Dummy 좋아하는 장르 만들기
 	@Override

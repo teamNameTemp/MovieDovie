@@ -68,4 +68,10 @@ public class RequestServiceImpl implements RequestService {
 		return requestRepository.my_next_seqno(seqno, email, keyword, keyword)==null?0:requestRepository.my_next_seqno(seqno, email, keyword, keyword);
 	}
 	
+	//요청 사항 값 확인하기
+	@Override	
+	public List<RequestDTO> findBySeqno(Long seqno){
+		return requestRepository.findBySeqno(seqno);
+	}
+	
 }
