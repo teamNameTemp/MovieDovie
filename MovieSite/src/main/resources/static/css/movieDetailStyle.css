@@ -9,6 +9,24 @@
 }
 
 /* ===== 2. 레이아웃 ===== */
+.featured-background {
+    position: relative; /* 부모 요소에 상대 위치 설정 */
+    overflow: hidden; /* 자식 요소가 부모를 넘지 않도록 설정 */
+    background: linear-gradient(to right, rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0) 50%), url(https://image.tmdb.org/t/p/original${movie.backdropPath}); /* 그라데이션 추가 */
+    background-size: cover; /* 배경 이미지 크기 조정 */
+    background-position: 20% center; /* 배경 이미지 위치 조정 */
+}
+
+.featured-background::before {
+    position: absolute; /* 절대 위치 설정 */
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.3); /* 검은색 반투명 배경 */
+    z-index: 1; /* 텍스트보다 아래에 위치하도록 설정 */
+}
+
 .container {
     width: 100%;
     min-height: 100vh;
@@ -19,19 +37,19 @@
     align-items: flex-start;
     width: calc(100% - 20px);
     min-height: fit-content;
-    position: relative;
 }
 
 .featured-desc {
+    position: relative; /* 자식 요소가 가상 요소 위에 위치하도록 설정 */
+    z-index: 2; /* 텍스트가 가상 요소 위에 위치하도록 설정 */
     flex: 1;
-    padding-right: 45%;
+    padding-right: 50%;
 }
 
 /* ===== 3. 탭 스타일 ===== */
 .cast-crew-tabs {
     background-color: var(--dark-blue);
     width: 100%;
-    margin-bottom: 20px;
 }
 
 .tab-container {
@@ -41,14 +59,6 @@
     display: flex;
     align-items: center;
     gap: 20px;
-.featured-button {
-  background-color: #4dbf00;
-  color: white;
-  padding: 10px 10px;
-  border-radius: none;
-  border: auto;
-  outline: none;
-  font-weight: bold;
 }
 
 .tab-button {
@@ -85,15 +95,29 @@
 
 /* ===== 4. 카드 스타일 ===== */
 .scroll-container {
-    display: flex;
-    gap: 20px;
-    padding: 20px 0;
-    overflow: visible;
+    display: flex; /* Flexbox 활성화 */
+    overflow-x: auto; /* 가로 스크롤 활성화 */
+    padding: 10px 0; /* 상하 여백 추가 */
+    gap: 20px; /* 카드 간격 설정 */
+    scrollbar-width: thin; /* Firefox에서 스크롤바 두께 설정 */
+}
+
+/* Webkit 기반 브라우저에서 스크롤바 스타일링 */
+.scroll-container::-webkit-scrollbar {
+    height: 8px; /* 스크롤바 높이 */
+}
+
+.scroll-container::-webkit-scrollbar-thumb {
+    background: rgba(0, 0, 0, 0.5); /* 스크롤바 색상 */
+    border-radius: 10px; /* 스크롤바 모서리 둥글게 */
+}
+
+.scroll-container::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.1); /* 스크롤바 배경 색상 */
 }
 
 .person-card {
-    flex: 0 0 200px;
-    margin-bottom: 20px;
+    flex: 0 0 150px;
     transition: transform 0.3s ease;
 }
 
@@ -134,7 +158,6 @@
     font-size: 12px;
     color: var(--text-gray);
 }
-
 /* ===== 5. 더보기 버튼 ===== */
 .more-button-container {
     display: flex;
@@ -161,11 +184,6 @@
 /* ===== 6. 섹션 표시/숨김 ===== */
 .movie-list {
     transition: opacity 0.3s ease;
-  display: flex;
-  align-items: center;
-  height: 300px;
-  transform: translateX(0);
-  transition: all 1s ease-in-out;
 }
 
 /* ===== 리뷰 섹션 스타일 ===== */
@@ -242,31 +260,28 @@
 
 #submitReview:hover {
     background-color: var(--primary-hover);
-.navbar-container.active {
-  background-color: white;
-
-  color: black;
 }
 
-.sidebar.active{
-    background-color: white;
+.poster-container {
+    margin-top: 4%;
+    margin-right: 10%; /* 오른쪽 여백 설정 */
+    /* 추가적인 스타일이 필요하다면 여기에 추가 */
 }
 
-.left-menu-icon.active{
-    color: black;
-}
-
-.toggle.active{
-    background-color: black;
-}
-
-.toggle-ball.active{
-    background-color: white;
-    transform: translateX(-20px);
-}
-
-@media only screen and (max-width: 940px){
-    .menu-container{
-        display: none;
-    }
+.btn-trailer {
+    background-color: transparent;
+    position: absolute;
+    bottom: 10px;
+    left: 80px;
+    display: inline-flex;
+    justify-content: flex-start;
+    align-items: center;
+    color: #FF0033;
+    text-decoration: none;
+    text-transform: uppercase;
+    font-weight: 500;
+    letter-spacing: 1px;
+    font-size: 1.2em;
+    cursor: pointer !important;
+    transition: 0.3s;
 }

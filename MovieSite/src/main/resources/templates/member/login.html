@@ -284,6 +284,7 @@ const cookieManage = (email, password) => {
 // Enter 키로 로그인 시도
 const press = (event) => {
     if (event.keyCode === 13) {
+    	preventDefault();
         loginCheck(); // Enter 키를 누르면 loginCheck 함수 호출
     }
 };

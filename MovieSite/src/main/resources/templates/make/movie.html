@@ -167,9 +167,33 @@
         </tbody>
     </table>
 
-	<br><br><br>
-	<h2>장르 별 영화 데이터 저장 (각 장르별 최신 20개 저장)</h2>
-</div>
-    
+	 <h1>장르별 영화 저장</h1>
+    <div>
+        <h2>영화 장르 목록</h2>
+        <ul>
+            <li th:each="genre : ${genres}">
+                <span th:text="${genre.key}"></span>
+                <button th:onclick="'saveMoviesByGenre(' + ${genre.value} + ')'">저장</button>
+            </li>
+        </ul>
+    </div>
+    <div id="result"></div>
+
+    <script>
+        function saveMoviesByGenre(genreId) {
+            fetch('/api/movies/save-by-genre?genreId=' + genreId, {
+            	method: 'POST' 
+            	})
+                .then(response => response.text())
+                .then(message => {
+                    document.getElementById('result').innerText = message;
+                	alert("데이터가 성공적으로 저장되었습니다.");
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    document.getElementById('result').innerText = '오류가 발생했습니다.';
+                });
+        }
+    </script>
 </body>
 </html>

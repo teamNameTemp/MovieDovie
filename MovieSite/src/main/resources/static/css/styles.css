@@ -120,6 +120,8 @@ body {
   flex-direction: column;
   align-items: center;
   padding-top: 60px;
+  z-index: 1000; /* 다른 요소들 위에 표시되도록 설정 */
+  overflow-y: auto; /* 세로 스크롤 가능 */
 }
 
 .left-menu-icon {
@@ -140,7 +142,12 @@ body {
 
 .featured-content {
   height: 50vh;
-  padding: 50px;
+  padding: 25px 80px;
+}
+
+.featured-content-others {
+  /* height: 50vh; */
+  padding: 25px 80px;
 }
 
 .featured-title {
@@ -199,8 +206,7 @@ body {
 }
 
 .movie-list-item-img {
-  transition: transform 1s ease-in-out; /* all 대신 특정 속성만 변경 */
-  will-change: transform; /* 브라우저에게 변환 힌트 제공 */
+  transition: all 1s ease-in-out;
   width: 270px;
   height: 200px;
   object-fit: cover;
@@ -291,30 +297,4 @@ body {
     .menu-container{
         display: none;
     }
-    
-    .featured-desc {
-        width: 100%; /* 모바일에서 더 나은 레이아웃을 위해 */
-        max-width: 500px;
-    }
-    
-    .movie-list-item-img {
-        width: 200px; /* 모바일에서 더 작은 이미지 */
-        height: 150px;
-    }
-}
-
-@media only screen and (max-width: 600px) {
-    .navbar-container {
-        padding: 0 20px; /* 모바일에서 패딩 줄임 */
-    }
-    
-    .featured-content {
-        padding: 20px; /* 모바일에서 패딩 줄임 */
-    }
-}
-
-.featured-button:focus,
-.movie-list-item-button:focus {
-  outline: 2px solid #4dbf00;
-  outline-offset: 2px;
 }

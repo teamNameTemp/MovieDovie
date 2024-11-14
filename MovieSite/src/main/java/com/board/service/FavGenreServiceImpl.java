@@ -1,22 +1,28 @@
 package com.board.service;
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
 import com.board.dto.FavGenreDTO;
 import com.board.entity.FavGenreEntity;
-import com.board.entity.MemberEntity;
 import com.board.entity.repository.FavGenreRepository;
+import com.board.entity.repository.MemberRepository;
 
+import jakarta.servlet.http.HttpSession;
 import lombok.AllArgsConstructor;
 
 @Service
 @AllArgsConstructor
 public class FavGenreServiceImpl implements FavGenreService {
 
+	public final MemberRepository memberRepository;
 	public final FavGenreRepository favGenreRepository;
+	public final HttpSession session;
 	
 	//회원들이 좋아하는 장르 인기 순으로 뽑아내기
 	@Override	
@@ -36,12 +42,40 @@ public class FavGenreServiceImpl implements FavGenreService {
 	@Override
 	public void saveTheFavGenre(FavGenreDTO favGenre) {
 		FavGenreEntity favGenreEntity = favGenreRepository.findByEmail(favGenre.getEmail());
+		if(favGenreEntity == null) {
+			FavGenreEntity entity = FavGenreEntity.builder()
+				.email(favGenre.getEmail())
+				.genre1(favGenre.getGenre1())
+				.genre2(favGenre.getGenre2())
+				.genre3(favGenre.getGenre3())
+				.build();
+			
+			favGenreRepository.save(entity);
+			
+		}
+		else {
+			favGenreEntity.setGenre1(favGenre.getGenre1());
+			favGenreEntity.setGenre2(favGenre.getGenre2());
+			favGenreEntity.setGenre3(favGenre.getGenre3());
+			
+			favGenreRepository.save(favGenreEntity);
+		}
 		
-		favGenreEntity.setGenre1(favGenre.getGenre1());
-		favGenreEntity.setGenre2(favGenre.getGenre2());
-		favGenreEntity.setGenre3(favGenre.getGenre3());
 		
-		favGenreRepository.save(favGenreEntity);
+	}
+
+	@Override
+	public Optional<Map<String, Object>> getFavGenre() {
+		Map<String,Object> data = new HashMap<>();
+		
+		FavGenreEntity genre = favGenreRepository.findByEmail((String)session.getAttribute("email"));
+		if(genre == null)return Optional.of(data);
+		
+		data.put("genre1",genre.getGenre1());
+		data.put("genre2",genre.getGenre2());
+		data.put("genre3",genre.getGenre3());
+		
+		return Optional.of(data);
 	}
 
 }
