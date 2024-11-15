@@ -9,7 +9,7 @@ import com.board.entity.LikeEntity;
 
 public interface LikeRepository extends JpaRepository<LikeEntity, Long>{
 
-	//각 영화에 대해 좋아요 %가 높은 영화 순으로 나열 (좋아요 수 10개 이상부터 보여주기.)
+	//관리자페이지 - 통계 : 각 영화에 대해 좋아요 %가 높은 영화 순으로 나열 (좋아요 수 10개 이상부터 보여주기.)
 	@Query(value = "select movieseqno, "
 			+ "count(*) as totalCount, "
 			+ "count(CASE WHEN likecheck = 'Y' THEN 1 END) as likeCount, "
@@ -21,7 +21,7 @@ public interface LikeRepository extends JpaRepository<LikeEntity, Long>{
 	public List<Object[]> likeResult();
 	
 	
-	//각 영화에 대해 싫어요 %가 높은 영화 순으로 나열 (싫어요 수 10개 이상부터 보여주기.)
+	//관리자페이지 - 통계 : 각 영화에 대해 싫어요 %가 높은 영화 순으로 나열 (싫어요 수 10개 이상부터 보여주기.)
 	@Query(value = "select movieseqno, "
 			+ "count(*) as totalCount, "
 			+ "count(CASE WHEN dislikecheck = 'Y' THEN 1 END) as dislikeCount, "
@@ -33,7 +33,7 @@ public interface LikeRepository extends JpaRepository<LikeEntity, Long>{
 	public List<Object[]> dislikeResult();
 	
 	
-	//호불호가 높은 영화 순으로 나열 (totalCount 수 20개 이상부터 보여주기.)
+	//관리자페이지 - 통계 : 호불호가 높은 영화 순으로 나열 (totalCount 수 20개 이상부터 보여주기.)
 	@Query(value = "select movieseqno, "
 			+ "count(*) as totalCount, "
 			+ "count(CASE WHEN likecheck = 'Y' THEN 1 END) as likeCount, "

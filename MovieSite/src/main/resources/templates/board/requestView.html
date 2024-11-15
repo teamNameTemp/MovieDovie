@@ -320,7 +320,6 @@
 
     document.addEventListener('DOMContentLoaded', function() {
         let status = '[[${status}]]';
-        console.log("Status from server:", status);
 
         const statusElement = document.querySelector('.status');
         const statusText = document.getElementById('statusText');
@@ -471,6 +470,7 @@
 			<!-- 댓글 목록 -->
 			<div id="replyListContainer">
 			    <h3>[ 댓글 목록 ]</h3><br>
+			    참고로 댓글은 수정 및 삭제가 불가능합니다. 댓글 작성 시 참고하시길 바랍니다.<br><br>
 			    <div id="replyList"></div>
 			</div>
 			
@@ -541,14 +541,9 @@
 		            replyElement.innerHTML = `
 		                <div class="reply-wrapper ${isMyComment ? 'my-comment' : 'other-comment'}">
 		                    <div class="balloon">
-		                        <p><strong>${reply.replywriter}</strong>: 
-		                        <div class="editable-content" contenteditable="false" id="replyContent${reply.seqno}">${reply.replycontent}</div></p>
-		                        
+		                        <p><strong>${reply.replywriter}</strong>: ${reply.replycontent}</p>
 		                        <div class="reply-content">작성일: ${formattedDate}</div>
-		                        ${isMyComment ? `
-		                                <button onclick="toggleEditReply(${reply.seqno})" id="editBtn${reply.seqno}">수정</button>&nbsp;
-		                                <button onclick="deleteReply(${reply.seqno})">삭제</button>
-		                          ` : ''}
+		                        
 		                    </div>
 		                </div>
 		            `;
@@ -602,75 +597,7 @@
 		        });
 		    });
 		
-		 	// 댓글 수정 모드로 전환 (수정 버튼 클릭 시 contenteditable="true")
-		    function toggleEditReply(seqno) {
-		        const editableContent = document.getElementById(`replyContent${seqno}`);
-		        const editButton = document.getElementById(`editBtn${seqno}`);
-		        
-		        // contenteditable을 true로 설정하여 수정 가능 상태로 바꿈
-		        editableContent.contentEditable = "true";
-		        editableContent.focus();  // 수정할 때 자동으로 포커스를 맞춰줌
-
-		        // 버튼 텍스트를 "수정 등록"으로 변경
-		        editButton.textContent = "수정 등록";
-		        editButton.setAttribute("onclick", `saveEditedReply(${seqno})`);
-		        
-		    }
-
-		    // 댓글 수정 후 저장 함수
-		    function saveEditedReply(seqno) {
-		        const editableContent = document.getElementById(`replyContent${seqno}`);
-		        const newContent = editableContent.innerText.trim();  // 수정된 텍스트
-
-		        if (newContent === '') { alert('댓글 내용을 입력해주세요.'); return;}
-		        
-		        // 서버로 수정된 내용 전송
-		        fetch('/master/requestReply?kind=U', {
-		            method: 'POST',
-		            headers: { 'Content-Type': 'application/json' },
-		            body: JSON.stringify({
-		                seqno: seqno,
-		                replycontent: newContent
-		            })
-		        })
-		        .then(response => response.json())
-		        .then(data => {
-		            loadReplies();
-		        })
-		        .catch(error => {console.error('댓글 수정 실패:', error);});
-
-		     	// 수정 후에는 다시 contenteditable을 false로 설정
-		        editableContent.contentEditable = "false";
-		        
-		     	// 버튼 텍스트를 "수정"으로 돌아가게 변경
-		     	const editButton = document.getElementById(`editBtn${seqno}`);
-		        editButton.textContent = "수정";
-		        editButton.setAttribute("onclick", `toggleEditReply(${seqno})`);
-		    }
-		
-		    
-		    // 댓글 삭제 함수
-		    function deleteReply(seqno) {
-		        if (confirm('정말로 댓글을 삭제하시겠습니까?')) {
-		            fetch('/master/requestReply?kind=D', {
-		                method: 'POST',
-		                headers: {
-		                    'Content-Type': 'application/json'
-		                },
-		                body: JSON.stringify({
-		                    seqno: seqno
-		                })
-		            })
-		            .then(response => response.json())
-		            .then(data => {
-		                // 삭제 후 목록을 다시 불러옵니다.
-		                loadReplies();
-		            })
-		            .catch(error => {
-		                console.error('댓글 삭제 실패:', error);
-		            });
-		        }
-		    }
+		 	
 		</script>
 
       <br><br>        
