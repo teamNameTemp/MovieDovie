@@ -31,7 +31,7 @@
                 const notificationCount = document.getElementById('notification-count'); // 갯수를 표시할 요소
                 let itemCount = dropdownItems.length; // 항목 수를 가져옴
                 
-                // 항목 수가 99 이상일 경우 99+로 표시
+                // 항목 수가 4 이상일 경우 4+로 표시
                 if (itemCount >= 5) {
                     notificationCount.textContent = '4+';
                 } else {
