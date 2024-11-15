@@ -47,6 +47,7 @@
                         // 서버에서 삭제 처리 성공 시 알림 UI에서 해당 항목 제거
                         const notificationItem = document.getElementById(`noti-item-${seqno}`);
                         if (notificationItem) {
+                        	//alert("삭제");
                             notificationItem.remove();  // 삭제된 알림 제거
                         }
                         // 알림 갯수 업데이트
@@ -56,7 +57,6 @@
                     }
                 })
                 .catch(error => {
-                    console.error('삭제 실패:', error);
                     alert('알림 삭제 중 오류가 발생했습니다.');
                 });
             });
@@ -69,7 +69,6 @@
 	    // 모든 알림 항목에 클릭 이벤트 리스너 추가
 	    document.querySelectorAll('.dropdown-item').forEach(function(notiItem) {
 	        notiItem.addEventListener('click', function(event) {
-	        	preventDefault();
 	        	
 	            // 클릭된 알림의 seqno 값을 가져오기
 	            const seqno = event.currentTarget.getAttribute('data-seqno');
@@ -89,9 +88,7 @@
 	                    // 읽음 처리 성공 시 UI 변경
 	                    const notiItem = document.getElementById(`noti-item-${seqno}`);
 	                    if (notiItem) {
-	                        // UI에서 읽음 상태로 변경
-	                        notiItem.querySelector('.content').classList.add('read'); // 스타일을 통해 읽음 처리 (예: 색상 변경)
-	                        notiItem.querySelector('.date').classList.add('read'); // 날짜에도 동일한 스타일 적용
+	                    	//alert("읽기 성공")
 	                    }
 	                } else {
 	                    alert('알림 읽음 처리 실패');
@@ -143,7 +140,7 @@
 		    padding-right: 17px;
 		}
 
-		.content {
+		.content{
 		    font-size: 12px;         /* 알림 내용 폰트 크기 */
 		    margin-bottom: 5px;      /* 내용과 날짜 사이 간격 */
 		    color: black;             /* 글자 색 */
@@ -154,7 +151,7 @@
 		    color: #999;             /* 날짜 색상 */
 		}
 		
-		.content-read {
+		.content-read{
 		    font-size: 13px;         /* 알림 내용 폰트 크기 */
 		    margin-bottom: 5px;      /* 내용과 날짜 사이 간격 */
 		    color: #C2C1BF;             /* 글자 색 */
