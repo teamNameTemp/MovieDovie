@@ -71,6 +71,7 @@
   font-weight: bold;
 }
 .profile-container {
+  margin-right:50px;
   flex: 7;
   display: flex;
   align-items: center;
@@ -424,15 +425,22 @@ a {
   margin-top:4.5px;
   margin-bottom:4.5px;
 }
-.dropdown-content{
-  display : none;
-  position : absolute;
-  z-index : 1; /*다른 요소들보다 앞에 배치*/
+/* 드롭다운 컨텐츠 스타일 */
+.dropdown-content {
+  display: none;
   font-weight: 400;
-  background-color: #f9f9f9;
-  min-width : 150px;
-  margin-bottom: 30px;
-}
+  background-color: #fcfcfc;
+  width: 240px;
+  min-width: 240px;
+  border-radius: 8px;
+  height: 160px;
+  overflow: scroll;
+  box-shadow: 0px 0px 10px 3px rgba(190, 190, 190, 0.6);
+  position: absolute;  /* 위치를 절대값으로 지정 */
+  left: 50%;  /* 아이콘의 가로 중앙에 맞추기 */
+  transform: translateX(-50%);  /* 정확히 중앙에 위치하도록 이동 */
+  top: 100%;  /* 드롭다운이 버튼 바로 아래에 표시되도록 */
+ }
 
 .dropdown-content a{
   display : block;
