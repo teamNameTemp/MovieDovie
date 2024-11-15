@@ -1,3 +1,5 @@
+<script src="/js/searchResult.js"></script>
+
 <div th:fragment="menubar">
     <div class="navbar">
         <div class="navbar-container">
@@ -13,7 +15,7 @@
                 <div class="search-box" style="position:relative; margin-top:27px;">
                     <form action="/board/search" method="get">
                         <input class="search-txt" name="keyword" type="text" placeholder="  작품, 배우, 게시글, 태그를 검색해보세요">
-                        <button class="search-btn" type="submit">
+                        <button class="search-btn" type="submit" onclick="searchMovies()">
                             <i class="fas fa-search"></i>
                         </button>
                     </form>

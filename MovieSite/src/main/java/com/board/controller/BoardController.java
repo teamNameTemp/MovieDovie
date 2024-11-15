@@ -322,8 +322,13 @@ public class BoardController {
 
 //---------검색trying-------------------------
 	@GetMapping("/search")
-	public String searchPage() {
-		return "board/search"; // templates/board/search.html을 찾음
+	public void searchPage(Model model,@RequestParam(name="keyword",required = false) String keyword) {
+//		if(keyword != null) {
+//			List<MovieDTO> list = tmdb.searchMovies(keyword).block();
+////			model.addAttribute("movies",list);
+//			log.info(list);
+//		}
+		
 	}
 
 	@PostMapping("/search/movies")
