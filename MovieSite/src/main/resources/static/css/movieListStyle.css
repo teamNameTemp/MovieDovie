@@ -249,7 +249,7 @@ body {
   
   /* 줄 간격 설정 */
   line-height: 1.5em;                /* 줄 간격 조정 (기본적으로 1.5배로 설정) */
-  max-height: 5.3em;                 /* 3줄 높이에 맞춰 고정 (line-height × 3) */
+  max-height: 4.8em;                 /* 3줄 높이에 맞춰 고정 (line-height × 3) */
 }
 
 

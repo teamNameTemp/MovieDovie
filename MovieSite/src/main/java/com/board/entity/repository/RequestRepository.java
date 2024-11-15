@@ -1,6 +1,7 @@
 package com.board.entity.repository;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -10,6 +11,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.board.dto.RequestDTO;
 import com.board.entity.RequestEntity;
 
 public interface RequestRepository extends JpaRepository<RequestEntity, Long>{ // JpaRepository<xxxEntity, 기본기타입>{
@@ -53,6 +55,10 @@ public interface RequestRepository extends JpaRepository<RequestEntity, Long>{ /
 	@Transactional
 	@Query("delete from request r where r.seqno = :seqno")
 	public void deleteBySeqno(@Param("seqno") Long seqno);
+	
+	//seqno 로 값 가져오기
+	@Query("select r from request r where r.seqno = :seqno")
+	public List<RequestDTO> findBySeqno(@Param("seqno") Long seqno);
 	
 	//관리자페이지 : 통계 - 처리 상태 확인하기
 	@Query("select r.status, count(r) from request r group by status")

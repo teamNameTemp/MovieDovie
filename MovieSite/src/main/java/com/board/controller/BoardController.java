@@ -33,6 +33,7 @@ import com.board.service.MasterService;
 import com.board.service.MemberService;
 import com.board.service.MovieAPIServiceImpl;
 import com.board.service.ReplyService;
+import com.board.service.NotificationService;
 import com.board.service.RequestReplyService;
 import com.board.service.RequestService;
 import com.board.service.TmdbAPIServiceImpl;
@@ -60,8 +61,28 @@ public class BoardController {
 	private final LikeService likeService;
 	private final ReplyService replyService;
 
+	private final NotificationService notificationService;
+	
+	//추천 장르
+	@GetMapping("/selectGenre")
+	public void getMovieSelect(Model model) {
+		Map<String,Integer> map = tmdb.getGenreList().block();
+		
+		model.addAttribute("genres",map);
+	}
+	
+	@ResponseBody
+	@PostMapping("/selectGenre")
+	public Map<String,Boolean> postSelectGenres(@RequestBody Map<String, List<String>> payload){
+		List<String> selectedGenres = payload.get("genres");
+
+		Map<String, Boolean> response = new HashMap<>();
+		response.put("success", true);
+		return response;
+	}
+
 	@GetMapping("/list")
-	public void getList(Model model,HttpSession session) throws JsonMappingException, JsonProcessingException {
+	public void getList(Model model, HttpSession session) throws JsonMappingException, JsonProcessingException {
 		List<MovieDTO> trendList = tmdb.getTrendingMovies("day", 1, "ko-KR").block();
 		
 		Map<String,Object> favGenreList = new HashMap<>();
@@ -80,12 +101,26 @@ public class BoardController {
 		model.addAttribute("dailyMovies",trendList);
 		model.addAttribute("favGenre",genre.get());
 		model.addAttribute("favGenreList",favGenreList);
+		
+		String email = (String)session.getAttribute("email"); 
+		MemberDTO memberDTO = memberService.memberInfo(email);
+		
+		String nickname = (String)session.getAttribute("nickname");
+		model.addAttribute("nickname", nickname);
+
+		model.addAttribute("role", memberDTO.getRole());
+		
+	}
+	
+	// 장르 필터
+	@PostMapping("/genreCheck")
+	public String postGenreCheck() {
+		return null;
 	}
 	
 	//영화상세
 	@GetMapping("/movieDetail")
-	public void getView(Model model, @RequestParam("movieId") Long id,
-			HttpSession session) throws JsonMappingException, JsonProcessingException{
+	public void getView(Model model, @RequestParam("movieId") Long id, HttpSession session) throws JsonMappingException, JsonProcessingException{
 		MovieDTO detail = tmdb.getMovieDetails(id, "ko-KR").block();
 		String email = (String)session.getAttribute("email");
 		
@@ -93,6 +128,14 @@ public class BoardController {
 		
 		model.addAttribute("like",like);
 		model.addAttribute("movie",detail);
+		
+		String nickname = (String)session.getAttribute("nickname");
+		model.addAttribute("nickname", nickname);
+		
+		
+		MemberDTO memberDTO = memberService.memberInfo(email);
+
+		model.addAttribute("role", memberDTO.getRole());
 	}
 	
 	@PostMapping("/movieDetail/reviews")
@@ -196,7 +239,7 @@ public class BoardController {
 		MemberDTO memberDTO = memberService.memberInfo(SessionEmail);
 		model.addAttribute("nickname", memberDTO.getNickname());
 		
-		model.addAttribute("maxSeqno", masterService.getMaxSeqno(SessionEmail));
+		model.addAttribute("maxSeqno", masterService.getMaxSeqno(SessionEmail)+1);
 
 	}
 	
@@ -247,6 +290,7 @@ public class BoardController {
 		model.addAttribute("pageList", page.getBoardRequestPageList(pageNum, postNum, pageListCount,totalCount,keyword));
 	}
 	
+	
 	//회원이 자신의 요청사항 상세보기
 	@GetMapping("/requestView")
 	public void getRequestView(Model model, @RequestParam(name="seqno", required = false) Long seqno, @RequestParam("page") int pageNum,
@@ -294,14 +338,6 @@ public class BoardController {
 	        case "I":
 	            requestReplyService.replyRegister(dto); // 댓글 등록
 	            replyDataList = requestReplyService.replyList(dto.getReqseqno()); // 등록 후 댓글 목록 반환
-	            break;
-	        case "U":
-	            requestReplyService.replyUpdate(dto); // 댓글 수정
-	            replyDataList = requestReplyService.replyList(dto.getReqseqno()); // 수정 후 댓글 목록 반환
-	            break;
-	        case "D":
-	            requestReplyService.replyDelete(dto.getSeqno()); // 댓글 삭제
-	            replyDataList = requestReplyService.replyList(dto.getReqseqno()); // 삭제 후 댓글 목록 반환
 	            break;
 	        default:
 	            throw new IllegalArgumentException("Invalid kind value: " + kind); // 잘못된 kind 값 처리

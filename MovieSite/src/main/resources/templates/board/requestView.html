@@ -29,7 +29,7 @@
 	
 	.content {
 	  width: 87%;
-	  height: 200px;
+	  height: 170px;
 	  overflow: auto;
 	  margin: 40px;
 	  padding: 10px;
@@ -46,9 +46,9 @@
 	  margin:auto;
 	  text-align: left;
 	  padding: 50px;
-	  background-color:#FFFFFF;
-	  border:3px solid gray;
-	  border-radius: 4px;
+	  background-color: #F7F7F7;
+	  border: 2px solid #D8D8D8;
+	  border-radius: 20px;
 	}
 	
 	.main {
@@ -266,7 +266,7 @@
 	
 	/* 댓글 입력창 */
 	#replyContent {
-	    width: 85%; /* 입력창 크기 조정 */
+	    width: 90%; /* 입력창 크기 조정 */
 	    height: 40px;
 	    padding: 10px;
 	    font-size: 1rem;
@@ -320,7 +320,6 @@
 
     document.addEventListener('DOMContentLoaded', function() {
         let status = '[[${status}]]';
-        console.log("Status from server:", status);
 
         const statusElement = document.querySelector('.status');
         const statusText = document.getElementById('statusText');
@@ -352,87 +351,12 @@
    	}
     </script>
 </head>
-<body>
-    <div class="navbar">
-        <div class="navbar-container">
-            <div class="logo-container">
-                <h1 class="logo">MovieDovie</h1>
-            </div>
-            <div class="menu-list">
-                <ul class="menu-list">
-                    <li class="menu-list-item active" style="position:relative; margin-top:16px;"><a href="#">홈</a></li>
-                    <li class="menu-list-item" style="position:relative; margin-top:17px;"><a href="#">추천 영화</a></li>
-                    <li class="menu-list-item" style="position:relative; margin-top:17px;"><a href="#">장르</a></li>
-                    <li class="menu-list-item" style="position:relative; margin-top:17px;"><a href="#">인기 영화</a></li>         
-                </ul>
-              <div class="search-box" style="position:relative; margin-top:27px;">
-  				<form action="/board/list" method="">
-	    			<input class="search-txt" type="text" placeholder="  작품, 배우, 게시글, 태그를 검색해보세요" >
-	    			<button class="search-btn" type="submit">
-					  <i class="fas fa-search"></i>
-				  	</button>
-			 	</form>    
-        	  </div>	  
-			</div>
-          <div class="profile-container">
-          
-            <div class="dropdown">
-            
-            <div class="bell-box">
-            		
-      				<i class="fas fa-bell" style="position:relative; font-size:20px; margin-top:15px; margin-bottom:15px; margin-left:10px;margin-right:25px;"></i>
-      				<p id="notification-count"></p>
-      				</div>
-      				<div class="dropdown-content">
-            			<a href="#" class="dropdown-item">새 알림 1</a>
-			            <a href="#" class="dropdown-item">새 알림 2</a>
-			            <a href="#" class="dropdown-item">새 알림 3</a>
-			            <a href="#" class="dropdown-item">새 알림 4</a>
-			            <a href="#" class="dropdown-item">새 알림 5</a>
-                </div>
-                
-           </div>
-           
-           &nbsp;&nbsp;&nbsp;
-            <div class="dropdown">
-      				<img class="profile-picture" src="/img/profile.jpg" alt="">
-      				<div class="dropdown-content">
-      					<a href="/master/movieStats">사용자 통계 정보</a>
-            			<a href="#">프로필 정보</a>
-        				<a href="/member/logout">로그 아웃</a>
-        				<a href="/board/selectGenre">내 선호 장르</a>
-        				<a href="#">내 장바구니</a>
-        				<a href="#">내 찜목록</a>
-        				<a href="#">내 대여 현황</a>
-                </div>
-             </div>
-                <div class="profile-text-container">
-                  <div class="dropdown">
-      				<button class="dropbtn"> 
-        			<span class="fas fa-solid fa-caret-down"></span> 상세 메뉴</button>
-      				<div class="dropdown-content">
-      					<a href="#">구매 목록</a>
-      				</div>
-    			</div>
-            </div>
-                </div>
-            
-                <div class="toggle">
-                    <i class="fas fa-moon toggle-icon"></i>
-                    <i class="fas fa-sun toggle-icon"></i>
-                    <div class="toggle-ball"></div>
-                </div>
-            </div>
-        </div>
-    <div class="sidebar">
-        <a style="text-decoration:none" href="#" class="left-menu-icon fas fa-home"></a>
-        <a style="text-decoration:none" href="#" class="left-menu-icon fas fa-bookmark"></a>
-        <a style="text-decoration:none" href="#" class="left-menu-icon fas fa-shopping-cart"></a>
-        <a style="text-decoration:none" href="#" class="left-menu-icon fas fa-user"></a>
-    </div>
+<body style = "background-color:black;">
+    <div th:replace="/fragments/nav/menubar::menubar"></div>
+        <div th:replace="/fragments/nav/sidebar::sidebar"></div>
     <div class="main" >
         <br><br><br><br><br>
-        <h2 style="text-align: center;">요청사항 상세보기</h2>
+        <h2 style="text-align: center; color: white;">요청사항 상세보기</h2>
         <br><br>
 
         <div class="boardView">
@@ -471,6 +395,7 @@
 			<!-- 댓글 목록 -->
 			<div id="replyListContainer">
 			    <h3>[ 댓글 목록 ]</h3><br>
+			    참고로 댓글은 수정 및 삭제가 불가능합니다. 댓글 작성 시 참고하시길 바랍니다.<br><br>
 			    <div id="replyList"></div>
 			</div>
 			
@@ -541,14 +466,9 @@
 		            replyElement.innerHTML = `
 		                <div class="reply-wrapper ${isMyComment ? 'my-comment' : 'other-comment'}">
 		                    <div class="balloon">
-		                        <p><strong>${reply.replywriter}</strong>: 
-		                        <div class="editable-content" contenteditable="false" id="replyContent${reply.seqno}">${reply.replycontent}</div></p>
-		                        
+		                        <p><strong>${reply.replywriter}</strong>: ${reply.replycontent}</p>
 		                        <div class="reply-content">작성일: ${formattedDate}</div>
-		                        ${isMyComment ? `
-		                                <button onclick="toggleEditReply(${reply.seqno})" id="editBtn${reply.seqno}">수정</button>&nbsp;
-		                                <button onclick="deleteReply(${reply.seqno})">삭제</button>
-		                          ` : ''}
+		                        
 		                    </div>
 		                </div>
 		            `;
@@ -602,75 +522,7 @@
 		        });
 		    });
 		
-		 	// 댓글 수정 모드로 전환 (수정 버튼 클릭 시 contenteditable="true")
-		    function toggleEditReply(seqno) {
-		        const editableContent = document.getElementById(`replyContent${seqno}`);
-		        const editButton = document.getElementById(`editBtn${seqno}`);
-		        
-		        // contenteditable을 true로 설정하여 수정 가능 상태로 바꿈
-		        editableContent.contentEditable = "true";
-		        editableContent.focus();  // 수정할 때 자동으로 포커스를 맞춰줌
-
-		        // 버튼 텍스트를 "수정 등록"으로 변경
-		        editButton.textContent = "수정 등록";
-		        editButton.setAttribute("onclick", `saveEditedReply(${seqno})`);
-		        
-		    }
-
-		    // 댓글 수정 후 저장 함수
-		    function saveEditedReply(seqno) {
-		        const editableContent = document.getElementById(`replyContent${seqno}`);
-		        const newContent = editableContent.innerText.trim();  // 수정된 텍스트
-
-		        if (newContent === '') { alert('댓글 내용을 입력해주세요.'); return;}
-		        
-		        // 서버로 수정된 내용 전송
-		        fetch('/master/requestReply?kind=U', {
-		            method: 'POST',
-		            headers: { 'Content-Type': 'application/json' },
-		            body: JSON.stringify({
-		                seqno: seqno,
-		                replycontent: newContent
-		            })
-		        })
-		        .then(response => response.json())
-		        .then(data => {
-		            loadReplies();
-		        })
-		        .catch(error => {console.error('댓글 수정 실패:', error);});
-
-		     	// 수정 후에는 다시 contenteditable을 false로 설정
-		        editableContent.contentEditable = "false";
-		        
-		     	// 버튼 텍스트를 "수정"으로 돌아가게 변경
-		     	const editButton = document.getElementById(`editBtn${seqno}`);
-		        editButton.textContent = "수정";
-		        editButton.setAttribute("onclick", `toggleEditReply(${seqno})`);
-		    }
-		
-		    
-		    // 댓글 삭제 함수
-		    function deleteReply(seqno) {
-		        if (confirm('정말로 댓글을 삭제하시겠습니까?')) {
-		            fetch('/master/requestReply?kind=D', {
-		                method: 'POST',
-		                headers: {
-		                    'Content-Type': 'application/json'
-		                },
-		                body: JSON.stringify({
-		                    seqno: seqno
-		                })
-		            })
-		            .then(response => response.json())
-		            .then(data => {
-		                // 삭제 후 목록을 다시 불러옵니다.
-		                loadReplies();
-		            })
-		            .catch(error => {
-		                console.error('댓글 삭제 실패:', error);
-		            });
-		        }
-		    }
+		 	
 		</script>
 
       <br><br>        

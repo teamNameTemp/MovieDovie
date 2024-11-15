@@ -26,5 +26,6 @@ public interface RequestService {
 	//나의 요청 게시물 다음 보기 > BoardController에 사용
 	public Long my_next_seqno(Long seqno, String email, String keyword);
 	
-	
+	//요청 사항 값 확인하기
+	public List<RequestDTO> findBySeqno(Long seqno);
 }
