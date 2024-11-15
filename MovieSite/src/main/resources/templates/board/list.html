@@ -31,7 +31,7 @@
 }
 
 .tab-button.active {
-    background-color: #007bff;
+    background-color: #4DBF00;
     color: white;
 }
 .genre-content {
@@ -46,9 +46,16 @@
 }
 </style>
 <body>
-   <div th:replace="/fragments/nav/menubar::menubar"></div> <!--replace 특정 템플릿 조각(프래그먼트)을 다른 위치에 삽입할 때 사용 -->
-      <div th:replace="/fragments/nav/sidebar::sidebar"></div>
-
+<!--replace 특정 템플릿 조각(프래그먼트)을 다른 위치에 삽입할 때 사용 -->
+<th:block th:if="${#strings.equals(role, 'USER')}">
+	<div th:replace="/fragments/nav/menubar::menubar"></div>
+    <div th:replace="/fragments/nav/sidebar::sidebar"></div>
+</th:block>
+<th:block th:if="${#strings.equals(role, 'MASTER')}">
+	<div th:replace="/fragments/nav/masterBoardMenubar::masterBoardMenubar"></div>
+	<div th:replace="/fragments/nav/masterSidebar::masterSidebar"></div>
+</th:block>
+	
 	<div class="container">
 		<div class="featured-content"
 			th:style="'background: linear-gradient(to bottom, rgba(255, 255, 255, 0), #000), url(' + 'https://image.tmdb.org/t/p/original' + ${dailyMovies.get(5
@@ -58,7 +65,7 @@
 
 			<div class="movie-list-container"
 				style="margin-top: 550px; margin-left: 0px; margin-right: 0px">
-				<h1 class="movie-list-title">전세계가 주목하고 있는 Daily 인기 영화</h1>
+				<h1 class="movie-list-title">전세계의 주목! 오늘 Top 20 인기 영화</h1>
 				<div class="movie-list-wrapper">
 					<div class="movie-list">
 						<div class="movie-list-item" th:each="movie : ${dailyMovies}" style="box-shadow:0px 0px 30px 10px #151515;">
@@ -82,20 +89,16 @@
 						</div>
 
 					</div>
-					<i class="fas fa-chevron-left arrow"></i> <i
-						class="fas fa-chevron-right arrow"></i>
+					<i class="fas fa-chevron-left arrow"></i> <i class="fas fa-chevron-right arrow"></i>
 				</div>
 			</div>
-
-
 		</div>
-
 
 
 		<div class="genre-list-container" th:if="${favGenre != null}">
 			<div class="movie-list-container">
-				<h1 class="movie-list-title">[[${nickname}]]님만을 위한 추천 영화!</h1>
-				<h4>원하시는 장르를 클릭해보세요!</h4><br>
+				<h1 class="movie-list-title">[[${nickname}]]님을 위해 엄선한 영화!</h1>
+				<h4>오늘 끌리는 장르를 클릭해보세요</h4><br>
 
 				<div class="tab-container">
 					<button id="genre1Button" class="tab-button active"
@@ -185,32 +188,6 @@
 
 		</div>
 
-		<script>
-		document.addEventListener('DOMContentLoaded', function() {
-		    const genreButtons = document.querySelectorAll('.tab-button');
-		    const genreContents = document.querySelectorAll('.genre-content');
-		    const arrowLeft = document.querySelector('.fa-chevron-left');
-		    const arrowRight = document.querySelector('.fa-chevron-right');
-
-		    // 탭 전환 기능
-		    genreButtons.forEach((button, index) => {
-		        button.addEventListener('click', () => {
-		            // 모든 버튼에서 active 클래스 제거
-		            genreButtons.forEach(btn => btn.classList.remove('active'));
-		            // 클릭된 버튼에 active 클래스 추가
-		            button.classList.add('active');
-
-		            // 모든 콘텐츠 숨기기
-		            genreContents.forEach(content => content.classList.remove('active'));
-		            // 선택된 장르의 콘텐츠 표시
-		            genreContents[index].classList.add('active');
-		        });
-		    });
-
-		    // 초기 상태 설정
-		    updateVisibility();
-		});
-		</script>
 
 		<div class="featured-content"
 			style="height: 300px; position: relative;">
@@ -220,7 +197,7 @@
 		</div>
 		
 		<div class="movie-list-container">
-			<h1 class="movie-list-title">좋아요 순</h1>
+			<h1 class="movie-list-title">만장 일치, 다들 이 영화 좋아해요</h1> <!-- Like (좋아요) 많은 순 -->
 			<div class="movie-list-wrapper">
 				<div class="movie-list">
 					<div class="movie-list-item">
@@ -236,7 +213,7 @@
 			</div>
 		</div>
 		<div class="movie-list-container">
-			<h1 class="movie-list-title">댓글 순</h1>
+			<h1 class="movie-list-title">요즘 인기 폭발! 댓글 많은 영화</h1> <!-- reply (댓글) 많은 순 -->
 			<div class="movie-list-wrapper">
 				<div class="movie-list">
 					<div class="movie-list-item">
@@ -248,7 +225,7 @@
 					</div>
 				</div>
 				<div class="movie-list-container">
-					<h1 class="movie-list-title">조회 순</h1>
+					<h1 class="movie-list-title">이건 꼭 봐야 해! 회원들이 가장 많이 본 영화</h1> <!-- Watch (이 영화 봤어요) 많은 순 -->
 					<div class="movie-list-wrapper">
 						<div class="movie-list">
 							<div class="movie-list-item">
@@ -313,7 +290,7 @@
 				</div>
 
 				<div class="movie-list-container">
-					<h1 class="movie-list-title">대여 순</h1>
+					<h1 class="movie-list-title">오늘 대여 Top 영화</h1>
 					<div class="movie-list-wrapper">
 						<div class="movie-list">
 							<div class="movie-list-item">
@@ -377,13 +354,12 @@
 					</div>
 				</div>
 
-
+		</div>
 
 				<div class="movie-list-container"
 					style="background: linear-gradient(to bottom, rgba(255, 255, 255, 0), #000), url('/images/admin-003.jpg') center no-repeat; background-size: cover;">
 
-					<h1 class="movie-list-title" style="color: #8756b0">관리자가 등록한
-						영화</h1>
+					<h1 class="movie-list-title" style="color: #8756b0">무비두비에 새로 올라온 영화</h1>
 					<div class="movie-list-wrapper">
 						<div class="movie-list">
 							<div class="movie-list-item">
@@ -446,8 +422,7 @@
 						<i class="fas fa-chevron-right arrow"></i>
 					</div>
 				</div>
-
+</div>
 			</div>
 			<script src="/js/app.js"></script></body>
-
 </html>

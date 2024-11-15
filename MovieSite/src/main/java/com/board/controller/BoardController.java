@@ -6,10 +6,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import javax.swing.border.TitledBorder;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.convert.DtoInstantiatingConverter;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
@@ -29,11 +25,6 @@ import com.board.dto.movie.MovieDTO;
 import com.board.entity.RequestEntity;
 import com.board.entity.RequestReplyEntity;
 import com.board.entity.movie.GenreEntity;
-import com.board.entity.LikeEntity;
-import com.board.entity.NotificationEntity;
-import com.board.entity.RequestEntity;
-import com.board.entity.RequestReplyEntity;
-import com.board.entity.repository.MemberRepository;
 import com.board.service.BoardService;
 import com.board.service.FavGenreService;
 import com.board.service.MasterService;
@@ -104,9 +95,16 @@ public class BoardController {
 		model.addAttribute("favGenre",genre.get());
 		model.addAttribute("favGenreList",favGenreList);
 		
+		String email = (String)session.getAttribute("email"); 
+		MemberDTO memberDTO = memberService.memberInfo(email);
+		
 		String nickname = (String)session.getAttribute("nickname");
 		model.addAttribute("nickname", nickname);
+
+		model.addAttribute("role", memberDTO.getRole());
+		
 	}
+	
 	// 장르 필터
 	@PostMapping("/genreCheck")
 	public String postGenreCheck() {
@@ -115,10 +113,19 @@ public class BoardController {
 	
 	//영화상세
 	@GetMapping("/movieDetail")
-	public void getView(Model model, @RequestParam("movieId") Long id) throws JsonMappingException, JsonProcessingException{
+	public void getView(Model model, @RequestParam("movieId") Long id, HttpSession session) throws JsonMappingException, JsonProcessingException{
 		MovieDTO detail = tmdb.getMovieDetails(id, "ko-KR").block();
 		
 		model.addAttribute("movie",detail);
+		
+		String nickname = (String)session.getAttribute("nickname");
+		model.addAttribute("nickname", nickname);
+		
+		
+		String email = (String)session.getAttribute("email"); 
+		MemberDTO memberDTO = memberService.memberInfo(email);
+
+		model.addAttribute("role", memberDTO.getRole());
 	}
 	
 	
