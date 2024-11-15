@@ -11,7 +11,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css">
 	<style>
-		 #wrap {width: 1200px; height: 1000px; font-size: 15px; text-align: center; margin : auto; }
+		#wrap {width: 1200px; height: 1000px; font-size: 15px; text-align: center; margin : auto; }
 	 	
 	 	.side {
 	 		display: flex;
@@ -62,7 +62,6 @@
             text-align: center;
         }
         
-		        
 		.left-div, .right-div {
 		    width: 48%; /* 여백을 고려하여 너비 설정 */
 		    box-sizing: border-box;
@@ -154,7 +153,7 @@
 		    align-items: center; /* 수직 중앙 정렬 */
 		}
 		
-		.icon {
+		.statusicon {
 		    width: 100px; /* 이미지 크기 설정 */
 		    height: 100px; /* 이미지 크기 설정 */
 		    margin-right: 15px; /* 이미지와 텍스트 간 간격 */
@@ -192,71 +191,8 @@
 
 </head>
 <body class="p-3 m-0 border-0 bd-example m-0 border-0">
-<div th:replace = "/fragments/nav/sidebar::sidebar"></div>
- <div class="navbar">
-     <div class="navbar-container">
-         <!--  <div class="logo-container">-->
-             <h6 class="logo">Admin Page</h6>
-         <!--</div>-->
-         <div class="menu-container">
-             <ul class="menu-list">
-                 <li class="menu-list-item active">
-                 &nbsp;&nbsp;
-                 	<a href="/master/memberStats">회원 활동 통계</a>
-                 </li>
-                 <li class="menu-list-item">
-                 	<a href="/master/memberRequest">회원 요청사항 관리</a>
-                 </li>
-                 <li class="menu-list-item">
-                 	<a href="/master/movieStats">영화 통계</a>
-                 </li>
-                 <li class="menu-list-item">
-                 	<a href="/master/movieUpload">영화 업로드</a>
-                 </li>
-			</ul>
-		</div>
-		<div class="profile-container">
-            <div class="dropdown">
-      				<i class="fas fa-bell" aria-hidden="true" style="font-size:20px;margin-top:15px; margin-bottom:15px;"></i>
-      				&nbsp;&nbsp;
-      				<div class="dropdown-content">
-            			<a href="/master/memberRequest">요청한 사항</a>
-                </div>
-           </div>
-                    <div class="dropdown">
-      				<img class="profile-picture" src="/img/masterprofile.png" alt="">
-      				<div class="dropdown-content">관리자
-      					<a href="/master/movieStats">사용자 통계 정보</a>
-            			<a href="#">프로필 정보</a>
-        				<a href="/member/logout">로그 아웃</a>
-                </div>
-             </div>
-          
-           <div class="profile-text-container">
-                  <div class="dropdown">
-      				<button class="dropbtn"> 
-        			<span class="fas fa-solid fa-caret-down"></span> 관리자</button>
-      				<div class="dropdown-content">
-      					<a href="/master/memberStats">회원 활동 통계</a>
-      					<a href="/master/memberRequest">회원 요청사항 관리</a>
-      					<a href="/master/movieStats">영화 통계</a>
-      					<a href="/master/movieUpload">영화 업로드</a>
-      				</div>
-    			</div>
-            </div>
-         
-           
-
-
-             <div class="toggle">
-                 <i class="fas fa-moon toggle-icon"></i> 
-                 <i class="fas fa-sun toggle-icon"></i> 
-                 <div class="toggle-ball"></div>
-             </div>
-         </div>
-     </div>
-     <script src="/js/app.js"></script>
- </div>
+<div th:replace = "/fragments/nav/masterSidebar::masterSidebar"></div>
+<div th:replace="/fragments/nav/masterMenubar::masterMenubar"></div>
 <br><br><br><br><br>
 
 
@@ -502,7 +438,7 @@
 		<div class="statuscontent">
 			<b>회원 요청 사항 현황</b><br>
 			<div class="status-container">
-				<img class="icon" src="/img/RequestStatus.png" alt="">&nbsp;&nbsp;&nbsp;
+				<img class="statusicon" src="/images/img/RequestStatus.png" alt="">&nbsp;&nbsp;&nbsp;
 				<div class="status-text">
 					<span class="pending-highlight">· <a href="/master/memberRequest" class="pending">처리 필요 : <span id="pendingCount"></span> 건</a></span>
 					<br><br>

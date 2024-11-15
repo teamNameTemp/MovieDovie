@@ -8,7 +8,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
+import javax.swing.border.TitledBorder;
+
+import org.hibernate.bytecode.internal.bytebuddy.PrivateAccessorException;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,17 +25,21 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.board.dto.MemberDTO;
+import com.board.dto.RequestDTO;
 import com.board.dto.RequestReplyDTO;
 import com.board.dto.movie.MovieDTO;
 import com.board.entity.RequestEntity;
 import com.board.entity.RequestReplyEntity;
 import com.board.entity.movie.MovieEntity;
 import com.board.entity.repository.movie.MovieRepository;
+import com.board.entity.repository.MemberRepository;
+import com.board.entity.repository.RequestRepository;
 import com.board.service.FavGenreService;
 import com.board.service.LikeService;
 import com.board.service.MasterService;
 import com.board.service.MemberLogService;
 import com.board.service.MemberService;
+import com.board.service.NotificationService;
 import com.board.service.RentService;
 import com.board.service.RequestReplyService;
 import com.board.service.RequestService;
@@ -56,6 +64,8 @@ public class MasterController {
 	private final RequestService requestService;
 	private final RequestReplyService requestReplyService;
 	private final MovieRepository movieRepository;
+	private final NotificationService notificationService;
+	private final MemberRepository memberRepository;
 
 	// 회원의 요청 목록 보기
 	@GetMapping("/memberRequest")
@@ -100,17 +110,30 @@ public class MasterController {
 		model.addAttribute("pre_seqno", service.pre_seqno(seqno, keyword));
 		model.addAttribute("next_seqno", service.next_seqno(seqno, keyword));
 	}
-
-	// 회원 요청사항 상태 관리
+	
+	//회원 요청사항 상태 관리 -> 상태 처리 완료로 바꾸기 혹은 처리중으로 바꾸기
 	@ResponseBody
 	@PostMapping("/updateStatus")
-	public void postUpdateStatus(@RequestBody Map<String, Object> statusCheckData) throws Exception {
-
+	public void postUpdateStatus(@RequestBody Map<String,Object> statusCheckData, HttpSession session) throws Exception {
+		
 		Long seqno = ((Number) statusCheckData.get("seqno")).longValue();
-		String status = (String) statusCheckData.get("status");
-
-		// tbl_request 테이블에 status 업데이트
+		String status = (String)statusCheckData.get("status");
+		
+		List<RequestDTO> requestList = requestService.findBySeqno(seqno);
+		
+		RequestDTO requestDTO = requestList.get(0);
+	    String title = requestDTO.getTitle();
+	    String recieverEmail = requestDTO.getEmail();
+		
+		//tbl_request 테이블에 status 업데이트
 		service.updateStatus(seqno, status);
+		
+		
+		//회원에게 알람 보내기
+		String content = "'" + title + "'상태가 변경되었습니다.";
+		String type = "completed";
+
+		notificationService.newNotiForUser(recieverEmail, content, type, seqno);
 	}
 
 	// 회원 닉네임 찾기
@@ -140,31 +163,46 @@ public class MasterController {
 	// 댓글 처리
 	@ResponseBody
 	@PostMapping("/requestReply")
-	public List<Map<String, Object>> postReply(@RequestBody RequestReplyDTO dto, @RequestParam("kind") String kind)
-			throws Exception {
-
+	public List<Map<String, Object>> postReply(@RequestBody RequestReplyDTO dto, @RequestParam("kind") String kind, HttpSession session) 
+			throws Exception{
+		
 		List<RequestReplyEntity> replyDataList;
-
-		switch (kind) {
-		case "L":
-			replyDataList = requestReplyService.replyList(dto.getReqseqno()); // 댓글 목록 보기
-			break;
-		case "I":
-			requestReplyService.replyRegister(dto); // 댓글 등록
-			replyDataList = requestReplyService.replyList(dto.getReqseqno()); // 등록 후 댓글 목록 반환
-			break;
-		case "U":
-			requestReplyService.replyUpdate(dto); // 댓글 수정
-			replyDataList = requestReplyService.replyList(dto.getReqseqno()); // 수정 후 댓글 목록 반환
-			break;
-		case "D":
-			requestReplyService.replyDelete(dto.getSeqno()); // 댓글 삭제
-			replyDataList = requestReplyService.replyList(dto.getReqseqno()); // 삭제 후 댓글 목록 반환
-			break;
-		default:
-			throw new IllegalArgumentException("Invalid kind value: " + kind); // 잘못된 kind 값 처리
-		}
-
+		
+		 switch(kind) {
+	        case "L":
+	            replyDataList = requestReplyService.replyList(dto.getReqseqno()); // 댓글 목록 보기
+	            break;
+	        case "I":
+	            requestReplyService.replyRegister(dto); // 댓글 등록
+	            replyDataList = requestReplyService.replyList(dto.getReqseqno()); // 등록 후 댓글 목록 반환
+	            
+	            //댓글 등록 알람 전달
+	            String masterNickname = (String)session.getAttribute("nickname");
+	            List<RequestDTO> requestList = requestService.findBySeqno(dto.getReqseqno());
+	           
+                RequestDTO requestDTO = requestList.get(0);
+                String title = requestDTO.getTitle();
+                String recieverEmail = requestDTO.getEmail();
+                Long seqno = requestDTO.getSeqno();
+            
+	    		String content = masterNickname + "님이 '" + title + "'에 댓글을 달았습니다.";
+	    		String type = "reply";
+	    		notificationService.newNotiForUser(recieverEmail, content, type, seqno);
+	           
+	            break;
+	        case "U":
+	            requestReplyService.replyUpdate(dto); // 댓글 수정
+	            replyDataList = requestReplyService.replyList(dto.getReqseqno()); // 수정 후 댓글 목록 반환
+	            break;
+	        case "D":
+	            requestReplyService.replyDelete(dto.getSeqno()); // 댓글 삭제
+	            replyDataList = requestReplyService.replyList(dto.getReqseqno()); // 삭제 후 댓글 목록 반환
+	            break;
+	        default:
+	            throw new IllegalArgumentException("Invalid kind value: " + kind); // 잘못된 kind 값 처리
+	    }
+		
+		 
 		// RequestReplyEntity 리스트를 Map<String, Object> 리스트로 변환
 		List<Map<String, Object>> result = new ArrayList<>();
 		for (RequestReplyEntity replyData : replyDataList) {
