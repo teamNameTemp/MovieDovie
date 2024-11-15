@@ -126,10 +126,13 @@ public class MemberController {
 		
 	// 추천 장르
 	@GetMapping("/selectGenre")
-	public void getMovieSelect(Model model) {
+	public void getMovieSelect(Model model, HttpSession session) {
 		Map<String,Integer> map = tmdb.getGenreList().block();
 		
 		model.addAttribute("genres",map);
+		
+		String nickname = (String)session.getAttribute("nickname");
+		model.addAttribute("nickname", nickname);
 	}
 	
 	@ResponseBody

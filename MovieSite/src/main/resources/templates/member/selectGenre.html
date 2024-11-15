@@ -63,8 +63,8 @@ const saveToGenres = () => {
 </script>
 <body>
 <div class="overlay">
-    <h1>취향 선택</h1>
-    <p>좋아하는 영화 장르, 분야를 3개 선택해 주세요. 비슷한 취향의 영화를 추천해 드립니다.</p>
+    <h1>[[${nickname}]]님이 좋아하는 장르</h1>
+    <p>최대 3개까지 골라주세요. 취향에 꼭 맞는 영화를 추천해 드릴게요!</p>
     <div class="genres"> <!-- db 들어오고 tymeleaf로 바꿔주자 th:each -->
 	    <th:block th:each="genre : ${genres}">
 	       	<div class="genre" th:text="${genre.key}"></div>
