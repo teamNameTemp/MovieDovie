@@ -69,6 +69,8 @@
 	    // 모든 알림 항목에 클릭 이벤트 리스너 추가
 	    document.querySelectorAll('.dropdown-item').forEach(function(notiItem) {
 	        notiItem.addEventListener('click', function(event) {
+	        	preventDefault();
+	        	
 	            // 클릭된 알림의 seqno 값을 가져오기
 	            const seqno = event.currentTarget.getAttribute('data-seqno');
 	            console.log('seqno:', seqno); // seqno 값 확인
