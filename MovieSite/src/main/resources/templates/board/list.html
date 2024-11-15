@@ -76,7 +76,9 @@
 									<a class="fas fa-bookmark" href="#" style="font-size: 20px;"></a>
 								</div>
 							</div>
-							<p class="movie-list-item-desc" th:text="${movie.overview}"></p>
+							<p class="movie-list-item-desc">
+							    <a th:href="@{/board/movieDetail(movieId=${movie.id})}" th:text="${movie.overview}"></a>
+							</p>
 						</div>
 
 					</div>
@@ -92,7 +94,8 @@
 
 		<div class="genre-list-container" th:if="${favGenre != null}">
 			<div class="movie-list-container">
-				<h1 class="movie-list-title">회원이 선택한 선호 장르!</h1>
+				<h1 class="movie-list-title">[[${nickname}]]님만을 위한 추천 영화!</h1>
+				<h4>원하시는 장르를 클릭해보세요!</h4><br>
 
 				<div class="tab-container">
 					<button id="genre1Button" class="tab-button active"
@@ -210,8 +213,8 @@
 		</script>
 
 		<div class="featured-content"
-			style="height: 550px; position: relative;">
-			<img class="featured-content" src="/images/PromotionBanner-001.png"
+			style="height: 300px; position: relative;">
+			<img class="featured-content" src="/images/PromotionBanner-001 (1).png"
 				alt=""
 				style="width: 100%; height: 100%; background-size: cover; transform: scale(1) translate(-50%, -50%); position: absolute; top: 50%; left: 50%;">
 		</div>

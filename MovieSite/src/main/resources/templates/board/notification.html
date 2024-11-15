@@ -205,10 +205,10 @@
 		        <div class="dropdown-item" th:id="'noti-item-' + ${noti.seqno}" th:data-seqno="${noti.seqno}"> <!-- 각 알림에 고유 ID 추가 -->
 		            <th:block th:if="${#strings.equals(noti.is_read, 'N')}"> <!-- 안읽은 알람은 검정으로 -->
 		                <th:block th:if="${#strings.equals(noti.notitype, 'completed')}">
-		                    <img class="noti-icon" src="/img/noti_completed.png" alt="">
+		                    <img class="noti-icon" src="/images/img/noti_completed.png" alt="">
 		                </th:block>
 		                <th:block th:if="${#strings.equals(noti.notitype, 'reply')}">
-		                    <img class="noti-icon" src="/img/noti_reply.png" alt="">
+		                    <img class="noti-icon" src="/images/img/noti_reply.png" alt="">
 		                </th:block>
 		                <div class="noti-text">
 		                    <a th:href="@{'/board/requestView?seqno=' + ${noti.requestEntity.getSeqno()} + '&page=1'}">
@@ -216,17 +216,17 @@
 		                        <span class="date" th:text="${#temporals.format(noti.created_at, 'yyyy-MM-dd HH:mm:ss')}"></span>
 		                    </a>
 		                    <!-- 삭제 아이콘 추가 -->
-		                    <img class="deleteicon" src="/img/noti_delete.png" alt="삭제 아이콘" 
+		                    <img class="deleteicon" src="/images/img/noti_delete.png" alt="삭제 아이콘" 
 		                         th:attr="data-seqno=${noti.seqno}" />
 		                </div>
 		            </th:block>
 		
 		            <th:block th:if="${#strings.equals(noti.is_read, 'Y')}"> <!-- 이미 읽은 알람은 회색으로 -->
 		                <th:block th:if="${#strings.equals(noti.notitype, 'completed')}">
-		                    <img class="noti-icon" src="/img/noti_completed_read.png" alt="">
+		                    <img class="noti-icon" src="/images/img/noti_completed_read.png" alt="">
 		                </th:block>
 		                <th:block th:if="${#strings.equals(noti.notitype, 'reply')}">
-		                    <img class="noti-icon" src="/img/noti_reply_read.png" alt="">
+		                    <img class="noti-icon" src="/images/img/noti_reply_read.png" alt="">
 		                </th:block>
 		                <div class="noti-text">
 		                    <a th:href="@{'/board/requestView?seqno=' + ${noti.requestEntity.getSeqno()} + '&page=1'}">
@@ -234,7 +234,7 @@
 		                        <span class="date-read" th:text="${#temporals.format(noti.created_at, 'yyyy-MM-dd HH:mm:ss')}"></span>
 		                    </a>
 		                    <!-- 삭제 아이콘 추가 -->
-		                    <img class="deleteicon" src="/img/noti_delete.png" alt="삭제 아이콘" 
+		                    <img class="deleteicon" src="/images/img/noti_delete.png" alt="삭제 아이콘" 
 		                         th:attr="data-seqno=${noti.seqno}" />
 		                </div>
 		            </th:block>
