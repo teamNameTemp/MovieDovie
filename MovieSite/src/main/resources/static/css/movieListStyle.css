@@ -21,7 +21,7 @@ body {
   background-color: black;
   position: fixed;
   top: 0;
-   
+  z-index:1000;
 }
 
 .navbar-container {
@@ -31,7 +31,8 @@ body {
   height: 100%;
   color: white;
   font-family: "Jua", sans-serif;
-
+  position: relative;
+  z-index: 1000;
 }
 
 .logo-container {
@@ -76,6 +77,7 @@ body {
   font-weight: bold;
 }
 .profile-container {
+  margin-right:50px;
   flex: 7;
   display: flex;
   align-items: center;
@@ -354,69 +356,83 @@ p.movie-list-item-desc {
 
 @import url('https://fonts.googleapis.com/icon?family=Material+Icons');
 
-.dropdown-label{
-  font-size : 12px;
-  margin : 10px;
-  font-weight : bold;
-  color : rgb(50, 50, 50);
-}
-
-.dropdown{
-  position : relative;
-  display : inline-block;
-}
-
-.dropbtn_icon{
-  font-family : 'Material Icons';
-}
-.dropbtn{
-  display : block;
-  border : 2px solid rgb(94, 94, 94);
-  border-radius : 4px;
-  background-color: #fcfcfc;
-  font-weight: 400;
-  color : rgb(124, 124, 124);
-  padding : 12px;
-  width :240px;
-  text-align: left;
-  cursor : pointer;
-  font-size : 12px;
-  z-index :1;
-  position : relative;
-}
-.dropdown-content{
-  display : none;
-  font-weight: 400;
-  background-color: #fcfcfc;
-  min-width : 240px;
-  border-radius: 8px;
-  height : 160px;
-  overflow : scroll;
-  box-shadow: 0px 0px 10px 3px rgba(190, 190, 190, 0.6);
-}
-.dropdown-content::-webkit-scrollbar{
-  width : 5px;
-  height : 10px;
-}
-.dropdown-content::-webkit-scrollbar-thumb{
-  border-radius : 2px;
-  background-color :rgb(194, 194, 194)
-}
-
-.dropdown-content div{
-  display : block;
-  text-decoration : none;
-  color : rgb(37, 37, 37);
+/* 기존 스타일 유지 */
+.dropdown-label {
   font-size: 12px;
-  padding : 12px 20px;
+  margin: 10px;
+  font-weight: bold;
+  color: rgb(50, 50, 50);
 }
-.dropdown-content div:hover{
+
+.dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+.dropbtn_icon {
+  font-family: 'Material Icons';
+}
+
+.dropbtn {
+  display: block;
+  border: 2px solid rgb(94, 94, 94);
+  border-radius: 4px;
+  background-color: #fcfcfc;
+  font-weight: 400;
+  color: rgb(124, 124, 124);
+  padding: 12px;
+  width: 240px;
+  text-align: left;
+  cursor: pointer;
+  font-size: 12px;
+  z-index: 1;
+  position: relative;
+}
+
+/* 드롭다운 컨텐츠 스타일 */
+.dropdown-content {
+  display: none;
+  font-weight: 400;
+  background-color: #fcfcfc;
+  width: 240px;
+  min-width: 240px;
+  border-radius: 8px;
+  height: 160px;
+  overflow: scroll;
+  box-shadow: 0px 0px 10px 3px rgba(190, 190, 190, 0.6);
+  position: absolute;  /* 위치를 절대값으로 지정 */
+  left: 50%;  /* 아이콘의 가로 중앙에 맞추기 */
+  transform: translateX(-50%);  /* 정확히 중앙에 위치하도록 이동 */
+  top: 100%;  /* 드롭다운이 버튼 바로 아래에 표시되도록 */
+}
+
+.dropdown-content::-webkit-scrollbar {
+  width: 5px;
+  height: 10px;
+}
+
+.dropdown-content::-webkit-scrollbar-thumb {
+  border-radius: 2px;
+  background-color: rgb(194, 194, 194);
+}
+
+.dropdown-content div {
+  display: block;
+  text-decoration: none;
+  color: rgb(37, 37, 37);
+  font-size: 12px;
+  padding: 12px 20px;
+}
+
+.dropdown-content div:hover {
   background-color: rgb(226, 226, 226);
 }
 
-.dropdown-content.show{
-  display : block;
+/* 드롭다운이 보일 때 */
+.dropdown-content.show {
+  display: block;
 }
+
 
  #notification-count {
             position: absolute;
