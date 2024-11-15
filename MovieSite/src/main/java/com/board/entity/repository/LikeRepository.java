@@ -6,6 +6,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
 import com.board.entity.LikeEntity;
+import com.board.entity.MemberEntity;
+import com.board.entity.movie.MovieEntity;
 
 public interface LikeRepository extends JpaRepository<LikeEntity, Long>{
 
@@ -46,5 +48,6 @@ public interface LikeRepository extends JpaRepository<LikeEntity, Long>{
 			+ "order by totalCount DESC", nativeQuery = true)
 	public List<Object[]> divisiveResult();
 
-	
+	//좋아요/싫어요 정보 가져오기
+	public LikeEntity findByEmailAndMovieId(MemberEntity email,MovieEntity movieId);
 }

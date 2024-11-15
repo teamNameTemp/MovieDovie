@@ -491,71 +491,71 @@ public class MasterController {
 	}
 
 	// 더미 데이터 만들기 페이지
-	@GetMapping("/dummyMaker")
-	public void getDummyMaker() {
-	}
-
-	// Dummy members 만들기
-	@ResponseBody
-	@PostMapping("/createDummyMembers")
-	public String createDummyMembers() {
-		int count = 100; // 원하는 대로 수 변경 가능
-		service.createDummyMembers(count);
-		return " ▶▷▶ " + count + "명의 더미 회원이 생성되었습니다.";
-	}
-
-	// Dummy 대여현황 만들기
-	@ResponseBody
-	@PostMapping("/createDummyRents")
-	public String createDummyRents() {
-		int count = 700; // 원하는 대로 수 변경 가능
-		service.createDummyRents(count);
-		return " ▶▷▶ " + count + "개의 더미 대여 현황이 생성되었습니다.";
-	}
-
-	// Dummy 좋아요 싫어요 만들기
-	@ResponseBody
-	@PostMapping("/createDummyLikes")
-	public String createDummyLikes() {
-		int count = 500; // 원하는 대로 수 변경 가능
-		service.createDummyLikes(count);
-		return " ▶▷▶ " + count + "개의 더미 좋아요/싫어요 현황이 생성되었습니다.";
-	}
-
-	// Dummy 회원 로그 기록 만들기
-	@ResponseBody
-	@PostMapping("/createDummyLogs")
-	public String createDummyLogs() {
-		int count = 500; // 원하는 대로 수 변경 가능
-		service.createDummyLogs(count);
-		return " ▶▷▶ " + count + "개의 더미 LOGIN/LOGOUT 현황이 생성되었습니다.";
-	}
-
-	// Dummy 시청여부 만들기
-	@ResponseBody
-	@PostMapping("/createDummyWatch")
-	public String createDummyWatch() {
-		int count = 500; // 원하는 대로 수 변경 가능
-		service.createDummyWatch(count);
-		return " ▶▷▶ " + count + "개의 더미 시청여부가 생성되었습니다.";
-	}
-
-	// Dummy 즐겨찾기 만들기
-	@ResponseBody
-	@PostMapping("/createDummyBookmarks")
-	public String createDummyBookmarks() {
-		int count = 500; // 원하는 대로 수 변경 가능
-		service.createDummyBookmarks(count);
-		return " ▶▷▶ " + count + "개의 더미 즐겨찾기가 생성되었습니다.";
-	}
-
-	// Dummy 좋아하는 장르 만들기
-	@ResponseBody
-	@PostMapping("/createDummyFavGenre")
-	public String createDummyFavGenre() {
-		int count = 500; // 원하는 대로 수 변경 가능
-		service.createDummyFavGenre(count);
-		return " ▶▷▶ " + count + "개의 더미 좋아하는 장르가 생성되었습니다.";
-	}
+//	@GetMapping("/dummyMaker")
+//	public void getDummyMaker() {
+//	}
+//
+//	// Dummy members 만들기
+//	@ResponseBody
+//	@PostMapping("/createDummyMembers")
+//	public String createDummyMembers() {
+//		int count = 100; // 원하는 대로 수 변경 가능
+//		service.createDummyMembers(count);
+//		return " ▶▷▶ " + count + "명의 더미 회원이 생성되었습니다.";
+//	}
+//
+//	// Dummy 대여현황 만들기
+//	@ResponseBody
+//	@PostMapping("/createDummyRents")
+//	public String createDummyRents() {
+//		int count = 700; // 원하는 대로 수 변경 가능
+//		service.createDummyRents(count);
+//		return " ▶▷▶ " + count + "개의 더미 대여 현황이 생성되었습니다.";
+//	}
+//
+//	// Dummy 좋아요 싫어요 만들기
+//	@ResponseBody
+//	@PostMapping("/createDummyLikes")
+//	public String createDummyLikes() {
+//		int count = 500; // 원하는 대로 수 변경 가능
+//		service.createDummyLikes(count);
+//		return " ▶▷▶ " + count + "개의 더미 좋아요/싫어요 현황이 생성되었습니다.";
+//	}
+//
+//	// Dummy 회원 로그 기록 만들기
+//	@ResponseBody
+//	@PostMapping("/createDummyLogs")
+//	public String createDummyLogs() {
+//		int count = 500; // 원하는 대로 수 변경 가능
+//		service.createDummyLogs(count);
+//		return " ▶▷▶ " + count + "개의 더미 LOGIN/LOGOUT 현황이 생성되었습니다.";
+//	}
+//
+//	// Dummy 시청여부 만들기
+//	@ResponseBody
+//	@PostMapping("/createDummyWatch")
+//	public String createDummyWatch() {
+//		int count = 500; // 원하는 대로 수 변경 가능
+//		service.createDummyWatch(count);
+//		return " ▶▷▶ " + count + "개의 더미 시청여부가 생성되었습니다.";
+//	}
+//
+//	// Dummy 즐겨찾기 만들기
+//	@ResponseBody
+//	@PostMapping("/createDummyBookmarks")
+//	public String createDummyBookmarks() {
+//		int count = 500; // 원하는 대로 수 변경 가능
+//		service.createDummyBookmarks(count);
+//		return " ▶▷▶ " + count + "개의 더미 즐겨찾기가 생성되었습니다.";
+//	}
+//
+//	// Dummy 좋아하는 장르 만들기
+//	@ResponseBody
+//	@PostMapping("/createDummyFavGenre")
+//	public String createDummyFavGenre() {
+//		int count = 500; // 원하는 대로 수 변경 가능
+//		service.createDummyFavGenre(count);
+//		return " ▶▷▶ " + count + "개의 더미 좋아하는 장르가 생성되었습니다.";
+//	}
 
 }
