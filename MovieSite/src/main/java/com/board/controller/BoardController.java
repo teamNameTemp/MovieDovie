@@ -85,7 +85,7 @@ public class BoardController {
 	}
 
 	@GetMapping("/list")
-	public void getList(Model model) throws JsonMappingException, JsonProcessingException {
+	public void getList(Model model, HttpSession session) throws JsonMappingException, JsonProcessingException {
 		List<MovieDTO> trendList = tmdb.getTrendingMovies("day", 1, "ko-KR").block();
 		
 		Map<String,Object> favGenreList = new HashMap<>();
@@ -103,6 +103,9 @@ public class BoardController {
 		model.addAttribute("dailyMovies",trendList);
 		model.addAttribute("favGenre",genre.get());
 		model.addAttribute("favGenreList",favGenreList);
+		
+		String nickname = (String)session.getAttribute("nickname");
+		model.addAttribute("nickname", nickname);
 	}
 	// 장르 필터
 	@PostMapping("/genreCheck")
@@ -174,7 +177,7 @@ public class BoardController {
 		MemberDTO memberDTO = memberService.memberInfo(SessionEmail);
 		model.addAttribute("nickname", memberDTO.getNickname());
 		
-		model.addAttribute("maxSeqno", masterService.getMaxSeqno(SessionEmail));
+		model.addAttribute("maxSeqno", masterService.getMaxSeqno(SessionEmail)+1);
 
 	}
 	

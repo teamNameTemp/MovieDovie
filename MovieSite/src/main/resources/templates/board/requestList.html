@@ -35,8 +35,8 @@
 		}
 		
 		th {
-		  background-color: #1b1b1b;
-		  color: #ddd;
+		  background-color: #4dbf00; 
+		  color: white;
 		}
 		
 		/* 테이블 올렸을 때 */
@@ -70,6 +70,7 @@
 		tr:nth-child(even) {
 		  background-color: #4dbf0010;
 		}
+		
 		.button {
 		    display: inline-block;
 		    padding: 10px 15px;
@@ -82,10 +83,13 @@
 		    border-radius: 10px; /* 모서리 둥글게 */
 		    transition: background-color 0.3s;
   			animation: animate 1s infinite;
+  			cursor : pointer;
 		}
 		
 		.button:hover {
-		    background-color:black;
+		    background-color: white;
+		    color: black;
+		    cursor : pointer;
 		}
 		
 		@keyframes animate {
@@ -113,7 +117,7 @@
 		
 	</script>
 </head>
-<body>
+<body style = "background-color:black;">
     <div class="navbar">
         <div class="navbar-container">
             <div class="logo-container">
@@ -191,7 +195,7 @@
         <a style="text-decoration:none" href="#" class="left-menu-icon fas fa-user"></a>
     </div>
     <div class = "main">
-	<br><br><br><br><br><h2>[[${nickname}]]님의 요청 사항</h2>
+	<br><br><br><br><br><h2 style="color: white;">[[${nickname}]]님의 요청 사항</h2>
 	
 	<br>
 	<input type="text" name="keyword" id="keyword" 
@@ -233,12 +237,11 @@
 	  </tbody>
 	</table>
 	<br>
-	<div>[(${pageList})]</div>
+	<div style="color:white;">[(${pageList})]</div>
 	<br>
 	<div>
 		<a href="javascript:boardWrite()" class="button">요청 사항 작성하기!</a>
 	</div>
-	
 </div>
 
     
