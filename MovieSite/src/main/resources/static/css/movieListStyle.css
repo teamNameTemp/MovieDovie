@@ -176,11 +176,13 @@ body {
 
 .movie-list-container {
   border-radius:30px;
-  margin:20px;
   margin-left:60px;
   padding: 0 20px;
 }
 
+p.movie-list-item-desc {
+    text-align: center;
+}
 .movie-list-wrapper {
   position: relative;
   overflow: hidden;
