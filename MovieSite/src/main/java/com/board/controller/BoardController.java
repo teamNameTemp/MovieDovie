@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.board.dto.LikeDTO;
 import com.board.dto.MemberDTO;
 import com.board.dto.ReplyInterface;
 import com.board.dto.RequestDTO;
@@ -27,9 +28,11 @@ import com.board.entity.RequestReplyEntity;
 import com.board.entity.movie.GenreEntity;
 import com.board.service.BoardService;
 import com.board.service.FavGenreService;
+import com.board.service.LikeService;
 import com.board.service.MasterService;
 import com.board.service.MemberService;
 import com.board.service.MovieAPIServiceImpl;
+import com.board.service.ReplyService;
 import com.board.service.RequestReplyService;
 import com.board.service.RequestService;
 import com.board.service.TmdbAPIServiceImpl;
@@ -54,27 +57,11 @@ public class BoardController {
 	private final RequestService requestService;
 	private final RequestReplyService requestReplyService;
 	private final FavGenreService favGenre;
-	
-	//추천 장르
-	@GetMapping("/selectGenre")
-	public void getMovieSelect(Model model) {
-		Map<String,Integer> map = tmdb.getGenreList().block();
-		
-		model.addAttribute("genres",map);
-	}
-	
-	@ResponseBody
-	@PostMapping("/selectGenre")
-	public Map<String,Boolean> postSelectGenres(@RequestBody Map<String, List<String>> payload){
-		List<String> selectedGenres = payload.get("genres");
-
-		Map<String, Boolean> response = new HashMap<>();
-		response.put("success", true);
-		return response;
-	}
+	private final LikeService likeService;
+	private final ReplyService replyService;
 
 	@GetMapping("/list")
-	public void getList(Model model) throws JsonMappingException, JsonProcessingException {
+	public void getList(Model model,HttpSession session) throws JsonMappingException, JsonProcessingException {
 		List<MovieDTO> trendList = tmdb.getTrendingMovies("day", 1, "ko-KR").block();
 		
 		Map<String,Object> favGenreList = new HashMap<>();
@@ -89,24 +76,70 @@ public class BoardController {
 				favGenreList.put(genreNm,movie.findByGenreGetMovieList(genres));
 			}
 		}
+		model.addAttribute("nickname",session.getAttribute("nickname"));
 		model.addAttribute("dailyMovies",trendList);
 		model.addAttribute("favGenre",genre.get());
 		model.addAttribute("favGenreList",favGenreList);
 	}
-	// 장르 필터
-	@PostMapping("/genreCheck")
-	public String postGenreCheck() {
-		return null;
-	}
 	
 	//영화상세
 	@GetMapping("/movieDetail")
-	public void getView(Model model, @RequestParam("movieId") Long id) throws JsonMappingException, JsonProcessingException{
+	public void getView(Model model, @RequestParam("movieId") Long id,
+			HttpSession session) throws JsonMappingException, JsonProcessingException{
 		MovieDTO detail = tmdb.getMovieDetails(id, "ko-KR").block();
+		String email = (String)session.getAttribute("email");
 		
+		LikeDTO like = likeService.getLikeInfo(email, id);
+		
+		model.addAttribute("like",like);
 		model.addAttribute("movie",detail);
 	}
 	
+	@PostMapping("/movieDetail/reviews")
+	@ResponseBody
+	public Map<String,Boolean> postMovieDetailReview(
+			@RequestParam("movieId") Long movieId,
+			@RequestParam("content") String content,
+			HttpSession session
+			){
+		
+		String email = (String)session.getAttribute("email");
+		
+		Map<String,Boolean> response = new HashMap<>();
+		
+		//리뷰 업데이트 및 저장
+		replyService.saveOrUpdate(content, email, movieId);
+		
+		response.put("ok",true);
+		
+		return response;
+	}
+	
+	
+	//좋아요 싫어요 처리
+	@PostMapping("/movieDetail/likedislike")
+	@ResponseBody
+	public Map<String,String> postMovieDetailLike(
+			@RequestParam("movieId") Long movieId,
+			@RequestParam("rating") String rating,
+			HttpSession session
+			){
+		
+		String email = (String)session.getAttribute("email");
+		
+		Map<String,String> response = new HashMap<>();
+		
+		//좋아요 싫어요 업데이트 및 저장
+		try {
+			likeService.saveOrUpdate(rating, movieId,email);
+			response.put("message","like");
+		}catch (Exception e) {
+			log.error("likedislike 오류 : " + e);
+		}
+
+		
+		return response;
+	}
 	
 	//댓글 처리
 	@ResponseBody

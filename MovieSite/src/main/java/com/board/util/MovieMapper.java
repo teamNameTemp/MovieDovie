@@ -204,6 +204,7 @@ public class MovieMapper {
         }
         MovieEntity entity = MovieEntity.builder()
                 .movieId(dto.getId())
+                .isAdult(dto.isAdult())
                 .title(dto.getTitle())
                 .originalTitle(dto.getOriginalTitle())
                 .tagline(dto.getTagline())
@@ -290,7 +291,8 @@ public class MovieMapper {
 
     public List<VideoEntity> mapVideos(MovieDTO dto) {
         if (dto.getVideos() == null) return null;
-        return dto.getVideos().getResults().stream().map(video->{
+        return dto.getVideos().getResults().stream().limit(1).
+        		map(video->{
         	return VideoEntity.builder()
         			.movieId(dto.getEntity())
         			.videoId(video.getId())

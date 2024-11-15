@@ -101,6 +101,7 @@ public class MovieAPIServiceImpl implements MovieAPIService {
 	    	}
 	    	else { // 있으면(업데이트)
 	    		MovieEntity entity = movieRepository.findById(dto.getId()).get();	    		entity.setOverview(dto.getOverview());
+	    		entity.setIsAdult(dto.isAdult());
 	    		movieRepository.save(entity);
 	    		dto.setEntity(entity);
 	    	}

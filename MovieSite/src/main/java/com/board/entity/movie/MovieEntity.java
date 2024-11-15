@@ -25,6 +25,9 @@ public class MovieEntity {
     @Id
     private Long movieId;
 
+    @Column(name="adult")
+    private Boolean isAdult;
+    
     @Column(nullable = false)
     private String title;
 

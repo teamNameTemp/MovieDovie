@@ -2,13 +2,10 @@ package com.board.service;
 
 import java.util.List;
 
-import org.springframework.stereotype.Controller;
-
 import com.board.dto.ReplyInterface;
 import com.board.dto.movie.MovieDTO;
 import com.board.entity.LikeEntity;
 
-@Controller
 public interface BoardService {
 	
 	//상품 상세 정보 보기
