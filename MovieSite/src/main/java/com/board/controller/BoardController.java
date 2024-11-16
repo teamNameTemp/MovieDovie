@@ -103,25 +103,38 @@ public class BoardController {
 	
 	//영화상세
 	@GetMapping("/movieDetail")
-	public void getView(Model model, @RequestParam("movieId") Long id, HttpSession session) throws JsonMappingException, JsonProcessingException{
-		String email = (String)session.getAttribute("email");
-		String nickname = (String)session.getAttribute("nickname");
-		MemberDTO memberDTO = memberService.memberInfo(email);
+	public void getView(Model model, @RequestParam("movieId") Long movieId, HttpSession session) throws JsonMappingException, JsonProcessingException {
+	    String email = (String) session.getAttribute("email");
+	    String nickname = (String) session.getAttribute("nickname");
 
-		//DB에서 영화 정보 가져오기
-		Map<String,Object> movieDetail = movie.getMovieDetails(id);
-		
-		//나의 like 정보
-		Map<String,Object> mylike = likeService.getLikeInfo(email, id);
-		//모든 like 정보
-		Map<String,Object> allLike = likeService.getAllLikeInfo(id);
+	    // DB에서 영화 정보 가져오기
+	    Map<String, Object> movieDetail = movie.getMovieDetails(movieId);
+	    model.addAttribute("movie", movieDetail);
 
-		//---------- Model -----------
-		model.addAttribute("like",mylike);
-		model.addAttribute("allLike",allLike);
-		model.addAttribute("movie",movieDetail);
-		model.addAttribute("nickname", nickname);
-		model.addAttribute("role", memberDTO.getRole());
+	    // 사용자가 로그인한 경우에만 회원 정보와 좋아요 정보를 처리
+	    if (email != null && !email.isEmpty()) {
+	        MemberDTO memberDTO = memberService.memberInfo(email);
+	        model.addAttribute("nickname", nickname);
+	        model.addAttribute("role", memberDTO.getRole());
+
+	    } else {
+	        // 로그인하지 않은 사용자를 위한 기본값 설정
+	        model.addAttribute("nickname", "Guest");
+	        model.addAttribute("role", "GUEST");
+	    }
+	    // 나의 like 정보
+	    Map<String, Object> mylike = likeService.getLikeInfo(email, movieId);
+	    if(mylike == null || mylike.isEmpty()) {
+	    	model.addAttribute("like",null);
+	    }
+	    else {
+	    	model.addAttribute("like", mylike);
+	    }
+
+	    // 모든 like 정보
+	    Map<String, Object> allLike = likeService.getAllLikeInfo(movieId);
+	    model.addAttribute("allLike", allLike);
+
 	}
 	
 	@PostMapping("/movieDetail/reviews")
@@ -148,21 +161,26 @@ public class BoardController {
 	//좋아요 싫어요 처리
 	@PostMapping("/movieDetail/likes")
 	@ResponseBody
-	public Map<String, String> postMovieDetailLike(
+	public Map<String, Object> postMovieDetailLike(
 	        @RequestParam("movieId") Long movieId,
 	        @RequestParam("isLike") String isLike,
+	        @RequestParam("action") String action,
 	        HttpSession session
 	) {
+		Map<String,Object> response = new HashMap<>();
+		
 	    String rating = "Y".equals(isLike) ? "like" : "dislike";
 	    String email = (String) session.getAttribute("email");
 	    
-	    Map<String, String> response = new HashMap<>();
-	    Map<String,Object> myLike = likeService.getLikeInfo(email,movieId);
-	    
+	   boolean isAdd = "add".equals(action);
 	    // 좋아요 싫어요 업데이트 및 저장
 	    try {
-	        likeService.saveOrUpdate(rating, movieId, email);
+	        likeService.saveOrUpdate(rating, movieId, email,isAdd);
 	        response.put("message", "good");
+	        // 모든 like 정보
+	        Map<String, Object> allLike = likeService.getAllLikeInfo(movieId);
+	        response.put("likeCount",allLike.get("likeCount"));
+	        response.put("dislikeCount",allLike.get("dislikeCount"));
 	    } catch (Exception e) {
 	        log.error("likedislike 오류 : ", e);
 	        response.put("message", "error");

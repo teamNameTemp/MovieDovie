@@ -43,26 +43,20 @@ class LikeServiceImpl implements LikeService{
 	}
 
 	@Override
-	public void saveOrUpdate(String rating, Long movieId, String email) {
+	public void saveOrUpdate(String rating, Long movieId, String email,boolean isAdd) {
 		MemberEntity member = memberRepository.findById(email).get();
 		MovieEntity movie = movieRepository.findById(movieId).
 				 orElseThrow(() -> new RuntimeException("Movie not found"));
-	
+
 		String likeCheck = "N";
 		String dislikeCheck = "N";
-		
-		switch(rating) {
-		case "like":
-			likeCheck="Y";
-			dislikeCheck="N";
-			break;
-		case "dislike":
-			likeCheck="N";
-			dislikeCheck="Y";
-			break;
-			default:
-				break;
+		//새로운 값
+		if(isAdd) {
+			likeCheck = "like".equals(rating) ? "Y" : "N";
+			dislikeCheck = "dislike".equals(rating) ? "Y" : "N";
 		}
+			
+		
 		LikeEntity likeEntity = likeRepository.findByEmailAndMovieId(member,movie);
 		//저장
 		if(likeEntity == null) {

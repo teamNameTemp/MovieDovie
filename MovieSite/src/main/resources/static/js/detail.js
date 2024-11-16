@@ -11,7 +11,8 @@ document.addEventListener('DOMContentLoaded', () => {
 	buttons.forEach(button => {
 	    button.addEventListener('click', () => {
 	        let isLike = "N";
-	        
+	        let action = "add"; // 기본 액션은 추가
+
 	        if (button.classList.contains('like')) {
 	            isLike = "Y";
 	        } else if (button.classList.contains('dislike')) {
@@ -21,9 +22,15 @@ document.addEventListener('DOMContentLoaded', () => {
 	            return;
 	        }
 
+	        // 버튼이 이미 active 상태인 경우, 액션을 'remove'로 설정
+	        if (button.classList.contains('active')) {
+	            action = "remove";
+	        }
+
 	        const likeForm = new FormData();
 	        likeForm.append('isLike', isLike);
 	        likeForm.append('movieId', movieId);
+	        likeForm.append('action', action);
 	        
 	        fetch('/board/movieDetail/likes', {
 	            method: 'POST',
@@ -32,8 +39,12 @@ document.addEventListener('DOMContentLoaded', () => {
 	        .then(response => response.json())
 	        .then(result => {
 	            if (result.message === "good") {
-	                alert(isLike === 'Y' ? '좋아요가 저장되었습니다!' : '싫어요가 저장되었습니다!');
-	                updateUI(button, result);
+	                if (action === "add") {
+	                    alert(isLike === 'Y' ? '좋아요가 저장되었습니다!' : '싫어요가 저장되었습니다!');
+	                } else {
+	                    alert(isLike === 'Y' ? '좋아요가 취소되었습니다!' : '싫어요가 취소되었습니다!');
+	                }
+	                updateUI(button, result, action);
 	            } else {
 	                alert('처리 중 오류가 발생했습니다: ' + (result.error || '알 수 없는 오류'));
 	            }
@@ -45,13 +56,15 @@ document.addEventListener('DOMContentLoaded', () => {
 	    });
 	});
 
-	function updateUI(button, result) {
-	    // 버튼 상태 토글
-		if(button)
-	    button.classList.toggle('active');
+	function updateUI(button, result, action) {
+	    if (button) {
+	        if (action === "add") {
+	            button.classList.add('active');
+	        } else {
+	            button.classList.remove('active');
+	        }
+	    }
 
-		// 카운트 업데이트 로직
-		
 	    // 상호 배타적인 버튼 처리 (좋아요/싫어요)
 	    if (button.classList.contains('like')) {
 	        const dislikeButton = document.querySelector('.dislike');
@@ -60,7 +73,16 @@ document.addEventListener('DOMContentLoaded', () => {
 	        const likeButton = document.querySelector('.like');
 	        if (likeButton) likeButton.classList.remove('active');
 	    }
-		location.reload();
+
+	    // 카운트 업데이트 로직 (서버에서 새 카운트를 반환한다고 가정)
+	    if (result.likeCount !== undefined) {
+	        const likeCountElement = document.querySelector('.like .count');
+	        if (likeCountElement) likeCountElement.textContent = result.likeCount;
+	    }
+	    if (result.dislikeCount !== undefined) {
+	        const dislikeCountElement = document.querySelector('.dislike .count');
+	        if (dislikeCountElement) dislikeCountElement.textContent = result.dislikeCount;
+	    }
 	}
 	
 	//리뷰 관련
