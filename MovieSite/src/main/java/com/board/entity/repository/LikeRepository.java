@@ -4,11 +4,13 @@ import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.stereotype.Repository;
 
 import com.board.entity.LikeEntity;
 import com.board.entity.MemberEntity;
 import com.board.entity.movie.MovieEntity;
 
+@Repository
 public interface LikeRepository extends JpaRepository<LikeEntity, Long>{
 
 	//관리자페이지 - 통계 : 각 영화에 대해 좋아요 %가 높은 영화 순으로 나열 (좋아요 수 10개 이상부터 보여주기.)
@@ -48,6 +50,10 @@ public interface LikeRepository extends JpaRepository<LikeEntity, Long>{
 			+ "order by totalCount DESC", nativeQuery = true)
 	public List<Object[]> divisiveResult();
 
-	//좋아요/싫어요 정보 가져오기
+	//나의 like 정보 가져오기
 	public LikeEntity findByEmailAndMovieId(MemberEntity email,MovieEntity movieId);
+
+	// movieId를 이용해 해당 영화의 모든 LikeEntity를 조회
+    List<LikeEntity> findAllByMovieId(MovieEntity movieId);
+
 }
