@@ -48,12 +48,12 @@
 <body>
 <!--replace 특정 템플릿 조각(프래그먼트)을 다른 위치에 삽입할 때 사용 -->
 <th:block th:if="${#strings.equals(role, 'USER')}">
-	<div th:replace="/fragments/nav/menubar::menubar"></div>
-    <div th:replace="/fragments/nav/sidebar::sidebar"></div>
+	<div th:replace="~{/fragments/nav/menubar::menubar}"></div>
+    <div th:replace="~{/fragments/nav/sidebar::sidebar}"></div>
 </th:block>
 <th:block th:if="${#strings.equals(role, 'MASTER')}">
-	<div th:replace="/fragments/nav/masterBoardMenubar::masterBoardMenubar"></div>
-	<div th:replace="/fragments/nav/masterSidebar::masterSidebar"></div>
+	<div th:replace="~{/fragments/nav/masterBoardMenubar::masterBoardMenubar}"></div>
+	<div th:replace="~{/fragments/nav/masterSidebar::masterSidebar}"></div>
 </th:block>
 	
 	<div class="container">
@@ -79,8 +79,10 @@
 									<a class="fas fa-shopping-cart" href="#"
 										style="font-size: 20px;"></a>
 								</div>
-								<div class="movie-list-item-button">
-									<a class="fas fa-bookmark" href="#" style="font-size: 20px;"></a>
+								<div class="movie-list-item-button"
+								th:classappend="${movie.isBookmarked != null and movie.isBookmarked == 'Y'} ? 'active' : ''"
+								th:data-movie-id="${movie.id}">
+									<a class="fas fa-bookmark" style="font-size: 20px;"></a>
 								</div>
 							</div>
 							<p class="movie-list-item-desc">

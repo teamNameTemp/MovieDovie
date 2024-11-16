@@ -5,46 +5,42 @@ document.addEventListener('DOMContentLoaded', () => {
 	const urlParams = new URLSearchParams(queryString);
 	const movieId = urlParams.get("movieId");
 
-	// 리뷰 좋아요/싫어요
+	// 모든 액션 버튼에 대한 이벤트 리스너 설정
 	const buttons = document.querySelectorAll('.action-btn');
 
 	buttons.forEach(button => {
 	    button.addEventListener('click', () => {
-	        let isLike = "N";
 	        let action = "add"; // 기본 액션은 추가
+	        let endpoint = "";
+	        let formData = new FormData();
 
-	        if (button.classList.contains('like')) {
-	            isLike = "Y";
-	        } else if (button.classList.contains('dislike')) {
-	            isLike = "N";
-	        } else {
-	            // 좋아요/싫어요 버튼이 아닌 경우 처리
-	            return;
-	        }
-
-	        // 버튼이 이미 active 상태인 경우, 액션을 'remove'로 설정
 	        if (button.classList.contains('active')) {
 	            action = "remove";
 	        }
 
-	        const likeForm = new FormData();
-	        likeForm.append('isLike', isLike);
-	        likeForm.append('movieId', movieId);
-	        likeForm.append('action', action);
-	        
-	        fetch('/board/movieDetail/likes', {
+	        formData.append('movieId', movieId);
+	        formData.append('action', action);
+
+	        if (button.classList.contains('like') || button.classList.contains('dislike')) {
+	            endpoint = '/board/movieDetail/likes';
+	            formData.append('isLike', button.classList.contains('like') ? "Y" : "N");
+	        } else if (button.classList.contains('watched')) {
+	            endpoint = '/board/movieDetail/watched';
+	        } else if (button.classList.contains('bookmark')) {
+	            endpoint = '/board/movieDetail/bookmark';
+	        } else {
+	            return; // 알 수 없는 버튼 유형
+	        }
+
+	        fetch(endpoint, {
 	            method: 'POST',
-	            body: likeForm
+	            body: formData
 	        })
 	        .then(response => response.json())
 	        .then(result => {
 	            if (result.message === "good") {
-	                if (action === "add") {
-	                    alert(isLike === 'Y' ? '좋아요가 저장되었습니다!' : '싫어요가 저장되었습니다!');
-	                } else {
-	                    alert(isLike === 'Y' ? '좋아요가 취소되었습니다!' : '싫어요가 취소되었습니다!');
-	                }
 	                updateUI(button, result, action);
+	                showActionMessage(button, action);
 	            } else {
 	                alert('처리 중 오류가 발생했습니다: ' + (result.error || '알 수 없는 오류'));
 	            }
@@ -57,33 +53,77 @@ document.addEventListener('DOMContentLoaded', () => {
 	});
 
 	function updateUI(button, result, action) {
-	    if (button) {
-	        if (action === "add") {
-	            button.classList.add('active');
-	        } else {
-	            button.classList.remove('active');
-	        }
-	    }
-
-	    // 상호 배타적인 버튼 처리 (좋아요/싫어요)
-	    if (button.classList.contains('like')) {
-	        const dislikeButton = document.querySelector('.dislike');
-	        if (dislikeButton) dislikeButton.classList.remove('active');
-	    } else if (button.classList.contains('dislike')) {
+	    if (button.classList.contains('like') || button.classList.contains('dislike')) {
 	        const likeButton = document.querySelector('.like');
-	        if (likeButton) likeButton.classList.remove('active');
-	    }
+	        const dislikeButton = document.querySelector('.dislike');
 
-	    // 카운트 업데이트 로직 (서버에서 새 카운트를 반환한다고 가정)
-	    if (result.likeCount !== undefined) {
-	        const likeCountElement = document.querySelector('.like .count');
-	        if (likeCountElement) likeCountElement.textContent = result.likeCount;
-	    }
-	    if (result.dislikeCount !== undefined) {
-	        const dislikeCountElement = document.querySelector('.dislike .count');
-	        if (dislikeCountElement) dislikeCountElement.textContent = result.dislikeCount;
+				        
+			// 좋아요/싫어요 버튼 상태 업데이트
+			if (action === "remove") {
+			    button.classList.remove('active');
+			} else if (result.userLike === 'Y') {
+			    likeButton.classList.add('active');
+			    dislikeButton.classList.remove('active');
+			} else if (result.userLike === 'N') {
+			    dislikeButton.classList.add('active');
+			    likeButton.classList.remove('active');
+			} else {
+			    // 중립 상태 (둘 다 선택되지 않음)
+			    likeButton.classList.remove('active');
+			    dislikeButton.classList.remove('active');
+			}
+
+	        // 좋아요/싫어요 카운트 업데이트
+	        updateCount(likeButton, result.likeCount);
+	        updateCount(dislikeButton, result.dislikeCount);
+	    } else {
+	        // 봤어요와 북마크 버튼 처리
+			if (action === "remove") {
+				button.classList.remove('active');
+			} else{
+				button.classList.toggle('active');
+			} 
+			
+//	        button.classList.toggle('active', action === "add");
+	        updateCount(button, result.count);
 	    }
 	}
+
+	function updateCount(button, count) {
+	    const countElement = button.querySelector('.count');
+	    if (countElement && count !== undefined) {
+	        countElement.textContent = count;
+	    }
+	}
+
+	function showActionMessage(button, action) {
+	    let message = '';
+	    if (button.classList.contains('like')) {
+	        message = action === 'add' ? '좋아요가 저장되었습니다!' : '좋아요가 취소되었습니다!';
+	    } else if (button.classList.contains('dislike')) {
+	        message = action === 'add' ? '싫어요가 저장되었습니다!' : '싫어요가 취소되었습니다!';
+	    } else if (button.classList.contains('watched')) {
+	        message = action === 'add' ? '시청 완료로 표시되었습니다!' : '시청 완료 표시가 취소되었습니다!';
+	    } else if (button.classList.contains('bookmark')) {
+	        message = action === 'add' ? '북마크에 추가되었습니다!' : '북마크에서 제거되었습니다!';
+	    }
+	    alert(message);
+	}
+
+	function showActionMessage(button, action) {
+	    let message = '';
+	    if (button.classList.contains('like')) {
+	        message = action === 'add' ? '좋아요가 저장되었습니다!' : '좋아요가 취소되었습니다!';
+	    } else if (button.classList.contains('dislike')) {
+	        message = action === 'add' ? '싫어요가 저장되었습니다!' : '싫어요가 취소되었습니다!';
+	    } else if (button.classList.contains('watched')) {
+	        message = action === 'add' ? '시청 완료로 표시되었습니다!' : '시청 완료 표시가 취소되었습니다!';
+	    } else if (button.classList.contains('bookmark')) {
+	        message = action === 'add' ? '북마크에 추가되었습니다!' : '북마크에서 제거되었습니다!';
+	    }
+	    alert(message);
+	}
+	
 	
 	//리뷰 관련
 	const reviewText = document.getElementById('reviewText');
