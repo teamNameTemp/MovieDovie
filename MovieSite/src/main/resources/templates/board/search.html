@@ -10,23 +10,7 @@
     <link rel="stylesheet" href="/css/searchResultStyle.css">
     <link href='https://fonts.googleapis.com/css?family=Play:400,700' rel='stylesheet' type='text/css'>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css">
-    
 
-    <style>
-        .search-container {
-            text-align: center;
-            margin-top: 100px;
-        }
-        .search-box {
-            width: 300px;
-            padding: 10px;
-            font-size: 16px;
-        }
-        .search-button {
-            padding: 10px 20px;
-            font-size: 16px;
-        }
-    </style>
     <script src="/js/searchResult.js"></script>
 
 </head>
@@ -35,28 +19,32 @@
     <div th:replace="~{/fragments/nav/menubar::menubar}"></div>
     <div th:replace="~{/fragments/nav/sidebar::sidebar}"></div>
     
-    <div class="search-container">
+    <div class="search-container" style="margin-top: 100px; text-align: center;">
         <h1 th:text="'&quot;' + ${param.keyword} + '&quot; 검색 결과'">검색 결과</h1>
-            <input type="text"
-                    id="searchKeyword"
-                    placeholder="작품, 배우 등 키워드를 입력하세요"
-                    onkeyup="if(event.keyCode === 13) searchMovies()">
-            <button onclick="searchMovies()">검색</button>
-    </div>
 
-    <div id="searchResult" class="movie-grid">
-        <div th:each="movie : ${movies}">
-            <div class="movie-card">
-                <img th:src="@{${movie.poster_path} != null ? 'https://image.tmdb.org/t/p/w200' + ${movie.poster_path} : '/images/blankPoster.jpg'}" alt="${movie.title}">
-                <h3 th:text="${movie.title}"></h3>
-                <p th:text="${movie.release_date} != null ? ${movie.release_date} : '개봉일 미정'"></p>
+        <div class="movie-grid">
+            <div th:each="movie : ${movies}">
+                <div class="movie-card">
+                    <a th:href="@{/board/movieDetail(movieId=${movie.id})}"> <img
+                        th:src="${'https://image.tmdb.org/t/p/original' + movie.posterPath}"
+                        alt="">
+                    </a>
+                    <h3 th:text="${movie.title}"></h3>
+                    <p th:text="${movie.releaseDate} != null ? ${movie.releaseDate} : '개봉일 미정'"></p>
+                </div>
             </div>
+    <!--         
+            <div th:each="movie : ${movies}">
+                <div class="movie-card">
+                    <img th:src="@{${movie.posterPath} != null ? 'https://image.tmdb.org/t/p/w200' + ${movie.posterPath} : '/images/blankPoster.jpg'}" alt="${movie.title}">
+                    <h3 th:text="${movie.title}"></h3>
+                    <p th:text="${movie.releaseDate} != null ? ${movie.releaseDate} : '개봉일 미정'"></p>
+                </div>
+            </div> -->
         </div>
+        <div>[(${pageList})]</div>
     </div>
 
-    <script>
-        
-    </script>
 
 </body>
 </html>

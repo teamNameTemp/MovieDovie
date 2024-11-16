@@ -2,14 +2,19 @@ package com.board.service;
 
 import java.util.List;
 
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 
 import com.board.dto.ReplyInterface;
 import com.board.dto.movie.MovieDTO;
 import com.board.entity.LikeEntity;
+import com.board.entity.movie.MovieEntity;
 
 @Controller
 public interface BoardService {
+
+    //나의 요청 게시물 목록 보기
+	public Page<MovieEntity> movieList(int pageNum, int postNum, String keyword) throws Exception;
 	
 	//상품 상세 정보 보기
 	public MovieDTO view(Long seqno) throws Exception;
