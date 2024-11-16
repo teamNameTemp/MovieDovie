@@ -2,7 +2,9 @@ package com.board.dto;
 
 import java.time.LocalDateTime;
 
+import com.board.entity.MemberEntity;
 import com.board.entity.WatchEntity;
+import com.board.entity.movie.MovieEntity;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -27,19 +29,19 @@ public class WatchDTO {
 		this.seqno = watchEntity.getSeqno();
 		this.status = watchEntity.getStatus();
 		this.watchdate = watchEntity.getWatchdate();
-		this.email = watchEntity.getEmail();
-		this.movieseqno = watchEntity.getMovieseqno();
+		this.email = watchEntity.getEmail().getBirth();
+		this.movieseqno = watchEntity.getMovieId().getMovieId();
 	}
 		
 	//DTO --> Entity 이동
-	public WatchEntity dtoToEntity(WatchDTO dto) {
+	public WatchEntity dtoToEntity(WatchDTO dto,MemberEntity member, MovieEntity movie) {
 		
 		WatchEntity watchEntity = WatchEntity.builder()
 											.seqno(dto.getSeqno())
 											.status(dto.getStatus())
 											.watchdate(dto.getWatchdate())
-											.email(dto.getEmail())
-											.movieseqno(dto.getMovieseqno())
+											.email(member)
+											.movieId(movie)
 											.build();
 		return watchEntity;
 	}

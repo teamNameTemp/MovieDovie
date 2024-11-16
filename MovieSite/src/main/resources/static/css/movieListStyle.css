@@ -282,8 +282,13 @@ body {
   color: red; /* 버튼을 빨간색으로 변경 */
 }
 
+.movie-list-item-button.active{
+  color: red; /* 버튼을 빨간색으로 변경 */
+}
+
+
 /* <a> 태그 내의 아이콘 스타일 */
-.movie-list-item-button a {
+.movie-list-item-button a{
   color: inherit;  /* 부모 요소의 색상을 그대로 상속 */
   text-decoration: none; /* 기본 밑줄 제거 */
   font-size: 20px;
@@ -294,6 +299,8 @@ body {
 .movie-list-item-button .fa-bookmark {
   margin-left: 25px; /* 북마크 버튼의 오른쪽 여백 */
 }
+
+
 
 
 .arrow {

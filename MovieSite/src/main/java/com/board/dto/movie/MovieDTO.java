@@ -56,6 +56,8 @@ public class MovieDTO {
 	@JsonProperty("vote_count")
 	private Integer voteCount;
 
+	private String isCart;
+	private String isBookmarked;
 	// 제작사 목록
 	@JsonProperty("production_companies")
 	private List<ProductionCompany> productionCompanies;

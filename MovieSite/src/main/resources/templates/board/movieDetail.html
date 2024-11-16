@@ -155,18 +155,21 @@
 		</div>
 		
 
-	<!-- 좋아요/싫어요 -->
+	<!-- button action -->
 	<div class="featured-content">
 
 			<div class="action-buttons">
-				<button class="action-btn watched">
-					<i class="fas fa-eye"></i> <span>봤어요</span> <span class="count">685</span>
+				<button class="action-btn watched"
+					th:classappend="${watch != null and watch.status == 'Y'} ? 'active' : ''">
+					<i class="fas fa-eye"></i> <span>봤어요</span> <span 
+					class="count"
+					th:text="${watches != null and watches.count != null} ? ${watches.count} :'0'"></span>
 				</button>
 				<button class="action-btn like"
 					th:classappend="${like != null and like.like == 'Y'} ? 'active' : ''">
 					<i class="fas fa-thumbs-up"></i> <span>좋아요</span> <span
 						class="count"
-						th:text="${allLike != null and allLike.likeCount != null} ? ${allLike.likeCount} : '0'">
+						th:text="${likes != null and likes.likeCount != null} ? ${likes.likeCount} : '0'">
 						0 </span>
 				</button>
 
@@ -174,12 +177,14 @@
 					th:classappend="${like != null and like.dislike == 'Y'} ? 'active' : ''">
 					<i class="fas fa-thumbs-down"></i> <span>싫어요</span> <span
 						class="count"
-						th:text="${allLike != null and allLike.dislikeCount != null} ? ${allLike.dislikeCount} : '0'">
+						th:text="${likes != null and likes.dislikeCount != null} ? ${likes.dislikeCount} : '0'">
 						0 </span>
 				</button>
-				<button class="action-btn bookmark">
+				<button class="action-btn bookmark"
+					th:classappend="${bookmark != null and bookmark.status == 'Y'} ? 'active' : ''">
 					<i class="fas fa-bookmark"></i> <span>북마크</span> <span
-						class="count">56</span>
+						class="count"
+						th:text="${bookmarks != null and bookmarks.count != null} ? ${bookmarks.count} : '0'">0</span>
 				</button>
 			</div>
 
