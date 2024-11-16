@@ -27,6 +27,7 @@ import com.board.dto.movie.MovieDTO;
 import com.board.entity.RequestEntity;
 import com.board.entity.RequestReplyEntity;
 import com.board.entity.movie.GenreEntity;
+import com.board.entity.movie.MovieEntity;
 import com.board.service.BoardService;
 import com.board.service.FavGenreService;
 import com.board.service.MasterService;
@@ -322,22 +323,40 @@ public class BoardController {
 
 //---------검색trying-------------------------
 	@GetMapping("/search")
-	public void searchPage(Model model,@RequestParam(name="keyword",required = false) String keyword) {
-//		if(keyword != null) {
-//			List<MovieDTO> list = tmdb.searchMovies(keyword).block();
-////			model.addAttribute("movies",list);
-//			log.info(list);
-//		}
+	public void getSearchPage(Model model,@RequestParam("page") int pageNum, @RequestParam(name="keyword", defaultValue="", required = false) String keyword)  throws Exception {
+		
+		int postNum = 10; //한 화면에 보여지는 게시물 행의 갯수
+		int pageListCount = 10; //화면 하단에 보여지는 페이지리스트의 페이지 갯수	
+		
+		log.info(keyword);
+		if(keyword != null) {
+			List<MovieDTO> list = tmdb.searchMovies(keyword).block();
+			model.addAttribute("movies",list);
+			log.info(list);
+		}
+		
+		PageUtil page = new PageUtil();
+
+		///paging Trying-----------------------------------
+		Page<MovieEntity> list = service.movieList(pageNum, postNum, keyword);
+		int totalCount = (int)list.getTotalElements();
+		model.addAttribute("list", list);
+		model.addAttribute("listIsEmpty", list.hasContent()?"N":"Y");
+		model.addAttribute("totalElement", totalCount);
+		model.addAttribute("postNum", postNum);
+		model.addAttribute("page", pageNum);
+		model.addAttribute("keyword", keyword);
+		model.addAttribute("pageList", page.getBoardRequestPageList(pageNum, postNum, pageListCount,totalCount,keyword));
 		
 	}
 
 	@PostMapping("/search/movies")
 	@ResponseBody
-	public List<MovieDTO> searchMovies(@RequestParam ("keyword") String keyword) {
+	public String searchMovies(@RequestParam ("keyword") String keyword) {
 
 		try {
 			List<MovieDTO> movies = tmdb.searchMovies(keyword).block();
-			return movies;
+			return "redirect:/board/search?keyword="+ keyword;
 		} catch (Exception e) {
 			log.error("Error fetching movies: ", e);
 			throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "영화 검색 중 오류 발생");
