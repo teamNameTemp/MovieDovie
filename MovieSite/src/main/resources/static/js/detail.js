@@ -1,30 +1,117 @@
-document.addEventListener("DOMContentLoaded", function() {
-	//   arrowsRight[index].addEventListener("click", slideRight);
-	// 서버에서 전달받은 좋아요 정보
-	const likeInfo = /*[[${like}]]*/ null;
-	console.log(likeInfo);
+document.addEventListener('DOMContentLoaded', () => {
+	
+	// URL에서 movieId 추출
+	const queryString = window.location.search;
+	const urlParams = new URLSearchParams(queryString);
+	const movieId = urlParams.get("movieId");
 
+	// 리뷰 좋아요/싫어요
+	const buttons = document.querySelectorAll('.action-btn');
+
+	buttons.forEach(button => {
+	    button.addEventListener('click', () => {
+	        let isLike = "N";
+	        
+	        if (button.classList.contains('like')) {
+	            isLike = "Y";
+	        } else if (button.classList.contains('dislike')) {
+	            isLike = "N";
+	        } else {
+	            // 좋아요/싫어요 버튼이 아닌 경우 처리
+	            return;
+	        }
+
+	        const likeForm = new FormData();
+	        likeForm.append('isLike', isLike);
+	        likeForm.append('movieId', movieId);
+	        
+	        fetch('/board/movieDetail/likes', {
+	            method: 'POST',
+	            body: likeForm
+	        })
+	        .then(response => response.json())
+	        .then(result => {
+	            if (result.message === "good") {
+	                alert(isLike === 'Y' ? '좋아요가 저장되었습니다!' : '싫어요가 저장되었습니다!');
+	                updateUI(button, result);
+	            } else {
+	                alert('처리 중 오류가 발생했습니다: ' + (result.error || '알 수 없는 오류'));
+	            }
+	        })
+	        .catch(error => {
+	            console.error('Error:', error);
+	            alert('요청 처리 중 오류가 발생했습니다.');
+	        });
+	    });
+	});
+
+	function updateUI(button, result) {
+	    // 버튼 상태 토글
+		if(button)
+	    button.classList.toggle('active');
+
+		// 카운트 업데이트 로직
+		
+	    // 상호 배타적인 버튼 처리 (좋아요/싫어요)
+	    if (button.classList.contains('like')) {
+	        const dislikeButton = document.querySelector('.dislike');
+	        if (dislikeButton) dislikeButton.classList.remove('active');
+	    } else if (button.classList.contains('dislike')) {
+	        const likeButton = document.querySelector('.like');
+	        if (likeButton) likeButton.classList.remove('active');
+	    }
+		location.reload();
+	}
+	
+	//리뷰 관련
+	const reviewText = document.getElementById('reviewText');
+	 const submitReview = document.getElementById('submitReview');
+	 const reviewList = document.getElementById('reviewList');
+
+	 submitReview.addEventListener('click', () => {
+	     const review = reviewText.value.trim();
+	     
+	     if (review === '') {
+	         alert('리뷰 내용을 입력해주세요.');
+	         return;
+	     }
+
+	     // 새 리뷰 요소 생성
+	     const reviewElement = document.createElement('div');
+	     reviewElement.className = 'review-item';
+	     
+	     // 현재 시간 포맷팅
+	     const now = new Date();
+	     const formattedDate = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')} ${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+
+	     // 리뷰 내용 설정
+	     reviewElement.innerHTML = `
+	         <p class="review-content">${escapeHTML(review)}</p>
+	         <p class="review-date">${formattedDate}</p>
+	     `;
+
+	     // 리뷰 목록에 새 리뷰 추가
+	     reviewList.insertBefore(reviewElement, reviewList.firstChild);
+
+	     // 입력 필드 초기화
+	     reviewText.value = '';
+	 });
+
+	 // HTML 이스케이프 함수
+	 function escapeHTML(str) {
+	     return str.replace(/[&<>'"]/g, 
+	         tag => ({
+	             '&': '&amp;',
+	             '<': '&lt;',
+	             '>': '&gt;',
+	             "'": '&#39;',
+	             '"': '&quot;'
+	         }[tag] || tag)
+	     );
+	 }
 });
 
-//제작진-배우 탭전환
-const castButton = document.getElementById('castButton');
-const crewButton = document.getElementById('crewButton');
-const castSection = document.getElementById('castSection');
-const crewSection = document.getElementById('crewSection');
 
-castButton.addEventListener('click', function() {
-	castButton.classList.add('active');
-	crewButton.classList.remove('active');
-	castSection.style.display = 'block';
-	crewSection.style.display = 'none';
-});
-
-crewButton.addEventListener('click', function() {
-	crewButton.classList.add('active');
-	castButton.classList.remove('active');
-	crewSection.style.display = 'block';
-	castSection.style.display = 'none';
-});
 
 //백드롭-포스터 탭전환
 const backdropButton = document.getElementById('backdropButton');
@@ -46,70 +133,11 @@ posterButton.addEventListener('click', function() {
 	backdropSection.style.display = 'none';
 });
 
-//리뷰 좋아요/싫어요
-const likeButton = document.getElementById('likeButton');
-const dislikeButton = document.getElementById('dislikeButton');
-const likeString = document.querySelector('.likeString');
+
+
 const reviewSection = document.getElementById('reviewSection');
 const reviewText = document.getElementById('reviewText');
 const submitReview = document.getElementById('submitReview');
-
-// URL에서 movieId 추출
-const queryString = window.location.search;
-const urlParams = new URLSearchParams(queryString);
-const movieId = urlParams.get("movieId");
-let currentRating = null;
-
-// 좋아요/싫어요 버튼 클릭 처리
-function handleRatingClick(rating, activeButton, inactiveButton) {
-	if (currentRating === rating) {
-		// 같은 버튼을 다시 클릭하면 선택 취소
-		activeButton.classList.remove('active');
-		inactiveButton.classList.remove('active');
-		currentRating = null;
-		likeString.innerHTML = `
-				<p>회원님은 아무것도 선택하지 않았습니다.</p>
-				`;
-	} else {
-		likeString.innerHTML = `
-				<p>회원님은 ${rating}을 선택하셨습니다.</p>
-				`;
-		// 새로운 선택
-		activeButton.classList.add('active');
-		inactiveButton.classList.remove('active');
-		currentRating = rating;
-
-	}
-	try {
-		const newForm = new FormData();
-		newForm.append("movieId", movieId);
-		newForm.append("rating", currentRating);
-
-		const response = fetch('/board/movieDetail/likedislike', {
-			method: 'POST',
-			body: newForm
-		});
-
-		if (response.message == "like") {
-			alert('좋아요가 등록되었습니다.');
-			location.reload(); // 페이지 새로고침
-		} else if (response.message == "dislike") {
-			alert('싫어요가 등록되었습니다.');
-			location.reload(); // 페이지 새로고침
-		}
-	} catch (error) {
-		alert(error.message);
-	}
-
-}
-
-likeButton.addEventListener('click', () => {
-	handleRatingClick('like', likeButton, dislikeButton);
-});
-
-dislikeButton.addEventListener('click', () => {
-	handleRatingClick('dislike', dislikeButton, likeButton);
-});
 
 // 리뷰 제출
 submitReview.addEventListener('click', async () => {

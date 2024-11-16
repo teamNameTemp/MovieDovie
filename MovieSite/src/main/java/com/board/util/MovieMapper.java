@@ -114,7 +114,7 @@ public class MovieMapper {
 		
 		data.put("id", cast.getCastId());
 		data.put("name", cast.getCastNm());
-		data.put("characterNm", cast.getCharacterNm());
+		data.put("characterName", cast.getCharacterNm());
 		data.put("profilePath", cast.getProfilePath());
 		data.put("order", cast.getCastOrd());
 		

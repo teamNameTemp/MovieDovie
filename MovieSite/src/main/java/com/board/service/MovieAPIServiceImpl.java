@@ -57,7 +57,7 @@ public class MovieAPIServiceImpl implements MovieAPIService {
 			data.put("movie", tmdb.getMovieDetails(id, "ko-KR").block());
 			return data;
 		} else {
-			data.put("movie", entity);
+			data.put("info", entity);
 			
 			//아래 엔티티들 리스트로 뽑을 수 있게 리포지토리 쿼리문 변경
 			data.put("company", mapper.getCompanyList(companyRepository.findByMovieId(entity)));
@@ -67,8 +67,8 @@ public class MovieAPIServiceImpl implements MovieAPIService {
 			data.put("genre", mapper.getGenreList(genreRepository.findByMovieId(entity)));
 			data.put("video", mapper.getVideoList(videoRepository.findByMovieId(entity)));
 			data.put("language", mapper.getLanguageList(languageRepository.findByMovieId(entity)));
-			data.put("backdrop", mapper.getBackdropList(imageRepository.findByMovieId(entity)));
-			data.put("poster", mapper.getPosterList(imageRepository.findByMovieId(entity)));
+			data.put("backdrops", mapper.getBackdropList(imageRepository.findByMovieId(entity)));
+			data.put("posters", mapper.getPosterList(imageRepository.findByMovieId(entity)));
 			
 			return data;
 		}
