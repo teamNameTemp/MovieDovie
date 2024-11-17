@@ -12,6 +12,17 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css">
 
     <script src="/js/searchResult.js"></script>
+    <script>
+        const search = () => {
+            const keyword = document.querySelector('#keyword');
+            document.location.href='/board/search?page=1&keyword=' + keyword.value;
+        }
+
+        const press = () => {
+            if(event.keyCode == 13) search();
+        }
+    </script>
+    
 
 </head>
 <body>
@@ -33,15 +44,24 @@
                     <p th:text="${movie.releaseDate} != null ? ${movie.releaseDate} : '개봉일 미정'"></p>
                 </div>
             </div>
-    <!--         
-            <div th:each="movie : ${movies}">
-                <div class="movie-card">
-                    <img th:src="@{${movie.posterPath} != null ? 'https://image.tmdb.org/t/p/w200' + ${movie.posterPath} : '/images/blankPoster.jpg'}" alt="${movie.title}">
-                    <h3 th:text="${movie.title}"></h3>
-                    <p th:text="${movie.releaseDate} != null ? ${movie.releaseDate} : '개봉일 미정'"></p>
-                </div>
-            </div> -->
         </div>
+
+        <th:block th:if="${list != null}">     
+            <tr th:each="list,index:${list}">
+                <!-- totalElement, postNum, page, index.count -->
+                <td th:text="${totalElement - (page-1)*postNum - index.count + 1}"></td>
+                <td style="text-align: left;">
+                    <a th:href="@{'/board/search?seqno=' + ${list.seqno} + '&page=' + 
+                            ${page} + '&keyword=' + ${keyword}}">
+                    <span th:text="${list.title}"></span>
+                    </a>
+                </td>
+            </tr>
+        </th:block>
+        <th:block th:if="${list == null}">
+            <td colspan="5">등록된 게시물이 없습니다.</td>
+        </th:block>
+        <br>
         <div>[(${pageList})]</div>
     </div>
 
