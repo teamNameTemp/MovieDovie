@@ -13,7 +13,7 @@ import com.board.entity.movie.MovieEntity;
 @Controller
 public interface BoardService {
 
-    //나의 요청 게시물 목록 보기
+    //게시물 목록 보기...배우이름도 추가??
 	public Page<MovieEntity> movieList(int pageNum, int postNum, String keyword) throws Exception;
 	
 	//상품 상세 정보 보기

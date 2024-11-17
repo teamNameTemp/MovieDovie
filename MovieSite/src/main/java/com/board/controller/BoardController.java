@@ -214,7 +214,6 @@ public class BoardController {
 		int postNum = 10; //한 화면에 보여지는 게시물 행의 갯수
 		int pageListCount = 10; //화면 하단에 보여지는 페이지리스트의 페이지 갯수	
 		
-		
 		String SessionEmail = (String)session.getAttribute("email"); //현재 로그인 중인 사람의 이메일
 		model.addAttribute("email", SessionEmail);
 
@@ -224,7 +223,6 @@ public class BoardController {
 		
 		PageUtil page = new PageUtil();
 
-		
 		Page<RequestEntity> list = requestService.mylist(pageNum, postNum, keyword, SessionEmail);
 		int totalCount = (int)list.getTotalElements();
 		model.addAttribute("list", list);
@@ -323,21 +321,13 @@ public class BoardController {
 
 //---------검색trying-------------------------
 	@GetMapping("/search")
-	public void getSearchPage(Model model,@RequestParam("page") int pageNum, @RequestParam(name="keyword", defaultValue="", required = false) String keyword)  throws Exception {
-		
+	public void getSearchPageList(Model model, @RequestParam(name="page", defaultValue = "1") int pageNum, @RequestParam(name="keyword", defaultValue="", required = false) String keyword)  throws Exception {
+		//HttpSession session ~ 대여한 영화/찜 표시관련?
+
 		int postNum = 10; //한 화면에 보여지는 게시물 행의 갯수
 		int pageListCount = 10; //화면 하단에 보여지는 페이지리스트의 페이지 갯수	
 		
-		log.info(keyword);
-		if(keyword != null) {
-			List<MovieDTO> list = tmdb.searchMovies(keyword).block();
-			model.addAttribute("movies",list);
-			log.info(list);
-		}
-		
 		PageUtil page = new PageUtil();
-
-		///paging Trying-----------------------------------
 		Page<MovieEntity> list = service.movieList(pageNum, postNum, keyword);
 		int totalCount = (int)list.getTotalElements();
 		model.addAttribute("list", list);
@@ -346,8 +336,7 @@ public class BoardController {
 		model.addAttribute("postNum", postNum);
 		model.addAttribute("page", pageNum);
 		model.addAttribute("keyword", keyword);
-		model.addAttribute("pageList", page.getBoardRequestPageList(pageNum, postNum, pageListCount,totalCount,keyword));
-		
+		model.addAttribute("pageList", page.getSearchPageList(pageNum, postNum, pageListCount, totalCount, keyword));
 	}
 
 	@PostMapping("/search/movies")
