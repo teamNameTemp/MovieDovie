@@ -74,7 +74,16 @@ public class BoardController {
 		model.addAttribute("nickname", nickname);
 
 		
-		List<MovieDTO> trendList = tmdb.getTrendingMovies("day", 1, "ko-KR").block();
+		  List<MovieDTO> trend = tmdb.getTrendingMovies("day", 1, "ko-KR").block();
+          List<MovieDTO> trendList = new ArrayList<>();
+          
+          for(MovieDTO d : trend) {
+              MovieDTO dto = tmdb.getMovieDetails(d.getId(), "ko-KR").block();
+              trendList.add(dto);
+          }
+          //트렌드 영화를 못찾을 시 예외로 한번 더 저장
+          movie.saveTheDataBases(trendList);
+		
 		for(MovieDTO dto : trendList) {
 			Map<String,Object> bookmarkMap = bookmark.getBookmarkInfo((String)session.getAttribute("email"), dto.getId());
 			if(bookmarkMap != null) {
@@ -146,7 +155,7 @@ public class BoardController {
 			model.addAttribute("watch", null);
 		} else {
 			model.addAttribute("watch", myWatch);
-		}
+		}	
 		Map<String,Object> myBookmark = bookmark.getBookmarkInfo(email, movieId);
 		if (myBookmark == null || myBookmark.isEmpty()) {
 			model.addAttribute("bookmark", null);
