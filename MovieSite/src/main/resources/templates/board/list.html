@@ -65,7 +65,7 @@
 
 			<div class="movie-list-container"
 				style="margin-top: 550px; margin-left: 0px; margin-right: 0px">
-				<h1 class="movie-list-title">전세계의 주목! 오늘 Top 20 인기 영화</h1>
+				<h1 class="movie-list-title">전세계의 주목! 실시간 Top 20 인기 영화</h1>
 				<div class="movie-list-wrapper">
 					<div class="movie-list">
 						<div class="movie-list-item" th:each="movie : ${dailyMovies}" style="box-shadow:0px 0px 30px 10px #151515;">
@@ -129,7 +129,9 @@
 									<a class="fas fa-bookmark" href="#" style="font-size: 20px;"></a>
 								</div>
 							</div>
-							<p class="movie-list-item-desc" th:text="${movie.overview}"></p>
+							<p class="movie-list-item-desc">
+							    <a th:href="@{/board/movieDetail(movieId=${movie.id})}" th:text="${movie.overview}"></a>
+							</p>
 						</div>
 					</div>
 					<i class="fas fa-chevron-left arrow"></i> <i
