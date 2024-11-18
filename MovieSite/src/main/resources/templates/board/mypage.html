@@ -1,0 +1,392 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+
+
+<head>
+<style>
+        @import url('https://fonts.googleapis.com/css2?family=Jua&display=swap');
+        /* 기본 스타일 */
+        body {
+            margin: 0;
+            font-family: 'Jua', sans-serif;
+            background-color: #151515;
+            color: #fff;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* 프로필 영역 */
+        .myprofile-container {
+            display: flex;
+            justify-content: flex-start;
+            align-items: center;
+            flex-wrap: wrap; /* 반응형을 위해 flex-wrap을 사용 */
+            margin-top: 100px;
+            margin-right: 200px;
+            margin-bottom: 100px;
+        }
+
+        /* 프로필 사진 */
+        .myprofile-picture {
+            border-radius: 50%;
+            overflow: hidden;
+            width: 300px;
+            height: 300px;
+            background-color: white;
+            margin: 0 auto;
+            flex-shrink: 0; /* 이미지 크기가 줄어들지 않도록 설정 */
+        }
+
+        .myprofile-picture img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* 프로필 정보 */
+        .profile-info {
+            margin-left: 50px;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center; 
+        }
+
+        .profile-info h2,
+        .profile-info p {
+            margin: 10px 0;
+        }
+
+        .profile-info h2 {
+            font-size: 1.5em;
+            color: #fff;
+        }
+
+        .profile-info p {
+            color: #bbb;
+            font-size: 1em;
+        }
+
+      
+	@import url('https://fonts.googleapis.com/css2?family=Jua&display=swap');
+	</style>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/css/mypage.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@100;300;400;500;700;900&family=Sen:wght@400;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css">
+    <title>MyPage</title>
+</head>
+<body>
+    <div th:replace="/fragments/nav/menubar::menubar"></div>
+    <div th:replace="/fragments/nav/sidebar::sidebar"></div>
+
+    <div class="container">
+        <!-- 프로필 영역 -->
+        <div class="myprofile-container">
+            <!-- 프로필 사진 -->
+            <div class="myprofile-picture">
+                <img src="/images/profile.jpg" alt="Profile Picture">
+            </div>
+
+            <!-- 프로필 정보 -->
+            <div class="profile-info">
+                <h2>NickName:</h2>
+                <h2>John Doe</h2>
+                <p>회원 Email:</p>
+                <p>john.doe@example.com</p>
+            </div>
+        </div>
+
+     </div>
+<div class="movie-list-container" style="background-color:white;">
+                <h1 class="movie-list-title" style="color:#222;">대여 영화 리스트</h1>
+                <div class="movie-list-wrapper">
+                    <div class="movie-list">
+                    
+                         <div class="movie-list-item">
+                            <img class="movie-list-item-img" src="/img/9.jpg" alt="">
+                            <p class="movie-list-item-desc">2024-00-00</p>
+                            
+                        </div>
+                       <div class="movie-list-item">
+                            <img class="movie-list-item-img" src="/img/9.jpg" alt="">
+                            <p class="movie-list-item-desc">2024-00-00</p>
+                            
+                        </div>
+                       
+                       <div class="movie-list-item">
+                            <img class="movie-list-item-img" src="/img/9.jpg" alt="">
+                            <p class="movie-list-item-desc">2024-00-00</p>
+                            
+                        </div>
+                        
+                        <div class="movie-list-item">
+                            <img class="movie-list-item-img" src="/img/9.jpg" alt="">
+                            <p class="movie-list-item-desc">2024-00-00</p>
+                            
+                        </div>
+                       <div class="movie-list-item">
+                            <img class="movie-list-item-img" src="/img/9.jpg" alt="">
+                            <p class="movie-list-item-desc">2024-00-00</p>
+                            
+                        </div>
+                       
+                       <div class="movie-list-item">
+                            <img class="movie-list-item-img" src="/img/9.jpg" alt="">
+                            <p class="movie-list-item-desc">2024-00-00</p>
+                            
+                        </div>
+                        
+                         <div class="movie-list-item">
+                            <img class="movie-list-item-img" src="/img/12.jpg" alt="">
+                            
+                            <p class="movie-list-item-desc">2024-00-00</p>
+                            
+                        </div>
+                       <div class="movie-list-item">
+                            <img class="movie-list-item-img" src="/img/9.jpg" alt="">
+                            <p class="movie-list-item-desc">2024-00-00</p>
+                            
+                        </div>
+                       <div class="movie-list-item">
+                            <img class="movie-list-item-img" src="/img/9.jpg" alt="">
+                            <span class="movie-list-item-title">Her</span>
+                            <p class="movie-list-item-desc">2024-00-00</p>
+                            
+                        </div>
+                       
+                       <div class="movie-list-item">
+                            <img class="movie-list-item-img" src="/img/9.jpg" alt="">
+                            <p class="movie-list-item-desc">2024-00-00</p>
+                            
+                        </div>
+                        
+                    </div>
+                    <i class="fas fa-chevron-left arrow"></i>
+                    <i class="fas fa-chevron-right arrow"></i>
+                    
+                    
+                </div>
+            </div>
+      <div class="movie-list-container">
+                <h1 class="movie-list-title">북마크한 영화 리스트</h1>
+                <div class="movie-list-wrapper">
+                    <div class="movie-list">
+                    
+                         <div class="movie-list-item">
+                            <img class="movie-list-item-img" src="/img/9.jpg" alt="">
+                           
+                            
+                        </div>
+                       <div class="movie-list-item">
+                            <img class="movie-list-item-img" src="/img/9.jpg" alt="">
+                            
+                            
+                        </div>
+                       
+                       <div class="movie-list-item">
+                            <img class="movie-list-item-img" src="/img/9.jpg" alt="">
+                            
+                            
+                        </div>
+                        
+                        <div class="movie-list-item">
+                            <img class="movie-list-item-img" src="/img/9.jpg" alt="">
+                            
+                            
+                        </div>
+                       <div class="movie-list-item">
+                            <img class="movie-list-item-img" src="/img/9.jpg" alt="">
+                            
+                            
+                        </div>
+                       
+                       <div class="movie-list-item">
+                            <img class="movie-list-item-img" src="/img/9.jpg" alt="">
+                           
+                            
+                        </div>
+                        
+                         <div class="movie-list-item">
+                            <img class="movie-list-item-img" src="/img/12.jpg" alt="">
+                            
+                            
+                            
+                        </div>
+                       <div class="movie-list-item">
+                            <img class="movie-list-item-img" src="/img/9.jpg" alt="">
+                            
+                            
+                        </div>
+                       <div class="movie-list-item">
+                            <img class="movie-list-item-img" src="/img/9.jpg" alt="">
+                            <span class="movie-list-item-title">Her</span>
+                            
+                        </div>
+                       
+                       <div class="movie-list-item">
+                            <img class="movie-list-item-img" src="/img/9.jpg" alt="">
+                            
+                            
+                        </div>
+                        
+                    </div>
+                    <i class="fas fa-chevron-left arrow"></i>
+                    <i class="fas fa-chevron-right arrow"></i>
+                    
+                    
+                </div>
+            </div>
+            
+         <div class="movie-list-container">
+                <h1 class="movie-list-title">내가 시청한 영화</h1>
+                <div class="movie-list-wrapper">
+                    <div class="movie-list">
+                    
+                         <div class="movie-list-item">
+                            <img class="movie-list-item-img" src="/img/9.jpg" alt="">
+                           
+                            
+                        </div>
+                       <div class="movie-list-item">
+                            <img class="movie-list-item-img" src="/img/9.jpg" alt="">
+                        
+                            
+                        </div>
+                       
+                       <div class="movie-list-item">
+                            <img class="movie-list-item-img" src="/img/9.jpg" alt="">
+                           
+                        </div>
+                        
+                        <div class="movie-list-item">
+                            <img class="movie-list-item-img" src="/img/9.jpg" alt="">
+                            
+                            
+                        </div>
+                       <div class="movie-list-item">
+                            <img class="movie-list-item-img" src="/img/9.jpg" alt="">
+                            
+                            
+                        </div>
+                       
+                       <div class="movie-list-item">
+                            <img class="movie-list-item-img" src="/img/9.jpg" alt="">
+                                                        
+                        </div>
+                        
+                         <div class="movie-list-item">
+                            <img class="movie-list-item-img" src="/img/12.jpg" alt="">
+                            
+                        </div>
+                       <div class="movie-list-item">
+                            <img class="movie-list-item-img" src="/img/9.jpg" alt="">
+                            
+                            
+                        </div>
+                       <div class="movie-list-item">
+                            <img class="movie-list-item-img" src="/img/9.jpg" alt="">
+                            <span class="movie-list-item-title">Her</span>
+                            
+                            
+                        </div>
+                       
+                       <div class="movie-list-item">
+                            <img class="movie-list-item-img" src="/img/9.jpg" alt="">
+                           
+                            
+                        </div>
+                        
+                    </div>
+                    <i class="fas fa-chevron-left arrow"></i>
+                    <i class="fas fa-chevron-right arrow"></i>
+                    
+                    
+                </div>
+            </div>
+            
+            <div class="movie-list-container">
+                <h1 class="movie-list-title">내가 좋아요 한 영화</h1>
+                <div class="movie-list-wrapper">
+                    <div class="movie-list">
+                    
+                        <div class="movie-list-item">
+                        
+                        <!-- /board/movieDetail?title=${movie.movieNm} -->
+                            <a href="/board/movieDetail?title=황해"><img class="movie-list-item-img" src="/img/8.jpg" alt=""></a>
+                             
+                        </div>
+                       <div class="movie-list-item">
+                            <img class="movie-list-item-img" src="/img/9.jpg" alt="">
+                            
+                            
+                        </div>
+                       <div class="movie-list-item">
+                            <img class="movie-list-item-img" src="/img/9.jpg" alt="">
+                            
+                            
+                        </div>
+                       
+                       <div class="movie-list-item">
+                            <img class="movie-list-item-img" src="/img/9.jpg" alt="">
+                            
+                            
+                        </div>
+                        
+                        <div class="movie-list-item">
+                            <img class="movie-list-item-img" src="/img/9.jpg" alt="">
+                            
+                            
+                        </div>
+                       <div class="movie-list-item">
+                            <img class="movie-list-item-img" src="/img/9.jpg" alt="">
+                            
+                            
+                        </div>
+                       
+                       <div class="movie-list-item">
+                            <img class="movie-list-item-img" src="/img/9.jpg" alt="">
+                            
+                            
+                        </div>
+                        
+                         <div class="movie-list-item">
+                            <img class="movie-list-item-img" src="/img/12.jpg" alt="">
+                            
+                            
+                            
+                        </div>
+                       <div class="movie-list-item">
+                            <img class="movie-list-item-img" src="/img/9.jpg" alt="">
+                            
+                            
+                        </div>
+                       <div class="movie-list-item">
+                            <img class="movie-list-item-img" src="/img/9.jpg" alt="">
+                            <span class="movie-list-item-title">Her</span>
+                            
+                            
+                        </div>
+                       
+                       <div class="movie-list-item">
+                            <img class="movie-list-item-img" src="/img/9.jpg" alt="">
+                            
+                            
+                        </div>
+                        
+                    </div>
+                    <i class="fas fa-chevron-left arrow"></i>
+                    <i class="fas fa-chevron-right arrow"></i>
+                    
+                    
+                </div>
+            </div>
+    <script src="/js/app.js"></script>
+</body>
+</html>

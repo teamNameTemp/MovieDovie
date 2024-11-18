@@ -106,6 +106,12 @@ public class BoardController {
 
 	}
 
+	
+	@GetMapping("/mypage")
+	public void getMyPage() {
+		
+	}
+	
 	// 장르 필터
 	@PostMapping("/genreCheck")
 	public String postGenreCheck() {
