@@ -12,4 +12,6 @@ public interface WatchReopository extends JpaRepository<WatchEntity, Long> {
 	public WatchEntity findByEmailAndMovieId(MemberEntity email, MovieEntity movieId);
 
 	public List<WatchEntity> findAllByMovieId(MovieEntity movieId);
+	
+	public List<WatchEntity> findAllByEmail(MemberEntity member);
 }

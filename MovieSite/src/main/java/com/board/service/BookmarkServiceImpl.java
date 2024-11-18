@@ -1,6 +1,6 @@
 package com.board.service;
 
-import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -8,13 +8,12 @@ import java.util.Map;
 import org.springframework.stereotype.Service;
 
 import com.board.entity.BookmarkEntity;
-import com.board.entity.LikeEntity;
 import com.board.entity.MemberEntity;
-import com.board.entity.WatchEntity;
 import com.board.entity.movie.MovieEntity;
 import com.board.entity.repository.BookmarkRepository;
 import com.board.entity.repository.MemberRepository;
 import com.board.entity.repository.movie.MovieRepository;
+import com.board.util.MovieMapper;
 
 import lombok.RequiredArgsConstructor;
 
@@ -24,6 +23,7 @@ public class BookmarkServiceImpl implements BookmarkService {
 	private final MemberRepository member;
 	private final MovieRepository movie;
 	private final BookmarkRepository bookmark;
+	private final MovieMapper mapper;
 	
 	@Override
 	public void saveOrUpdate(String action, Long movieId, String email) {
@@ -44,6 +44,8 @@ public class BookmarkServiceImpl implements BookmarkService {
 		}
 
 		bookmark.save(bookmarkEntity);
+		
+		if("remove".equals(action))bookmark.delete(bookmarkEntity);
 	}
 
 	@Override
@@ -76,6 +78,22 @@ public class BookmarkServiceImpl implements BookmarkService {
 		// 결과를 Map에 저장
 		data.put("count", count);
 
+		return data;
+	}
+
+	@Override
+	public List<Map<String, Object>> getAllBookmarkByEmail(String email) {
+		List<Map<String,Object>> data = new ArrayList<>();
+		
+		MemberEntity memE = member.findByEmail(email)
+				.orElseThrow(()->new RuntimeException("Member not found"));
+		
+		List<BookmarkEntity> bookmarks = bookmark.findAllByEmail(memE);
+		for(BookmarkEntity bookmark : bookmarks) {
+			MovieEntity movie = bookmark.getMovieId();
+			data.add(mapper.getMovieSimpleInfo(movie));
+		}
+		
 		return data;
 	}
 

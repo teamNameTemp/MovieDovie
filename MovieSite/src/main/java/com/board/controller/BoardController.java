@@ -22,6 +22,7 @@ import com.board.dto.ReplyInterface;
 import com.board.dto.RequestDTO;
 import com.board.dto.RequestReplyDTO;
 import com.board.dto.movie.MovieDTO;
+import com.board.entity.MemberEntity;
 import com.board.entity.RequestEntity;
 import com.board.entity.RequestReplyEntity;
 import com.board.entity.movie.GenreEntity;
@@ -124,7 +125,22 @@ public class BoardController {
 	}
 	
 	@GetMapping("/mypage")
-	public void getMyPage() {
+	public void getMyPage(Model model, HttpSession session) {
+		String email = (String) session.getAttribute("email");
+		MemberDTO memberInfo = memberService.memberInfo(email);
+		model.addAttribute("member",memberInfo);
+		
+		//대여
+		//북마크
+		List<Map<String,Object>> bookmarks = bookmark.getAllBookmarkByEmail(email);
+		model.addAttribute("bookmarks",bookmarks);
+		//시청
+		List<Map<String,Object>> watches = watch.getAllWatchedByEmail(email);
+		model.addAttribute("watches",watches);
+		log.info(watches.isEmpty());
+		//좋아요
+		List<Map<String,Object>> likes = like.getAllLikeByEmail(email);
+		model.addAttribute("likes",likes);
 		
 	}
 	
