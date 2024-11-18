@@ -27,7 +27,6 @@ import com.board.dto.movie.MovieDTO;
 import com.board.entity.RequestEntity;
 import com.board.entity.RequestReplyEntity;
 import com.board.entity.movie.GenreEntity;
-import com.board.entity.movie.MovieEntity;
 import com.board.service.BoardService;
 import com.board.service.FavGenreService;
 import com.board.service.MasterService;
@@ -321,17 +320,27 @@ public class BoardController {
 
 //---------검색trying-------------------------
 	@GetMapping("/search")
+<<<<<<< HEAD
 	public String searchPage() {
 		return "board/search"; // templates/board/search.html을 찾음
+=======
+	public void searchPage(Model model,@RequestParam(name="keyword",required = false) String keyword) {
+//		if(keyword != null) {
+//			List<MovieDTO> list = tmdb.searchMovies(keyword).block();
+////			model.addAttribute("movies",list);
+//			log.info(list);
+//		}
+		
+>>>>>>> parent of f8f295e (검색결과: 페이징)
 	}
 
 	@PostMapping("/search/movies")
 	@ResponseBody
-	public String searchMovies(@RequestParam ("keyword") String keyword) {
+	public List<MovieDTO> searchMovies(@RequestParam ("keyword") String keyword) {
 
 		try {
 			List<MovieDTO> movies = tmdb.searchMovies(keyword).block();
-			return "redirect:/board/search?keyword="+ keyword;
+			return movies;
 		} catch (Exception e) {
 			log.error("Error fetching movies: ", e);
 			throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "영화 검색 중 오류 발생");

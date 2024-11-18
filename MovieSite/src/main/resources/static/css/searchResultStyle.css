@@ -4,12 +4,7 @@ body {
     /* margin: 60px; */
 }
 
-.search-container {
-    margin: auto 20%;
-}
-
 .movie-card {
-    display: flex;
     border: 1px solid #ccc;
     border-radius: 8px;
     padding: 10px;
@@ -22,10 +17,106 @@ body {
     width: 100%;
     border-radius: 8px;
 }
+.movie-title {
+    font-size: 1.2em;
+    margin: 10px 0;
+}
+.release-date {
+    color: #777;
+}
+
+.tab-container {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap; /* 요소가 줄 바꿈되도록 설정 */
+}
+
+.tab-button {
+    background: none;
+    border: none;
+    color: #333;
+    font-size: 16px;
+    font-weight: 600;
+    padding: 10px 20px;
+    cursor: pointer;
+    transition: color 0.3s;
+}
+
+.tab-button:hover {
+    color: #4dbf00;
+}
+
+.tab-button.active {
+    color: #4dbf00;
+}
+
+.movie-details {
+    border: 1px solid #ddd;
+    padding: 15px;
+    margin-bottom: 15px;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+}
+
+.movie-header {
+    font-weight: bold;
+    font-size: 18px;
+}
+
+.age-rating {
+    color: #ff0000; /* 연령 등급 색상 */
+}
+
+.movie-info {
+    font-size: 14px;
+    color: #555;
+    margin-top: 5px;
+}
+
+.movie-snippet {
+    margin-top: 10px;
+    font-size: 13px;
+    color: #333;
+}
 
 .movie-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
     gap: 20px;
     padding: 20px;
+}
+
+.searchResult {
+    margin: 60px;
+}
+
+.search-box {
+    text-align: center;
+    margin: 20px 0;
+}
+
+.search-box form {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+}
+
+.search-box input {
+    padding: 8px;
+    width: 300px;
+    border: 2px solid #4dbf00;
+    border-radius: 4px;
+}
+
+.search-box button {
+    padding: 8px 16px;
+    background-color: #4dbf00;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.search-box button:hover {
+    background-color: #3da000;
 }
