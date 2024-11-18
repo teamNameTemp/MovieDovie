@@ -25,13 +25,13 @@ import lombok.Setter;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Entity(name="fav_genre")
-@Table(name="tbl_fav_genre")
+@Entity(name="favGenre")
+@Table(name="favGenre")
 public class FavGenreEntity {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "FAV_GENRE_SEQ")
-	@SequenceGenerator(name="FAV_GENRE_SEQ", sequenceName = "jpa_fav_genre_seq", initialValue = 1, allocationSize = 1)
+	@SequenceGenerator(name="FAV_GENRE_SEQ", sequenceName = "fav_genre_seq", initialValue = 1, allocationSize = 1)
 	private Long seqno;
 	
 	@Column(name = "genre1", length=50, nullable = true)

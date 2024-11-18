@@ -93,6 +93,7 @@ public class BoardController {
 		}
 		
 		
+		//선호 장르별 영화 리스트
 		Map<String, Object> favGenreList = new HashMap<>();
 		Optional<Map<String, Object>> genre = favGenre.getFavGenre();
 		if (genre.isPresent()) {
@@ -104,7 +105,14 @@ public class BoardController {
 				// 해당 장르를 포함하고 있는 영화리스트를 가져온다.
 				favGenreList.put(genreNm, movie.findByGenreGetMovieList(genres));
 			}
-		}
+		}	
+		
+		//만장일치! 다들 이 영화 좋아해요
+		//요즘 인기 폭팔! 댓글 많은 영화
+		//이건 꼭 봐야해! 회원들이 가장 많이 본 영화
+		//오늘 대여 TOP 영화
+		//무비두비에 새로 올라온 영화
+		
 		model.addAttribute("nickname", session.getAttribute("nickname"));
 		model.addAttribute("dailyMovies", trendList);
 		model.addAttribute("favGenre", genre.get());

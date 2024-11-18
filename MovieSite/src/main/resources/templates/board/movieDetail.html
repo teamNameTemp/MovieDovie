@@ -125,7 +125,7 @@
 					style="display: inline;"></h1>
 				<span class="original-title" th:text="${movie.info.originalTitle}"
 					style="font-size: smaller; display: inline;"></span>
-				<button style="width: 50px; height: auto;">수정</button>
+				<button style="width: 50px; height: auto;" th:if="${#strings.equals(role, 'MASTER')}">수정</button>
 				<br>
 				<p th:text="${movie.info.tagline}"></p>
 				<hr>
@@ -157,7 +157,7 @@
 		</div>
 		
 
-	<!-- button action -->
+	<!-- movie stat -->
 	<div class="featured-content">
 
 			<div class="action-buttons">

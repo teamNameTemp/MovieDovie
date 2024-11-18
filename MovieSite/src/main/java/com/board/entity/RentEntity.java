@@ -28,12 +28,12 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity(name="rent")
-@Table(name="tbl_rent")
+@Table(name="rent")
 public class RentEntity {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "RENT_SEQ")
-	@SequenceGenerator(name="RENT_SEQ", sequenceName = "jpa_rent_seq", initialValue = 1, allocationSize = 1)
+	@SequenceGenerator(name="RENT_SEQ", sequenceName = "rent_seq", initialValue = 1, allocationSize = 1)
 	private long seqno;
 	
 	@Column(name="rentdate",nullable=false)

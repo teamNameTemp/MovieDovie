@@ -20,7 +20,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity(name="member")
-@Table(name="tbl_member")
+@Table(name="member")
 public class MemberEntity {
 	
 	//Column(name="컬럼명", length=길이, nullable=null여부(false : not null / true : null)
