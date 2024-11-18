@@ -21,13 +21,13 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity(name="req_reply")
-@Table(name="tbl_req_reply")
+@Table(name="req_reply")
 public class RequestReplyEntity {
 
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "REQ_REPLY_SEQ")
-	@SequenceGenerator(name="REQ_REPLY_SEQ", sequenceName = "jpa_req_reply_seq", initialValue = 1, allocationSize = 1)
+	@SequenceGenerator(name="REQ_REPLY_SEQ", sequenceName = "req_reply_seq", initialValue = 1, allocationSize = 1)
 	private Long seqno;
 	
 	@Column(name = "email", length=320, nullable = false)

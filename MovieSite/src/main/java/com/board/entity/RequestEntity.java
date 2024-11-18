@@ -21,12 +21,12 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity(name="request")
-@Table(name="tbl_request")
+@Table(name="request")
 public class RequestEntity {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "REQUEST_SEQ")
-	@SequenceGenerator(name="REQUEST_SEQ", sequenceName = "jpa_request_seq", initialValue = 1, allocationSize = 1)
+	@SequenceGenerator(name="REQUEST_SEQ", sequenceName = "request_seq", initialValue = 1, allocationSize = 1)
 	private long seqno;
 	
 	@Column(name = "title", length=50, nullable = false)

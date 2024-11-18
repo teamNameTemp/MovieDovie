@@ -27,13 +27,13 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity(name="notification")
-@Table(name="tbl_notification")
+@Table(name="notification")
 public class NotificationEntity {
 
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "NOTI_SEQ")
-	@SequenceGenerator(name="NOTI_SEQ", sequenceName = "jpa_noti_seq", initialValue = 1, allocationSize = 1)
+	@SequenceGenerator(name="NOTI_SEQ", sequenceName = "noti_seq", initialValue = 1, allocationSize = 1)
 	private Long seqno;
 	
 	@ManyToOne(fetch = FetchType.LAZY)
