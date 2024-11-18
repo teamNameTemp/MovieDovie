@@ -17,13 +17,18 @@ public interface MemberRepository extends JpaRepository<MemberEntity, String>{
 	
 	public Optional<MemberEntity> findByUsernameAndTelno(String username, String telno);
 	public Optional<MemberEntity> findByEmailAndUsername(String email, String username);
+
+	
+	//역할 찾기
+	@Query("select m from member m where m.role = 'MASTER'")
+	public List<MemberEntity> findByRole();
+	
 	//관리자페이지 - 통계 : 회원 가입한 날 확인
 	@Query(value = "SELECT " +
 	        "  COUNT(CASE WHEN TRUNC(m.regdate) = TRUNC(SYSDATE) - INTERVAL '1' DAY THEN 1 END) AS yesterdaySignup, " +
 	        "  COUNT(CASE WHEN TRUNC(m.regdate) = TRUNC(SYSDATE) THEN 1 END) AS todaySignup, " +
 	        "  COUNT(m.email) AS totalMember FROM tbl_member m", nativeQuery = true)
 	public List<Object[]> signupResult();
-	
 	
 	
 }

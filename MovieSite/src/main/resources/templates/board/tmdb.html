@@ -145,12 +145,29 @@
                         </li>
                     </ul>
 
-                    <h6>유사한 영화</h6>
-                    <ul th:if="${movie.similarMovies != null}">
-                        <li th:each="similarMovie : ${movie.similarMovies}" th:text="${similarMovie.title}"></li>
-                    </ul>
+					<h6>유사한 영화</h6>
+					<ul th:if="${movie.similarMovies != null}">
+						<li th:each="similarMovie : ${movie.similarMovies}"
+							th:text="${similarMovie.title}"></li>
+					</ul>
 
-                    <h6>추천 영화</h6>
+					<h6>Backdrop Images</h6>
+					<ul
+						th:if="${movie.images != null and movie.images.backdrops != null}">
+						<li th:each="backdrop : ${movie.images.backdrops}"><img
+							th:src="@{'https://image.tmdb.org/t/p/w500' + ${backdrop.filePath}}"
+							alt="Backdrop Image" /></li>
+					</ul>
+
+					<h6>Poster Images</h6>
+					<ul
+						th:if="${movie.images != null and movie.images.posters != null}">
+						<li th:each="poster : ${movie.images.posters}"><img
+							th:src="@{'https://image.tmdb.org/t/p/w500' + ${poster.filePath}}"
+							alt="Poster Image" /></li>
+					</ul>
+
+					<h6>추천 영화</h6>
                     <ul th:if="${movie.recommendedMovies != null}">
                         <li th:each="recommendedMovie : ${movie.recommendedMovies}" th:text="${recommendedMovie.title}"></li>
                     </ul>

@@ -1,6 +1,9 @@
 package com.board.dto;
 
 import com.board.entity.BookmarkEntity;
+import com.board.entity.MemberEntity;
+import com.board.entity.movie.MovieEntity;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -22,18 +25,18 @@ public class BookmarkDTO {
 	public BookmarkDTO(BookmarkEntity bookmarkEntity) {
 		this.seqno = bookmarkEntity.getSeqno();
 		this.status = bookmarkEntity.getStatus();
-		this.email = bookmarkEntity.getEmail();
-		this.movieseqno = bookmarkEntity.getMovieseqno();
+		this.email = bookmarkEntity.getEmail().getEmail();
+		this.movieseqno = bookmarkEntity.getMovieId().getMovieId();
 	}
 	
 	//DTO --> Entity 이동
-	public BookmarkEntity dtoToEntity(BookmarkDTO dto) {
+	public BookmarkEntity dtoToEntity(BookmarkDTO dto, MemberEntity member, MovieEntity movie) {
 		
 		BookmarkEntity bookmarkEntity = BookmarkEntity.builder()
 										.seqno(dto.getSeqno())
 										.status(dto.getStatus())
-										.email(dto.getEmail())
-										.movieseqno(dto.getMovieseqno())
+										.email(member)
+										.movieId(movie)
 										.build();
 		return bookmarkEntity;
 	}

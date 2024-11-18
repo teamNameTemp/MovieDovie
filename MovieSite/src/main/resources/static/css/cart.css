@@ -1,0 +1,56 @@
+.tableDiv {
+    text-align: center;
+    margin: 20px auto;
+}
+
+.InfoTable {
+    border-collapse: collapse;
+    border-top: 3px solid #168;
+    width: 85%;
+    margin: 0 auto;
+}
+
+.InfoTable th {
+    color: #168;
+    background: #f0f6f9;
+    text-align: center;
+}
+
+.InfoTable th, .InfoTable td {
+    padding: 10px;
+    border: 1px solid #ddd;
+}
+
+.InfoTable th:first-child, .InfoTable td:first-child {
+    border-left: 0;
+}
+
+.InfoTable th:last-child, .InfoTable td:last-child {
+    border-right: 0;
+}
+
+.InfoTable tr td:first-child {
+    text-align: center;
+}
+
+.p_image {
+    max-width: 30%;
+    height: auto;
+    margin: auto;
+}
+
+.btn_cart {
+    width: 150px;
+    height: 40px;
+    background: #168;
+    color: white;
+    font-weight: bold;
+    border: none;
+    cursor: pointer;
+    margin: 10px;
+}
+
+.buttonDiv {
+    text-align: center;
+    margin-top: 20px;
+}

@@ -1,6 +1,7 @@
 package com.board.dto;
 
 import com.board.entity.FavGenreEntity;
+import com.board.entity.MemberEntity;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -30,14 +31,14 @@ public class FavGenreDTO {
 	}
 	
 	//DTO --> Entity 이동
-	public FavGenreEntity dtoToEntity(FavGenreDTO dto) {
+	public FavGenreEntity dtoToEntity() {
 		
 		FavGenreEntity favGenreEntity = FavGenreEntity.builder()
-													.seqno(dto.getSeqno())
-													.genre1(dto.getGenre1())
-													.genre2(dto.getGenre2())
-													.genre3(dto.getGenre3())
-													.email(dto.getEmail())
+													.seqno(this.getSeqno())
+													.genre1(this.getGenre1())
+													.genre2(this.getGenre2())
+													.genre3(this.getGenre3())
+													.email(this.getEmail())
 													.build();
 		return favGenreEntity;
 	}
