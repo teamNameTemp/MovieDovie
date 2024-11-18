@@ -56,17 +56,17 @@ body {
 }
 
 .bell-box{
-	position: relative;
-	height: 20px; 
-	background:#3C3D37; 
-	border:10px; 
-	border-radius:20px; 
-	width:80px; 
-	height:30px;
-	display:flex;
-	align-items: center;
-	margin-top: 10px;
-	margin-bottom: 10px;
+   position: relative;
+   height: 20px; 
+   background:#3C3D37; 
+   border:10px; 
+   border-radius:20px; 
+   width:80px; 
+   height:30px;
+   display:flex;
+   align-items: center;
+   margin-top: 10px;
+   margin-bottom: 10px;
 }
 
 .menu-list-item {
@@ -253,7 +253,7 @@ p.movie-list-item-desc {
   
   /* 줄 간격 설정 */
   line-height: 1.5em;                /* 줄 간격 조정 (기본적으로 1.5배로 설정) */
-  max-height: 5.3em;                 /* 3줄 높이에 맞춰 고정 (line-height × 3) */
+  max-height: 4.8em;                 /* 3줄 높이에 맞춰 고정 (line-height × 3) */
 }
 
 
@@ -286,8 +286,13 @@ p.movie-list-item-desc {
   color: red; /* 버튼을 빨간색으로 변경 */
 }
 
+.movie-list-item-button.active{
+  color: red; /* 버튼을 빨간색으로 변경 */
+}
+
+
 /* <a> 태그 내의 아이콘 스타일 */
-.movie-list-item-button a {
+.movie-list-item-button a{
   color: inherit;  /* 부모 요소의 색상을 그대로 상속 */
   text-decoration: none; /* 기본 밑줄 제거 */
   font-size: 20px;
@@ -298,6 +303,8 @@ p.movie-list-item-desc {
 .movie-list-item-button .fa-bookmark {
   margin-left: 25px; /* 북마크 버튼의 오른쪽 여백 */
 }
+
+
 
 
 .arrow {
@@ -562,7 +569,3 @@ a {
 .search-box:hover > form .search-btn {
   background: none;
 }
-
-
-
-

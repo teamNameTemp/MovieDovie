@@ -11,6 +11,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -26,13 +27,14 @@ import lombok.NoArgsConstructor;
 
 public class CastEntity {
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
+	@GeneratedValue(strategy = GenerationType.SEQUENCE,generator ="CAST_SEQ" )
+	@SequenceGenerator(name="CAST_SEQ",sequenceName = "cast_seq",initialValue = 1,allocationSize = 1)
 	private Long castseqno;
 	
 	@ManyToOne(fetch=FetchType.LAZY)
 	@OnDelete(action=OnDeleteAction.CASCADE)
-	@JoinColumn(name="seqno")
-	private CreditEntity creditId;
+	@JoinColumn(name="movieId")
+	private MovieEntity movieId;
 	
 	@Column(name="castid")
 	private Long castId;

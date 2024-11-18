@@ -6,9 +6,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 	<link rel="stylesheet" th:href="@{/css/styles.css}">
+	<link rel="stylesheet" href="/css/movieListStyle.css">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css">
 	<style>
-		 #wrap {width: 1200px; height: 1000px; font-size: 15px; text-align: center; margin : auto; }
+		#wrap {width: 1200px; height: 1000px; font-size: 15px; text-align: center; margin : auto; }
 	 	
 	 	.side {
 	 		display: flex;
@@ -59,7 +62,6 @@
             text-align: center;
         }
         
-		        
 		.left-div, .right-div {
 		    width: 48%; /* 여백을 고려하여 너비 설정 */
 		    box-sizing: border-box;
@@ -151,7 +153,7 @@
 		    align-items: center; /* 수직 중앙 정렬 */
 		}
 		
-		.icon {
+		.statusicon {
 		    width: 100px; /* 이미지 크기 설정 */
 		    height: 100px; /* 이미지 크기 설정 */
 		    margin-right: 15px; /* 이미지와 텍스트 간 간격 */
@@ -166,58 +168,36 @@
 		    font-size: 25px; /* 텍스트 크기 키우기 */
 		    color: #FF6384; /* 빨간색으로 강조 */
 		    font-weight: bold; /* 텍스트 굵게 */
+		    opacity: 1;
+  			animation: animate 1s infinite;
+		}
+		
+		@keyframes animate {
+		  0% {opacity: 1;}
+		  50% {opacity: 0.5;}
+		  100% {opacity: 1;}
 		}
 			
+		a.pending {
+		  text-decoration : none;
+		  color:  #FF6384;
+		}
 		
+		a.pending:hover{
+			text-decoration : underline;
+		}
 	</style>
 
 
 </head>
 <body class="p-3 m-0 border-0 bd-example m-0 border-0">
-<div th:replace = "/fragments/nav/sidebar::sidebar"></div>
- <div class="navbar">
-     <div class="navbar-container">
-         <!--  <div class="logo-container">-->
-             <h6 class="logo">Admin Page</h6>
-         <!--</div>-->
-         <div class="menu-container">
-             <ul class="menu-list">
-                 <li class="menu-list-item active">
-                 	<a href="/master/memberStats">회원 활동 통계</a>
-                 </li>
-                 <li class="menu-list-item">
-                 	<a href="/master/memberRequest">회원 요청사항 관리</a>
-                 </li>
-                 <li class="menu-list-item">
-                 	<a href="/master/movieStats">영화 통계</a>
-                 </li>
-                 <li class="menu-list-item">
-                 	<a href="/master/movieUpload">영화 업로드</a>
-                 </li>
-			</ul>
-		</div>
-		<div class="profile-container">
-             <img class="profile-picture" src="/img/masterprofile.png" alt="">
-             <div class="profile-text-container">
-                 <span class="profile-text">관리자</span>
-                 <i class="fas fa-caret-down"></i>
-             </div>
-             <div class="toggle">
-                 <i class="fas fa-moon toggle-icon"></i> 
-                 <i class="fas fa-sun toggle-icon"></i> 
-                 <div class="toggle-ball"></div>
-             </div>
-         </div>
-     </div>
- </div>
-<br><br><br>
+<div th:replace = "~{/fragments/nav/masterSidebar::masterSidebar}"></div>
+<div th:replace="~{/fragments/nav/masterMenubar::masterMenubar}"></div>
+<br><br><br><br><br>
 
 
 
 <div id="wrap">
-<a onClick="window.location.reload()" style="cursor: pointer; position: absolute; top: 107px; right: 100px;">
-    <img class="reload" src="/img/reload.png" alt="" style="width: 35px; height: 35px;">
-</a>
 	<div class="side">
 		<div class="content"><b>대여 현황</b><br><br><br>
 				
@@ -458,9 +438,9 @@
 		<div class="statuscontent">
 			<b>회원 요청 사항 현황</b><br>
 			<div class="status-container">
-				<img class="icon" src="/img/RequestStatus.png" alt="">&nbsp;&nbsp;&nbsp;
+				<img class="statusicon" src="/images/img/RequestStatus.png" alt="">&nbsp;&nbsp;&nbsp;
 				<div class="status-text">
-					<span class="pending-highlight">· 처리 필요 : <span id="pendingCount"></span> 건</span>
+					<span class="pending-highlight">· <a href="/master/memberRequest" class="pending">처리 필요 : <span id="pendingCount"></span> 건</a></span>
 					<br><br>
 					· 처리 완료 : <span id="completedCount"></span> 건
 				</div>

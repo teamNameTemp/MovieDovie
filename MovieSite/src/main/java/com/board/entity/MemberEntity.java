@@ -20,12 +20,12 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity(name="member")
-@Table(name="tbl_member")
+@Table(name="member")
 public class MemberEntity {
 	
 	//Column(name="컬럼명", length=길이, nullable=null여부(false : not null / true : null)
 	@Id
-	@Column(name="email", length=320, nullable=false)
+	@Column(name="email", length=320, nullable=false, unique = true)
 	private String email;
 	
 	@Column(name="password", length=200, nullable=false)
@@ -40,7 +40,7 @@ public class MemberEntity {
 	@Column(name="gender", length=20, nullable=false)
 	private String gender;
 	
-	@Column(name="birth", nullable=false)
+	@Column(name="birth", nullable=true)
 	private String birth;
 	
 	@Column(name="telno", length=50, nullable=false)
@@ -57,6 +57,23 @@ public class MemberEntity {
 	
 	@Column(name="role", length=50, nullable=false)
 	private String role;
+	
+	
+	/*
+	//FK 만들기
+	//FK 읽어올 때 Eager, Lazy 두 가지 타입이 있음.
+	//Eager : 부모키가 있는 테이블부터 검사해서 부모키가 제대로 되어 있는지 확인하고 자식키를 읽음 -> 정확도는 높지만 성능이 저하.
+	//Lazy : 자식키가 있는 테이블만 읽음 -> 정확도는 떨어지지만 성능이 향상.
+	@ManyToOne(fetch = FetchType.LAZY)
+	@OnDelete(action = OnDeleteAction.CASCADE)
+	@JoinColumn(name = "logseqno", referencedColumnName = "seqno", nullable = false)
+	private MemberLogEntity logseqno;
+	
+	@ManyToOne(fetch = FetchType.LAZY)
+	@OnDelete(action = OnDeleteAction.CASCADE)
+	@JoinColumn(name = "genreseqno", referencedColumnName = "seqno", nullable = false)
+	private GenreEntity genreseqno;
+	*/
 	
 	public void updateMemberInfo(MemberDTO member) {
 		

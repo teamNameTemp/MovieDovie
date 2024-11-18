@@ -1,6 +1,7 @@
 package com.board.service;
 
 import org.springframework.data.domain.Page;
+
 import com.board.dto.RequestDTO;
 import com.board.entity.RequestEntity;
 
@@ -33,24 +34,24 @@ public interface MasterService {
 	//영화 중복 체크
 	public void movieCheck(String movieNm);
 	
-	//Dummy Members 만들기
-	public void createDummyMembers(int count);
-	
-	//Dummy 대여현황 만들기
-	public void createDummyRents(int count);
-	
-	//Dummy 좋아요 싫어요 만들기
-	public void createDummyLikes(int count);
-	
-	//Dummy 멤버 로그인/로그아웃 현황 (member_log) 만들기
-	public void createDummyLogs(int count);
-	
-	//Dummy 시청여부 만들기
-	public void createDummyWatch(int count);
-	
-	//Dummy 즐겨찾기 만들기
-	public void createDummyBookmarks(int count);
-	
-	//Dummy 좋아하는 장르 만들기
-	public void createDummyFavGenre(int count);
+//	//Dummy Members 만들기
+//	public void createDummyMembers(int count);
+//	
+//	//Dummy 대여현황 만들기
+//	public void createDummyRents(int count);
+//	
+//	//Dummy 좋아요 싫어요 만들기
+//	public void createDummyLikes(int count);
+//	
+//	//Dummy 멤버 로그인/로그아웃 현황 (member_log) 만들기
+//	public void createDummyLogs(int count);
+//	
+//	//Dummy 시청여부 만들기
+//	public void createDummyWatch(int count);
+//	
+//	//Dummy 즐겨찾기 만들기
+//	public void createDummyBookmarks(int count);
+//	
+//	//Dummy 좋아하는 장르 만들기
+//	public void createDummyFavGenre(int count);
 }

@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="/css/movieDetailStyle.css">
-    <th:block th:replace="/fragments/header::header">
+    <th:block th:replace="~{/fragments/header::header}">
 
     <title>장바구니</title>
 	<link rel="stylesheet" type="text/css" href="/css/shopHeader.css">
@@ -196,9 +196,8 @@ const cartManage = async (type) => {
 	</div>
 
 	<div class="main_shop">
-	
 		<div class="tableDiv">
-			<h1>[[${session.nickname}]]님의 장바구니</h1> 
+			<h1 th:text="${session.nickname + '님의 장바구니'}"></h1> 
 			<form name="cartList" method="post">
 				<input type="hidden" name="page" value="page">
 				<input type="hidden" name="keyword" value="keyword">
@@ -220,7 +219,7 @@ const cartManage = async (type) => {
 			  				<td><img class="p_image" th:src="@{'/p_img/' + ${list.p_stored_image}}" style="width:200px; height: auto"></td>
 			  				<td style="text-align:left;"><a id="hypertext" th:href="@{'/shop/pView?p_id=' + ${list.p_id}}" onMouseover='this.style.textDecoration="underline"'  
 			  						onmouseout="this.style.textDecoration='none';"><span th:text="${list.p_name}"></span></a></td>
-			  				<td><span th:text="${list.p_manufacturer}">)</span></td>
+			  				<td><span th:text="${list.p_manufacturer}"></span></td>
 			  				<th:block th:if="${list.p_stock} lt 1">
 			  					<td><span th:id="${'p' + list.cart_id}">0</span>원</td>
 			  				</th:block>

@@ -73,24 +73,36 @@
         }
 
         function saveAllMovies() {
-        	fetch("/make/movies/save-all",{
-        		method:"post"
+        	fetch("/make/movie/save-all",{
+        		method:"POST",
+        		headers: {
+	                     'Content-Type': 'application/json',
+	                 }
         	}).then(response => response.json())
         	.then(result =>{
-        		
-        		alert("데이터가 저장되었습니다.");
+        		if(result.message == "good"){
+	        		alert("데이터가 저장되었습니다.");
+        		}
+        		else{
+        			alert("서버 오류로 저장하지 못했습니다.")
+        		}
         	})
         	
         }
 
         function saveMovie(movieId) {
-            fetch("/make/movies/save", { 
+            fetch("/make/movie/save", { 
 	            	method: 'POST',
-	                body: `movieId=${movieId}`
+	            	 headers: {
+	                     'Content-Type': 'application/x-www-form-urlencoded',
+	                 },
+	                 body: `movieId=${encodeURIComponent(movieId)}`
             	})
                 .then(response => 	response.json())
                 .then(result => {
-                    alert(`영화 ID ${movieId}가 저장되었습니다.`);
+                	if(result.message == "good"){
+	                    alert(`영화 ID ${movieId}가 저장되었습니다.`);
+                	}
                 })
                 .catch(error => {
                     console.error('Error:', error);
@@ -98,17 +110,30 @@
                 });
         }
         
-        function press (){
-        	 if (event.key === 'Enter') {
-        	       	 searchKeyword();
-        	        }
+        function saveGenre(genreNm) {
+            fetch("/make/movie/genre", {
+                method: "POST",
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({ genre: genreNm })
+            }).then(response => response.json())
+            .then(result => {
+                if(result.message === "good") {
+                    alert(`영화 장르 "${genreNm}"의 최신 20개 영화가 저장되었습니다.`);
+                } else {
+                    alert('장르 저장에 실패했습니다.');
+                }
+            }).catch(error => {
+                console.error('Error:', error);
+                alert('장르 저장 중 오류가 발생했습니다.');
+            });
         }
+        
         
     </script>
 </head>
 <body>
 	<label for="searchKeyword">검색 키워드</label>
-	<input type="text" id="searchKeyword" onkeydown="press()">
+	<input type="text" id="searchKeyword" onkeydown="if(event.key === 'Enter') searchKeyword()">
 	<button onclick="searchKeyword()">검색</button>
 
 	<table id="movieTbl" style="display:none;">
@@ -142,6 +167,33 @@
         </tbody>
     </table>
 
-    
+	 <h1>장르별 영화 저장</h1>
+    <div>
+        <h2>영화 장르 목록</h2>
+        <ul>
+            <li th:each="genre : ${genres}">
+                <span th:text="${genre.key}"></span>
+                <button th:onclick="'saveMoviesByGenre(' + ${genre.value} + ')'">저장</button>
+            </li>
+        </ul>
+    </div>
+    <div id="result"></div>
+
+    <script>
+        function saveMoviesByGenre(genreId) {
+            fetch('/api/movies/save-by-genre?genreId=' + genreId, {
+            	method: 'POST' 
+            	})
+                .then(response => response.text())
+                .then(message => {
+                    document.getElementById('result').innerText = message;
+                	alert("데이터가 성공적으로 저장되었습니다.");
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    document.getElementById('result').innerText = '오류가 발생했습니다.';
+                });
+        }
+    </script>
 </body>
 </html>

@@ -1,6 +1,9 @@
 package com.board.service;
 
 import java.util.List;
+import java.util.Map;
+
+import com.board.dto.LikeDTO;
 
 public interface LikeService {
 
@@ -12,5 +15,12 @@ public interface LikeService {
 	
 	//호불호 % 높은 영화 추출
 	public List<Object[]> topDivisiveMovie();
+
+	public void saveOrUpdate(String rating, Long movieId, String email,boolean isAdd);
 	
+	//나의 like 정보
+	public Map<String,Object> getLikeInfo(String email, Long movieId);
+	
+	//전체 like정보 추출
+	public Map<String,Object> getAllLikeInfo(Long movieId);
 }
