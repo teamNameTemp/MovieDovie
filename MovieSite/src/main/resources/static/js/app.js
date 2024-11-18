@@ -30,12 +30,12 @@ document.addEventListener("DOMContentLoaded", function() {
 			let action = "add";
 			const movieId = this.closest('.movie-list-item-button').getAttribute('data-movie-id');
 
+			if(this.closest('.movie-list-item-button').classList.contains('active')){
+				action = "remove";
+			}
 			// active 클래스를 토글합니다
 			this.closest('.movie-list-item-button').classList.toggle('active');
 
-			if(button.classList.contains('active')){
-				action = "remove";
-			}
 			
 			const formData = new FormData();
 			formData.append("movieId",movieId);
@@ -49,9 +49,9 @@ document.addEventListener("DOMContentLoaded", function() {
 				.then(response => response.json())
 				.then(data => {
 					if (data.message === "good") {
-						console.log('북마크가 성공적으로 업데이트되었습니다');
+						alert(action == 'add' ? '북마크가 성공적으로 업데이트되었습니다' : '북마크가 성공적으로 제거되었습니다');
 					} else {
-						console.error('북마크 업데이트 실패');
+						alert('북마크 업데이트 실패');
 						// 서버 업데이트 실패 시 UI 변경을 되돌립니다
 						this.closest('.movie-list-item-button').classList.toggle('active');
 					}
@@ -61,6 +61,7 @@ document.addEventListener("DOMContentLoaded", function() {
 					// 에러 발생 시 UI 변경을 되돌립니다
 					this.closest('.movie-list-item-button').classList.toggle('active');
 				});
+				
 		});
 	});
 
