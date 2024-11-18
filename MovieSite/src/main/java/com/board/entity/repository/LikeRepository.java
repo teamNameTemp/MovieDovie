@@ -55,5 +55,7 @@ public interface LikeRepository extends JpaRepository<LikeEntity, Long>{
 
 	// movieId를 이용해 해당 영화의 모든 LikeEntity를 조회
     List<LikeEntity> findAllByMovieId(MovieEntity movieId);
+    
+    List<LikeEntity> findAllByEmail(MemberEntity member);
 
 }

@@ -6,29 +6,30 @@
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Jua&display=swap')
 	;
+
 .rental-status-box {
 	margin-top: 50px;
 	background-color: gray;
-    position: absolute;
-    top: 20px;  /* 상단에서 20px 떨어진 위치 */
-    right: 20px; /* 우측에서 20px 떨어진 위치 */
-    z-index: 500;
-    padding: 15px;
-    border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* 그림자 효과 */
-    width: 200px;
-    color: #fff; /* 텍스트 색상 */
+	position: absolute;
+	top: 20px; /* 상단에서 20px 떨어진 위치 */
+	right: 20px; /* 우측에서 20px 떨어진 위치 */
+	z-index: 500;
+	padding: 15px;
+	border-radius: 10px;
+	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* 그림자 효과 */
+	width: 200px;
+	color: #fff; /* 텍스트 색상 */
 }
 
 .rental-status-box h3 {
-    margin: 0;
-    font-size: 18px;
-    font-weight: bold;
+	margin: 0;
+	font-size: 18px;
+	font-weight: bold;
 }
 
 .rental-status-box p {
-    margin: 5px 0;
-    font-size: 14px;
+	margin: 5px 0;
+	font-size: 14px;
 }
 /* 기본 스타일 */
 body {
@@ -42,7 +43,6 @@ body {
 	max-width: 1920px;
 	margin-left: 50px;
 	margin-top: 50px;
-	
 }
 
 /* 프로필 영역 */
@@ -52,7 +52,7 @@ body {
 	align-items: center;
 	flex-wrap: wrap; /* 반응형을 위해 flex-wrap을 사용 */
 	padding: 0 20px;
-	overflow-x:auto;
+	overflow-x: auto;
 }
 
 /* 프로필 사진 */
@@ -305,7 +305,7 @@ p.movie-list-item-desc {
 .movie-list-wrapper {
 	position: relative;
 	overflow: hidden;
-	display:flex;
+	display: flex;
 	z-index: 500;
 }
 
@@ -617,18 +617,19 @@ a {
 <title>MyPage</title>
 </head>
 <body>
-	<div th:replace="/fragments/nav/menubar::menubar"></div>
-	<div th:replace="/fragments/nav/sidebar::sidebar"></div>
+	<div th:replace="~{/fragments/nav/menubar::menubar}"></div>
+	<div th:replace="~{/fragments/nav/sidebar::sidebar}"></div>
 
 	<div class="container">
 		<!-- 프로필 영역 -->
-		<div class="myprofile-container" style="background-color: #4dbf00; background-image: url('/images/admin-003.jpg'); background-size: cover; background-position: center;">
+		<div class="myprofile-container"
+			style="background-color: #4dbf00; background-image: url('/images/admin-003.jpg'); background-size: cover; background-position: center;">
 			<!-- 대여현황 박스 -->
-    <div class="rental-status-box">
-        <h3 style="color: #fff;">대여 현황</h3>
-        <p style="color: #fff;">현재 대여 중: 3</p>
-        <p style="color: #fff;">반납 예정일: 2024-12-01</p>
-    </div>
+			<div class="rental-status-box">
+				<h3 style="color: #fff;">대여 현황</h3>
+				<p style="color: #fff;">현재 대여 중: 3</p>
+				<p style="color: #fff;">반납 예정일: 2024-12-01</p>
+			</div>
 			<!-- 프로필 사진 -->
 			<div class="myprofile-picture">
 				<img src="/images/img/profile.jpg" alt="Profile Picture">
@@ -636,11 +637,11 @@ a {
 
 			<!-- 프로필 정보 -->
 			<div class="profile-info">
-				<h1 style="color: gray">~~님 안녕하세요</h1>
-				<h1 style="color: gray; margin-top:50px;" >회원 정보</h1>
-				<h2 style="color: #4dbf00">~~님의 회원 정보입니다.</h2>
-				<h2 style="color: #4dbf00">회원 이름: John Doe</h2>
-				<p style="color: #4dbf00">회원 Email: john.doe@example.com</p>
+				<h1 style="color: gray">[[${member.nickname}]]님 안녕하세요</h1>
+				<h1 style="color: gray; margin-top: 50px;">회원 정보</h1>
+				<h2 style="color: #4dbf00">[[${member.nickname}]]님의 회원 정보입니다.</h2>
+				<h2 style="color: #4dbf00">회원 이름: [[${member.username}]]</h2>
+				<p style="color: #4dbf00">회원 Email: [[${member.email}]]</p>
 			</div>
 			<div class="movie-list-container" style="margin-left: 0px;">
 				<h1 class="movie-list-title" style="color: #4dbf00;">대여 영화 리스트</h1>
@@ -648,286 +649,75 @@ a {
 					<div class="movie-list">
 
 						<div class="movie-list-item">
-							<img class="movie-list-item-img" src="/images/img/18.jpg" alt="">
+							<img class="movie-list-item-img">
 							<p class="movie-list-item-desc">2024-00-00</p>
-
-						</div>
-						<div class="movie-list-item">
-							<img class="movie-list-item-img" src="/img/9.jpg" alt="">
-							<p class="movie-list-item-desc">2024-00-00</p>
-
-						</div>
-
-						<div class="movie-list-item">
-							<img class="movie-list-item-img" src="/img/9.jpg" alt="">
-							<p class="movie-list-item-desc">2024-00-00</p>
-
-						</div>
-
-						<div class="movie-list-item">
-							<img class="movie-list-item-img" src="/img/9.jpg" alt="">
-							<p class="movie-list-item-desc">2024-00-00</p>
-
-						</div>
-						<div class="movie-list-item">
-							<img class="movie-list-item-img" src="/img/9.jpg" alt="">
-							<p class="movie-list-item-desc">2024-00-00</p>
-
-						</div>
-
-						<div class="movie-list-item">
-							<img class="movie-list-item-img" src="/img/9.jpg" alt="">
-							<p class="movie-list-item-desc">2024-00-00</p>
-
-						</div>
-
-						<div class="movie-list-item">
-							<img class="movie-list-item-img" src="/img/12.jpg" alt="">
-
-							<p class="movie-list-item-desc">2024-00-00</p>
-
-						</div>
-						<div class="movie-list-item">
-							<img class="movie-list-item-img" src="/img/9.jpg" alt="">
-							<p class="movie-list-item-desc">2024-00-00</p>
-
-						</div>
-						<div class="movie-list-item">
-							<img class="movie-list-item-img" src="/img/9.jpg" alt=""> <span
-								class="movie-list-item-title">Her</span>
-							<p class="movie-list-item-desc">2024-00-00</p>
-
-						</div>
-
-						<div class="movie-list-item">
-							<img class="movie-list-item-img" src="/img/9.jpg" alt="">
-							<p class="movie-list-item-desc">2024-00-00</p>
-
 						</div>
 
 					</div>
 
 				</div>
 			</div>
-			<i class="fas fa-chevron-left arrow"></i> 
+			<i class="fas fa-chevron-left arrow"></i>
 		</div>
 
- 
-<i class="fas fa-chevron-right arrow"></i>
+
+		<i class="fas fa-chevron-right arrow"></i>
 	</div>
 
-	<div class="movie-list-container">
+	<!-- 북마크한 영화 리스트 -->
+	<div class="movie-list-container"
+		th:if="${bookmarks != null and !bookmarks.isEmpty()}">
 		<h1 class="movie-list-title">북마크한 영화 리스트</h1>
 		<div class="movie-list-wrapper">
 			<div class="movie-list">
-
-				<div class="movie-list-item">
-					<img class="movie-list-item-img" src="/img/9.jpg" alt="">
-
-
+				<div class="movie-list-item" th:each="movie : ${bookmarks}">
+					<a th:href="@{/board/movieDetail(movieId=${movie.id})}"> <img
+						class="movie-list-item-img"
+						th:src="${'https://image.tmdb.org/t/p/original' + movie.posterPath}"
+						alt="">
+					</a>
 				</div>
-				<div class="movie-list-item">
-					<img class="movie-list-item-img" src="/img/9.jpg" alt="">
-
-
-				</div>
-
-				<div class="movie-list-item">
-					<img class="movie-list-item-img" src="/img/9.jpg" alt="">
-
-
-				</div>
-
-				<div class="movie-list-item">
-					<img class="movie-list-item-img" src="/img/9.jpg" alt="">
-
-
-				</div>
-				<div class="movie-list-item">
-					<img class="movie-list-item-img" src="/img/9.jpg" alt="">
-
-
-				</div>
-
-				<div class="movie-list-item">
-					<img class="movie-list-item-img" src="/img/9.jpg" alt="">
-
-
-				</div>
-
-				<div class="movie-list-item">
-					<img class="movie-list-item-img" src="/img/12.jpg" alt="">
-
-
-
-				</div>
-				<div class="movie-list-item">
-					<img class="movie-list-item-img" src="/img/9.jpg" alt="">
-
-
-				</div>
-				<div class="movie-list-item">
-					<img class="movie-list-item-img" src="/img/9.jpg" alt="">
-
-
-				</div>
-
-				<div class="movie-list-item">
-					<img class="movie-list-item-img" src="/img/9.jpg" alt="">
-
-
-				</div>
-
 			</div>
 			<i class="fas fa-chevron-left arrow"></i> <i
 				class="fas fa-chevron-right arrow"></i>
-
-
 		</div>
 	</div>
 
-	<div class="movie-list-container">
+	<!-- 내가 시청한 영화 -->
+	<div class="movie-list-container"
+		th:if="${watches != null and !watches.isEmpty()}">
 		<h1 class="movie-list-title">내가 시청한 영화</h1>
 		<div class="movie-list-wrapper">
 			<div class="movie-list">
-
-				<div class="movie-list-item">
-					<img class="movie-list-item-img" src="/img/9.jpg" alt="">
-
-
+				<div class="movie-list-item" th:each="movie : ${watches}">
+					<a th:href="@{/board/movieDetail(movieId=${movie.id})}"> <img
+						class="movie-list-item-img"
+						th:src="${'https://image.tmdb.org/t/p/original' + movie.posterPath}"
+						alt="">
+					</a>
 				</div>
-				<div class="movie-list-item">
-					<img class="movie-list-item-img" src="/img/9.jpg" alt="">
-
-
-				</div>
-
-				<div class="movie-list-item">
-					<img class="movie-list-item-img" src="/img/9.jpg" alt="">
-
-				</div>
-
-				<div class="movie-list-item">
-					<img class="movie-list-item-img" src="/img/9.jpg" alt="">
-
-
-				</div>
-				<div class="movie-list-item">
-					<img class="movie-list-item-img" src="/img/9.jpg" alt="">
-
-
-				</div>
-
-				<div class="movie-list-item">
-					<img class="movie-list-item-img" src="/img/9.jpg" alt="">
-
-				</div>
-
-				<div class="movie-list-item">
-					<img class="movie-list-item-img" src="/img/12.jpg" alt="">
-
-				</div>
-				<div class="movie-list-item">
-					<img class="movie-list-item-img" src="/img/9.jpg" alt="">
-
-
-				</div>
-				<div class="movie-list-item">
-					<img class="movie-list-item-img" src="/img/9.jpg" alt=""> <span
-						class="movie-list-item-title">Her</span>
-
-
-				</div>
-
-				<div class="movie-list-item">
-					<img class="movie-list-item-img" src="/img/9.jpg" alt="">
-
-
-				</div>
-
 			</div>
 			<i class="fas fa-chevron-left arrow"></i> <i
 				class="fas fa-chevron-right arrow"></i>
-
-
 		</div>
 	</div>
 
-	<div class="movie-list-container">
+	<!-- 내가 좋아요 한 영화 -->
+	<div class="movie-list-container"
+		th:if="${likes != null and !likes.isEmpty()}">
 		<h1 class="movie-list-title">내가 좋아요 한 영화</h1>
 		<div class="movie-list-wrapper">
 			<div class="movie-list">
-
-				<div class="movie-list-item">
-
-					<!-- /board/movieDetail?title=${movie.movieNm} -->
-					<a href="/board/movieDetail?title=황해"><img
-						class="movie-list-item-img" src="/img/8.jpg" alt=""></a>
-
+				<div class="movie-list-item" th:each="movie : ${likes}">
+					<a th:href="@{/board/movieDetail(movieId=${movie.id})}"> <img
+						class="movie-list-item-img"
+						th:src="${'https://image.tmdb.org/t/p/original' + movie.posterPath}"
+						alt="">
+					</a>
 				</div>
-				<div class="movie-list-item">
-					<img class="movie-list-item-img" src="/img/9.jpg" alt="">
-
-
-				</div>
-				<div class="movie-list-item">
-					<img class="movie-list-item-img" src="/img/9.jpg" alt="">
-
-
-				</div>
-
-				<div class="movie-list-item">
-					<img class="movie-list-item-img" src="/img/9.jpg" alt="">
-
-
-				</div>
-
-				<div class="movie-list-item">
-					<img class="movie-list-item-img" src="/img/9.jpg" alt="">
-
-
-				</div>
-				<div class="movie-list-item">
-					<img class="movie-list-item-img" src="/img/9.jpg" alt="">
-
-
-				</div>
-
-				<div class="movie-list-item">
-					<img class="movie-list-item-img" src="/img/9.jpg" alt="">
-
-
-				</div>
-
-				<div class="movie-list-item">
-					<img class="movie-list-item-img" src="/img/12.jpg" alt="">
-
-
-
-				</div>
-				<div class="movie-list-item">
-					<img class="movie-list-item-img" src="/img/9.jpg" alt="">
-
-
-				</div>
-				<div class="movie-list-item">
-					<img class="movie-list-item-img" src="/img/9.jpg" alt=""> <span
-						class="movie-list-item-title">Her</span>
-
-
-				</div>
-
-				<div class="movie-list-item">
-					<img class="movie-list-item-img" src="/img/9.jpg" alt="">
-
-
-				</div>
-
 			</div>
 			<i class="fas fa-chevron-left arrow"></i> <i
 				class="fas fa-chevron-right arrow"></i>
-
-
 		</div>
 	</div>
 	<script src="/js/app.js"></script>

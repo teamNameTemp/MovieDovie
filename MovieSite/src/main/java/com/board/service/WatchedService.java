@@ -1,5 +1,6 @@
 package com.board.service;
 
+import java.util.List;
 import java.util.Map;
 
 public interface WatchedService {
@@ -8,4 +9,5 @@ public interface WatchedService {
 	public Map<String, Object> getWatchedInfo(String email, Long movieId);
 
 	public Map<String, Object> getAllWatchedInfo(Long movieId);
+	public List<Map<String,Object>> getAllWatchedByEmail(String email);
 }
