@@ -320,20 +320,14 @@ public class BoardController {
 
 //---------검색trying-------------------------
 	@GetMapping("/search")
-<<<<<<< HEAD
-	public String searchPage() {
-		return "board/search"; // templates/board/search.html을 찾음
-=======
 	public void searchPage(Model model,@RequestParam(name="keyword",required = false) String keyword) {
 //		if(keyword != null) {
 //			List<MovieDTO> list = tmdb.searchMovies(keyword).block();
 ////			model.addAttribute("movies",list);
 //			log.info(list);
 //		}
-		
->>>>>>> parent of f8f295e (검색결과: 페이징)
 	}
-
+	
 	@PostMapping("/search/movies")
 	@ResponseBody
 	public List<MovieDTO> searchMovies(@RequestParam ("keyword") String keyword) {
