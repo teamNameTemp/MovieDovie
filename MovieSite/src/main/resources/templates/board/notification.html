@@ -13,7 +13,7 @@
 	window.onload = function() {
 	    // 갯수 업데이트 함수
 	    function updateNotificationCount() {
-	        const dropdownItems = document.querySelectorAll('.dropdown-content .dropdown-item'); // 드롭다운 항목들을 다시 선택
+	        const dropdownItems = document.querySelectorAll('.dropdown-content-noti .dropdown-item'); // 드롭다운 항목들을 다시 선택
 	        const notificationCount = document.getElementById('notification-count'); // 갯수를 표시할 요소
 	        let itemCount = dropdownItems.length; // 항목 수를 가져옴
 	        
@@ -162,17 +162,23 @@
 		    color: #C2C1BF;             /* 날짜 색상 */
 		}
 		
-		.dropdown-content{
+		.dropdown-content-noti{
 		  /*display : none;   여기 주석은 향후 없애기 hover 하면 보이게끔 하려고 하심..*/
 		  position : absolute;
 		  z-index : 1; /*다른 요소들보다 앞에 배치*/
 		  font-weight: 400;
 		  background-color:  #fcfcfc;
 		  min-width : 150px;
-		  margin-bottom: 30px;
+		  border-radius: 8px;
+		  overflow: scroll;
+  		  box-shadow: 0px 0px 10px 3px rgba(190, 190, 190, 0.6);
+		  height: 200px;
+		  left: 50%;  /* 아이콘의 가로 중앙에 맞추기 */
+  		  transform: translateX(-50%);  /* 정확히 중앙에 위치하도록 이동 */
+  		  top: 100%;  /* 드롭다운이 버튼 바로 아래에 표시되도록 */
 		}
 		
-		.dropdown-content a{
+		.dropdown-content-noti a{
 		  display: flex;
 		  flex-direction: column;  /* 내용은 세로로 쌓기 */
 		  text-decoration : none;
@@ -182,11 +188,23 @@
 		}
 		
 		/* .dropdown-item에 호버 효과 추가*/
-		.dropdown-content .dropdown-item:hover {
+		.dropdown-content-noti .dropdown-item:hover {
 		    background-color: #f1f1f1; /* 전체 배경색 변경 */
 		}
 	
-		.dropdown:hover .dropdown-content {
+		.dropdown:hover .dropdown-content-noti {
+		  display: block;
+		}
+		
+		
+		.dropdown-content-noti::-webkit-scrollbar-thumb {
+		  border-radius: 2px;
+		  background-color: rgb(194, 194, 194);
+		}
+		
+		
+		/* 드롭다운이 보일 때 */
+		.dropdown-content-noti.show {
 		  display: block;
 		}
 		
@@ -199,7 +217,7 @@
 		<i class="fas fa-bell" style="position:relative; font-size:20px; margin-top:15px; margin-bottom:15px; margin-left:10px;margin-right:25px;"></i>
 		<p id="notification-count"></p>
 	</div>
-	<div class="dropdown-content">
+	<div class="dropdown-content-noti">
 		 <div th:if="${noti != null and noti.size() > 0}">
 		    <div th:each="noti : ${noti}">
 		        <div class="dropdown-item" th:id="'noti-item-' + ${noti.seqno}" th:data-seqno="${noti.seqno}"> <!-- 각 알림에 고유 ID 추가 -->

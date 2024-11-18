@@ -15,8 +15,8 @@ body {
 }
 
 .navbar {
-  
   width:100%;
+  padding-left: 50px;
   height: 50px;
   background-color: black;
   position: fixed;
@@ -27,7 +27,6 @@ body {
 .navbar-container {
   display: flex;
   align-items: center;
-  padding: 0 50px;
   height: 100%;
   color: white;
   font-family: "Jua", sans-serif;
@@ -76,9 +75,10 @@ body {
 .menu-list-item.active {
   font-weight: bold;
 }
+
 .profile-container {
   margin-right:50px;
-  flex: 7;
+  flex: 9;
   display: flex;
   align-items: center;
   justify-content: flex-end;
@@ -336,7 +336,6 @@ p.movie-list-item-desc {
 
 .navbar-container.active {
   background-color: white;
-
   color: black;
 }
 
@@ -401,17 +400,17 @@ p.movie-list-item-desc {
   display: none;
   font-weight: 400;
   background-color: #fcfcfc;
-  width: 240px;
-  min-width: 240px;
+  width: 100px;
   border-radius: 8px;
-  height: 160px;
+  height: 130px;
   overflow: scroll;
   box-shadow: 0px 0px 10px 3px rgba(190, 190, 190, 0.6);
   position: absolute;  /* 위치를 절대값으로 지정 */
   left: 50%;  /* 아이콘의 가로 중앙에 맞추기 */
-  transform: translateX(-50%);  /* 정확히 중앙에 위치하도록 이동 */
+  transform: translateX(-80%);  /* 정확히 중앙에 위치하도록 이동 */
   top: 100%;  /* 드롭다운이 버튼 바로 아래에 표시되도록 */
 }
+
 
 .dropdown-content::-webkit-scrollbar {
   width: 5px;
@@ -442,12 +441,12 @@ p.movie-list-item-desc {
 
 
  #notification-count {
-            position: absolute;
-            top: 5px;
-            right: 10px;
-            font-size: 18px;
-            color: white;
-        }
+     position: absolute;
+     top: 5px;
+     right: 10px;
+     font-size: 18px;
+     color: white;
+ }
         
 .dropdown-content .dropdown-item:hover {
             color: red; /* 마우스를 올리면 빨간색으로 변경 */
@@ -499,7 +498,7 @@ a {
   text-decoration : none;
   color : rgb(37, 37, 37);
   font-size: 12px;
-  padding : 12px 20px;
+  padding : 10px 20px;
 }
 
 .dropdown-content a:hover{
