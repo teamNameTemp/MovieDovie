@@ -10,13 +10,7 @@ import com.board.entity.LikeEntity;
 
 @Controller
 public interface BoardService {
-<<<<<<< HEAD
 
-    //게시물 목록 보기...배우이름도 추가??
-	public Page<MovieEntity> movieList(int pageNum, int postNum, String keyword) throws Exception;
-=======
->>>>>>> parent of f8f295e (검색결과: 페이징)
-	
 	//상품 상세 정보 보기
 	public MovieDTO view(Long seqno) throws Exception;
 	
