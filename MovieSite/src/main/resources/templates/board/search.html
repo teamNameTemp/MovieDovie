@@ -23,6 +23,21 @@
         }
     </script>
     
+    <style>
+        .search-container {
+            text-align: center;
+            margin-top: 100px;
+        }
+        .search-box {
+            width: 300px;
+            padding: 10px;
+            font-size: 16px;
+        }
+        .search-button {
+            padding: 10px 20px;
+            font-size: 16px;
+        }
+    </style>
 
 </head>
 <body>
@@ -33,38 +48,44 @@
     <div class="search-container" style="margin-top: 100px; text-align: center;">
         <h1 th:text="'&quot;' + ${param.keyword} + '&quot; 검색 결과'">검색 결과</h1>
 
-        <div class="movie-grid">
-            <div th:each="movie : ${movies}">
-                <div class="movie-card">
-                    <a th:href="@{/board/movieDetail(movieId=${movie.id})}"> <img
-                        th:src="${'https://image.tmdb.org/t/p/original' + movie.posterPath}"
-                        alt="">
-                    </a>
-                    <h3 th:text="${movie.title}"></h3>
-                    <p th:text="${movie.releaseDate} != null ? ${movie.releaseDate} : '개봉일 미정'"></p>
-                </div>
-            </div>
-        </div>
-
-        <th:block th:if="${list != null}">     
-            <tr th:each="list,index:${list}">
-                <!-- totalElement, postNum, page, index.count -->
-                <td th:text="${totalElement - (page-1)*postNum - index.count + 1}"></td>
-                <td style="text-align: left;">
-                    <a th:href="@{'/board/search?seqno=' + ${list.seqno} + '&page=' + 
-                            ${page} + '&keyword=' + ${keyword}}">
-                    <span th:text="${list.title}"></span>
-                    </a>
-                </td>
-            </tr>
-        </th:block>
-        <th:block th:if="${list == null}">
-            <td colspan="5">등록된 게시물이 없습니다.</td>
-        </th:block>
-        <br>
-        <div>[(${pageList})]</div>
+    <div id="searchResult" class="movie-grid">
+        <!--검색결과 추가-->
     </div>
 
+    <script>
+        function searchMovies() {
+            const keyword = document.getElementById("searchKeyword").value;
+            if (!keyword.trim()) {
+                alert("검색어를 입력하세요");
+                return;
+            }
+
+            fetch('/board/search/movies', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: `keyword=${encodeURIComponent(keyword)}`
+            })
+            .then(response => response.json())
+            .then(movies => {
+                const resultsDiv = document.getElementById('searchResult');
+                resultsDiv.innerHTML = '';
+                //console.log(movies);
+                movies.forEach(movie => {
+                    const card = `
+                    <div class ="movie-card">
+                        <img src="${movie.poster_path ? 'https://image.tmdb.org/t/p/w200' + movie.poster_path : '/images/blankPoster.jpg'}" 
+                            alt="${movie.title}">
+                        <h3>${movie.title}</h3>
+                        <p>${movie.release_date || '개봉일 미정'}</p>
+                        </div>
+                    `;
+                    resultsDiv.innerHTML += card;// +=를 사용해서 검색 결과를 하나씩 추가
+                });
+            })
+        }
+    </script>
 
 </body>
 </html>

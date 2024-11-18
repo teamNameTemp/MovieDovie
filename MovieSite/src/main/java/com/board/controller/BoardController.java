@@ -321,22 +321,8 @@ public class BoardController {
 
 //---------검색trying-------------------------
 	@GetMapping("/search")
-	public void getSearchPageList(Model model, @RequestParam(name="page", defaultValue = "1") int pageNum, @RequestParam(name="keyword", defaultValue="", required = false) String keyword)  throws Exception {
-		//HttpSession session ~ 대여한 영화/찜 표시관련?
-
-		int postNum = 10; //한 화면에 보여지는 게시물 행의 갯수
-		int pageListCount = 10; //화면 하단에 보여지는 페이지리스트의 페이지 갯수	
-		
-		PageUtil page = new PageUtil();
-		Page<MovieEntity> list = service.movieList(pageNum, postNum, keyword);
-		int totalCount = (int)list.getTotalElements();
-		model.addAttribute("list", list);
-		model.addAttribute("listIsEmpty", list.hasContent()?"N":"Y");
-		model.addAttribute("totalElement", totalCount);
-		model.addAttribute("postNum", postNum);
-		model.addAttribute("page", pageNum);
-		model.addAttribute("keyword", keyword);
-		model.addAttribute("pageList", page.getSearchPageList(pageNum, postNum, pageListCount, totalCount, keyword));
+	public String searchPage() {
+		return "board/search"; // templates/board/search.html을 찾음
 	}
 
 	@PostMapping("/search/movies")
