@@ -23,4 +23,6 @@ public interface LikeService {
 	
 	//전체 like정보 추출
 	public Map<String,Object> getAllLikeInfo(Long movieId);
+	
+	public List<Map<String,Object>> getAllLikeByEmail(String email);
 }

@@ -3,6 +3,7 @@ package com.board.dto;
 import java.time.LocalDateTime;
 
 import com.board.entity.RentEntity;
+import com.board.entity.movie.MovieEntity;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -31,18 +32,18 @@ public class RentDTO {
 		this.rentdate = rentEntity.getRentdate();
 		this.returndate = rentEntity.getReturndate();
 		this.status = rentEntity.getStatus();
-		this.movieseqno = rentEntity.getMovieseqno();
+		this.movieseqno = rentEntity.getMovieId().getMovieId();
 	}
 		
 	//DTO --> Entity 이동
-	public RentEntity dtoToEntity(RentDTO dto) {
+	public RentEntity dtoToEntity(RentDTO dto,MovieEntity movie) {
 		
 		RentEntity rentEntity = RentEntity.builder()
 											.seqno(dto.getSeqno())
 											.rentdate(dto.getRentdate())
 											.returndate(dto.getReturndate())
 											.status(dto.getStatus())
-											.movieseqno(dto.getMovieseqno())
+											.movieId(movie)
 											.build();									
 		return rentEntity;
 	}

@@ -1,5 +1,6 @@
 package com.board.entity.repository;
 
+import java.nio.file.WatchService;
 import java.util.List;
 import java.util.Optional;
 
@@ -15,7 +16,6 @@ import com.board.dto.RequestDTO;
 import com.board.entity.RequestEntity;
 
 public interface RequestRepository extends JpaRepository<RequestEntity, Long>{ // JpaRepository<xxxEntity, 기본기타입>{
-
 	//게시물 목록 보기
 	public Page<RequestEntity> findByTitleContainingOrContentContaining
 		(String keyword1, String keyword2, Pageable pageable);
@@ -37,7 +37,7 @@ public interface RequestRepository extends JpaRepository<RequestEntity, Long>{ /
 			@Param("keyword2") String keyword2);
 	
 	//max Seqno 구하기 --> Native SQL
-	@Query(value="select max(seqno) from tbl_request where email = :email",
+	@Query(value="select max(seqno) from request where email = :email",
 			nativeQuery = true)
 	public Long getMaxSeqno(@Param("email") String email);
 

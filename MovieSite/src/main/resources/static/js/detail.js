@@ -195,7 +195,10 @@ posterButton.addEventListener('click', function() {
 	backdropSection.style.display = 'none';
 });
 
-
+// URL에서 movieId 추출
+	const queryString = window.location.search;
+	const urlParams = new URLSearchParams(queryString);
+	const movieId = urlParams.get("movieId");
 
 const reviewSection = document.getElementById('reviewSection');
 const reviewText = document.getElementById('reviewText');

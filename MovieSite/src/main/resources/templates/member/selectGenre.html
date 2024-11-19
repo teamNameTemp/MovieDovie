@@ -3,7 +3,6 @@
 <head>
     <meta charset="UTF-8">
     <title>Movie Preference Selection</title>
-    <link rel="stylesheet" href="/css/movieSelectStyles.css">
 </head>
 <style>
 body, html{
@@ -153,11 +152,15 @@ const saveToGenres = () => {
     <p>최대 3개까지 골라주세요. 취향에 꼭 맞는 영화를 추천해 드릴게요!</p>
     <div class="genres"> 
 	    <th:block th:each="genre : ${genres}">
-	       	<div class="genre" th:text="${genre.key}"></div>
-	    </th:block>
+				<div class="genre" th:text="${genre.key}"
+					th:classappend="${favGenre != null and 
+                     ((favGenre['genre1'] != null and favGenre['genre1'] == genre.key) or 
+                      (favGenre['genre2'] != null and favGenre['genre2'] == genre.key) or 
+                      (favGenre['genre3'] != null and favGenre['genre3'] == genre.key))} ? 'clicked' : ''">
+				</div>
+			</th:block>
     </div>
     <div class="buttons">
-        <button onclick="location.href='/board/list'">건너뛰기</button>
         <button onclick="saveToGenres()">저장하기</button>
     </div>
 </div>

@@ -32,7 +32,9 @@ public class ReplyServiceImpl implements ReplyService {
 	@Override
 	public void saveOrUpdate(String content, String email,Long movieId) {
 		MemberEntity member = memberRepository.findById(email).get();
-		MovieEntity movie = movieRepository.findById(movieId).get();
+		MovieEntity movie = movieRepository.findById(movieId).orElseThrow(()->
+			new RuntimeException("movieID not found " + movieId)
+		);
 		
 		ReplyEntity reply = replyRepository.findByEmailAndMovieId(member, movie);
 		//저장

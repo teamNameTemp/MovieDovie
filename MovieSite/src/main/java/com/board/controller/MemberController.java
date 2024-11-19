@@ -3,7 +3,7 @@
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
+import java.util.Optional;
 import java.io.File;
 import java.net.PasswordAuthentication;
 import java.net.URLEncoder;
@@ -33,6 +33,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.board.dto.FavGenreDTO;
 import com.board.dto.MemberDTO;
+import com.board.entity.movie.GenreEntity;
 import com.board.entity.repository.FavGenreRepository;
 import com.board.service.FavGenreServiceImpl;
 import com.board.service.MemberService;
@@ -133,6 +134,9 @@ public class MemberController {
 		
 		String nickname = (String)session.getAttribute("nickname");
 		model.addAttribute("nickname", nickname);
+		
+		Optional<Map<String, Object>> genre = favGenre.getFavGenre();
+		model.addAttribute("favGenre", genre.orElse(null));
 	}
 	
 	@ResponseBody
