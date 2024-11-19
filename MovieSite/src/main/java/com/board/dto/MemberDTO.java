@@ -22,12 +22,19 @@ public class MemberDTO {
 	private String username;
 	private String nickname;
 	private String gender;
-	private String birth;
+	private String ssn;
 	private String telno;
+	private String description;
 	private LocalDateTime regdate;
+	private LocalDateTime lastlogindate;
+	private LocalDateTime lastlogoutdate;
 	private LocalDateTime lastpwdate;
 	private Long pwcheck;
 	private String role;
+	private String orgFilename;
+	private String storedFilename;
+	private long filesize;
+	private Long point;
 	
 	//Entity -> DTO
 	public MemberEntity dtoToEntity(MemberDTO memberDTO) {
@@ -37,12 +44,19 @@ public class MemberDTO {
 											.username(memberDTO.getUsername())
 											.nickname(memberDTO.getNickname())
 											.gender(memberDTO.getGender())
-											.birth(memberDTO.getBirth())
+											.ssn(memberDTO.getSsn())
 											.telno(memberDTO.getTelno())
+											.description(memberDTO.getDescription())
 											.regdate(memberDTO.getRegdate())
+											.lastlogindate(memberDTO.getLastlogindate())
+											.lastlogoutdate(memberDTO.getLastlogoutdate())
 											.lastpwdate(memberDTO.getLastpwdate())
 											.pwcheck(memberDTO.getPwcheck())
 											.role(memberDTO.getRole())
+											.org_filename(memberDTO.getOrgFilename())
+											.stored_filename(memberDTO.getStoredFilename())
+											.filesize(memberDTO.getFilesize())
+											.point(memberDTO.getPoint())
 											.build();
 		return memberEntity;
 	}
@@ -54,12 +68,19 @@ public class MemberDTO {
 		this.username = memberEntity.getUsername();
 		this.nickname = memberEntity.getNickname();
 		this.gender = memberEntity.getGender();
-		this.birth = memberEntity.getBirth();
+		this.ssn = memberEntity.getSsn();
 		this.telno = memberEntity.getTelno();
+		this.description = memberEntity.getDescription();
 		this.regdate= memberEntity.getRegdate();
+		this.lastlogindate = memberEntity.getLastlogindate();
+		this.lastlogoutdate = memberEntity.getLastlogoutdate();
 		this.lastpwdate = memberEntity.getLastpwdate();
 		this.pwcheck = memberEntity.getPwcheck();
 		this.role = memberEntity.getRole();
+		this.orgFilename = memberEntity.getOrg_filename();
+		this.storedFilename = memberEntity.getStored_filename();
+		this.filesize = memberEntity.getFilesize();
+		this.point=memberEntity.getPoint();
 		
 		
 	}

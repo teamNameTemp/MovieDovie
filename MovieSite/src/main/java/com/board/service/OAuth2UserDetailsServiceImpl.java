@@ -14,7 +14,6 @@ import com.board.entity.MemberEntity;
 import com.board.entity.repository.MemberRepository;
 import jakarta.servlet.http.HttpSession;
 import lombok.AllArgsConstructor;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -48,6 +47,7 @@ public class OAuth2UserDetailsServiceImpl extends DefaultOAuth2UserService {
         String phoneNumber = null;
         String gender = null;
         String birthdate = null;
+        String birthyear = null;
 
         // 제공자별 사용자 정보 매핑
         switch (provider) {
@@ -60,17 +60,9 @@ public class OAuth2UserDetailsServiceImpl extends DefaultOAuth2UserService {
                 birthdate = (String) naverResponse.get("birthyear") + "-" + (String) naverResponse.get("birthday");
                 break;
 
-            case "facebook":
-                providerId = oAuth2User.getAttribute("id");
-                email = oAuth2User.getAttribute("email");
-                //phoneNumber = oAuth2User.getAttribute("phone"); // 페이스북은 기본적으로 전화번호 제공을 제한하므로 주의
-                gender = oAuth2User.getAttribute("gender");
-                birthdate = oAuth2User.getAttribute("birthday");
-                break;
-
             case "kakao":
                 Map<String, Object> kakaoAccount = oAuth2User.getAttribute("kakao_account");
-                providerId = String.valueOf(oAuth2User.getAttribute("id"));
+                providerId = Long.toString((Long) oAuth2User.getAttribute("id"));
                 email = (String) kakaoAccount.get("email");
                 phoneNumber = (String) kakaoAccount.get("phone_number");
                 gender = (String) kakaoAccount.get("gender");
@@ -90,16 +82,15 @@ public class OAuth2UserDetailsServiceImpl extends DefaultOAuth2UserService {
         log.info("=========================================== OAuth2 로그인 단계: Email 정보 ({})", email);
         log.info("=========================================== OAuth2 로그인 단계: phoneNum 정보 ({})", phoneNumber);
         log.info("=========================================== OAuth2 로그인 단계: gender 정보 ({})", gender);
-        log.info("=========================================== OAuth2 로그인 단계: birth 정보 ({})", birthdate);
+
 
         // 세션에 사용자 정보 저장
         session.setAttribute("email", email);
         session.setAttribute("phoneNumber", phoneNumber);
         session.setAttribute("gender", gender);
-        session.setAttribute("birthdate", birthdate);
 
         // 회원 정보 저장 또는 업데이트
-        MemberEntity member = saveOrUpdateMember(email, provider, gender, phoneNumber, birthdate);
+        MemberEntity member = saveOrUpdateMember(email, provider, gender, phoneNumber);
 
         // 권한 설정
         List<SimpleGrantedAuthority> grantedAuthorities = List.of(new SimpleGrantedAuthority(member.getRole()));
@@ -119,7 +110,7 @@ public class OAuth2UserDetailsServiceImpl extends DefaultOAuth2UserService {
         return memberOAuth2DTO;
     }
 
-    private MemberEntity saveOrUpdateMember(String email, String provider, String gender, String phoneNumber, String birthdate) {
+    private MemberEntity saveOrUpdateMember(String email, String provider, String gender, String phoneNumber) {
         return memberRepository.findById(email).orElseGet(() -> {
             MemberEntity member = MemberEntity.builder()
                     .email(email)
@@ -128,10 +119,10 @@ public class OAuth2UserDetailsServiceImpl extends DefaultOAuth2UserService {
                     .role("USER")
                     .regdate(LocalDateTime.now())
                     .nickname("oauth")
-                    .gender(gender != null ? gender : "여자") // 사용자가 지정한 값 또는 기본값 설정
-                    .telno(phoneNumber != null ? phoneNumber : "01012345678") // 사용자가 지정한 값 또는 기본값 설정
-                    .birth(birthdate != null ? birthdate : "1997-01-01" )
+                    .gender(gender != null ? gender : "") // 사용자가 지정한 값 또는 기본값 설정
+                    .telno(phoneNumber != null ? phoneNumber : "") // 사용자가 지정한 값 또는 기본값 설정
                     .build();
+            
             return memberRepository.save(member);
         });
     }

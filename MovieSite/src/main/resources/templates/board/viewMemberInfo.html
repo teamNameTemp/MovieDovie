@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>회원 정보 보기</title>
+<link rel="stylesheet" href="/css/board.css">
+</head>
+<body>
+	<div class="main">
+		<h1 style="text-align: center;">회원정보 보기</h1>
+		<br>
+		<div class="boardView">			
+			<div style="width:70%;height:auto;margin:auto;padding:20px;border:none;"></div>
+			<img th:src="@{'/board/viewProfile?' +'email='+ ${member.email}}" style="display:block;width:60%;height:auto;margin:auto">
+			<div class="field">이메일 : <span id="email" th:text="${member.email}"></span></div>
+			<div class="field">이름 : <span id="username" th:text="${member.username}"></span></div>
+			<div class="field">주민등록번호: <span id="ssn" th:text="${member.ssn}"></span></div>
+			<div class="field">성별 : <span id="gender" th:text="${member.gender}"></span></div>
+			<div class="field">닉네임 : <span id="nickname" th:text="${member.nickname}"></span></div>
+			<div class="field">전화번호 : <span id="telno" th:text="${member.telno}"></span></div>
+			<div class="field">가입 일자 : <span th:text="${#temporals.format(member.regdate,'yyyy-MM-dd HH:mm:ss')}"></span></div>
+			<div class="field">마지막 로그인 날짜 : <span th:text="${#temporals.format(member.lastlogindate,'yyyy-MM-dd HH:mm:ss')}"></span></div>
+			<div class="field">마지막 로그아웃 날짜 : <span th:text="${#temporals.format(member.lastlogoutdate,'yyyy-MM-dd HH:mm:ss')}"></span></div>
+			<div class="field">마지막 패스워드 변경일 : <span th:text="${#temporals.format(member.lastpwdate,'yyyy-MM-dd HH:mm:ss')}"></span></div>
+			<th:block th:if="${member.role == 'USER'}">
+				<div class="field">회원 권한 : <span>일반 회원</span></div>
+			</th:block>
+			<th:block th:if="${member.role == 'MASTER'}">
+				<div class="field">회원 권한 : <span>관리자</span></div>
+			</th:block>	
+			<br><br>
+		</div>
+		<br>
+		<div class="bottom_menu">
+			<a href="/board/list?page=1">처음으로</a> &nbsp;&nbsp;
+			<a href="javascript:modifyMemberInfo()">기본정보 변경</a> &nbsp;&nbsp;
+			<a href="javascript:deleteID()">회원탈퇴</a> &nbsp;&nbsp;
+		</div>
+	</div>
+	<br><br>
+	
+	<script src="/js/getCookie.js"></script>
+	<script>
+		const deleteID = () => {
+			if (confirm('정말로 회원 탈퇴를 하시겠습니까?')) {
+				let authkey = getCookie('authkey');
+				let email = getCookie('email');
+				let password = getCookie('password');
+				
+				// 쿠키 삭제
+				if (authkey !== undefined) 
+					document.cookie = 'authkey=' + authkey + ';path=/;max-age=0';
+				if (email !== undefined) 
+					document.cookie = 'email=' + email + ';path=/;max-age=0';
+				if (password !== undefined) 
+					document.cookie = 'password=' + password + ';path=/;max-age=0';
+					
+				document.location = '/member/deleteID';	
+			}
+		}
+
+		const modifyMemberInfo = () => {
+			document.location = '/board/modifyMemberInfo';
+		};
+	</script>
+</body>
+</html>
