@@ -56,6 +56,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
 // window.onload로 모든 기능 초기화
 window.onload = function() {
+  /*
   // 갯수 업데이트 함수
   function updateNotificationCount() {
     const dropdownItems = document.querySelectorAll('.dropdown-content .dropdown-item'); // 드롭다운 항목들을 다시 선택
@@ -90,7 +91,8 @@ window.onload = function() {
       dropdown();
     };
   }
-
+  */
+  
   // fastfood 메뉴 클릭
   const fastfoodItems = document.getElementsByClassName('fastfood');
   if (fastfoodItems.length > 0) {
@@ -101,46 +103,5 @@ window.onload = function() {
     });
   }
 
-  // 드롭다운 토글
-  function dropdown() {
-    var v = document.querySelector('.dropdown-content');
-    var dropbtn = document.querySelector('.dropbtn');
-    if (v) {
-      v.classList.toggle('show');
-      if (dropbtn) {
-        dropbtn.style.borderColor = 'rgb(94, 94, 94)';
-      }
-    }
-  }
 
-  // 메뉴 변경
-  function showMenu(value) {
-    var dropbtn_icon = document.querySelector('.dropbtn_icon');
-    var dropbtn_content = document.querySelector('.dropbtn_content');
-    var dropbtn = document.querySelector('.dropbtn');
-
-    if (dropbtn_icon) {
-      dropbtn_icon.innerText = '';
-    }
-    if (dropbtn_content) {
-      dropbtn_content.innerText = value;
-      dropbtn_content.style.color = '#252525';
-    }
-    if (dropbtn) {
-      dropbtn.style.borderColor = '#3992a8';
-    }
-  }
-
-  // 외부 클릭 시 드롭다운 숨기기
-  window.onclick = (e) => {
-    if (!e.target.matches('.dropbtn_click')) {
-      var dropdowns = document.getElementsByClassName("dropdown-content");
-      for (let i = 0; i < dropdowns.length; i++) {
-        var openDropdown = dropdowns[i];
-        if (openDropdown.classList.contains('show')) {
-          openDropdown.classList.remove('show');
-        }
-      }
-    }
-  };
 };

@@ -178,6 +178,7 @@ public class MasterController {
 	            
 	            //댓글 등록 알람 전달
 	            String masterNickname = (String)session.getAttribute("nickname");
+	            String masterEmail= (String)session.getAttribute("email");
 	            List<RequestDTO> requestList = requestService.findBySeqno(dto.getReqseqno());
 	           
                 RequestDTO requestDTO = requestList.get(0);
@@ -187,8 +188,10 @@ public class MasterController {
             
 	    		String content = masterNickname + "님이 '" + title + "'에 댓글을 달았습니다.";
 	    		String type = "reply";
-	    		notificationService.newNotiForUser(recieverEmail, content, type, seqno);
-	           
+	    		if(!masterEmail.equals(recieverEmail)) {
+	    			notificationService.newNotiForUser(recieverEmail, content, type, seqno);
+	    		}
+	    		
 	            break;
 	        case "U":
 	            requestReplyService.replyUpdate(dto); // 댓글 수정

@@ -22,6 +22,7 @@ import com.board.dto.ReplyInterface;
 import com.board.dto.RequestDTO;
 import com.board.dto.RequestReplyDTO;
 import com.board.dto.movie.MovieDTO;
+import com.board.entity.NotificationEntity;
 import com.board.entity.RequestEntity;
 import com.board.entity.RequestReplyEntity;
 import com.board.entity.movie.GenreEntity;
@@ -104,6 +105,26 @@ public class BoardController {
 
 		model.addAttribute("role", memberDTO.getRole());
 
+		
+		/////////////////// 알람 처리 ///////////////////
+		model.addAttribute("email", email);
+		
+		 // 알림 목록 가져오기 (빈 리스트일 경우 처리)
+	    List<NotificationEntity> noti = notificationService.notiForUser(email);
+	    
+	    if (noti == null) {noti = new ArrayList<>();}
+	    
+	    // 알림이 있을 경우 첫 번째 알림의 seqno 가져오기
+	    Long seqno = null;
+	    if (!noti.isEmpty()) {
+	        seqno = noti.get(0).getRequestEntity().getSeqno();
+	    }
+
+	    model.addAttribute("seqno", seqno);
+	    model.addAttribute("noti", noti);  // 알림 목록을 모델에 추가
+	    
+	    System.out.println("Noti object: " + noti);
+	    System.out.println("Noti size: " + (noti != null ? noti.size() : "null"));
 	}
 
 	
@@ -169,6 +190,25 @@ public class BoardController {
 		model.addAttribute("watches",watches);
 		model.addAttribute("bookmarks",bookmarks);
 
+		
+
+		/////////////////// 알람 처리 ///////////////////
+		model.addAttribute("email", email);
+		
+		 // 알림 목록 가져오기 (빈 리스트일 경우 처리)
+	    List<NotificationEntity> noti = notificationService.notiForUser(email);
+	    
+	    if (noti == null) {noti = new ArrayList<>();}
+	    
+	    // 알림이 있을 경우 첫 번째 알림의 seqno 가져오기
+	    Long seqno = null;
+	    if (!noti.isEmpty()) {
+	        seqno = noti.get(0).getRequestEntity().getSeqno();
+	    }
+
+	    model.addAttribute("seqno", seqno);
+	    model.addAttribute("noti", noti);  // 알림 목록을 모델에 추가
+		
 	}
 
 	@PostMapping("/movieDetail/reviews")
@@ -320,15 +360,32 @@ public class BoardController {
 	public void getRequest(Model model, HttpSession session) {
 
 		// 세션 이메일 값 가져오기
-		String SessionEmail = (String) session.getAttribute("email"); // 현재 로그인 중인 사람의 이메일
-		model.addAttribute("email", SessionEmail);
+		String email = (String) session.getAttribute("email"); // 현재 로그인 중인 사람의 이메일
+		model.addAttribute("email", email);
 
 		// 이메일로 회원 정보 가져오기
-		MemberDTO memberDTO = memberService.memberInfo(SessionEmail);
+		MemberDTO memberDTO = memberService.memberInfo(email);
 		model.addAttribute("nickname", memberDTO.getNickname());
 
-		model.addAttribute("maxSeqno", masterService.getMaxSeqno(SessionEmail) + 1);
+		model.addAttribute("maxSeqno", masterService.getMaxSeqno(email) + 1);
 
+
+		/////////////////// 알람 처리 ///////////////////
+		
+		 // 알림 목록 가져오기 (빈 리스트일 경우 처리)
+	    List<NotificationEntity> noti = notificationService.notiForUser(email);
+	    
+	    if (noti == null) {noti = new ArrayList<>();}
+	    
+	    // 알림이 있을 경우 첫 번째 알림의 seqno 가져오기
+	    Long seqno = null;
+	    if (!noti.isEmpty()) {
+	        seqno = noti.get(0).getRequestEntity().getSeqno();
+	    }
+
+	    model.addAttribute("seqno", seqno);
+	    model.addAttribute("noti", noti);  // 알림 목록을 모델에 추가
+		
 	}
 
 	// 요청사항 DB 업로드
@@ -357,16 +414,16 @@ public class BoardController {
 		int postNum = 10; // 한 화면에 보여지는 게시물 행의 갯수
 		int pageListCount = 10; // 화면 하단에 보여지는 페이지리스트의 페이지 갯수
 
-		String SessionEmail = (String) session.getAttribute("email"); // 현재 로그인 중인 사람의 이메일
-		model.addAttribute("email", SessionEmail);
+		String email = (String) session.getAttribute("email"); // 현재 로그인 중인 사람의 이메일
+		model.addAttribute("email", email);
 
 		// 이메일로 회원 정보 가져오기
-		MemberDTO memberDTO = memberService.memberInfo(SessionEmail);
+		MemberDTO memberDTO = memberService.memberInfo(email);
 		model.addAttribute("nickname", memberDTO.getNickname());
 
 		PageUtil page = new PageUtil();
 
-		Page<RequestEntity> list = requestService.mylist(pageNum, postNum, keyword, SessionEmail);
+		Page<RequestEntity> list = requestService.mylist(pageNum, postNum, keyword, email);
 		int totalCount = (int) list.getTotalElements();
 		model.addAttribute("list", list);
 		model.addAttribute("listIsEmpty", list.hasContent() ? "N" : "Y");
@@ -376,6 +433,25 @@ public class BoardController {
 		model.addAttribute("keyword", keyword);
 		model.addAttribute("pageList",
 				page.getBoardRequestPageList(pageNum, postNum, pageListCount, totalCount, keyword));
+	
+	
+
+		/////////////////// 알람 처리 ///////////////////
+		
+		 // 알림 목록 가져오기 (빈 리스트일 경우 처리)
+	    List<NotificationEntity> noti = notificationService.notiForUser(email);
+	    
+	    if (noti == null) {noti = new ArrayList<>();}
+	    
+	    // 알림이 있을 경우 첫 번째 알림의 seqno 가져오기
+	    Long seqno = null;
+	    if (!noti.isEmpty()) {
+	        seqno = noti.get(0).getRequestEntity().getSeqno();
+	    }
+
+	    model.addAttribute("seqno", seqno);
+	    model.addAttribute("noti", noti);  // 알림 목록을 모델에 추가
+	
 	}
 
 	// 회원이 자신의 요청사항 상세보기
@@ -385,19 +461,37 @@ public class BoardController {
 			@RequestParam(name = "keyword", defaultValue = "", required = false) String keyword, HttpSession session) {
 
 		// 세션 이메일 값 가져오기
-		String SessionEmail = (String) session.getAttribute("email"); // 현재 로그인 중인 사람의 이메일
-		model.addAttribute("email", SessionEmail);
+		String email = (String) session.getAttribute("email"); // 현재 로그인 중인 사람의 이메일
+		model.addAttribute("email", email);
 
 		// 이메일로 회원 정보 가져오기
-		MemberDTO memberDTO = memberService.memberInfo(SessionEmail);
+		MemberDTO memberDTO = memberService.memberInfo(email);
 		model.addAttribute("nickname", memberDTO.getNickname());
 
 		model.addAttribute("view", masterService.view(seqno));
 		model.addAttribute("status", masterService.statusCheck(seqno));
 		model.addAttribute("page", pageNum);
 		model.addAttribute("keyword", keyword);
-		model.addAttribute("pre_seqno", requestService.my_pre_seqno(seqno, SessionEmail, keyword));
-		model.addAttribute("next_seqno", requestService.my_next_seqno(seqno, SessionEmail, keyword));
+		model.addAttribute("pre_seqno", requestService.my_pre_seqno(seqno, email, keyword));
+		model.addAttribute("next_seqno", requestService.my_next_seqno(seqno, email, keyword));
+	
+		
+		/////////////////// 알람 처리 ///////////////////
+				
+		// 알림 목록 가져오기 (빈 리스트일 경우 처리)
+		List<NotificationEntity> noti = notificationService.notiForUser(email);
+		
+		if (noti == null) {noti = new ArrayList<>();}
+		
+		// 알림이 있을 경우 첫 번째 알림의 seqno 가져오기
+		Long seqnonoti = null;
+		if (!noti.isEmpty()) {
+		  seqnonoti = noti.get(0).getRequestEntity().getSeqno();
+		}
+		
+		model.addAttribute("seqno", seqnonoti);
+		model.addAttribute("noti", noti);  // 알림 목록을 모델에 추가
+
 	}
 
 	// 회원이 자신의 요청 게시물 삭제

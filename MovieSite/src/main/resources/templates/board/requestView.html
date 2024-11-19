@@ -106,7 +106,8 @@
 	}
 	
 	.button:hover {
-	    background-color:black;
+	    background-colorr: white;
+	    color: black;
 	}
 	
 	/* 댓글 창 */
@@ -398,12 +399,13 @@
 			    참고로 댓글은 수정 및 삭제가 불가능합니다. 댓글 작성 시 참고하시길 바랍니다.<br><br>
 			    <div id="replyList"></div>
 			</div>
-			
-			<!-- 댓글 등록 폼 -->
-			<div class="replyRegister">
-			    <textarea id="replyContent" placeholder="댓글을 작성하세요"></textarea>
-			    <button id="registerReplyBtn">등록</button>
-			</div>
+			<th:block th:if="${status == 'PENDING'}">
+				<!-- 댓글 등록 폼 -->
+				<div class="replyRegister">
+				    <textarea id="replyContent" placeholder="댓글을 작성하세요"></textarea>
+				    <button id="registerReplyBtn">등록</button>
+				</div>
+			</th:block>
 		</div>
 		
 		<script>
