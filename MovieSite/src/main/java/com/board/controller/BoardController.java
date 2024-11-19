@@ -327,7 +327,7 @@ public class BoardController {
 	
 	@PostMapping("/search/movies")
 	@ResponseBody
-	public List<MovieDTO> searchMovies(@RequestParam ("keyword") String keyword) {
+	public List<List<MovieDTO>> searchMovies(@RequestParam ("keyword") String keyword) {
 
 		try {
 			List<List<MovieDTO>> movies = tmdb.searchMovies(keyword,3).block();
