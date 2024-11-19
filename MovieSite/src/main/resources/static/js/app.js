@@ -161,7 +161,16 @@ document.addEventListener("DOMContentLoaded", function() {
 	updateVisibility();
 });
 
+  // 초기 항목 갯수 표시
+  updateNotificationCount();
 
+  // 드롭다운 메뉴 클릭
+  const dropbtnClick = document.querySelector('.dropbtn_click');
+  if (dropbtnClick) {
+    dropbtnClick.onclick = () => {
+      dropdown();
+    };
+  }
 
 //TOGGLE
 

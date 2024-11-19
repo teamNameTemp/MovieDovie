@@ -1,0 +1,1238 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+
+
+<head>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Jua&display=swap')
+	;
+	
+/* 모달 기본 스타일 */
+		
+        .modal {
+            display: none; /* 기본적으로 숨겨짐 */
+            position: fixed; 
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5); /* 반투명 배경 */
+            z-index: 1500;
+        }
+
+        /* 모달 콘텐츠 스타일 */
+        .modal-content {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            width: 80%; /* 너비를 80%로 설정 */
+            max-width: 800px; /* 최대 너비를 설정하여 너무 커지지 않도록 */
+            position: absolute;
+            color:#000;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%); /* 화면 중앙으로 이동 */
+        }
+
+        /* 닫기 버튼 스타일 */
+        .close-btn {
+            color: #aaa;
+            font-size: 28px;
+            font-weight: bold;
+            float: right;
+            cursor: pointer;
+        }
+
+        .close-btn:hover,
+        .close-btn:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        /* 대여 현황 박스 스타일 */
+        .rental-status-box {
+            background-color: #333;
+            padding: 20px;
+            border-radius: 10px;
+            cursor: pointer;
+            text-align: center;
+            
+        }
+
+        .rental-status-box h3, .rental-status-box p {
+            color: #fff;
+        }
+        
+       
+
+        /* 표 스타일 */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+
+        th, td {
+            padding: 10px;
+            text-align: center;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+
+.profile-status-box {
+    margin-top: 50px;
+    background-color: #FFFAFA;
+    position: absolute;
+    top: 100px;  /* 상단에서 20px 떨어진 위치 */
+    right: 50%; /* 우측에서 20px 떨어진 위치 */
+    z-index: 500;
+    padding: 15px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* 그림자 효과 */
+    width: 500px;
+    height: 443px; 
+    color: #151515; /* 텍스트 색상 */
+    opacity: 1;
+    text-align: center;
+}
+
+.profile-status-box:hover {
+    opacity: 1;
+}
+
+.profile-status-box h3 {
+    margin: 0;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.profile-status-box p {
+    margin: 5px 0;
+    font-size: 28px;
+}
+
+/* 프로필 사진을 원형으로 만들기 위한 스타일 */
+.profile-status-box .profile-img {
+    width: 200px;
+    height: 200px;
+    border-radius: 50%; /* 원형으로 */
+    object-fit: cover;  /* 이미지 비율 유지 */
+    margin-bottom: 10px; /* 이미지와 텍스트 사이의 간격 */
+}
+
+/* 프로필 이름 스타일 */
+.profile-status-box .profile-name {
+    font-size: 30px;
+    font-weight: bold;
+}
+/*대여 정보 박스*/
+.rental-status-box {
+	margin-top: 50px;
+	background-color: gray;
+    position: fixed;
+    top: 20px;  /* 상단에서 20px 떨어진 위치 */
+    right: 20px; /* 우측에서 20px 떨어진 위치 */
+    z-index: 500;
+    padding: 15px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* 그림자 효과 */
+    width: 200px;
+    color: #fff; /* 텍스트 색상 */
+    z-index: 1500;
+    opacity: 0.6;
+}
+
+.rental-status-box:hover {
+	opacity: 1;
+}
+.rental-status-box h3 {
+    margin: 0;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.rental-status-box p {
+    margin: 5px 0;
+    font-size: 14px;
+}
+
+
+/* 유저 상태 정보 박스 */
+.user-status-box {
+    margin-top: 50px;
+    background-color: white;
+    position: absolute;
+    top: 100px;
+    right: 20%;
+    z-index: 300;
+    padding: 15px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* 그림자 효과 */
+    width: 400px;  /* 표와 텍스트를 충분히 담을 크기로 설정 */
+    color: #151515; /* 텍스트 색상 */
+    opacity: 1;
+}
+
+.user-status-box:hover {
+    opacity: 1.0;
+} 
+
+.user-status-box h3 {
+    margin: 0;
+    font-size: 18px;
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+.user-info-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.user-info-table th, .user-info-table td {
+    padding: 8px;
+    text-align: center;
+    border-bottom: 1px solid #ddd;
+}
+
+.user-info-table th {
+    width: 30%; /* 항목, 정보 칸을 동일한 비율로 설정 */
+    background-color: none;
+} 
+
+.user-info-table td { 
+    width: 70%;
+    color: #151515;
+}
+
+.user-info-table tr:hover {
+    background-color: rgba(255, 255, 255, 0.1); /* 행을 hover했을 때 배경 색 변경 */
+}
+/* 기본 스타일 */
+body {
+	margin: 0;
+	font-family: 'Jua', sans-serif;
+	background-color: #151515;
+	color: #fff;
+}
+
+.container {
+	max-width: 1920px;
+	margin-left: 50px;
+	margin-top: 50px;
+	
+}
+
+/* 프로필 영역 */
+.myprofile-container {
+	display: flex;
+	justify-content: flex-start;
+	align-items: center;
+	flex-wrap: wrap; /* 반응형을 위해 flex-wrap을 사용 */
+	padding: 0 20px;
+	overflow-x:auto;
+}
+
+.myprofile-container::-webkit-scrollbar {
+	width: 10px;  /* 스크롤바 너비 설정 */
+	height:10px;
+}
+
+.myprofile-container::-webkit-scrollbar-thumb {
+	background-color: gray;
+	border-radius: 10px;
+}
+/* 프로필 사진 */
+.myprofile-picture {
+	margin-top: 100px;
+	margin-left: 100px;
+	margin-bottom: 100px;
+	border-radius: 50%;
+	overflow: hidden;
+	width: 300px;
+	height: 300px;
+	background-color: white;
+	flex-shrink: 0; /* 이미지 크기가 줄어들지 않도록 설정 */
+}
+
+.myprofile-picture img {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+}
+
+/* 프로필 정보 */
+.profile-info {
+	margin-left: 50px;
+	background-color: none;
+	flex-grow: 1;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+}
+
+.profile-info h2, .profile-info p {
+	margin: 10px 0;
+}
+
+.profile-info h2 {
+	font-size: 1.5em;
+	color: #fff;
+}
+
+.profile-info p {
+	color: #bbb;
+	font-size: 1em;
+}
+
+* {
+	box-sizing: border-box;
+	margin: 0;
+	padding: 0px;
+}
+
+.navbar {
+	width: 100%;
+	height: 50px;
+	background-color: black;
+	position: fixed;
+	top: 0;
+	z-index: 1000;
+}
+
+.navbar-container {
+	display: flex;
+	position: relative;
+	align-items: center;
+	padding: 0 50px;
+	height: 100%;
+	color: white;
+	font-family: "Jua", sans-serif;
+	z-index: 1000;
+}
+
+.logo-container {
+	flex: 1;
+}
+
+.logo {
+	font-size: 30px;
+	color: #4dbf00;
+}
+
+.menu-container {
+	flex: 6;
+}
+
+.menu-list {
+	margin-left: 30px;
+	display: flex;
+	list-style: none;
+}
+
+.bell-box {
+	position: relative;
+	height: 20px;
+	background: #3C3D37;
+	border: 10px;
+	border-radius: 20px;
+	width: 80px;
+	height: 30px;
+	display: flex;
+	align-items: center;
+	margin-top: 10px;
+	margin-bottom: 10px;
+}
+
+.menu-list-item {
+	margin-right: 30px;
+}
+
+.menu-list-item.active {
+	font-weight: bold;
+}
+
+.profile-container {
+	margin-right: 50px;
+	flex: 7;
+	display: flex;
+	align-items: center;
+	justify-content: flex-end;
+}
+
+/*Mypage prorile*/
+.profile-mycontainer {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	margin-top: 20px; /* 프로필 영역 위에 여백 */
+	padding: 20px;
+	background-color: #000; /* 배경색을 좀 더 어두운 색으로 설정 */
+	border-radius: 10px;
+}
+
+.profile-mypicture img {
+	width: 100%;
+	height: 100%;
+	object-fit: cover; /* 이미지 크기를 맞추면서 잘리게 처리 */
+}
+
+.profile-info {
+	color: #fff;
+}
+
+.profile-info h2 {
+	margin: 0;
+	font-size: 24px;
+	color: #fff;
+}
+
+.profile-info p {
+	margin: 5px 0;
+	color: #bbb;
+}
+
+.profile-text-container {
+	margin: 0 20px;
+}
+
+.profile-picture {
+	width: 32px;
+	height: 32px;
+	margin-top: 6.5px;
+	margin-bottom: 6.5px;
+	border-radius: 50%;
+	object-fit: cover;
+}
+
+.toggle {
+	width: 40px;
+	height: 20px;
+	background-color: white;
+	border-radius: 30px;
+	display: flex;
+	align-items: center;
+	justify-content: space-around;
+	position: relative;
+}
+
+.toggle-icon {
+	color: goldenrod;
+}
+
+.toggle-ball {
+	width: 18px;
+	height: 18px;
+	background-color: black;
+	position: absolute;
+	right: 1px;
+	border-radius: 50%;
+	cursor: pointer;
+	transition: 1s ease all;
+}
+
+.sidebar {
+	width: 50px;
+	height: 100%;
+	background-color: black;
+	position: fixed;
+	top: 0;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	padding-top: 60px;
+}
+
+.left-menu-icon {
+	color: white;
+	font-size: 20px;
+	margin-bottom: 40px;
+}
+
+.content-container {
+	margin-left: 0px;
+}
+
+.featured-content {
+	height: 1200px;
+	padding-left: 50px;
+}
+
+.featured-title {
+	width: 200px;
+}
+
+.featured-desc {
+	width: 500px;
+	color: lightgray;
+	margin: 30px 0;
+}
+
+.featured-button {
+	background-color: #4dbf00;
+	color: white;
+	padding: 10px 20px;
+	border-radius: 10px;
+	border: none;
+	outline: none;
+	font-weight: bold;
+}
+
+.movie-list-container {
+	border-radius: 30px;
+	margin-left: 50px;
+	padding: 0 20px;
+	z-index: 500;
+}
+
+p.movie-list-item-desc {
+	text-align: center;
+}
+
+.movie-list-wrapper {
+	position: relative;
+	overflow: hidden;
+	display:flex;
+	z-index: 500;
+}
+
+.movie-list {
+	display: flex;
+	align-items: center;
+	height: 500px;
+	padding: 0 20px;
+	position: relative;
+	transition: all 1s ease-in-out;
+	z-index: 500;
+	background-color:white; 
+	overflow-x: auto;
+	background-image: url('/images/img/film.png');  /* 배경 이미지 경로 */
+	background-size: 120% 185%;  /* 이미지 크기를 컨테이너에 맞게 조정 */
+	background-position: center; /* 이미지 위치 조정 */
+	background-repeat:  center-no-repeat; /* 이미지 반복 방지 */
+	
+}
+.movie-list::-webkit-scrollbar {
+	width: 10px;  /* 스크롤바 너비 설정 */
+	height:10px;
+}
+
+.movie-list::-webkit-scrollbar-thumb {
+	background-color: gray;
+	border-radius: 10px;
+}
+
+
+.movie-list-item {
+	box-shadow: 0px 0px 30px 10px #151515;
+	border-radius: 30px;
+	background-color: #151515;
+	margin-right: 30px;
+	position: relative;
+	z-index: 500;
+}
+
+.jua-regular {
+	font-family: "Jua", sans-serif;
+	font-weight: 400;
+	font-style: normal;
+}
+ 
+.movie-list-item-img {
+	border-radius: 30px;
+	transition: all 1s ease-in-out;
+	width: 202.5px;
+	height: 300px;
+	object-fit: cover;
+	z-index: 0;
+	cursor: pointer;
+}
+
+/* 개별 버튼 스타일 */
+.movie-list-item-button {
+	padding: 0 10px;
+	color: inherit; /* 기본 색상 유지 */
+	border-radius: 50%;
+	outline: none;
+	border: none;
+	opacity: 0;
+	cursor: pointer;
+	transition: color 0.3s ease-in-out;
+}
+
+.arrow {
+	font-size: 40px;
+	position: absolute; /* 절대 위치 */
+	top: 50%; /* Y축 중앙 */
+	transform: translateY(-50%); /* 정확히 중앙 정렬 */
+	z-index: 999; /* 이미지 위로 올리기 */
+	cursor: pointer; /* 화살표에 커서를 올리면 클릭 가능 */
+}
+
+왼쪽 화살표
+.arrow.fa-chevron-left {
+	left: 10px; /* 왼쪽에 배치 */
+}
+
+/* 오른쪽 화살표 */
+.arrow.fa-chevron-right {
+	right: 10px; /* 오른쪽에 배치 */
+}
+
+.container.active {
+	background-color: white;
+}
+
+.navbar-container.active {
+	background-color: white;
+	color: black;
+}
+
+.sidebar.active {
+	background-color: white;
+}
+
+.left-menu-icon.active {
+	color: black;
+}
+
+.toggle.active {
+	background-color: black;
+}
+
+.toggle-ball.active {
+	background-color: white;
+	transform: translateX(-20px);
+}
+
+@import url('https://fonts.googleapis.com/icon?family=Material+Icons');
+
+.dropdown-label {
+	font-size: 12px;
+	margin: 10px;
+	font-weight: bold;
+	color: rgb(50, 50, 50);
+}
+
+.dropdown {
+	position: relative;
+	display: inline-block;
+}
+
+.dropbtn_icon {
+	font-family: 'Material Icons';
+}
+
+.dropbtn {
+	display: block;
+	border: 2px solid rgb(94, 94, 94);
+	border-radius: 4px;
+	background-color: #fcfcfc;
+	font-weight: 400;
+	color: rgb(124, 124, 124);
+	padding: 12px;
+	width: 240px;
+	text-align: left;
+	cursor: pointer;
+	font-size: 12px;
+	z-index: 1;
+	position: relative;
+}
+
+.dropdown-content {
+	display: none;
+	font-weight: 400;
+	background-color: #fcfcfc;
+	min-width: 240px;
+	border-radius: 8px;
+	height: 160px;
+	overflow: scroll;
+	box-shadow: 0px 0px 10px 3px rgba(190, 190, 190, 0.6);
+}
+
+.dropdown-content::-webkit-scrollbar {
+	width: 5px;
+	height: 10px;
+}
+
+.dropdown-content::-webkit-scrollbar-thumb {
+	border-radius: 2px;
+	background-color: rgb(194, 194, 194)
+}
+
+.dropdown-content div {
+	display: block;
+	text-decoration: none;
+	color: rgb(37, 37, 37);
+	font-size: 12px;
+	padding: 12px 20px;
+}
+
+.dropdown-content div:hover {
+	background-color: rgb(226, 226, 226);
+}
+
+.dropdown-content.show {
+	display: block;
+}
+
+#notification-count {
+	position: absolute;
+	top: 5px;
+	right: 10px;
+	font-size: 18px;
+	color: white;
+}
+
+.dropdown-content .dropdown-item:hover {
+	color: red; /* 마우스를 올리면 빨간색으로 변경 */
+}
+
+a {
+	text-align: center;
+	text-decoration: none;
+	color: inherit;
+}
+
+@import url('https://fonts.googleapis.com/icon?family=Material+Icons');
+
+.dropdown {
+	position: relative;
+	display: inline-block;
+}
+
+.dropbtn_icon {
+	font-family: 'Material Icons';
+}
+
+.dropbtn {
+	border: 1px solid rgb(37, 37, 37);
+	border-radius: 4px;
+	background-color: #f5f5f5;
+	font-weight: 400;
+	color: rgb(37, 37, 37);
+	padding: 10px;
+	width: 120px;
+	text-align: left;
+	cursor: pointer;
+	font-size: 12px;
+	margin-top: 4.5px;
+	margin-bottom: 4.5px;
+}
+/* 드롭다운 컨텐츠 스타일 */
+.dropdown-content {
+	display: none;
+	font-weight: 400;
+	background-color: #fcfcfc;
+	width: 240px;
+	min-width: 240px;
+	border-radius: 8px;
+	height: 160px;
+	overflow: scroll;
+	box-shadow: 0px 0px 10px 3px rgba(190, 190, 190, 0.6);
+	position: absolute; /* 위치를 절대값으로 지정 */
+	left: 50%; /* 아이콘의 가로 중앙에 맞추기 */
+	transform: translateX(-50%); /* 정확히 중앙에 위치하도록 이동 */
+	top: 100%; /* 드롭다운이 버튼 바로 아래에 표시되도록 */
+}
+
+.dropdown-content a {
+	display: block;
+	text-decoration: none;
+	color: rgb(37, 37, 37);
+	font-size: 12px;
+	padding: 12px 20px;
+}
+
+.dropdown-content a:hover {
+	background-color: #ececec
+}
+
+.dropdown:hover .dropdown-content {
+	display: block;
+}
+
+.search-box {
+	position: relative;
+	top: 50%;
+	transform: translate(0%, -50%);
+	height: 30px;
+	margin-left: -10px;
+	border-radius: 30px;
+	background-color: #949BA0;
+}
+
+.search-btn {
+	float: left;
+	width: 30px;
+	height: 30px;
+	border-radius: 50%;
+	background: #949BA0;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	border: none;
+	outline: none;
+}
+
+.search-box input::placeholder {
+	color: #c0c0c0;
+}
+
+.search-txt {
+	float: center;
+	padding: 0;
+	background: none;
+	border: none;
+	outline: none;
+	color: white;
+	font-size: 15px;
+	line-height: 30px;
+	width: 0; /* 추가 */
+	transition: 0.5s; /* 추가 */
+	font-family: "Jua", sans-serif;
+	font-weight: 400;
+	font-style: normal;
+}
+
+.search-box:hover>form .search-txt {
+	width: 300px;
+}
+
+.search-box>form .search-txt:focus {
+	width: 300px;
+}
+
+.search-box:hover>form .search-btn {
+	background: none;
+}
+
+@import url('https://fonts.googleapis.com/css2?family=Jua&display=swap')
+	;
+</style>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link
+	href="https://fonts.googleapis.com/css2?family=Roboto:wght@100;300;400;500;700;900&family=Sen:wght@400;700;800&display=swap"
+	rel="stylesheet">
+<link rel="stylesheet"
+	href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css">
+<title>MyPage</title>
+</head>
+<body>
+	<div th:replace="/fragments/nav/menubar::menubar"></div>
+	<div th:replace="/fragments/nav/sidebar::sidebar"></div>
+
+	<div class="container">
+		<!-- 프로필 영역 -->
+		<div class="myprofile-container" style="background-color: #4dbf00; background-image: url('/images/background.jpg'); background-size: cover; background-position: center;">
+	<div class="profile-status-box">
+	<p style="margin-bottom:50px;">~~님의 프로필 사진</p>
+    <img src="/images/img/profile.jpg" alt="Profile Image" class="profile-img">
+    <h3 class="profile-name" style="margin-bottom:10px;">name</h3>
+    <h3 class="profile-name">선호 장르: ~~,~~,~~</h3>
+</div>
+			<!-- 대여현황 박스 -->
+    <div class="rental-status-box" id="rentalStatusBox">
+        <h3>대여 현황</h3>
+        <p>현재 대여 중: 3</p>
+    </div>
+
+   <div id="rentalModal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" id="closeModal">&times;</span>
+            <h2>대여 리스트</h2>
+            
+            <!-- 대여 목록 표 -->
+            <table>
+                <thead>
+                    <tr>
+                        <th>영화 이름</th>
+                        <th>대여 만료 날짜</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>영화 A</td>
+                        <td>2024-12-01</td>
+                    </tr>
+                    <tr>
+                        <td>영화 B</td>
+                        <td>2024-12-05</td>
+                    </tr>
+                    <tr>
+                        <td>영화 C</td>
+                        <td>2024-12-10</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    
+    <div class="user-status-box">
+    <h3>김보병님의 정보</h3>
+    <table class="user-info-table">
+        <tr>
+            <th>항목</th>
+            <td>정보</td>
+        </tr>
+        <tr>
+            <th>이름</th>
+            <td>김보병</td>
+        </tr>
+        <tr>
+            <th>별명</th>
+            <td>보병</td>
+        </tr>
+        <tr>
+            <th>성별</th>
+            <td>남</td>
+        </tr>
+        <tr>
+            <th>생일</th>
+            <td>1997-05-03</td>
+        </tr>
+        <tr>
+            <th>전화번호</th>
+            <td>010-9172-6325</td>
+        </tr>
+        <tr>
+            <th>회원 가입일</th>
+            <td>2020-05-15</td>
+        </tr>
+        
+        <tr>
+            <th>이메일</th>
+            <td>rlaqhqud@gmail.com</td>
+        </tr>
+        
+        <tr>
+            <th> 회원 아이디</th>
+            <td>rlaqhqud</td>
+        </tr>
+        
+         <tr>
+			<th>좋아하는 장르</th>
+            <td></td>
+        </tr>
+    </table>
+</div>
+
+			
+
+			
+			<div class="movie-list-container" style="margin-left: 0px; margin-top: 600px;">
+				<h1 class="movie-list-title" style="color: #4dbf00;">대여 영화 리스트</h1>
+				<div class="movie-list-wrapper">
+					<div class="movie-list" style="background-color: transparent; background-image: none;">
+
+						<div class="movie-list-item">
+							<img class="movie-list-item-img" style="width:270px; height:400px;"src="/images/img/18.jpg" alt="">
+							<p class="movie-list-item-desc">2024-00-00</p>
+
+						</div>
+						<div class="movie-list-item">
+							<img class="movie-list-item-img" style="width:270px; height:400px;" src="/img/9.jpg" alt="">
+							<p class="movie-list-item-desc">2024-00-00</p>
+
+						</div>
+
+						<div class="movie-list-item">
+							<img class="movie-list-item-img" style="width:270px; height:400px;" src="/img/9.jpg" alt="">
+							<p class="movie-list-item-desc">2024-00-00</p>
+
+						</div>
+
+						<div class="movie-list-item">
+							<img class="movie-list-item-img" style="width:270px; height:400px;" src="/img/9.jpg" alt="">
+							<p class="movie-list-item-desc">2024-00-00</p>
+
+						</div>
+						<div class="movie-list-item">
+							<img class="movie-list-item-img"style="width:270px; height:400px;" src="/img/9.jpg" alt="">
+							<p class="movie-list-item-desc">2024-00-00</p>
+
+						</div>
+
+						<div class="movie-list-item">
+							<img class="movie-list-item-img" style="width:270px; height:400px;" src="/img/9.jpg" alt="">
+							<p class="movie-list-item-desc">2024-00-00</p>
+
+						</div>
+
+						<div class="movie-list-item">
+							<img class="movie-list-item-img" style="width:270px; height:400px;" src="/img/12.jpg" alt="">
+
+							<p class="movie-list-item-desc">2024-00-00</p>
+
+						</div>
+						<div class="movie-list-item">
+							<img class="movie-list-item-img" style="width:270px; height:400px;" src="/img/9.jpg" alt="">
+							<p class="movie-list-item-desc">2024-00-00</p>
+
+						</div>
+						<div class="movie-list-item">
+							<img class="movie-list-item-img" style="width:270px; height:400px;" src="/img/9.jpg" alt="">
+							<p class="movie-list-item-desc">2024-00-00</p>
+
+						</div>
+
+						<div class="movie-list-item">
+							<img class="movie-list-item-img" style="width:270px; height:400px;"src="/img/9.jpg" alt="">
+							<p class="movie-list-item-desc">2024-00-00</p>
+
+						</div>
+
+					</div>
+
+				</div>
+			</div>
+			 
+		</div>
+	</div>
+
+	<div class="movie-list-container">
+		<h1 class="movie-list-title">북마크한 영화 리스트</h1>
+		<div class="movie-list-wrapper">
+			<div class="movie-list">
+
+				<div class="movie-list-item">
+					<img class="movie-list-item-img" src="/images/img/18.jpg" alt="">
+
+
+				</div>
+				<div class="movie-list-item">
+					<img class="movie-list-item-img" src="/img/9.jpg" alt="">
+
+
+				</div>
+
+				<div class="movie-list-item">
+					<img class="movie-list-item-img" src="/img/9.jpg" alt="">
+
+
+				</div>
+
+				<div class="movie-list-item">
+					<img class="movie-list-item-img" src="/img/9.jpg" alt="">
+
+
+				</div>
+				<div class="movie-list-item">
+					<img class="movie-list-item-img" src="/img/9.jpg" alt="">
+
+
+				</div>
+
+				<div class="movie-list-item">
+					<img class="movie-list-item-img" src="/img/9.jpg" alt="">
+
+
+				</div>
+
+				<div class="movie-list-item">
+					<img class="movie-list-item-img" src="/img/12.jpg" alt="">
+
+
+
+				</div>
+				<div class="movie-list-item">
+					<img class="movie-list-item-img" src="/img/9.jpg" alt="">
+
+
+				</div>
+				<div class="movie-list-item">
+					<img class="movie-list-item-img" src="/img/9.jpg" alt="">
+
+
+				</div>
+
+				<div class="movie-list-item">
+					<img class="movie-list-item-img" src="/img/9.jpg" alt="">
+
+
+				</div>
+
+			</div>
+			
+
+
+		</div>
+	</div>
+
+	<div class="movie-list-container">
+		<h1 class="movie-list-title">내가 시청한 영화</h1>
+		<div class="movie-list-wrapper">
+			<div class="movie-list">
+
+				<div class="movie-list-item">
+					<img class="movie-list-item-img" src="/img/9.jpg" alt="">
+
+
+				</div>
+				<div class="movie-list-item">
+					<img class="movie-list-item-img" src="/img/9.jpg" alt="">
+
+
+				</div>
+
+				<div class="movie-list-item">
+					<img class="movie-list-item-img" src="/img/9.jpg" alt="">
+
+				</div>
+
+				<div class="movie-list-item">
+					<img class="movie-list-item-img" src="/img/9.jpg" alt="">
+
+
+				</div>
+				<div class="movie-list-item">
+					<img class="movie-list-item-img" src="/img/9.jpg" alt="">
+
+
+				</div>
+
+				<div class="movie-list-item">
+					<img class="movie-list-item-img" src="/img/9.jpg" alt="">
+
+				</div>
+
+				<div class="movie-list-item">
+					<img class="movie-list-item-img" src="/img/12.jpg" alt="">
+
+				</div>
+				<div class="movie-list-item">
+					<img class="movie-list-item-img" src="/img/9.jpg" alt="">
+
+
+				</div>
+				<div class="movie-list-item">
+					<img class="movie-list-item-img" src="/img/9.jpg" alt=""> <span
+						class="movie-list-item-title">Her</span>
+
+
+				</div>
+
+				<div class="movie-list-item">
+					<img class="movie-list-item-img" src="/img/9.jpg" alt="">
+
+
+				</div>
+
+			</div>
+			
+
+
+		</div>
+	</div>
+
+	<div class="movie-list-container">
+		<h1 class="movie-list-title">내가 좋아요 한 영화</h1>
+		<div class="movie-list-wrapper">
+			<div class="movie-list">
+
+				<div class="movie-list-item">
+
+					<!-- /board/movieDetail?title=${movie.movieNm} -->
+					<a href="/board/movieDetail?title=황해"><img
+						class="movie-list-item-img" src="/img/8.jpg" alt=""></a>
+
+				</div>
+				<div class="movie-list-item">
+					<img class="movie-list-item-img" src="/img/9.jpg" alt="">
+
+
+				</div>
+				<div class="movie-list-item">
+					<img class="movie-list-item-img" src="/img/9.jpg" alt="">
+
+
+				</div>
+
+				<div class="movie-list-item">
+					<img class="movie-list-item-img" src="/img/9.jpg" alt="">
+
+
+				</div>
+
+				<div class="movie-list-item">
+					<img class="movie-list-item-img" src="/img/9.jpg" alt="">
+
+
+				</div>
+				<div class="movie-list-item">
+					<img class="movie-list-item-img" src="/img/9.jpg" alt="">
+
+
+				</div>
+
+				<div class="movie-list-item">
+					<img class="movie-list-item-img" src="/img/9.jpg" alt="">
+
+
+				</div>
+
+				<div class="movie-list-item">
+					<img class="movie-list-item-img" src="/img/12.jpg" alt="">
+
+
+
+				</div>
+				<div class="movie-list-item">
+					<img class="movie-list-item-img" src="/img/9.jpg" alt="">
+
+
+				</div>
+				<div class="movie-list-item">
+					<img class="movie-list-item-img" src="/img/9.jpg" alt=""> <span
+						class="movie-list-item-title">Her</span>
+
+
+				</div>
+
+				<div class="movie-list-item">
+					<img class="movie-list-item-img" src="/img/9.jpg" alt="">
+
+
+				</div>
+
+			</div>
+			
+
+		</div>
+	</div>
+	<script src="/js/app.js"></script>
+	<script>
+        // HTML 요소들 선택
+        const rentalStatusBox = document.getElementById('rentalStatusBox');
+        const rentalModal = document.getElementById('rentalModal');
+        const closeModal = document.getElementById('closeModal');
+
+        // 대여 현황 박스를 클릭하면 모달 열기
+        rentalStatusBox.addEventListener('click', function() {
+            rentalModal.style.display = 'block';
+        });
+
+        // 모달 닫기 버튼 클릭하면 모달 닫기
+        closeModal.addEventListener('click', function() {
+            rentalModal.style.display = 'none';
+        });
+
+        // 모달 밖을 클릭하면 모달 닫기
+        window.addEventListener('click', function(event) {
+            if (event.target === rentalModal) {
+                rentalModal.style.display = 'none';
+            }
+        });
+    </script>
+</body>
+</html>
