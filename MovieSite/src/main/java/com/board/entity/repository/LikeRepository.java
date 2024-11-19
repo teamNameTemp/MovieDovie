@@ -18,7 +18,7 @@ public interface LikeRepository extends JpaRepository<LikeEntity, Long>{
 			+ "count(*) as totalCount, "
 			+ "count(CASE WHEN likecheck = 'Y' THEN 1 END) as likeCount, "
 			+ "round(count(case when likecheck = 'Y' THEN 1 END) * 100.0 / count(*),2) as likePercentage "
-			+ "from tbl_like "
+			+ "from like "
 			+ "group by movieseqno "
 			+ "having count(case when likecheck = 'Y' then 1 end) >= 10 "
 			+ "order by likePercentage DESC", nativeQuery = true)
@@ -30,7 +30,7 @@ public interface LikeRepository extends JpaRepository<LikeEntity, Long>{
 			+ "count(*) as totalCount, "
 			+ "count(CASE WHEN dislikecheck = 'Y' THEN 1 END) as dislikeCount, "
 			+ "round(count(case when dislikecheck = 'Y' THEN 1 END) * 100.0 / count(*),2) as dislikePercentage "
-			+ "from tbl_like "
+			+ "from like "
 			+ "group by movieseqno "
 			+ "having count(case when dislikecheck = 'Y' then 1 end) >= 10 "
 			+ "order by dislikePercentage DESC", nativeQuery = true)
@@ -44,7 +44,7 @@ public interface LikeRepository extends JpaRepository<LikeEntity, Long>{
 			+ "count(CASE WHEN dislikecheck = 'Y' THEN 1 END) as dislikeCount, "
 			+ "round(count(case when likecheck = 'Y' THEN 1 END) * 100.0 / count(*),0) as likePercentage, "
 			+ "round(count(case when dislikecheck = 'Y' THEN 1 END) * 100.0 / count(*),0) as dislikePercentage "
-			+ "from tbl_like "
+			+ "from like "
 			+ "group by movieseqno "
 			+ "having (count(*) >= 20) and (count(case when likecheck = 'Y' THEN 1 END) * 100.0 / count(*) <= 60) and (count(case when dislikecheck = 'Y' THEN 1 END) * 100.0 / count(*) <=60) "
 			+ "order by totalCount DESC", nativeQuery = true)

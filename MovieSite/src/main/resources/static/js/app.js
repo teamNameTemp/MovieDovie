@@ -21,50 +21,6 @@ document.addEventListener("DOMContentLoaded", function() {
 		});
 	});
 
-	// 모든 북마크 버튼을 선택합니다
-	const bookmarkButtons = document.querySelectorAll('.movie-list-item-button .fa-bookmark');
-
-	bookmarkButtons.forEach(button => {
-		button.addEventListener('click', function(event) {
-			event.preventDefault();
-			let action = "add";
-			const movieId = this.closest('.movie-list-item-button').getAttribute('data-movie-id');
-
-			if(this.closest('.movie-list-item-button').classList.contains('active')){
-				action = "remove";
-			}
-			// active 클래스를 토글합니다
-			this.closest('.movie-list-item-button').classList.toggle('active');
-
-			
-			const formData = new FormData();
-			formData.append("movieId",movieId);
-			formData.append("action",action);
-			
-			// 서버에 북마크 상태 업데이트 요청을 보냅니다
-			fetch('/board/movieDetail/bookmark', {
-				method: 'POST',
-				body:formData
-			})
-				.then(response => response.json())
-				.then(data => {
-					if (data.message === "good") {
-						alert(action == 'add' ? '북마크가 성공적으로 업데이트되었습니다' : '북마크가 성공적으로 제거되었습니다');
-					} else {
-						alert('북마크 업데이트 실패');
-						// 서버 업데이트 실패 시 UI 변경을 되돌립니다
-						this.closest('.movie-list-item-button').classList.toggle('active');
-					}
-				})
-				.catch(error => {
-					console.error('에러 발생:', error);
-					// 에러 발생 시 UI 변경을 되돌립니다
-					this.closest('.movie-list-item-button').classList.toggle('active');
-				});
-				
-		});
-	});
-
 	// 공통 변수 설정
 	const movieLists = document.querySelectorAll(".movie-list");  // 모든 .movie-list 요소 선택
 	const arrowsLeft = document.querySelectorAll(".fa-chevron-left.arrow");  // 왼쪽 화살표

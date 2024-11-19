@@ -15,7 +15,7 @@ public interface MemberLogRepository extends JpaRepository<MemberLogEntity, Long
 	        "  SUM(CASE WHEN TRUNC(m.inouttime) = TRUNC(SYSDATE) - 1 THEN 1 ELSE 0 END) AS yesterdayVisitors, " +
 	        "  SUM(CASE WHEN TRUNC(m.inouttime) = TRUNC(SYSDATE) THEN 1 ELSE 0 END) AS todayVisitors, " +
 	        "  COUNT(m.seqno) AS totalVisitors " +
-	        " FROM tbl_member_log m WHERE m.status = 'LOGIN'", nativeQuery = true)
+	        " FROM member_log m WHERE m.status = 'LOGIN'", nativeQuery = true)
 	public List<Object[]> visitResult();
 }
  

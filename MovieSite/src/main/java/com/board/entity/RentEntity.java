@@ -5,6 +5,8 @@ import java.time.LocalDateTime;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
+import com.board.entity.movie.MovieEntity;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -45,11 +47,15 @@ public class RentEntity {
 	@Column(name = "status", length=2, nullable = false)
 	private String status;
 	
-	@Column(name = "email", length=320, nullable = false)
-	private String email;
+	@ManyToOne(fetch=FetchType.LAZY)
+	@OnDelete(action=OnDeleteAction.CASCADE)
+	@JoinColumn(name="email")
+	private MemberEntity email;
 	
-	@Column(name="movieseqno", nullable = false)
-	private long movieseqno;
+	@ManyToOne(fetch=FetchType.LAZY)
+	@OnDelete(action=OnDeleteAction.CASCADE)
+	@JoinColumn(name="movieId")
+	private MovieEntity movieId;
 	
 	
 	/*
