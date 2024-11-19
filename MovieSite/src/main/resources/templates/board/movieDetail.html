@@ -150,7 +150,7 @@
 							<p style="color: white;">트레일러 보기</p>
 						</button>
 				</a>
-				</span> <input type="button" class="featured-button" value="장바구니 담기 | 가격">
+				</span> <input type="button" class="featured-button" th:value="${rent != null and rent.status == 'Y'} ? '대여 중' : '대여하기' ">
 			</aside>
 			
 			

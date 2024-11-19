@@ -34,7 +34,7 @@ public class MakeController {
     @PostMapping("/make/movie/save-all")
     @ResponseBody
     public Map<String,Object> postSaveAll(){
-    	  List<MovieDTO> list = tmdb.getTrendingMovies("day", 1, "ko-KR").block();
+    	  List<MovieDTO> list = tmdb.getTrendingMovies("week", 1, "ko-KR").block();
           List<MovieDTO> temp = new ArrayList<>();
           
           for(MovieDTO d : list) {
