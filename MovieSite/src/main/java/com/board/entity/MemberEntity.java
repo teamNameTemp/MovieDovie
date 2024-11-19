@@ -40,14 +40,23 @@ public class MemberEntity {
 	@Column(name="gender", length=20, nullable=false)
 	private String gender;
 	
-	@Column(name="birth", nullable=true)
-	private String birth;
+	@Column(name="ssn", nullable=true)
+	private String ssn;
 	
 	@Column(name="telno", length=50, nullable=false)
 	private String telno;
 	
+	@Column(name="description",length=2000,nullable=true)
+	private String description;
+	
 	@Column(name="regdate", nullable=false)
 	private LocalDateTime regdate;
+	
+	@Column(name="lastlogindate", nullable=true)
+	private LocalDateTime lastlogindate;
+	
+	@Column(name="lastlogoutdate", nullable=true)
+	private LocalDateTime lastlogoutdate;
 	
 	@Column(name="lastpwdate", nullable=true)
 	private LocalDateTime lastpwdate;
@@ -58,13 +67,28 @@ public class MemberEntity {
 	@Column(name="role", length=50, nullable=false)
 	private String role;
 	
+	@Column(name="org_filename")
+	private String org_filename;
+	
+	@Column(name="stored_filename")
+	private String stored_filename;
+	
+	@Column(name="filesize",nullable=true)
+	private Long filesize;
+	
+	@Column(name="memeberPoint")
+	private Long point;
+	
 	public void updateMemberInfo(MemberDTO member) {
 		
+		this.email = member.getEmail();
 		this.username = member.getUsername();
 		this.nickname = member.getNickname();
 		this.gender = member.getGender();
-		this.birth = member.getBirth();
+		this.ssn = member.getSsn();
 		this.telno = member.getTelno();
+		this.filesize = member.getFilesize();
+		this.point=member.getPoint();
 		
 	}
 
