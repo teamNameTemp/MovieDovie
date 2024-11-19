@@ -1,5 +1,9 @@
 package com.board.controller;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.net.URLEncoder;
@@ -7,7 +11,6 @@ import java.nio.file.Files;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
-
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -16,16 +19,28 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.multipart.MultipartFile;
 
+import com.board.dto.FavGenreDTO;
 import com.board.dto.MemberDTO;
+import com.board.entity.movie.GenreEntity;
+import com.board.entity.repository.FavGenreRepository;
+import com.board.service.FavGenreServiceImpl;
 import com.board.service.MemberService;
 
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import com.board.service.TmdbAPIServiceImpl;
+
+import jakarta.servlet.http.HttpSession;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
+import com.board.util.PasswordMaker;
 
 
 @AllArgsConstructor
@@ -35,6 +50,8 @@ public class MemberController {
 
 	private final MemberService service;
 	private final BCryptPasswordEncoder pwdEncoder;
+	private final TmdbAPIServiceImpl tmdb;
+	private final FavGenreServiceImpl favGenre;
 
 		
 	//로그인 화면 보기
@@ -270,6 +287,58 @@ public class MemberController {
 		rs.getOutputStream().write(fileBytes); //stream을 통해 1차원 byte 타입 배열로 변환된 데이터(추후 파일로 변환)를 Buffer에 씀...
 		rs.getOutputStream().flush(); //버퍼에 있는 내용을 write
 		rs.getOutputStream().close(); //스트림 닫기
+	}
+	// 추천 장르
+	@GetMapping("/selectGenre")
+	public void getMovieSelect(Model model, HttpSession session) {
+		Map<String,Integer> map = tmdb.getGenreList().block();
+		
+		model.addAttribute("genres",map);
+		
+		String nickname = (String)session.getAttribute("nickname");
+		model.addAttribute("nickname", nickname);
+		
+		Optional<Map<String, Object>> genre = favGenre.getFavGenre();
+		model.addAttribute("favGenre", genre.orElse(null));
+	}
+	
+	@ResponseBody
+	@PostMapping("/selectGenre")
+	public Map<String,Boolean> postSelectGenres(@RequestBody Map<String, List<String>> payload, HttpSession session){
+		List<String> selectedGenres = payload.get("genres");
+		FavGenreDTO favGenreDTO = new FavGenreDTO();
+		switch(selectedGenres.size()) {
+		case 1:
+			favGenreDTO.setGenre1(selectedGenres.get(0));
+			break;
+		case 2:
+			favGenreDTO.setGenre1(selectedGenres.get(0));
+			favGenreDTO.setGenre2(selectedGenres.get(1));
+			break;
+		case 3:
+			favGenreDTO.setGenre1(selectedGenres.get(0));
+			favGenreDTO.setGenre2(selectedGenres.get(1));
+			favGenreDTO.setGenre3(selectedGenres.get(2));
+			break;
+		}
+		
+		String email = (String)session.getAttribute("email");
+		favGenreDTO.setEmail(email);
+
+		favGenre.saveTheFavGenre(favGenreDTO);
+		
+		Map<String, Boolean> response = new HashMap<>();
+		response.put("success", true);
+		return response;
+	}
+		
+	//회원 가입 시 아이디 중복 확인
+	@ResponseBody
+	@PostMapping("/emailCheck")
+	public int postEmailCheck(@RequestBody String email) throws Exception{
+		
+		int result = service.emailCheck(email);
+		return result;
 	}
 	
 	//이전 비밀번호와 비교

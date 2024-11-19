@@ -20,12 +20,12 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity(name="member")
-@Table(name="tbl_member")
+@Table(name="member")
 public class MemberEntity {
 	
 	//Column(name="컬럼명", length=길이, nullable=null여부(false : not null / true : null)
 	@Id
-	@Column(name="email", length=320, nullable=false)
+	@Column(name="email", length=320, nullable=false, unique = true)
 	private String email;
 	
 	@Column(name="password", length=200, nullable=false)

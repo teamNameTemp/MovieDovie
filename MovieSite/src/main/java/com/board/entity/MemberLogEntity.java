@@ -16,6 +16,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 
+
+
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -27,7 +29,7 @@ public class MemberLogEntity {
 
    @Id
    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "MEMBER_LOG_SEQ")
-   @SequenceGenerator(name="MEMBER_LOG_SEQ", sequenceName = "jpa_member_log_seq", initialValue = 1, allocationSize = 1)
+   @SequenceGenerator(name="MEMBER_LOG_SEQ", sequenceName = "member_log_seq", initialValue = 1, allocationSize = 1)
    private Long seqno;
    
    @Column(name="inouttime",nullable=false)
