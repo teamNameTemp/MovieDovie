@@ -90,7 +90,7 @@ public class OAuth2UserDetailsServiceImpl extends DefaultOAuth2UserService {
         session.setAttribute("gender", gender);
 
         // 회원 정보 저장 또는 업데이트
-        MemberEntity member = saveOrUpdateMember(email, provider, gender, phoneNumber);
+        MemberEntity member = saveOrUpdateMember(email, provider, gender, phoneNumber, birthdate);
 
         // 권한 설정
         List<SimpleGrantedAuthority> grantedAuthorities = List.of(new SimpleGrantedAuthority(member.getRole()));
@@ -109,8 +109,8 @@ public class OAuth2UserDetailsServiceImpl extends DefaultOAuth2UserService {
 
         return memberOAuth2DTO;
     }
-
-    private MemberEntity saveOrUpdateMember(String email, String provider, String gender, String phoneNumber) {
+    //todo : 주민등록번호 
+    private MemberEntity saveOrUpdateMember(String email, String provider, String gender, String phoneNumber, String birthdate) {
         return memberRepository.findById(email).orElseGet(() -> {
             MemberEntity member = MemberEntity.builder()
                     .email(email)

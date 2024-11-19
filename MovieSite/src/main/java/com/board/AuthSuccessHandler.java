@@ -42,11 +42,12 @@ public class AuthSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
         session.setAttribute("email", member.getEmail());
         session.setAttribute("username", member.getUsername());
         session.setAttribute("role", member.getRole());
+        session.setAttribute("nickname", member.getNickname());
 
         log.info("------------------------ 로그인 성공 : 세션 생성 ------------------------ ");
 
         // 로그인 성공 후 리다이렉트할 URL 설정
-        setDefaultTargetUrl("/board/selectGenre");
+        setDefaultTargetUrl("/member/selectGenre");
         
         // 설정된 리다이렉트 URL로 이동
         super.onAuthenticationSuccess(request, response, authentication);

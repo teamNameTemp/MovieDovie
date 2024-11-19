@@ -1,22 +1,23 @@
 package com.board.service;
 
 import java.util.List;
-
 import org.springframework.data.domain.Page;
-
 import com.board.dto.MemberDTO;
 import com.board.entity.repository.MemberRepository;
 
 public interface MemberService {
-
-	//회원 가입
+	
+	//회원가입
 	public void signup(MemberDTO member);
 	
-	//회원 정보 가져 오기
+	//회원 정보 가져오기
 	public MemberDTO memberInfo(String email);
 	
 	//사용자 기본 정보 수정
 	public void modifyMemberInfo(MemberDTO memberDTO);
+
+	//이메일 중복 확인
+	public int emailCheck(String email);
 	
 	//패스워드 수정
 	public void modifyMemberPassword(MemberDTO member);
@@ -36,8 +37,10 @@ public interface MemberService {
 	//이메일 찾기
 	public String searchEmail(MemberDTO member);
 	
-	
-
+	//비밀번호 찾기
+	public String searchPassword(MemberDTO member);
+	//관리자페이지 - 통계 : 회원 가입한 날 확인
+	public List<Object[]> signupResult();
 	
    
 }

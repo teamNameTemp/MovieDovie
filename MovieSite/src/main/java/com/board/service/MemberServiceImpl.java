@@ -1,8 +1,10 @@
 package com.board.service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Service;
 
 import com.board.dto.MemberDTO;
@@ -112,9 +114,11 @@ public class MemberServiceImpl implements MemberService {
 	
 
 
-	
+	//관리자페이지 - 통계 : 회원 가입한 날 확인
+	@Override
+	public List<Object[]> signupResult(){
+		return memberRepository.signupResult();
+	}
 
 
- 
-      
 }
