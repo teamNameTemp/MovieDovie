@@ -8,103 +8,7 @@
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css">
     <title>알림</title>
 
-	<script>
 	
-	window.onload = function() {
-	    // 갯수 업데이트 함수
-	    function updateNotificationCount() {
-	        const dropdownItems = document.querySelectorAll('.dropdown-content-noti .dropdown-item'); // 드롭다운 항목들을 다시 선택
-	        const notificationCount = document.getElementById('notification-count'); // 갯수를 표시할 요소
-	        let itemCount = dropdownItems.length; // 항목 수를 가져옴
-	        
-	        // 항목 수가 4 이상일 경우 4+로 표시
-	        if (itemCount >= 5) {
-	            notificationCount.textContent = '4+';
-	        } else {
-	            notificationCount.textContent = itemCount;
-	        }
-	    }
-	    // 초기 항목 갯수 표시
-	    updateNotificationCount();
-	    
-	    
-	    // 알림 삭제 아이콘 클릭 시
-        document.querySelectorAll('.deleteicon').forEach(function(deleteIcon) {
-            deleteIcon.addEventListener('click', function(event) {
-                // 삭제하려는 알림의 seqno 값 가져오기
-                const seqno = event.target.getAttribute('data-seqno');
-
-                // 알림 삭제를 위한 POST 요청 보내기
-                const formData = new FormData();
-                formData.append('seqno', seqno);
-
-                fetch('/deleteNoti', {
-                    method: 'POST',
-                    body: formData
-                })
-                .then(response => {
-                    if (response.ok) {
-                        // 서버에서 삭제 처리 성공 시 알림 UI에서 해당 항목 제거
-                        const notificationItem = document.getElementById(`noti-item-${seqno}`);
-                        if (notificationItem) {
-                        	//alert("삭제");
-                            notificationItem.remove();  // 삭제된 알림 제거
-                        }
-                        // 알림 갯수 업데이트
-                        updateNotificationCount();
-                    } else {
-                        alert("알림 삭제에 실패했습니다.");
-                    }
-                })
-                .catch(error => {
-                    alert('알림 삭제 중 오류가 발생했습니다.');
-                });
-            });
-        });
-	}
-	
-
-    
-	document.addEventListener('DOMContentLoaded', function() {
-	    // 모든 알림 항목에 클릭 이벤트 리스너 추가
-	    document.querySelectorAll('.dropdown-item').forEach(function(notiItem) {
-	        notiItem.addEventListener('click', function(event) {
-	        	
-	            // 클릭된 알림의 seqno 값을 가져오기
-	            const seqno = event.currentTarget.getAttribute('data-seqno');
-	            console.log('seqno:', seqno); // seqno 값 확인
-
-	            // URLSearchParams로 변경하여 데이터를 전송
-	            const params = new URLSearchParams();
-	            params.append('seqno', seqno);
-
-	            // 읽음 처리 POST 요청
-	            fetch('/notiIsRead', {
-	                method: 'POST',
-	                body: params
-	            })
-	            .then(response => {
-	                if (response.ok) {
-	                    // 읽음 처리 성공 시 UI 변경
-	                    const notiItem = document.getElementById(`noti-item-${seqno}`);
-	                    if (notiItem) {
-	                    	//alert("읽기 성공")
-	                    }
-	                } else {
-	                    alert('알림 읽음 처리 실패');
-	                }
-	            })
-	            .catch(error => {
-	                console.error('알림 읽음 처리 실패:', error);
-	                alert('알림 읽음 처리 중 오류가 발생했습니다.');
-	            });
-	        });
-	    });
-	});
-	
-	
-	
-	</script>
 	<style>
 		.dropdown-item {
 		    display: flex;            /* Flexbox로 항목을 배치 */
@@ -264,6 +168,106 @@
 	    </div>
 	    
 	</div>
+
+
+	<script>
+	
+	window.onload = function() {
+	    // 갯수 업데이트 함수
+	    function updateNotificationCount() {
+	        const dropdownItems = document.querySelectorAll('.dropdown-content-noti .dropdown-item'); // 드롭다운 항목들을 다시 선택
+	        const notificationCount = document.getElementById('notification-count'); // 갯수를 표시할 요소
+	        let itemCount = dropdownItems.length; // 항목 수를 가져옴
+	        
+	        // 항목 수가 4 이상일 경우 4+로 표시
+	        if (itemCount >= 5) {
+	            notificationCount.textContent = '4+';
+	        } else {
+	            notificationCount.textContent = itemCount;
+	        }
+	    }
+	    // 초기 항목 갯수 표시
+	    updateNotificationCount();
+	    
+	    
+	    // 알림 삭제 아이콘 클릭 시
+        document.querySelectorAll('.deleteicon').forEach(function(deleteIcon) {
+            deleteIcon.addEventListener('click', function(event) {
+                // 삭제하려는 알림의 seqno 값 가져오기
+                const seqno = event.target.getAttribute('data-seqno');
+
+                // 알림 삭제를 위한 POST 요청 보내기
+                const formData = new FormData();
+                formData.append('seqno', seqno);
+
+                fetch('/deleteNoti', {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => {
+                    if (response.ok) {
+                        // 서버에서 삭제 처리 성공 시 알림 UI에서 해당 항목 제거
+                        const notificationItem = document.getElementById(`noti-item-${seqno}`);
+                        if (notificationItem) {
+                        	//alert("삭제");
+                            notificationItem.remove();  // 삭제된 알림 제거
+                        }
+                        // 알림 갯수 업데이트
+                        updateNotificationCount();
+                    } else {
+                        alert("알림 삭제에 실패했습니다.");
+                    }
+                })
+                .catch(error => {
+                    alert('알림 삭제 중 오류가 발생했습니다.');
+                });
+            });
+        });
+	}
+	
+
+    
+	document.addEventListener('DOMContentLoaded', function() {
+	    // 모든 알림 항목에 클릭 이벤트 리스너 추가
+	    document.querySelectorAll('.dropdown-item').forEach(function(notiItem) {
+	        notiItem.addEventListener('click', function(event) {
+	        	
+	            // 클릭된 알림의 seqno 값을 가져오기
+	            const seqno = event.currentTarget.getAttribute('data-seqno');
+	            console.log('seqno:', seqno); // seqno 값 확인
+
+	            // URLSearchParams로 변경하여 데이터를 전송
+	            const params = new URLSearchParams();
+	            params.append('seqno', seqno);
+
+	            // 읽음 처리 POST 요청
+	            fetch('/notiIsRead', {
+	                method: 'POST',
+	                body: params
+	            })
+	            .then(response => {
+	                if (response.ok) {
+	                    // 읽음 처리 성공 시 UI 변경
+	                    const notiItem = document.getElementById(`noti-item-${seqno}`);
+	                    if (notiItem) {
+	                    	//alert("읽기 성공")
+	                    }
+	                } else {
+	                    alert('알림 읽음 처리 실패');
+	                }
+	            })
+	            .catch(error => {
+	                console.error('알림 읽음 처리 실패:', error);
+	                alert('알림 읽음 처리 중 오류가 발생했습니다.');
+	            });
+	        });
+	    });
+	});
+	
+	
+	
+	</script>
+
 
 </body>
 </html>
