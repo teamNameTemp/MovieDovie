@@ -128,7 +128,6 @@ public class BoardController {
 		model.addAttribute("movie",detail);
 	}
 	
-	
 	//댓글 처리
 	@ResponseBody
 	@PostMapping("/reply")
@@ -311,8 +310,6 @@ public class BoardController {
 	    return result;
 	}
 
-	
-
 //	private Map<String, Object> getMovieInfo(String movieCd) throws JsonProcessingException {
 //		String movieInfoResult = kobis.getMovieInfo(movieCd);
 //		return convertToMapper.getMovieInfo(movieInfoResult);
@@ -321,11 +318,11 @@ public class BoardController {
 //---------검색trying-------------------------
 	@GetMapping("/search")
 	public void searchPage(Model model,@RequestParam(name="keyword",required = false) String keyword) {
-//		if(keyword != null) {
-//			List<MovieDTO> list = tmdb.searchMovies(keyword).block();
-////			model.addAttribute("movies",list);
-//			log.info(list);
-//		}
+		if(keyword != null) {
+			List<List<MovieDTO>> list = tmdb.searchMovies(keyword,3).block();
+			model.addAttribute("movies",list);
+			log.info(list);
+		}
 	}
 	
 	@PostMapping("/search/movies")
@@ -333,13 +330,13 @@ public class BoardController {
 	public List<MovieDTO> searchMovies(@RequestParam ("keyword") String keyword) {
 
 		try {
-			List<MovieDTO> movies = tmdb.searchMovies(keyword).block();
+			List<List<MovieDTO>> movies = tmdb.searchMovies(keyword,3).block();
 			return movies;
 		} catch (Exception e) {
 			log.error("Error fetching movies: ", e);
 			throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "영화 검색 중 오류 발생");
 		}
 	}
-//----------------------------------
-
 }
+			//----------------------------------
+

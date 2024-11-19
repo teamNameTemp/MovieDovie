@@ -1,45 +1,46 @@
-// 검색 기능 구현
-document.addEventListener("DOMContentLoaded", function() {
-    // 검색 폼 제출 이벤트 리스너
-    const searchForm = document.querySelector('.search-box form');
-    const searchBtn = document.querySelector('.search-box button');
-    const searchInput = document.querySelector('#searchKeyword');
+function searchMovies(page = 1) {
+    const keyword = document.getElementById("searchKeyword").value;
+    if (!keyword.trim()) {
+        alert("검색어를 입력하세요");
+        return;
+    }
 
-    // 검색 실행 함수
-    const searchKeyword = () => {
-        const keyword = searchInput.value;
+    const limit = 5; // 한 번에 요청할 영화 수를 늘립니다.
 
-        if (!keyword.trim()) {
-            alert('검색어를 입력해주세요.');
-            return;
+    fetch('/board/search/movies', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: `keyword=${encodeURIComponent(keyword)}&page=${page}&limit=${limit}`
+    })
+    .then(response => response.json())
+    .then(movies => {
+        const resultsDiv = document.getElementById('searchResult');
+        if (page === 1) {
+            resultsDiv.innerHTML = ''; // 첫 페이지일 경우에만 초기화
         }
-
-        window.location.href = `/searchResult?keyword=${encodeURIComponent(keyword)}`;
-    };
-
-    // 폼 제출 이벤트
-    if (searchForm) {
-        searchForm.addEventListener('submit', function(e) {
-            e.preventDefault();
-            searchKeyword();
+        movies.forEach(movie => {
+            const card = `
+            <div class="movie-card">
+                <img src="${movie.poster_path ? 'https://image.tmdb.org/t/p/w200' + movie.poster_path : '/images/blankPoster.jpg'}" 
+                    alt="${movie.title}">
+                <h3>${movie.title}</h3>
+                <p>${movie.release_date || '개봉일 미정'}</p>
+            </div>
+            `;
+            resultsDiv.innerHTML += card;
         });
-    }
 
-    // 검색 버튼 클릭 이벤트
-    if (searchBtn) {
-        searchBtn.addEventListener('click', function(e) {
-            e.preventDefault();
-            searchKeyword();
-        });
-    }
-
-    // 엔터 키 이벤트
-    if (searchInput) {
-        searchInput.addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') {
-                e.preventDefault();
-                searchKeyword();
-            }
-        });
-    }
-});
+        // 더 많은 결과가 있을 경우 "더 보기" 버튼 추가
+        if (movies.length === limit) {
+            const loadMoreButton = document.createElement('button');
+            loadMoreButton.textContent = '더 보기';
+            loadMoreButton.onclick = () => searchMovies(page + 1);
+            resultsDiv.appendChild(loadMoreButton);
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+    });
+}
