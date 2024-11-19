@@ -4,389 +4,722 @@
 
 <head>
 <style>
-        @import url('https://fonts.googleapis.com/css2?family=Jua&display=swap');
-        /* 기본 스타일 */
-        body {
-            margin: 0;
-            font-family: 'Jua', sans-serif;
-            background-color: #151515;
-            color: #fff;
-        }
+@import url('https://fonts.googleapis.com/css2?family=Jua&display=swap')
+	;
 
-        .container {
-            width: 100%;
-            max-width: 1200px;
-            margin: 0 auto;
-        }
+.rental-status-box {
+	margin-top: 50px;
+	background-color: gray;
+	position: absolute;
+	top: 20px; /* 상단에서 20px 떨어진 위치 */
+	right: 20px; /* 우측에서 20px 떨어진 위치 */
+	z-index: 500;
+	padding: 15px;
+	border-radius: 10px;
+	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* 그림자 효과 */
+	width: 200px;
+	color: #fff; /* 텍스트 색상 */
+}
 
-        /* 프로필 영역 */
-        .myprofile-container {
-            display: flex;
-            justify-content: flex-start;
-            align-items: center;
-            flex-wrap: wrap; /* 반응형을 위해 flex-wrap을 사용 */
-            margin-top: 100px;
-            margin-right: 200px;
-            margin-bottom: 100px;
-        }
+.rental-status-box h3 {
+	margin: 0;
+	font-size: 18px;
+	font-weight: bold;
+}
 
-        /* 프로필 사진 */
-        .myprofile-picture {
-            border-radius: 50%;
-            overflow: hidden;
-            width: 300px;
-            height: 300px;
-            background-color: white;
-            margin: 0 auto;
-            flex-shrink: 0; /* 이미지 크기가 줄어들지 않도록 설정 */
-        }
+.rental-status-box p {
+	margin: 5px 0;
+	font-size: 14px;
+}
+/* 기본 스타일 */
+body {
+	margin: 0;
+	font-family: 'Jua', sans-serif;
+	background-color: #151515;
+	color: #fff;
+}
 
-        .myprofile-picture img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
+.container {
+	max-width: 1920px;
+	margin-left: 50px;
+	margin-top: 50px;
+}
 
-        /* 프로필 정보 */
-        .profile-info {
-            margin-left: 50px;
-            flex-grow: 1;
-            display: flex;
-            flex-direction: column;
-            justify-content: center; 
-        }
+/* 프로필 영역 */
+.myprofile-container {
+	display: flex;
+	justify-content: flex-start;
+	align-items: center;
+	flex-wrap: wrap; /* 반응형을 위해 flex-wrap을 사용 */
+	padding: 0 20px;
+	overflow-x: auto;
+}
 
-        .profile-info h2,
-        .profile-info p {
-            margin: 10px 0;
-        }
+/* 프로필 사진 */
+.myprofile-picture {
+	margin-top: 100px;
+	margin-left: 100px;
+	margin-bottom: 100px;
+	border-radius: 50%;
+	overflow: hidden;
+	width: 300px;
+	height: 300px;
+	background-color: white;
+	flex-shrink: 0; /* 이미지 크기가 줄어들지 않도록 설정 */
+}
 
-        .profile-info h2 {
-            font-size: 1.5em;
-            color: #fff;
-        }
+.myprofile-picture img {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+}
 
-        .profile-info p {
-            color: #bbb;
-            font-size: 1em;
-        }
+/* 프로필 정보 */
+.profile-info {
+	margin-left: 50px;
+	background-color: none;
+	flex-grow: 1;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+}
 
-      
-	@import url('https://fonts.googleapis.com/css2?family=Jua&display=swap');
-	</style>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="/css/mypage.css">
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@100;300;400;500;700;900&family=Sen:wght@400;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css">
-    <title>MyPage</title>
+.profile-info h2, .profile-info p {
+	margin: 10px 0;
+}
+
+.profile-info h2 {
+	font-size: 1.5em;
+	color: #fff;
+}
+
+.profile-info p {
+	color: #bbb;
+	font-size: 1em;
+}
+
+* {
+	box-sizing: border-box;
+	margin: 0;
+	padding: 0px;
+}
+
+.navbar {
+	width: 100%;
+	height: 50px;
+	background-color: black;
+	position: fixed;
+	top: 0;
+	z-index: 1000;
+}
+
+.navbar-container {
+	display: flex;
+	position: relative;
+	align-items: center;
+	padding: 0 50px;
+	height: 100%;
+	color: white;
+	font-family: "Jua", sans-serif;
+	z-index: 1000;
+}
+
+.logo-container {
+	flex: 1;
+}
+
+.logo {
+	font-size: 30px;
+	color: #4dbf00;
+}
+
+.menu-container {
+	flex: 6;
+}
+
+.menu-list {
+	margin-left: 30px;
+	display: flex;
+	list-style: none;
+}
+
+.bell-box {
+	position: relative;
+	height: 20px;
+	background: #3C3D37;
+	border: 10px;
+	border-radius: 20px;
+	width: 80px;
+	height: 30px;
+	display: flex;
+	align-items: center;
+	margin-top: 10px;
+	margin-bottom: 10px;
+}
+
+.menu-list-item {
+	margin-right: 30px;
+}
+
+.menu-list-item.active {
+	font-weight: bold;
+}
+
+.profile-container {
+	margin-right: 50px;
+	flex: 7;
+	display: flex;
+	align-items: center;
+	justify-content: flex-end;
+}
+
+/*Mypage prorile*/
+.profile-mycontainer {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	margin-top: 20px; /* 프로필 영역 위에 여백 */
+	padding: 20px;
+	background-color: #000; /* 배경색을 좀 더 어두운 색으로 설정 */
+	border-radius: 10px;
+}
+
+.profile-mypicture img {
+	width: 100%;
+	height: 100%;
+	object-fit: cover; /* 이미지 크기를 맞추면서 잘리게 처리 */
+}
+
+.profile-info {
+	color: #fff;
+}
+
+.profile-info h2 {
+	margin: 0;
+	font-size: 24px;
+	color: #fff;
+}
+
+.profile-info p {
+	margin: 5px 0;
+	color: #bbb;
+}
+
+.profile-text-container {
+	margin: 0 20px;
+}
+
+.profile-picture {
+	width: 32px;
+	height: 32px;
+	margin-top: 6.5px;
+	margin-bottom: 6.5px;
+	border-radius: 50%;
+	object-fit: cover;
+}
+
+.toggle {
+	width: 40px;
+	height: 20px;
+	background-color: white;
+	border-radius: 30px;
+	display: flex;
+	align-items: center;
+	justify-content: space-around;
+	position: relative;
+}
+
+.toggle-icon {
+	color: goldenrod;
+}
+
+.toggle-ball {
+	width: 18px;
+	height: 18px;
+	background-color: black;
+	position: absolute;
+	right: 1px;
+	border-radius: 50%;
+	cursor: pointer;
+	transition: 1s ease all;
+}
+
+.sidebar {
+	width: 50px;
+	height: 100%;
+	background-color: black;
+	position: fixed;
+	top: 0;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	padding-top: 60px;
+}
+
+.left-menu-icon {
+	color: white;
+	font-size: 20px;
+	margin-bottom: 40px;
+}
+
+.content-container {
+	margin-left: 0px;
+}
+
+.featured-content {
+	height: 1200px;
+	padding-left: 50px;
+}
+
+.featured-title {
+	width: 200px;
+}
+
+.featured-desc {
+	width: 500px;
+	color: lightgray;
+	margin: 30px 0;
+}
+
+.featured-button {
+	background-color: #4dbf00;
+	color: white;
+	padding: 10px 20px;
+	border-radius: 10px;
+	border: none;
+	outline: none;
+	font-weight: bold;
+}
+
+.movie-list-container {
+	border-radius: 30px;
+	margin-left: 50px;
+	padding: 0 20px;
+	z-index: 500;
+}
+
+p.movie-list-item-desc {
+	text-align: center;
+}
+
+.movie-list-wrapper {
+	position: relative;
+	overflow: hidden;
+	display: flex;
+	z-index: 500;
+}
+
+.movie-list {
+	display: flex;
+	align-items: center;
+	height: 500px;
+	padding: 0 20px;
+	position: relative;
+	transition: all 1s ease-in-out;
+	z-index: 500;
+}
+
+.movie-list-item {
+	box-shadow: 0px 0px 30px 10px #151515;
+	border-radius: 30px;
+	background-color: #151515;
+	margin-right: 30px;
+	position: relative;
+	z-index: 500;
+}
+
+.jua-regular {
+	font-family: "Jua", sans-serif;
+	font-weight: 400;
+	font-style: normal;
+}
+
+.movie-list-item-img {
+	border-radius: 30px;
+	transition: all 1s ease-in-out;
+	width: 270px;
+	height: 400px;
+	object-fit: cover;
+	z-index: 0;
+	cursor: pointer;
+}
+
+/* 개별 버튼 스타일 */
+.movie-list-item-button {
+	padding: 0 10px;
+	color: inherit; /* 기본 색상 유지 */
+	border-radius: 50%;
+	outline: none;
+	border: none;
+	opacity: 0;
+	cursor: pointer;
+	transition: color 0.3s ease-in-out;
+}
+
+.arrow {
+	font-size: 40px;
+	position: absolute; /* 절대 위치 */
+	top: 50%; /* Y축 중앙 */
+	transform: translateY(-50%); /* 정확히 중앙 정렬 */
+	z-index: 999; /* 이미지 위로 올리기 */
+	cursor: pointer; /* 화살표에 커서를 올리면 클릭 가능 */
+}
+
+왼쪽 화살표
+.arrow.fa-chevron-left {
+	left: 10px; /* 왼쪽에 배치 */
+}
+
+/* 오른쪽 화살표 */
+.arrow.fa-chevron-right {
+	right: 10px; /* 오른쪽에 배치 */
+}
+
+.container.active {
+	background-color: white;
+}
+
+.navbar-container.active {
+	background-color: white;
+	color: black;
+}
+
+.sidebar.active {
+	background-color: white;
+}
+
+.left-menu-icon.active {
+	color: black;
+}
+
+.toggle.active {
+	background-color: black;
+}
+
+.toggle-ball.active {
+	background-color: white;
+	transform: translateX(-20px);
+}
+
+@import url('https://fonts.googleapis.com/icon?family=Material+Icons');
+
+.dropdown-label {
+	font-size: 12px;
+	margin: 10px;
+	font-weight: bold;
+	color: rgb(50, 50, 50);
+}
+
+.dropdown {
+	position: relative;
+	display: inline-block;
+}
+
+.dropbtn_icon {
+	font-family: 'Material Icons';
+}
+
+.dropbtn {
+	display: block;
+	border: 2px solid rgb(94, 94, 94);
+	border-radius: 4px;
+	background-color: #fcfcfc;
+	font-weight: 400;
+	color: rgb(124, 124, 124);
+	padding: 12px;
+	width: 240px;
+	text-align: left;
+	cursor: pointer;
+	font-size: 12px;
+	z-index: 1;
+	position: relative;
+}
+
+.dropdown-content {
+	display: none;
+	font-weight: 400;
+	background-color: #fcfcfc;
+	min-width: 240px;
+	border-radius: 8px;
+	height: 160px;
+	overflow: scroll;
+	box-shadow: 0px 0px 10px 3px rgba(190, 190, 190, 0.6);
+}
+
+.dropdown-content::-webkit-scrollbar {
+	width: 5px;
+	height: 10px;
+}
+
+.dropdown-content::-webkit-scrollbar-thumb {
+	border-radius: 2px;
+	background-color: rgb(194, 194, 194)
+}
+
+.dropdown-content div {
+	display: block;
+	text-decoration: none;
+	color: rgb(37, 37, 37);
+	font-size: 12px;
+	padding: 12px 20px;
+}
+
+.dropdown-content div:hover {
+	background-color: rgb(226, 226, 226);
+}
+
+.dropdown-content.show {
+	display: block;
+}
+
+#notification-count {
+	position: absolute;
+	top: 5px;
+	right: 10px;
+	font-size: 18px;
+	color: white;
+}
+
+.dropdown-content .dropdown-item:hover {
+	color: red; /* 마우스를 올리면 빨간색으로 변경 */
+}
+
+a {
+	text-align: center;
+	text-decoration: none;
+	color: inherit;
+}
+
+@import url('https://fonts.googleapis.com/icon?family=Material+Icons');
+
+.dropdown {
+	position: relative;
+	display: inline-block;
+}
+
+.dropbtn_icon {
+	font-family: 'Material Icons';
+}
+
+.dropbtn {
+	border: 1px solid rgb(37, 37, 37);
+	border-radius: 4px;
+	background-color: #f5f5f5;
+	font-weight: 400;
+	color: rgb(37, 37, 37);
+	padding: 10px;
+	width: 120px;
+	text-align: left;
+	cursor: pointer;
+	font-size: 12px;
+	margin-top: 4.5px;
+	margin-bottom: 4.5px;
+}
+/* 드롭다운 컨텐츠 스타일 */
+.dropdown-content {
+	display: none;
+	font-weight: 400;
+	background-color: #fcfcfc;
+	width: 240px;
+	min-width: 240px;
+	border-radius: 8px;
+	height: 160px;
+	overflow: scroll;
+	box-shadow: 0px 0px 10px 3px rgba(190, 190, 190, 0.6);
+	position: absolute; /* 위치를 절대값으로 지정 */
+	left: 50%; /* 아이콘의 가로 중앙에 맞추기 */
+	transform: translateX(-50%); /* 정확히 중앙에 위치하도록 이동 */
+	top: 100%; /* 드롭다운이 버튼 바로 아래에 표시되도록 */
+}
+
+.dropdown-content a {
+	display: block;
+	text-decoration: none;
+	color: rgb(37, 37, 37);
+	font-size: 12px;
+	padding: 12px 20px;
+}
+
+.dropdown-content a:hover {
+	background-color: #ececec
+}
+
+.dropdown:hover .dropdown-content {
+	display: block;
+}
+
+.search-box {
+	position: relative;
+	top: 50%;
+	transform: translate(0%, -50%);
+	height: 30px;
+	margin-left: -10px;
+	border-radius: 30px;
+	background-color: #949BA0;
+}
+
+.search-btn {
+	float: left;
+	width: 30px;
+	height: 30px;
+	border-radius: 50%;
+	background: #949BA0;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	border: none;
+	outline: none;
+}
+
+.search-box input::placeholder {
+	color: #c0c0c0;
+}
+
+.search-txt {
+	float: center;
+	padding: 0;
+	background: none;
+	border: none;
+	outline: none;
+	color: white;
+	font-size: 15px;
+	line-height: 30px;
+	width: 0; /* 추가 */
+	transition: 0.5s; /* 추가 */
+	font-family: "Jua", sans-serif;
+	font-weight: 400;
+	font-style: normal;
+}
+
+.search-box:hover>form .search-txt {
+	width: 300px;
+}
+
+.search-box>form .search-txt:focus {
+	width: 300px;
+}
+
+.search-box:hover>form .search-btn {
+	background: none;
+}
+
+@import url('https://fonts.googleapis.com/css2?family=Jua&display=swap')
+	;
+</style>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link
+	href="https://fonts.googleapis.com/css2?family=Roboto:wght@100;300;400;500;700;900&family=Sen:wght@400;700;800&display=swap"
+	rel="stylesheet">
+<link rel="stylesheet"
+	href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css">
+<title>MyPage</title>
 </head>
 <body>
-    <div th:replace="/fragments/nav/menubar::menubar"></div>
-    <div th:replace="/fragments/nav/sidebar::sidebar"></div>
+	<div th:replace="~{/fragments/nav/menubar::menubar}"></div>
+	<div th:replace="~{/fragments/nav/sidebar::sidebar}"></div>
 
-    <div class="container">
-        <!-- 프로필 영역 -->
-        <div class="myprofile-container">
-            <!-- 프로필 사진 -->
-            <div class="myprofile-picture">
-                <img src="/images/profile.jpg" alt="Profile Picture">
-            </div>
+	<div class="container">
+		<!-- 프로필 영역 -->
+		<div class="myprofile-container"
+			style="background-color: #4dbf00; background-image: url('/images/admin-003.jpg'); background-size: cover; background-position: center;">
+			<!-- 대여현황 박스 -->
+			<div class="rental-status-box">
+				<h3 style="color: #fff;">대여 현황</h3>
+				<p style="color: #fff;">현재 대여 중: 3</p>
+				<p style="color: #fff;">반납 예정일: 2024-12-01</p>
+			</div>
+			<!-- 프로필 사진 -->
+			<div class="myprofile-picture">
+				<img src="/images/img/profile.jpg" alt="Profile Picture">
+			</div>
 
-            <!-- 프로필 정보 -->
-            <div class="profile-info">
-                <h2>NickName:</h2>
-                <h2>John Doe</h2>
-                <p>회원 Email:</p>
-                <p>john.doe@example.com</p>
-            </div>
-        </div>
+			<!-- 프로필 정보 -->
+			<div class="profile-info">
+				<h1 style="color: gray">[[${member.nickname}]]님 안녕하세요</h1>
+				<h1 style="color: gray; margin-top: 50px;">회원 정보</h1>
+				<h2 style="color: #4dbf00">[[${member.nickname}]]님의 회원 정보입니다.</h2>
+				<h2 style="color: #4dbf00">회원 이름: [[${member.username}]]</h2>
+				<p style="color: #4dbf00">회원 Email: [[${member.email}]]</p>
+			</div>
+			<div class="movie-list-container" style="margin-left: 0px;">
+				<h1 class="movie-list-title" style="color: #4dbf00;">대여 영화 리스트</h1>
+				<div class="movie-list-wrapper">
+					<div class="movie-list">
 
-     </div>
-<div class="movie-list-container" style="background-color:white;">
-                <h1 class="movie-list-title" style="color:#222;">대여 영화 리스트</h1>
-                <div class="movie-list-wrapper">
-                    <div class="movie-list">
-                    
-                         <div class="movie-list-item">
-                            <img class="movie-list-item-img" src="/img/9.jpg" alt="">
-                            <p class="movie-list-item-desc">2024-00-00</p>
-                            
-                        </div>
-                       <div class="movie-list-item">
-                            <img class="movie-list-item-img" src="/img/9.jpg" alt="">
-                            <p class="movie-list-item-desc">2024-00-00</p>
-                            
-                        </div>
-                       
-                       <div class="movie-list-item">
-                            <img class="movie-list-item-img" src="/img/9.jpg" alt="">
-                            <p class="movie-list-item-desc">2024-00-00</p>
-                            
-                        </div>
-                        
-                        <div class="movie-list-item">
-                            <img class="movie-list-item-img" src="/img/9.jpg" alt="">
-                            <p class="movie-list-item-desc">2024-00-00</p>
-                            
-                        </div>
-                       <div class="movie-list-item">
-                            <img class="movie-list-item-img" src="/img/9.jpg" alt="">
-                            <p class="movie-list-item-desc">2024-00-00</p>
-                            
-                        </div>
-                       
-                       <div class="movie-list-item">
-                            <img class="movie-list-item-img" src="/img/9.jpg" alt="">
-                            <p class="movie-list-item-desc">2024-00-00</p>
-                            
-                        </div>
-                        
-                         <div class="movie-list-item">
-                            <img class="movie-list-item-img" src="/img/12.jpg" alt="">
-                            
-                            <p class="movie-list-item-desc">2024-00-00</p>
-                            
-                        </div>
-                       <div class="movie-list-item">
-                            <img class="movie-list-item-img" src="/img/9.jpg" alt="">
-                            <p class="movie-list-item-desc">2024-00-00</p>
-                            
-                        </div>
-                       <div class="movie-list-item">
-                            <img class="movie-list-item-img" src="/img/9.jpg" alt="">
-                            <span class="movie-list-item-title">Her</span>
-                            <p class="movie-list-item-desc">2024-00-00</p>
-                            
-                        </div>
-                       
-                       <div class="movie-list-item">
-                            <img class="movie-list-item-img" src="/img/9.jpg" alt="">
-                            <p class="movie-list-item-desc">2024-00-00</p>
-                            
-                        </div>
-                        
-                    </div>
-                    <i class="fas fa-chevron-left arrow"></i>
-                    <i class="fas fa-chevron-right arrow"></i>
-                    
-                    
-                </div>
-            </div>
-      <div class="movie-list-container">
-                <h1 class="movie-list-title">북마크한 영화 리스트</h1>
-                <div class="movie-list-wrapper">
-                    <div class="movie-list">
-                    
-                         <div class="movie-list-item">
-                            <img class="movie-list-item-img" src="/img/9.jpg" alt="">
-                           
-                            
-                        </div>
-                       <div class="movie-list-item">
-                            <img class="movie-list-item-img" src="/img/9.jpg" alt="">
-                            
-                            
-                        </div>
-                       
-                       <div class="movie-list-item">
-                            <img class="movie-list-item-img" src="/img/9.jpg" alt="">
-                            
-                            
-                        </div>
-                        
-                        <div class="movie-list-item">
-                            <img class="movie-list-item-img" src="/img/9.jpg" alt="">
-                            
-                            
-                        </div>
-                       <div class="movie-list-item">
-                            <img class="movie-list-item-img" src="/img/9.jpg" alt="">
-                            
-                            
-                        </div>
-                       
-                       <div class="movie-list-item">
-                            <img class="movie-list-item-img" src="/img/9.jpg" alt="">
-                           
-                            
-                        </div>
-                        
-                         <div class="movie-list-item">
-                            <img class="movie-list-item-img" src="/img/12.jpg" alt="">
-                            
-                            
-                            
-                        </div>
-                       <div class="movie-list-item">
-                            <img class="movie-list-item-img" src="/img/9.jpg" alt="">
-                            
-                            
-                        </div>
-                       <div class="movie-list-item">
-                            <img class="movie-list-item-img" src="/img/9.jpg" alt="">
-                            <span class="movie-list-item-title">Her</span>
-                            
-                        </div>
-                       
-                       <div class="movie-list-item">
-                            <img class="movie-list-item-img" src="/img/9.jpg" alt="">
-                            
-                            
-                        </div>
-                        
-                    </div>
-                    <i class="fas fa-chevron-left arrow"></i>
-                    <i class="fas fa-chevron-right arrow"></i>
-                    
-                    
-                </div>
-            </div>
-            
-         <div class="movie-list-container">
-                <h1 class="movie-list-title">내가 시청한 영화</h1>
-                <div class="movie-list-wrapper">
-                    <div class="movie-list">
-                    
-                         <div class="movie-list-item">
-                            <img class="movie-list-item-img" src="/img/9.jpg" alt="">
-                           
-                            
-                        </div>
-                       <div class="movie-list-item">
-                            <img class="movie-list-item-img" src="/img/9.jpg" alt="">
-                        
-                            
-                        </div>
-                       
-                       <div class="movie-list-item">
-                            <img class="movie-list-item-img" src="/img/9.jpg" alt="">
-                           
-                        </div>
-                        
-                        <div class="movie-list-item">
-                            <img class="movie-list-item-img" src="/img/9.jpg" alt="">
-                            
-                            
-                        </div>
-                       <div class="movie-list-item">
-                            <img class="movie-list-item-img" src="/img/9.jpg" alt="">
-                            
-                            
-                        </div>
-                       
-                       <div class="movie-list-item">
-                            <img class="movie-list-item-img" src="/img/9.jpg" alt="">
-                                                        
-                        </div>
-                        
-                         <div class="movie-list-item">
-                            <img class="movie-list-item-img" src="/img/12.jpg" alt="">
-                            
-                        </div>
-                       <div class="movie-list-item">
-                            <img class="movie-list-item-img" src="/img/9.jpg" alt="">
-                            
-                            
-                        </div>
-                       <div class="movie-list-item">
-                            <img class="movie-list-item-img" src="/img/9.jpg" alt="">
-                            <span class="movie-list-item-title">Her</span>
-                            
-                            
-                        </div>
-                       
-                       <div class="movie-list-item">
-                            <img class="movie-list-item-img" src="/img/9.jpg" alt="">
-                           
-                            
-                        </div>
-                        
-                    </div>
-                    <i class="fas fa-chevron-left arrow"></i>
-                    <i class="fas fa-chevron-right arrow"></i>
-                    
-                    
-                </div>
-            </div>
-            
-            <div class="movie-list-container">
-                <h1 class="movie-list-title">내가 좋아요 한 영화</h1>
-                <div class="movie-list-wrapper">
-                    <div class="movie-list">
-                    
-                        <div class="movie-list-item">
-                        
-                        <!-- /board/movieDetail?title=${movie.movieNm} -->
-                            <a href="/board/movieDetail?title=황해"><img class="movie-list-item-img" src="/img/8.jpg" alt=""></a>
-                             
-                        </div>
-                       <div class="movie-list-item">
-                            <img class="movie-list-item-img" src="/img/9.jpg" alt="">
-                            
-                            
-                        </div>
-                       <div class="movie-list-item">
-                            <img class="movie-list-item-img" src="/img/9.jpg" alt="">
-                            
-                            
-                        </div>
-                       
-                       <div class="movie-list-item">
-                            <img class="movie-list-item-img" src="/img/9.jpg" alt="">
-                            
-                            
-                        </div>
-                        
-                        <div class="movie-list-item">
-                            <img class="movie-list-item-img" src="/img/9.jpg" alt="">
-                            
-                            
-                        </div>
-                       <div class="movie-list-item">
-                            <img class="movie-list-item-img" src="/img/9.jpg" alt="">
-                            
-                            
-                        </div>
-                       
-                       <div class="movie-list-item">
-                            <img class="movie-list-item-img" src="/img/9.jpg" alt="">
-                            
-                            
-                        </div>
-                        
-                         <div class="movie-list-item">
-                            <img class="movie-list-item-img" src="/img/12.jpg" alt="">
-                            
-                            
-                            
-                        </div>
-                       <div class="movie-list-item">
-                            <img class="movie-list-item-img" src="/img/9.jpg" alt="">
-                            
-                            
-                        </div>
-                       <div class="movie-list-item">
-                            <img class="movie-list-item-img" src="/img/9.jpg" alt="">
-                            <span class="movie-list-item-title">Her</span>
-                            
-                            
-                        </div>
-                       
-                       <div class="movie-list-item">
-                            <img class="movie-list-item-img" src="/img/9.jpg" alt="">
-                            
-                            
-                        </div>
-                        
-                    </div>
-                    <i class="fas fa-chevron-left arrow"></i>
-                    <i class="fas fa-chevron-right arrow"></i>
-                    
-                    
-                </div>
-            </div>
-    <script src="/js/app.js"></script>
+						<div class="movie-list-item">
+							<img class="movie-list-item-img">
+							<p class="movie-list-item-desc">2024-00-00</p>
+						</div>
+
+					</div>
+
+				</div>
+			</div>
+			<i class="fas fa-chevron-left arrow"></i>
+		</div>
+
+
+		<i class="fas fa-chevron-right arrow"></i>
+	</div>
+
+	<!-- 북마크한 영화 리스트 -->
+	<div class="movie-list-container"
+		th:if="${bookmarks != null and !bookmarks.isEmpty()}">
+		<h1 class="movie-list-title">북마크한 영화 리스트</h1>
+		<div class="movie-list-wrapper">
+			<div class="movie-list">
+				<div class="movie-list-item" th:each="movie : ${bookmarks}">
+					<a th:href="@{/board/movieDetail(movieId=${movie.id})}"> <img
+						class="movie-list-item-img"
+						th:src="${'https://image.tmdb.org/t/p/original' + movie.posterPath}"
+						alt="">
+					</a>
+				</div>
+			</div>
+			<i class="fas fa-chevron-left arrow"></i> <i
+				class="fas fa-chevron-right arrow"></i>
+		</div>
+	</div>
+
+	<!-- 내가 시청한 영화 -->
+	<div class="movie-list-container"
+		th:if="${watches != null and !watches.isEmpty()}">
+		<h1 class="movie-list-title">내가 시청한 영화</h1>
+		<div class="movie-list-wrapper">
+			<div class="movie-list">
+				<div class="movie-list-item" th:each="movie : ${watches}">
+					<a th:href="@{/board/movieDetail(movieId=${movie.id})}"> <img
+						class="movie-list-item-img"
+						th:src="${'https://image.tmdb.org/t/p/original' + movie.posterPath}"
+						alt="">
+					</a>
+				</div>
+			</div>
+			<i class="fas fa-chevron-left arrow"></i> <i
+				class="fas fa-chevron-right arrow"></i>
+		</div>
+	</div>
+
+	<!-- 내가 좋아요 한 영화 -->
+	<div class="movie-list-container"
+		th:if="${likes != null and !likes.isEmpty()}">
+		<h1 class="movie-list-title">내가 좋아요 한 영화</h1>
+		<div class="movie-list-wrapper">
+			<div class="movie-list">
+				<div class="movie-list-item" th:each="movie : ${likes}">
+					<a th:href="@{/board/movieDetail(movieId=${movie.id})}"> <img
+						class="movie-list-item-img"
+						th:src="${'https://image.tmdb.org/t/p/original' + movie.posterPath}"
+						alt="">
+					</a>
+				</div>
+			</div>
+			<i class="fas fa-chevron-left arrow"></i> <i
+				class="fas fa-chevron-right arrow"></i>
+		</div>
+	</div>
+	<script src="/js/app.js"></script>
 </body>
 </html>

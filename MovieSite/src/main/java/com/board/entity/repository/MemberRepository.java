@@ -27,7 +27,7 @@ public interface MemberRepository extends JpaRepository<MemberEntity, String>{
 	@Query(value = "SELECT " +
 	        "  COUNT(CASE WHEN TRUNC(m.regdate) = TRUNC(SYSDATE) - INTERVAL '1' DAY THEN 1 END) AS yesterdaySignup, " +
 	        "  COUNT(CASE WHEN TRUNC(m.regdate) = TRUNC(SYSDATE) THEN 1 END) AS todaySignup, " +
-	        "  COUNT(m.email) AS totalMember FROM tbl_member m", nativeQuery = true)
+	        "  COUNT(m.email) AS totalMember FROM member m", nativeQuery = true)
 	public List<Object[]> signupResult();
 	
 	

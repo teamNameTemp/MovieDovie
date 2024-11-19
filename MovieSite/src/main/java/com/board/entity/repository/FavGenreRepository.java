@@ -11,11 +11,11 @@ public interface FavGenreRepository extends JpaRepository<FavGenreEntity, Long>{
 
 	//관리자페이지 - 통계 : 회원들이 좋아하는 장르 인기 순으로 뽑아내기
 	@Query(value = "SELECT genre, COUNT(genre) AS count FROM (" +
-                 "SELECT genre1 AS genre FROM tbl_fav_genre " +
+                 "SELECT genre1 AS genre FROM fav_genre " +
                  "UNION ALL " +
-                 "SELECT genre2 FROM tbl_fav_genre " +
+                 "SELECT genre2 FROM fav_genre " +
                  "UNION ALL " +
-                 "SELECT genre3 FROM tbl_fav_genre" +
+                 "SELECT genre3 FROM fav_genre" +
                  ") genres " +
                  "GROUP BY genre " +
                  "ORDER BY count DESC", nativeQuery = true)

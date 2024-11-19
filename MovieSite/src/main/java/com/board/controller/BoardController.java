@@ -23,6 +23,7 @@ import com.board.dto.RequestDTO;
 import com.board.dto.RequestReplyDTO;
 import com.board.dto.movie.MovieDTO;
 import com.board.entity.NotificationEntity;
+import com.board.entity.MemberEntity;
 import com.board.entity.RequestEntity;
 import com.board.entity.RequestReplyEntity;
 import com.board.entity.movie.GenreEntity;
@@ -34,6 +35,7 @@ import com.board.service.MasterService;
 import com.board.service.MemberService;
 import com.board.service.MovieAPIServiceImpl;
 import com.board.service.NotificationService;
+import com.board.service.RentService;
 import com.board.service.ReplyService;
 import com.board.service.RequestReplyService;
 import com.board.service.RequestService;
@@ -64,6 +66,7 @@ public class BoardController {
 	private final ReplyService reply;
 	private final WatchedService watch;
 	private final BookmarkService bookmark;
+	private final RentService rent;
 	private final NotificationService notificationService;
 
 	@GetMapping("/list")
@@ -75,7 +78,16 @@ public class BoardController {
 		model.addAttribute("nickname", nickname);
 
 		
-		List<MovieDTO> trendList = tmdb.getTrendingMovies("day", 1, "ko-KR").block();
+		  List<MovieDTO> trend = tmdb.getTrendingMovies("week", 1, "ko-KR").block();
+          List<MovieDTO> trendList = new ArrayList<>();
+          
+          for(MovieDTO d : trend) {
+              MovieDTO dto = tmdb.getMovieDetails(d.getId(), "ko-KR").block();
+              trendList.add(dto);
+          }
+          //트렌드 영화를 못찾을 시 예외로 한번 더 저장
+//          movie.saveTheDataBases(trendList);
+		
 		for(MovieDTO dto : trendList) {
 			Map<String,Object> bookmarkMap = bookmark.getBookmarkInfo((String)session.getAttribute("email"), dto.getId());
 			if(bookmarkMap != null) {
@@ -85,6 +97,7 @@ public class BoardController {
 		}
 		
 		
+		//선호 장르별 영화 리스트
 		Map<String, Object> favGenreList = new HashMap<>();
 		Optional<Map<String, Object>> genre = favGenre.getFavGenre();
 		if (genre.isPresent()) {
@@ -96,7 +109,14 @@ public class BoardController {
 				// 해당 장르를 포함하고 있는 영화리스트를 가져온다.
 				favGenreList.put(genreNm, movie.findByGenreGetMovieList(genres));
 			}
-		}
+		}	
+		
+		//만장일치! 다들 이 영화 좋아해요
+		//요즘 인기 폭팔! 댓글 많은 영화
+		//이건 꼭 봐야해! 회원들이 가장 많이 본 영화
+		//오늘 대여 TOP 영화
+		//무비두비에 새로 올라온 영화
+		
 		model.addAttribute("nickname", session.getAttribute("nickname"));
 		model.addAttribute("dailyMovies", trendList);
 		model.addAttribute("favGenre", genre.get());
@@ -126,10 +146,23 @@ public class BoardController {
 	    System.out.println("Noti object: " + noti);
 	    System.out.println("Noti size: " + (noti != null ? noti.size() : "null"));
 	}
-
 	
 	@GetMapping("/mypage")
-	public void getMyPage() {
+	public void getMyPage(Model model, HttpSession session) {
+		String email = (String) session.getAttribute("email");
+		MemberDTO memberInfo = memberService.memberInfo(email);
+		model.addAttribute("member",memberInfo);
+		
+		//대여
+		//북마크
+		List<Map<String,Object>> bookmarks = bookmark.getAllBookmarkByEmail(email);
+		model.addAttribute("bookmarks",bookmarks);
+		//시청
+		List<Map<String,Object>> watches = watch.getAllWatchedByEmail(email);
+		model.addAttribute("watches",watches);
+		//좋아요
+		List<Map<String,Object>> likes = like.getAllLikeByEmail(email);
+		model.addAttribute("likes",likes);
 		
 	}
 	
@@ -173,14 +206,18 @@ public class BoardController {
 			model.addAttribute("watch", null);
 		} else {
 			model.addAttribute("watch", myWatch);
-		}
+		}	
 		Map<String,Object> myBookmark = bookmark.getBookmarkInfo(email, movieId);
 		if (myBookmark == null || myBookmark.isEmpty()) {
 			model.addAttribute("bookmark", null);
 		} else {
 			model.addAttribute("bookmark", myBookmark);
 		}
-
+		Map<String,Object> myRent = rent.getMyRentInfo(email, movieId);
+		if(myRent == null || myRent.isEmpty()) {
+			model.addAttribute("rent",myRent);
+		}
+		
 		//movieStat 정보
 		Map<String, Object> likes = like.getAllLikeInfo(movieId);
 		Map<String,Object> watches = watch.getAllWatchedInfo(movieId);
@@ -266,7 +303,7 @@ public class BoardController {
 
 		String email = (String) session.getAttribute("email");
 
-		// 좋아요 싫어요 업데이트 및 저장
+		// 시청여부 업데이트 및 저장
 		try {
 			watch.saveOrUpdate(action, movieId, email);
 			response.put("message", "good");
@@ -291,7 +328,7 @@ public class BoardController {
 
 		String email = (String) session.getAttribute("email");
 
-		// 좋아요 싫어요 업데이트 및 저장
+		// 북마크 업데이트 및 저장
 		try {
 			bookmark.saveOrUpdate(action, movieId, email);
 			response.put("message", "good");
@@ -306,6 +343,31 @@ public class BoardController {
 
 		return response;
 	}
+	
+	// 대여 관련 처리
+		@PostMapping("/movieDetail/rent")
+		@ResponseBody
+		public Map<String, Object> postMovieDetailRent(@RequestParam("movieId") Long movieId,
+				@RequestParam("action") String action, HttpSession session) {
+			Map<String, Object> response = new HashMap<>();
+
+			String email = (String) session.getAttribute("email");
+
+			// 대여 등록 및 삭제 
+			try {
+				rent.rentMovie(email,movieId);
+				response.put("message", "good");
+				// 모든 like 정보
+//				Map<String, Object> bookmarks = bookmark.getAllBookmarkInfo(movieId);
+//				response.put("count", bookmarks.get("count"));
+			} catch (Exception e) {
+				log.error("rent 오류 : ", e);
+//				response.put("message", "error");
+//				response.put("error", e.getMessage());
+			}
+
+			return response;
+		}
 
 	// 댓글 처리
 	@ResponseBody
