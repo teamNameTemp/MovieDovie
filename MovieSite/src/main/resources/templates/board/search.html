@@ -50,7 +50,21 @@
                     </div>
                 </a>
             </div>
+            <div th:each="movie : ${movies.get(2)}">
+                <a th:href="@{/board/movieDetail(movieId=${movie.id})}"> 
+                    <div class="movie-card">
+                        <img th:src="@{${movie.posterPath} != null ? 'https://image.tmdb.org/t/p/w200' + ${movie.posterPath} : '/images/blankPoster.jpg'}" alt="${movie.title}">
+                        <h3 class="truncate" th:text="${movie.title}" alt="${movie.title}"></h3>
+                        <p th:text="${movie.releaseDate} != null ? ${movie.releaseDate} : '개봉일 미정'"></p>
+                    </div>
+                </a>
+            </div>
 		</div>
+        <div id="loadMoreContainer" style="margin-top: 20px;">
+            <button id="loadMoreBtn" onclick="loadMore()" style="display: block">
+                더 보기
+            </button>
+        </div>
     </div> 
 </body>
 
