@@ -171,9 +171,11 @@ public class MovieAPIServiceImpl implements MovieAPIService {
 		//비디오 유무
 		List<VideoEntity> videos = videoRepository.findByMovieId(movie);
 		if(videos.isEmpty() || videos == null) {
+			log.info(videos.size() + dto.getId() +":"+ dto.getVideos().getResults().size());
 			videos = mapper.mapVideos(dto);
-		}	
-		if(videos != null)videoRepository.saveAll(videos);
+		log.info(videos);
+		}
+		videoRepository.saveAll(videos);
 
 		//이미지 유무
 		List<ImageEntity> images = imageRepository.findByMovieId(movie);

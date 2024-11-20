@@ -193,7 +193,7 @@ public class BoardController {
 			model.addAttribute("bookmark", myBookmark);
 		}
 		Map<String,Object> myRent = rent.getMyRentInfo(email, movieId);
-		if(myRent == null || myRent.isEmpty()) {
+		if(myRent != null || !myRent.isEmpty()) {
 			model.addAttribute("rent",myRent);
 		}
 		
@@ -308,15 +308,17 @@ public class BoardController {
 		@PostMapping("/movieDetail/rent")
 		@ResponseBody
 		public Map<String, Object> postMovieDetailRent(@RequestParam("movieId") Long movieId,
-				@RequestParam("action") String action, HttpSession session) {
+				HttpSession session) {
 			Map<String, Object> response = new HashMap<>();
 
 			String email = (String) session.getAttribute("email");
 
 			// 대여 등록 및 삭제 
 			try {
-				rent.rentMovie(email,movieId);
+				String status = rent.rentMovie(email,movieId);
 				response.put("message", "good");
+				response.put("status", status);
+				
 				// 모든 like 정보
 //				Map<String, Object> bookmarks = bookmark.getAllBookmarkInfo(movieId);
 //				response.put("count", bookmarks.get("count"));
@@ -356,15 +358,11 @@ public class BoardController {
 		// 한글로 뽑고 영어로 뽑고 해야함 onErrorResume(en-US / ko-KR)
 		List<MovieDTO> trendList = tmdb.getTrendingMovies("day", 1, "ko-KR").block();
 		List<MovieDTO> info = new ArrayList<>();
-		int idx = 5;
 		for (MovieDTO d : trendList) {
-			if (idx == 0)
-				break;
 			MovieDTO dto = tmdb.getMovieDetails(d.getId(), "ko-KR").block();
-			log.info(dto);
+			log.info(dto.getTitle() + dto.getVideos().getResults().size());
 			dto.setTitle(d.getTitle());
 			info.add(dto);
-			idx--;
 		}
 
 		log.info(tmdb.getGenreList().block());

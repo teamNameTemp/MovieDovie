@@ -32,22 +32,28 @@ public class RentServiceImpl implements RentService {
 	// 영화 대여 시작
 	@Transactional
 	@Override
-	public void rentMovie(String email, Long movieId) {
+	public String rentMovie(String email, Long movieId) {
+		String result = "rent";
 		MemberEntity memE = memberRepository.findById(email)
 				.orElseThrow(() -> new RuntimeException("Member not found " + email));
 		MovieEntity movieE = movieRepositoty.findById(movieId)
 				.orElseThrow(() -> new RuntimeException("Movie not found " + movieId));
 
-//		RentEntity rent = rentRepository.findById(movieId)
+		RentEntity rent = rentRepository.findByEmailAndMovieIdAndStatus(memE, movieE,"Y");
+
+
 		// 대여 할 시
-		RentEntity rent = RentEntity.builder().rentdate(LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES))
-				.returndate(LocalDateTime.now().plus(3, ChronoUnit.DAYS).truncatedTo(ChronoUnit.MINUTES)).status("Y")
-				.email(memE).movieId(movieE).build();
-
-		// todo : 이미 대여 중일 때
-
-		rentRepository.save(rent);
-//        rentRepository.updateStatus(email, movieId);
+		if (rent == null) {
+			rent = RentEntity.builder().rentdate(LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES))
+					.returndate(LocalDateTime.now().plus(3, ChronoUnit.DAYS).truncatedTo(ChronoUnit.MINUTES))
+					.status("Y").email(memE).movieId(movieE).build();
+			rentRepository.save(rent);
+		}else {
+			//이미 대여 중
+			result = "rented";
+		}
+		return result;
+		
 	}
 
 	@Scheduled(cron = "0 0 0 * * ?") // 매일 자정에 실행
@@ -76,12 +82,12 @@ public class RentServiceImpl implements RentService {
 				.orElseThrow(() -> new RuntimeException("Movie not found " + movieId));
 
 		
-		RentEntity rent = rentRepository.findByEmailAndMovieId(memE, movieE);
+		RentEntity rent = rentRepository.findByEmailAndMovieIdAndStatus(memE, movieE,"Y");
 		if(rent!=null) {
 			data.put("rentdata", rent.getRentdate());
 			data.put("returndata", rent.getReturndate());
 			data.put("status", rent.getStatus());
-			data.put("movie",rent.getMovieId());
+//			data.put("movie",rent.getMovieId());
 		}
 		
 		return data;

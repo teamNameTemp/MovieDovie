@@ -16,7 +16,7 @@ public interface RentRepository extends JpaRepository<RentEntity, Long>{
 
 
 	public RentEntity findByEmailAndMovieId(MemberEntity member, MovieEntity movie);
-
+	public RentEntity findByEmailAndMovieIdAndStatus(MemberEntity member, MovieEntity movie,String status);
 	//모든 회원 자동 반납 확인
 	public List<RentEntity> findAllByReturndateBeforeAndStatus(LocalDateTime returndate, String status);
 	

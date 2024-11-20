@@ -7,7 +7,7 @@ import java.util.Map;
 public interface RentService {
 
 	//영화 대여 시작
-	public void rentMovie(String email, Long movieId);
+	public String rentMovie(String email, Long movieId);
 	
 	//나의 대여 정보
 	public Map<String,Object> getMyRentInfo(String email, Long movieId);
