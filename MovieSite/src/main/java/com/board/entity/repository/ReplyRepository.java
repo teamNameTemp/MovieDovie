@@ -19,4 +19,5 @@ public interface ReplyRepository extends JpaRepository<ReplyEntity, Long>{
 	public List<ReplyEntity> replyList(@Param("reqseqno") Long reqseqno);
 	
 	public ReplyEntity findByEmailAndMovieId(MemberEntity member, MovieEntity movie);
+	public List<ReplyEntity> findAllByMovieId(MovieEntity movie);
 }

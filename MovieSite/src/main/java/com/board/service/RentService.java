@@ -6,6 +6,7 @@ import java.util.Map;
 
 public interface RentService {
 
+	public void updateRent(String email, Long movieId);
 	//영화 대여 시작
 	public String rentMovie(String email, Long movieId);
 	

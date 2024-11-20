@@ -70,4 +70,6 @@ public class MovieEntity {
     
     private String uploadCheck;
     
+    private int price;
+    
 }

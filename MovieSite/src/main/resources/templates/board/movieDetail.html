@@ -177,6 +177,7 @@ body {
 }
 
 .rent-btn {
+	margin-bottom:20px;
 	align-items: center;
 	justify-content: center;
 	padding: 10px 20px;
@@ -271,16 +272,19 @@ body {
 				</h2>
 				<br>
 				<button class="rent-btn"
-					th:text="${rent != null and 'Y' == rent['status']} ? '대여 중' : '대여하기'"
+					th:text="${rent != null and 'Y' == rent['status']} ? '대여 중' : '대여하기 (' + ${movie.info.price} + '원)'"
 					th:disabled="${rent != null and 'Y' == rent['status']}"
 					th:classappend="${rent != null and 'Y' == rent['status']} ? 'disabled' : ''">
 				</button>
-				 <a th:if="${rent != null and 'Y' == rent['status']}"
-					th:href="@{'https://www.youtube.com/watch?v=' + ${movie.video[0].key}}"
-					target="_blank" style="color: white; text-decoration: none;">
-						<button class="trailer-btn">
-							<p style="color: white;">재생하기</p>
-						</button>
+				<a th:if="${rent != null and 'Y' == rent['status']}"
+					th:href="${#lists.size(movie.video) > 0} ? @{'https://www.youtube.com/watch?v=' + ${movie.video[0].key}} : '#'"
+					th:target="${#lists.size(movie.video) > 0} ? '_blank' : '_self'"
+					style="color: white; text-decoration: none;">
+					<button class="trailer-btn"
+						th:disabled="${#lists.size(movie.video) == 0}">
+						<p style="color: white;"
+							th:text="${#lists.size(movie.video) > 0} ? '재생하기' : '영상 없음'"></p>
+					</button>
 				</a>
 			</div>
 			<aside class="poster-container">
@@ -305,7 +309,7 @@ body {
 
 
 		<!-- movie stat -->
-		<div class="featured-content">
+		<div class="featured-content" style="height:300px">
 
 			<div class="action-buttons">
 				<button class="action-btn watched"
@@ -342,9 +346,19 @@ body {
 					<textarea id="reviewText" class="review-input"
 						placeholder="이 영화에 대한 감상을 작성해주세요..."></textarea>
 					<button id="submitReview" class="submit-btn">리뷰 등록</button>
+					<button th:disabled="${#lists.size(replies) == 0}"
+						th:classappend="${#lists.size(replies)==0} ? 'disabled' : ''"
+						id="showReview" class="show-btn">리뷰
+						보기([[${#lists.size(replies)}]])</button>
 				</div>
-				<div id="reviewList" class="review-list">
-					<!-- 리뷰들이 여기에 추가됩니다 -->
+				<!-- 리뷰들이 여기에 추가됩니다 -->
+				<div class="review-show-container">
+					<div class="post-it" th:each="reply : ${replies}">
+						<h3 th:text="${reply.nickname}"></h3>
+						<p th:text="${reply.content}"></p>
+						<span class="date"
+							th:text="${#temporals.format(reply.regdate, 'yyyy-MM-dd hh:mm')}"></span>
+					</div>
 				</div>
 			</div>
 		</div>
@@ -406,7 +420,7 @@ body {
 			<div id="backdropSection" class="movie-list" style="display: block;">
 				<div class="scroll-container">
 					<div
-						th:each="backdrop, iterStat : ${#lists.size(movie.backdrops) > 9 ? movie.backdrops.subList(0, 10) : movie.backdrops}"
+						th:each="backdrop, iterStat : ${movie.backdrops}"
 						class="image-card">
 						<div class="card">
 							<img th:if="${backdrop.filePath}"
@@ -425,7 +439,7 @@ body {
 			<div id="posterSection" class="movie-list" style="display: none;">
 				<div class="scroll-container">
 					<div
-						th:each="poster, iterStat : ${#lists.size(movie.posters) > 9 ? movie.posters.subList(0, 10) : movie.images.posters}"
+						th:each="poster, iterStat : ${movie.posters}"
 						class="image-card">
 						<div class="card">
 							<img th:if="${poster.filePath}"

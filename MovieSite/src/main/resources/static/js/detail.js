@@ -153,7 +153,13 @@ document.addEventListener('DOMContentLoaded', () => {
 	//리뷰 관련
 	const reviewText = document.getElementById('reviewText');
 	const submitReview = document.getElementById('submitReview');
-	const reviewList = document.getElementById('reviewList');
+	const reviewList = document.querySelector('.review-show-container');
+	const showReview = document.getElementById('showReview');
+
+	showReview.addEventListener('click', function() {
+		reviewList.classList.toggle('show');
+	});
+
 
 	submitReview.addEventListener('click', () => {
 		const review = reviewText.value.trim();
@@ -163,23 +169,28 @@ document.addEventListener('DOMContentLoaded', () => {
 			return;
 		}
 
-		// 새 리뷰 요소 생성
-		const reviewElement = document.createElement('div');
-		reviewElement.className = 'review-item';
 
-		// 현재 시간 포맷팅
-		const now = new Date();
-		const formattedDate = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')} ${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+		const newForm = new FormData();
+		newForm.append("movieId", movieId);
+		newForm.append("content", review);
 
-		// 리뷰 내용 설정
-		reviewElement.innerHTML = `
-	         <p class="review-content">${escapeHTML(review)}</p>
-	         <p class="review-date">${formattedDate}</p>
-	     `;
+		fetch('/board/movieDetail/reviews', {
+			method: 'POST',
+			body: newForm
+		}).then(response => response.json())
+			.then(data => {
+				if (data.action == "save") {
+					alert("리뷰가 등록되었습니다.");
+				} else if (data.action == "update") {
+					alert("리뷰가 수정되었습니다.");
+				} else {
+					throw new Error('리뷰 등록에 실패했습니다.');
+				}
+			}).catch(error => {
+				alert(error.message);
+			});
 
-		// 리뷰 목록에 새 리뷰 추가
-		reviewList.insertBefore(reviewElement, reviewList.firstChild);
-
+		location.reload();
 		// 입력 필드 초기화
 		reviewText.value = '';
 	});
@@ -196,6 +207,8 @@ document.addEventListener('DOMContentLoaded', () => {
 			}[tag] || tag)
 		);
 	}
+
+
 });
 
 
@@ -225,35 +238,3 @@ const queryString = window.location.search;
 const urlParams = new URLSearchParams(queryString);
 const movieId = urlParams.get("movieId");
 
-const reviewSection = document.getElementById('reviewSection');
-const reviewText = document.getElementById('reviewText');
-const submitReview = document.getElementById('submitReview');
-
-// 리뷰 제출
-submitReview.addEventListener('click', async () => {
-
-	if (!reviewText.value.trim()) {
-		alert('리뷰 내용을 입력해주세요.');
-		return;
-	}
-
-	try {
-		const newForm = new FormData();
-		newForm.append("movieId", movieId);
-		newForm.append("content", reviewText.value);
-
-		const response = await fetch('/board/movieDetail/reviews', {
-			method: 'POST',
-			body: newForm
-		});
-
-		if (response.ok) {
-			alert('리뷰가 등록되었습니다.');
-			location.reload(); // 페이지 새로고침
-		} else {
-			throw new Error('리뷰 등록에 실패했습니다.');
-		}
-	} catch (error) {
-		alert(error.message);
-	}
-});

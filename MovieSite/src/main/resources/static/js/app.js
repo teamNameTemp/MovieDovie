@@ -2,9 +2,6 @@
 document.addEventListener("DOMContentLoaded", function() {
 	const genreButtons = document.querySelectorAll('.tab-button');
 	const genreContents = document.querySelectorAll('.genre-content');
-	//왼오 스크롤
-	const favArrowLeft = document.querySelector('.fa-chevron-left');
-	const favArrowRight = document.querySelector('.fa-chevron-right');
 
 	// 탭 전환 기능
 	genreButtons.forEach((button, index) => {
@@ -32,6 +29,7 @@ document.addEventListener("DOMContentLoaded", function() {
 		const spaceBetweenItems = 30;  // 각 아이템 간의 간격
 		const totalItemWidth = itemWidth + spaceBetweenItems;  // 하나의 아이템 전체 너비
 		const itemCount = movieList.querySelectorAll(".movie-list-item").length;  // 아이템 개수
+		console.log(itemCount);
 		let currentIndex = 0;  // 현재 보여지는 첫 번째 아이템 인덱스
 
 		// 슬라이드 이동 함수 (왼쪽으로)
@@ -42,37 +40,6 @@ document.addEventListener("DOMContentLoaded", function() {
 			const moveAmount = currentIndex * totalItemWidth;
 			movieList.style.transform = `translateX(-${moveAmount}px)`;
 		};
-
-
-
-		window.onload = function() {
-			// 갯수 업데이트 함수
-			function updateNotificationCount() {
-				const dropdownItems = document.querySelectorAll('.dropdown-content .dropdown-item'); // 드롭다운 항목들을 다시 선택
-				const notificationCount = document.getElementById('notification-count'); // 갯수를 표시할 요소
-				let itemCount = dropdownItems.length; // 항목 수를 가져옴
-
-				// 항목 수가 4 이상일 경우 4+로 표시
-				if (itemCount >= 5) {
-					notificationCount.textContent = '4+';
-				} else {
-					notificationCount.textContent = itemCount;
-				}
-			}
-
-			// 각 드롭다운 항목에 클릭 이벤트 추가
-			const dropdownItems = document.querySelectorAll('.dropdown-content .dropdown-item');
-			dropdownItems.forEach(item => {
-				item.addEventListener('click', function(event) {
-					event.preventDefault(); // 기본 동작 방지
-					item.remove(); // 클릭한 항목 삭제
-					updateNotificationCount(); // 항목 갯수 업데이트
-				});
-			});
-
-			// 초기 항목 갯수 표시
-			updateNotificationCount();
-		}
 
 		// 슬라이드 이동 함수 (오른쪽으로)
 		const slideRight = () => {
@@ -111,41 +78,25 @@ document.addEventListener("DOMContentLoaded", function() {
 
 		// 오른쪽 화살표 클릭 이벤트
 		arrowsRight[index].addEventListener("click", slideRight);
+
+
 	});
 
-	// 초기 상태 설정
-	updateVisibility();
 });
 
-  // 초기 항목 갯수 표시
-  updateNotificationCount();
 
-  // 드롭다운 메뉴 클릭
-  const dropbtnClick = document.querySelector('.dropbtn_click');
-  if (dropbtnClick) {
-    dropbtnClick.onclick = () => {
-      dropdown();
-    };
-  }
-
-//TOGGLE
-
-const ball = document.querySelector(".toggle-ball");
-const items = document.querySelectorAll(
-	".container,.movie-list-title,.navbar-container,.sidebar,.left-menu-icon,.toggle"
-);
-
-ball.addEventListener("click", () => {
-	items.forEach((item) => {
-		item.classList.toggle("active");
-	});
-	ball.classList.toggle("active");
-});
+// 드롭다운 메뉴 클릭
+const dropbtnClick = document.querySelector('.dropbtn_click');
+if (dropbtnClick) {
+	dropbtnClick.onclick = () => {
+		dropdown();
+	};
+}
 
 
 //dropdown
 window.onload = () => {
-	document.querySelector('.dropbtn_click').onclick = () => {
+	/*document.querySelector('.dropbtn_click').onclick = () => {
 		dropdown();
 	}
 	document.getElementsByClassName('fastfood').onclick = () => {
@@ -168,7 +119,34 @@ window.onload = () => {
 		dropbtn_content.innerText = value;
 		dropbtn_content.style.color = '#252525';
 		dropbtn.style.borderColor = '#3992a8';
+	}*/
+
+	// 갯수 업데이트 함수
+	function updateNotificationCount() {
+		const dropdownItems = document.querySelectorAll('.dropdown-content .dropdown-item'); // 드롭다운 항목들을 다시 선택
+		const notificationCount = document.getElementById('notification-count'); // 갯수를 표시할 요소
+		let itemCount = dropdownItems.length; // 항목 수를 가져옴
+
+		// 항목 수가 4 이상일 경우 4+로 표시
+		if (itemCount >= 5) {
+			notificationCount.textContent = '4+';
+		} else {
+			notificationCount.textContent = itemCount;
+		}
 	}
+
+	// 각 드롭다운 항목에 클릭 이벤트 추가
+	const dropdownItems = document.querySelectorAll('.dropdown-content .dropdown-item');
+	dropdownItems.forEach(item => {
+		item.addEventListener('click', function(event) {
+			event.preventDefault(); // 기본 동작 방지
+			item.remove(); // 클릭한 항목 삭제
+			updateNotificationCount(); // 항목 갯수 업데이트
+		});
+	});
+
+	// 초기 항목 갯수 표시
+	updateNotificationCount();
 }
 window.onclick = (e) => {
 	if (!e.target.matches('.dropbtn_click')) {

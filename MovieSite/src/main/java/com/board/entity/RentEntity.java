@@ -47,6 +47,9 @@ public class RentEntity {
 	@Column(name = "status", length=2, nullable = false)
 	private String status;
 	
+	@Column(name="price", columnDefinition = "integer default 0")
+	private int price;
+	
 	@ManyToOne(fetch=FetchType.LAZY)
 	@OnDelete(action=OnDeleteAction.CASCADE)
 	@JoinColumn(name="email")

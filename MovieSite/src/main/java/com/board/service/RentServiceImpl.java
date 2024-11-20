@@ -29,6 +29,25 @@ public class RentServiceImpl implements RentService {
 	private final MovieRepository movieRepositoty;
 	private final MemberRepository memberRepository;
 
+	@Override
+	public void updateRent(String email, Long movieId) {
+		MemberEntity memE = memberRepository.findById(email)
+				.orElseThrow(() -> new RuntimeException("Member not found " + email));
+		MovieEntity movieE = movieRepositoty.findById(movieId)
+				.orElseThrow(() -> new RuntimeException("Movie not found " + movieId));
+
+		RentEntity rent = rentRepository.findByEmailAndMovieIdAndStatus(memE, movieE,"Y");
+
+		LocalDateTime now = LocalDateTime.now();
+		//대여날짜(returndate)가 지났는지 확인하고 rent.setStatus("N")으로 변경하는 코드
+		if(rent != null && rent.getReturndate() != null) {
+			if(now.isAfter(rent.getReturndate())) {
+				rent.setStatus("N");
+				rentRepository.save(rent);
+			}
+		}
+	}
+
 	// 영화 대여 시작
 	@Transactional
 	@Override
@@ -39,59 +58,59 @@ public class RentServiceImpl implements RentService {
 		MovieEntity movieE = movieRepositoty.findById(movieId)
 				.orElseThrow(() -> new RuntimeException("Movie not found " + movieId));
 
-		RentEntity rent = rentRepository.findByEmailAndMovieIdAndStatus(memE, movieE,"Y");
-
+		RentEntity rent = rentRepository.findByEmailAndMovieIdAndStatus(memE, movieE, "Y");
 
 		// 대여 할 시
 		if (rent == null) {
+			// 대여 할 시 돈 차감
 			rent = RentEntity.builder().rentdate(LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES))
 					.returndate(LocalDateTime.now().plus(3, ChronoUnit.DAYS).truncatedTo(ChronoUnit.MINUTES))
-					.status("Y").email(memE).movieId(movieE).build();
+					.status("Y").price(movieE.getPrice()).email(memE).movieId(movieE).build();
 			rentRepository.save(rent);
-		}else {
-			//이미 대여 중
+		} else {
+			// 이미 대여 중
 			result = "rented";
 		}
 		return result;
-		
+
 	}
 
 	@Scheduled(cron = "0 0 0 * * ?") // 매일 자정에 실행
 	@Transactional
 	public void autoReturnOverdueRentals() {
-	    LocalDateTime now = LocalDateTime.now();
-	    
-	    List<RentEntity> overdueRentals = rentRepository.findAllByReturndateBeforeAndStatus(now, "Y");
-	    
-	    int updatedCount = 0;
-	    for (RentEntity rent : overdueRentals) {
-	        rent.setStatus("N");
-	        rentRepository.save(rent);
-	        updatedCount++;
-	    }
-	    
-	    log.info("자동 반환 처리 완료: {} 건의 대여가 반환 처리되었습니다.", updatedCount);
+		LocalDateTime now = LocalDateTime.now();
+
+		List<RentEntity> overdueRentals = rentRepository.findAllByReturndateBeforeAndStatus(now, "Y");
+
+		int updatedCount = 0;
+		for (RentEntity rent : overdueRentals) {
+			rent.setStatus("N");
+			rentRepository.save(rent);
+			updatedCount++;
+		}
+
+		log.info("자동 반환 처리 완료: {} 건의 대여가 반환 처리되었습니다.", updatedCount);
 	}
 
-	public Map<String,Object> getMyRentInfo(String email, Long movieId) {
-		Map<String,Object> data = new HashMap<>();
-		
+	public Map<String, Object> getMyRentInfo(String email, Long movieId) {
+		Map<String, Object> data = new HashMap<>();
+
 		MemberEntity memE = memberRepository.findById(email)
 				.orElseThrow(() -> new RuntimeException("Member not found " + email));
 		MovieEntity movieE = movieRepositoty.findById(movieId)
 				.orElseThrow(() -> new RuntimeException("Movie not found " + movieId));
 
-		
-		RentEntity rent = rentRepository.findByEmailAndMovieIdAndStatus(memE, movieE,"Y");
-		if(rent!=null) {
+		RentEntity rent = rentRepository.findByEmailAndMovieIdAndStatus(memE, movieE, "Y");
+		if (rent != null) {
 			data.put("rentdata", rent.getRentdate());
 			data.put("returndata", rent.getReturndate());
 			data.put("status", rent.getStatus());
 //			data.put("movie",rent.getMovieId());
 		}
-		
+
 		return data;
 	}
+
 	// 관리자페이지 - 통계 : 대여 수 확인 (startDate에 원하는 날짜, endDate에 원하는 날짜 넣으면 그 사이의 값들이 나옴)
 	@Override
 	public List<Object[]> RentCount(LocalDateTime startDate, LocalDateTime endDate) {
