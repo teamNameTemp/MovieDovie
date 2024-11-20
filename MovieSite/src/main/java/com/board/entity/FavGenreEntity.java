@@ -43,20 +43,8 @@ public class FavGenreEntity {
 	@Column(name = "genre3", length=50, nullable = true)
 	private String genre3;
 	
-	
 	@Column(name = "email", length=320, nullable = false)
 	private String email;
 	
-	
-	/*
-	//FK 만들기
-	//FK 읽어올 때 Eager, Lazy 두 가지 타입이 있음.
-	//Eager : 부모키가 있는 테이블부터 검사해서 부모키가 제대로 되어 있는지 확인하고 자식키를 읽음 -> 정확도는 높지만 성능이 저하.
-	//Lazy : 자식키가 있는 테이블만 읽음 -> 정확도는 떨어지지만 성능이 향상.
-	@ManyToOne(fetch = FetchType.LAZY)
-	@OnDelete(action = OnDeleteAction.CASCADE)
-	@JoinColumn(name="email", nullable = false)
-	private MemberEntity email;
-	*/
 	
 }

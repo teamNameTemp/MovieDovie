@@ -3,6 +3,10 @@ package com.board.service;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.data.jpa.repository.Query;
+
+import com.board.entity.movie.MovieEntity;
+
 public interface BookmarkService {
 	public void saveOrUpdate(String action, Long movieId, String email);
 
