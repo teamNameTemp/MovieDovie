@@ -319,7 +319,7 @@ public class BoardController {
 	@GetMapping("/search")
 	public void searchPage(Model model,@RequestParam(name="keyword",required = false) String keyword) {
 		if(keyword != null) {
-			List<List<MovieDTO>> list = tmdb.searchMovies(keyword,3).block();
+			List<Map<String,Object>> list = movie.findByKeywordMovieList(keyword);
 			model.addAttribute("movies",list);
 			log.info(list);
 		}
