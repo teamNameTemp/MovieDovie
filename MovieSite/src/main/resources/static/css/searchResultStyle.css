@@ -96,6 +96,21 @@ body {
     font-size: 14px;
     line-height: 1.6;
 }
+/* 영화 등급 */
+.movie-certification {
+    display: inline-block;
+    background-color: #e70caca1; /* 배경색 (적색 계열) */
+    color: white; /* 텍스트 색상 */
+    font-size: 14px;
+    font-weight: bold;
+    padding: 5px 10px; /* 패딩 */
+    border-radius: 5px; /* 둥근 테두리 */
+    margin-bottom: 10px; /* 아래 여백 */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* 그림자 효과 */
+    text-transform: uppercase; /* 텍스트 대문자로 변환 */
+    letter-spacing: 0.5px; /* 글자 간격 */
+}
+
 /* 영화 정보 레이어--- */
 
 

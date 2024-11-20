@@ -32,24 +32,36 @@
 <div class="search-container" style="margin-top: 100px; text-align: center;">
     <h1 th:text="'&quot;' + ${param.keyword} + '&quot; 검색 결과'" style="margin-bottom: 20px;">검색 결과</h1>
 
-    <div id="searchResult" class="movie-groups">
-        <div th:each="movieGroup, groupStat : ${movies}" th:id="'movieGroup' + ${groupStat.index}" class="movie-grid" th:style="${groupStat.index > 0 ? 'display: none;' : ''}">
-            <div th:each="movie : ${movieGroup}" class="movie-card-wrapper">
+    <div id="searchResult" class="movie-grid"> 
+        <div th:each="movie:${movies}">
+            <a th:href="@{/board/movieDetail(movieId=${movie.id})}"> 
                 <div class="movie-card">
-                    <a th:href="@{/board/movieDetail(movieId=${movie.id})}"> 
-                        <img th:src="@{${movie.posterPath} != null ? 'https://image.tmdb.org/t/p/w200' + ${movie.posterPath} : '/images/blankPoster.jpg'}" th:alt="${movie.title} != null ? movie.title : '영화 포스터 없음'">
-                    </a>
-                    <div class="movie-info-layer">
-                        <h3 class="truncate" th:text="${movie.title}" th:alt="${movie.title}"></h3>
-                        <p class="movie-details">
-                            <p th:text="${movie.releaseDate} != null ? ${movie.releaseDate} : '개봉일 미정'"></p>
-                            <p th:each="genre, iterStat : ${movie.genres}" 
-                               th:text="${genre.name} + (iterStat.last ? '' : ' · ')"></p>
-                        </p>
-                    </div>
+                    <img th:src="@{${movie.posterPath} != null ? 'https://image.tmdb.org/t/p/w200' + ${movie.posterPath} : '/images/blankPoster.jpg'}" alt="${movie.title}">
+                    <h3 class="truncate" th:text="${movie.title}" alt="${movie.title}"></h3>
+                    <p th:text="${movie.releaseDate} != null ? ${movie.releaseDate} : '개봉일 미정'"></p>
                 </div>
-            </div>
+                <div class="movie-info-layer">
+                    <h3 class="truncate" th:text="${movie.title}" th:alt="${movie.title}"></h3>
+                    <p class="movie-details">
+                        <p th:text="${movie.releaseDate} != null ? ${movie.releaseDate} : '개봉일 미정'"></p>
+                        <p th:each="genre : ${movie.genre}" th:text="${genre.genreNm}"></p>
+                    </p>
+                </div>
+            </a>
         </div>
+    </div>
+
+   	<div th:each="movie:${movies}">
+   	<div th:text="${movie.id}"></div>
+   	<div th:text="${movie.title}"></div>
+   	<div th:text="${movie.certification}"></div>
+   	<div th:text="${movie.runtime}"></div>
+   	<div th:each="genre : ${movie.genre}" th:text="${genre.genreNm}"></div>
+   	<div th:text="${movie.releaseDate}"></div>
+   	<div th:text="${movie.posterPath}"></div>
+   	<hr>
+   	</div>
+        
     </div>
 
     <div id="loadMoreContainer" style="margin-top: 20px;">
