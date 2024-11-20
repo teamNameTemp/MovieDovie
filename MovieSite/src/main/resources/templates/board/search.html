@@ -33,19 +33,14 @@
     <h1 th:text="'&quot;' + ${param.keyword} + '&quot; 검색 결과'" style="margin-bottom: 20px;">검색 결과</h1>
 
     <div id="searchResult" class="movie-grid"> 
-        <div th:each="movie:${movies}">
+        <div th:each="movie : ${movies}">
+            
             <a th:href="@{/board/movieDetail(movieId=${movie.id})}"> 
                 <div class="movie-card">
+                    <div th:text="${movie.title}"></div>
                     <img th:src="@{${movie.posterPath} != null ? 'https://image.tmdb.org/t/p/w200' + ${movie.posterPath} : '/images/blankPoster.jpg'}" alt="${movie.title}">
                     <h3 class="truncate" th:text="${movie.title}" alt="${movie.title}"></h3>
                     <p th:text="${movie.releaseDate} != null ? ${movie.releaseDate} : '개봉일 미정'"></p>
-                </div>
-                <div class="movie-info-layer">
-                    <h3 class="truncate" th:text="${movie.title}" th:alt="${movie.title}"></h3>
-                    <p class="movie-details">
-                        <p th:text="${movie.releaseDate} != null ? ${movie.releaseDate} : '개봉일 미정'"></p>
-                        <p th:each="genre : ${movie.genre}" th:text="${genre.genreNm}"></p>
-                    </p>
                 </div>
             </a>
         </div>
