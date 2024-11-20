@@ -127,16 +127,6 @@ body {
 	color: goldenrod;
 }
 
-.toggle-ball {
-	width: 18px;
-	height: 18px;
-	background-color: black;
-	position: absolute;
-	right: 1px;
-	border-radius: 50%;
-	cursor: pointer;
-	transition: 1s ease all;
-}
 
 .sidebar {
 	width: 50px;
@@ -354,11 +344,6 @@ body {
 
 .toggle.active {
 	background-color: black;
-}
-
-.toggle-ball.active {
-	background-color: white;
-	transform: translateX(-20px);
 }
 
 @import url('https://fonts.googleapis.com/icon?family=Material+Icons');
@@ -658,15 +643,6 @@ a {
 								th:src="@{'https://image.tmdb.org/t/p/original' + ${movie.posterPath}}"
 								alt="">
 							</a>
-							<div class="movie-list-item-buttons">
-								<div class="movie-list-item-button">
-									<a class="fas fa-shopping-cart" href="#"
-										style="font-size: 20px;"></a>
-								</div>
-								<div class="movie-list-item-button">
-									<a class="fas fa-bookmark" href="#" style="font-size: 20px;"></a>
-								</div>
-							</div>
 							<p class="movie-list-item-desc" th:text="${movie.overview}"></p>
 						</div>
 					</div>
@@ -683,15 +659,6 @@ a {
 								th:src="@{'https://image.tmdb.org/t/p/original' + ${movie.posterPath}}"
 								alt="">
 							</a>
-							<div class="movie-list-item-buttons">
-								<div class="movie-list-item-button">
-									<a class="fas fa-shopping-cart" href="#"
-										style="font-size: 20px;"></a>
-								</div>
-								<div class="movie-list-item-button">
-									<a class="fas fa-bookmark" href="#" style="font-size: 20px;"></a>
-								</div>
-							</div>
 							<p class="movie-list-item-desc" th:text="${movie.overview}"></p>
 						</div>
 					</div>
@@ -708,15 +675,6 @@ a {
 								th:src="@{'https://image.tmdb.org/t/p/original' + ${movie.posterPath}}"
 								alt="">
 							</a>
-							<div class="movie-list-item-buttons">
-								<div class="movie-list-item-button">
-									<a class="fas fa-shopping-cart" href="#"
-										style="font-size: 20px;"></a>
-								</div>
-								<div class="movie-list-item-button">
-									<a class="fas fa-bookmark" href="#" style="font-size: 20px;"></a>
-								</div>
-							</div>
 							<p class="movie-list-item-desc" th:text="${movie.overview}"></p>
 						</div>
 					</div>
@@ -741,12 +699,14 @@ a {
 			<!-- Like (좋아요) 많은 순 -->
 			<div class="movie-list-wrapper">
 				<div class="movie-list">
-					<div class="movie-list-item">
-						<img class="movie-list-item-img" src="/img/1.jpeg" alt=""> <span
-							class="movie-list-item-title">Her</span>
-						<p class="movie-list-item-desc">Lorem ipsum dolor sit amet
-							consectetur adipisicing elit. At hic fugit similique accusantium.</p>
-
+					<div class="movie-list-item"
+						th:each="movie : ${favGenreList.get(favGenre.genre3)}">
+						<a th:href="@{/board/movieDetail(movieId=${movie.id})}"> <img
+							class="movie-list-item-img"
+							th:src="@{'https://image.tmdb.org/t/p/original' + ${movie.posterPath}}"
+							alt="">
+						</a>
+						<p class="movie-list-item-desc" th:text="${movie.overview}"></p>
 					</div>
 				</div>
 				<i class="fas fa-chevron-left arrow"></i> <i
@@ -759,48 +719,55 @@ a {
 			<!-- reply (댓글) 많은 순 -->
 			<div class="movie-list-wrapper">
 				<div class="movie-list">
-					<div class="movie-list-item">
-						<img class="movie-list-item-img" src="/img/17.jpg" alt=""> <span
-							class="movie-list-item-title">Her</span>
-						<p class="movie-list-item-desc">Lorem ipsum dolor sit amet
-							consectetur adipisicing elit. At hic fugit similique accusantium.</p>
-
+					<div class="movie-list-item"
+						th:each="movie : ${favGenreList.get(favGenre.genre3)}">
+						<a th:href="@{/board/movieDetail(movieId=${movie.id})}"> <img
+							class="movie-list-item-img"
+							th:src="@{'https://image.tmdb.org/t/p/original' + ${movie.posterPath}}"
+							alt="">
+						</a>
+						<p class="movie-list-item-desc" th:text="${movie.overview}"></p>
 					</div>
 				</div>
+				<i class="fas fa-chevron-left arrow"></i> <i
+					class="fas fa-chevron-right arrow"></i>
 			</div>
 		</div>
 
 		<div class="movie-list-container">
 			<h1 class="movie-list-title">이건 꼭 봐야 해! 회원들이 가장 많이 본 영화</h1>
-			<!-- Watch (이 영화 봤어요) 많은 순 -->
 			<div class="movie-list-wrapper">
 				<div class="movie-list">
-					<div class="movie-list-item">
-						<img class="movie-list-item-img" src="/images/img/17.jpg" alt="">
-						<span class="movie-list-item-title">Her</span>
-						<p class="movie-list-item-desc">Lorem ipsum dolor sit amet
-							consectetur adipisicing elit. At hic fugit similique accusantium.</p>
-
+					<div class="movie-list-item"
+						th:each="movie : ${favGenreList.get(favGenre.genre3)}">
+						<a th:href="@{/board/movieDetail(movieId=${movie.id})}"> <img
+							class="movie-list-item-img"
+							th:src="@{'https://image.tmdb.org/t/p/original' + ${movie.posterPath}}"
+							alt="">
+						</a>
+						<p class="movie-list-item-desc" th:text="${movie.overview}"></p>
 					</div>
 				</div>
-				<i class="fas fa-chevron-right arrow"></i>
+				<i class="fas fa-chevron-left arrow"></i> <i
+					class="fas fa-chevron-right arrow"></i>
 			</div>
 		</div>
-
 		<div class="movie-list-container">
 			<h1 class="movie-list-title">오늘 대여 Top 영화</h1>
 			<div class="movie-list-wrapper">
 				<div class="movie-list">
-					<div class="movie-list-item">
-						<img class="movie-list-item-img" src="/images/img/17.jpg" alt="">
-						<span class="movie-list-item-title">Her</span>
-						<p class="movie-list-item-desc">Lorem ipsum dolor sit amet
-							consectetur adipisicing elit. At hic fugit similique accusantium.</p>
-
+					<div class="movie-list-item"
+						th:each="movie : ${favGenreList.get(favGenre.genre3)}">
+						<a th:href="@{/board/movieDetail(movieId=${movie.id})}"> <img
+							class="movie-list-item-img"
+							th:src="@{'https://image.tmdb.org/t/p/original' + ${movie.posterPath}}"
+							alt="">
+						</a>
+						<p class="movie-list-item-desc" th:text="${movie.overview}"></p>
 					</div>
-
 				</div>
-				<i class="fas fa-chevron-right arrow"></i>
+				<i class="fas fa-chevron-left arrow"></i> <i
+					class="fas fa-chevron-right arrow"></i>
 			</div>
 		</div>
 
@@ -811,12 +778,14 @@ a {
 				영화</h1>
 			<div class="movie-list-wrapper">
 				<div class="movie-list">
-					<div class="movie-list-item">
-						<img class="movie-list-item-img" src="/images/img/17.jpg" alt="">
-
-						<p class="movie-list-item-desc">Lorem ipsum dolor sit amet
-							consectetur adipisicing elit. At hic fugit similique accusantium.</p>
-
+					<div class="movie-list-item"
+						th:each="movie : ${favGenreList.get(favGenre.genre3)}">
+						<a th:href="@{/board/movieDetail(movieId=${movie.id})}"> <img
+							class="movie-list-item-img"
+							th:src="@{'https://image.tmdb.org/t/p/original' + ${movie.posterPath}}"
+							alt="">
+						</a>
+						<p class="movie-list-item-desc" th:text="${movie.overview}"></p>
 					</div>
 
 				</div>

@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import com.board.dto.movie.MovieDTO;
@@ -26,8 +27,10 @@ import com.board.entity.repository.movie.ImageRepository;
 import com.board.entity.repository.movie.LanguageRepository;
 import com.board.entity.repository.movie.MovieRepository;
 import com.board.entity.repository.movie.VideoRepository;
+import com.board.util.DataCalculate;
 import com.board.util.MovieMapper;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 
@@ -46,7 +49,43 @@ public class MovieAPIServiceImpl implements MovieAPIService {
 	private final VideoRepository videoRepository;
 	private final ImageRepository imageRepository;
 	private final MovieMapper mapper;
-
+	private final DataCalculate calc;
+	
+	//매 시간 마다 트렌드 영화 업데이트 및 저장
+	@Scheduled(cron = "0 0 * * * ?")
+	@Transactional
+	public void autoTrendListSave() {
+		
+		List<MovieDTO> trendDataList = tmdb.getTrendingMovies("day", 1, "ko-KR").block();
+		List<MovieDTO> trend = new ArrayList<>();
+		for(MovieDTO dto : trendDataList) {
+			MovieDTO movie = tmdb.getMovieDetails(dto.getId(), "ko-KR").block();
+			trend.add(movie);
+		}
+		
+		log.info(trend.size() + "개의 트렌드 영화가 저장 및 업데이트 되었습니다.");
+		saveTheDataBases(trend);
+	}
+	
+	//매달 대여 가격 업데이트
+	@Scheduled(cron = "0 0 0 * * ?")
+	@Transactional
+	public void autoUpdatePrice() {
+		List<MovieEntity> list = movieRepository.findAll();
+		int idx = 0;
+		for(MovieEntity movie : list) {
+			int price = calc.calcRentPrice(movie.getReleaseDate());
+			if(price != movie.getPrice()) {
+				movie.setPrice(price);
+				idx++;
+			}
+		}
+		
+		log.info(idx + "개의 영화가 업데이트 되었습니다.");
+		movieRepository.saveAll(list);
+	}
+	
+	
 	//DB에 저장되있는거 가져오기
 	@Override
 	public Map<String, Object> getMovieDetails(Long id) {
@@ -92,11 +131,12 @@ public class MovieAPIServiceImpl implements MovieAPIService {
 		
 		return data;
 	}
-	//todo : 저장 및 업데이트
+	
 	@Override
 	public void saveTheDataBases(List<MovieDTO> list) {
 	    for (MovieDTO dto : list) {
 	    	if(movieRepository.findById(dto.getId()).isEmpty()) {
+	    		log.info(dto.getTitle() + "가 저장되었습니다.");
 	    		saveTheDataBase(dto);
 	    	}
 	    	else { // 있으면(업데이트)
@@ -171,9 +211,7 @@ public class MovieAPIServiceImpl implements MovieAPIService {
 		//비디오 유무
 		List<VideoEntity> videos = videoRepository.findByMovieId(movie);
 		if(videos.isEmpty() || videos == null) {
-			log.info(videos.size() + dto.getId() +":"+ dto.getVideos().getResults().size());
 			videos = mapper.mapVideos(dto);
-		log.info(videos);
 		}
 		videoRepository.saveAll(videos);
 

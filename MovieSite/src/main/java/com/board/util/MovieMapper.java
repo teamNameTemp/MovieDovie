@@ -1,5 +1,7 @@
 package com.board.util;
 
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -7,6 +9,10 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Component;
+
+import com.board.util.DataCalculate;
+
+import lombok.RequiredArgsConstructor;
 
 import com.board.dto.movie.MovieDTO;
 import com.board.entity.movie.CastEntity;
@@ -20,7 +26,10 @@ import com.board.entity.movie.MovieEntity;
 import com.board.entity.movie.VideoEntity;
 
 @Component
+@RequiredArgsConstructor
 public class MovieMapper {
+	private final DataCalculate calc;
+	
 	
 	public Map<String,Object> getMovieSimpleInfo(MovieEntity movie){
 		Map<String,Object> data= new HashMap<>();
@@ -220,12 +229,14 @@ public class MovieMapper {
                 .voteCount(dto.getVoteCount())
                 .status(dto.getStatus())
                 .certification(getCertification(dto.getReleaseDates()))
+                .price(calc.calcRentPrice(dto.getReleaseDate()))
                 .build();
         
         dto.setEntity(entity);
         return entity;
     }
-
+    
+   
     public List<CompanyEntity> mapProductionCompanies(MovieDTO dto) {
         if (dto.getProductionCompanies() == null) return new ArrayList<>();
         

@@ -22,7 +22,7 @@ import com.board.dto.ReplyInterface;
 import com.board.dto.RequestDTO;
 import com.board.dto.RequestReplyDTO;
 import com.board.dto.movie.MovieDTO;
-import com.board.entity.MemberEntity;
+import com.board.entity.ReplyEntity;
 import com.board.entity.RequestEntity;
 import com.board.entity.RequestReplyEntity;
 import com.board.entity.movie.GenreEntity;
@@ -77,7 +77,7 @@ public class BoardController {
 		model.addAttribute("nickname", nickname);
 
 		
-		  List<MovieDTO> trend = tmdb.getTrendingMovies("week", 1, "ko-KR").block();
+		  List<MovieDTO> trend = tmdb.getTrendingMovies("day", 1, "ko-KR").block();
           List<MovieDTO> trendList = new ArrayList<>();
           
           for(MovieDTO d : trend) {
@@ -86,14 +86,6 @@ public class BoardController {
           }
           //트렌드 영화를 못찾을 시 예외로 한번 더 저장
 //          movie.saveTheDataBases(trendList);
-		
-		for(MovieDTO dto : trendList) {
-			Map<String,Object> bookmarkMap = bookmark.getBookmarkInfo((String)session.getAttribute("email"), dto.getId());
-			if(bookmarkMap != null) {
-				dto.setIsBookmarked((String)bookmarkMap.get("status"));
-			}
-//			dto.setIsCart()
-		}
 		
 		
 		//선호 장르별 영화 리스트
@@ -195,7 +187,11 @@ public class BoardController {
 		Map<String,Object> myRent = rent.getMyRentInfo(email, movieId);
 		if(myRent != null || !myRent.isEmpty()) {
 			model.addAttribute("rent",myRent);
+			rent.updateRent(email, movieId);
 		}
+		
+		List<Map<String,Object>>replies = reply.getList(movieId);
+		model.addAttribute("replies",replies);
 		
 		//movieStat 정보
 		Map<String, Object> likes = like.getAllLikeInfo(movieId);
@@ -210,18 +206,18 @@ public class BoardController {
 
 	@PostMapping("/movieDetail/reviews")
 	@ResponseBody
-	public Map<String, Boolean> postMovieDetailReview(@RequestParam("movieId") Long movieId,
+	public Map<String, Object> postMovieDetailReview(@RequestParam("movieId") Long movieId,
 			@RequestParam("content") String content, HttpSession session) {
 
 		String email = (String) session.getAttribute("email");
 
-		Map<String, Boolean> response = new HashMap<>();
+		Map<String, Object> response = new HashMap<>();
 
 		// 리뷰 업데이트 및 저장
-		reply.saveOrUpdate(content, email, movieId);
+		String result = reply.saveOrUpdate(content, email, movieId);
 
-		response.put("ok", true);
-
+		response.put("message", "good");
+		response.put("action", result);
 		return response;
 	}
 
