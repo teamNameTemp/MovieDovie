@@ -35,13 +35,19 @@
     <div id="searchResult" class="movie-groups">
         <div th:each="movieGroup, groupStat : ${movies}" th:id="'movieGroup' + ${groupStat.index}" class="movie-grid" th:style="${groupStat.index > 0 ? 'display: none;' : ''}">
             <div th:each="movie : ${movieGroup}" class="movie-card-wrapper">
-                <a th:href="@{/board/movieDetail(movieId=${movie.id})}"> 
-                    <div class="movie-card">
-                        <img th:src="@{${movie.posterPath} != null ? 'https://image.tmdb.org/t/p/w200' + ${movie.posterPath} : '/images/blankPoster.jpg'}" th:alt="${movie.title}">
+                <div class="movie-card">
+                    <a th:href="@{/board/movieDetail(movieId=${movie.id})}"> 
+                        <img th:src="@{${movie.posterPath} != null ? 'https://image.tmdb.org/t/p/w200' + ${movie.posterPath} : '/images/blankPoster.jpg'}" th:alt="${movie.title} != null ? movie.title : '영화 포스터 없음'">
+                    </a>
+                    <div class="movie-info-layer">
                         <h3 class="truncate" th:text="${movie.title}" th:alt="${movie.title}"></h3>
-                        <p th:text="${movie.releaseDate} != null ? ${movie.releaseDate} : '개봉일 미정'"></p>
+                        <p class="movie-details">
+                            <p th:text="${movie.releaseDate} != null ? ${movie.releaseDate} : '개봉일 미정'"></p>
+                            <p th:each="genre, iterStat : ${movie.genres}" 
+                               th:text="${genre.name} + (iterStat.last ? '' : ' · ')"></p>
+                        </p>
                     </div>
-                </a>
+                </div>
             </div>
         </div>
     </div>
@@ -53,5 +59,28 @@
         </div>
     </div>
 </body>
-
 </html>
+
+<!--  <div>
+        <div> 호버:영화정보 및 버튼즈
+            <p class="#" style="font-size: small; color: white;"> 
+                <span th:each="releaseInfo : ${movie.releaseDates.results}" th:if="${releaseInfo.iso31661 == 'KR'}">
+                    <span th:if="${#lists.size(releaseInfo.releaseDates) > 0}" 
+                            th:text="${releaseInfo.releaseDates[0].certification}" 
+                            class="badge bg-primary me-1"></span>
+                </span>
+                <span th:each="genre, iterStat : ${movie.genres}" th:text="${genre.name} + (iterStat.last ? '' : ' · ')"></span>
+                <span th:text="'  |  ' +${movie.runtime + '분'}"></span>
+                <span th:text="'  |  ' + ${#temporals.format(movie.releaseDate, 'yyyy-MM-dd')}"></span>
+            </p>
+            <a href="" class="slider_volume" style="display: none;"></a>
+            <a href="" class="slider_volume" style="display:;"></a>
+            <a href="" class="slider_volume" style="display:;"></a>
+        </div>
+        <a href="">포스터이미지
+            <div>
+                <img th:src="@{${movie.posterPath} != null ? 'https://image.tmdb.org/t/p/w200' + ${movie.posterPath} : '/images/blankPoster.jpg'}" th:alt="${movie.title}">
+            </div>
+            <canvas></canvas>
+        </a>
+    </div>-->
