@@ -29,43 +29,29 @@
     <div th:replace="~{/fragments/nav/menubar::menubar}"></div>
     <div th:replace="~{/fragments/nav/sidebar::sidebar}"></div>
     
-    <div class="search-container" style="margin-top: 100px; text-align: center;">
-        <h1 th:text="'&quot;' + ${param.keyword} + '&quot; 검색 결과'">검색 결과</h1>
-        <div id="searchResult" class="movie-grid"> 
-            <div th:each="movie : ${movies.get(0)}">
+<div class="search-container" style="margin-top: 100px; text-align: center;">
+    <h1 th:text="'&quot;' + ${param.keyword} + '&quot; 검색 결과'" style="margin-bottom: 20px;">검색 결과</h1>
+
+    <div id="searchResult" class="movie-groups">
+        <div th:each="movieGroup, groupStat : ${movies}" th:id="'movieGroup' + ${groupStat.index}" class="movie-grid" th:style="${groupStat.index > 0 ? 'display: none;' : ''}">
+            <div th:each="movie : ${movieGroup}" class="movie-card-wrapper">
                 <a th:href="@{/board/movieDetail(movieId=${movie.id})}"> 
                     <div class="movie-card">
-                        <img th:src="@{${movie.posterPath} != null ? 'https://image.tmdb.org/t/p/w200' + ${movie.posterPath} : '/images/blankPoster.jpg'}" alt="${movie.title}">
-                        <h3 class="truncate" th:text="${movie.title}" alt="${movie.title}"></h3>
+                        <img th:src="@{${movie.posterPath} != null ? 'https://image.tmdb.org/t/p/w200' + ${movie.posterPath} : '/images/blankPoster.jpg'}" th:alt="${movie.title}">
+                        <h3 class="truncate" th:text="${movie.title}" th:alt="${movie.title}"></h3>
                         <p th:text="${movie.releaseDate} != null ? ${movie.releaseDate} : '개봉일 미정'"></p>
                     </div>
                 </a>
             </div>
-            <div th:each="movie : ${movies.get(1)}">
-                <a th:href="@{/board/movieDetail(movieId=${movie.id})}"> 
-                    <div class="movie-card">
-                        <img th:src="@{${movie.posterPath} != null ? 'https://image.tmdb.org/t/p/w200' + ${movie.posterPath} : '/images/blankPoster.jpg'}" alt="${movie.title}">
-                        <h3 class="truncate" th:text="${movie.title}" alt="${movie.title}"></h3>
-                        <p th:text="${movie.releaseDate} != null ? ${movie.releaseDate} : '개봉일 미정'"></p>
-                    </div>
-                </a>
-            </div>
-            <div th:each="movie : ${movies.get(2)}">
-                <a th:href="@{/board/movieDetail(movieId=${movie.id})}"> 
-                    <div class="movie-card">
-                        <img th:src="@{${movie.posterPath} != null ? 'https://image.tmdb.org/t/p/w200' + ${movie.posterPath} : '/images/blankPoster.jpg'}" alt="${movie.title}">
-                        <h3 class="truncate" th:text="${movie.title}" alt="${movie.title}"></h3>
-                        <p th:text="${movie.releaseDate} != null ? ${movie.releaseDate} : '개봉일 미정'"></p>
-                    </div>
-                </a>
-            </div>
-		</div>
-        <div id="loadMoreContainer" style="margin-top: 20px;">
-            <button id="loadMoreBtn" onclick="loadMore()" style="display: block">
-                더 보기
-            </button>
         </div>
-    </div> 
+    </div>
+
+    <div id="loadMoreContainer" style="margin-top: 20px;">
+        <button id="loadMoreBtn" onclick="loadMore()" th:style="${movies.size() <= 1 ? 'display: none;' : ''}">
+            더 보기
+        </button>
+        </div>
+    </div>
 </body>
 
 </html>
