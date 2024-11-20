@@ -143,8 +143,6 @@ public class BoardController {
 	    model.addAttribute("seqno", seqno);
 	    model.addAttribute("noti", noti);  // 알림 목록을 모델에 추가
 	    
-	    System.out.println("Noti object: " + noti);
-	    System.out.println("Noti size: " + (noti != null ? noti.size() : "null"));
 	}
 	
 	@GetMapping("/mypage")
@@ -194,6 +192,7 @@ public class BoardController {
 			model.addAttribute("nickname", "Guest");
 			model.addAttribute("role", "GUEST");
 		}
+		
 		// 나의 movieStat 정보
 		Map<String, Object> mylike = like.getLikeInfo(email, movieId);
 		if (mylike == null || mylike.isEmpty()) {
@@ -429,7 +428,7 @@ public class BoardController {
 		MemberDTO memberDTO = memberService.memberInfo(email);
 		model.addAttribute("nickname", memberDTO.getNickname());
 
-		model.addAttribute("maxSeqno", masterService.getMaxSeqno(email) + 1);
+		model.addAttribute("maxSeqno", (masterService.getMaxSeqno(email) != null ? masterService.getMaxSeqno(email) : 0) + 1);
 
 
 		/////////////////// 알람 처리 ///////////////////

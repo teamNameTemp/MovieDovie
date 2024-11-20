@@ -3,26 +3,27 @@
 <head>
 <meta charset="UTF-8">
 <title>회원 활동 통계</title>
+	<style>
+	@import url('https://fonts.googleapis.com/css2?family=Jua&display=swap');
+	</style>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-	<link rel="stylesheet" th:href="@{/css/styles.css}">
 	<link rel="stylesheet" href="/css/movieListStyle.css">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css">
 	<style>
-		#wrap {width: 1200px; height: 1000px; font-size: 15px; text-align: center; margin : auto; }
+		#wrap {width: 1300px; height: 1000px; font-size: 17px; text-align: center; margin : auto; }
 	 	
 	 	.side {
 	 		display: flex;
-		 	float: left; width: 700px; height: 900px; text-align: center; 
+		 	float: left; width: 750px; height: 950px; text-align: center; 
 	    	align-items: center; /* 수평 중앙 정렬 */
 	    }
 	    
 	    .content1 {
 		    display: flex; align-items: center; justify-content: space-between;
 		    align-items: center; /* 수직 중앙 정렬 */
-		    width: 500px;
+		    width: 550px;
 		    height: 190px; /* 고정 높이 유지 */
 		    text-align: center;
 		    float: left;
@@ -32,8 +33,8 @@
 		.content2 {
 		    display: flex; align-items: center; justify-content: space-between;
 		    align-items: center; /* 수직 중앙 정렬 */
-		    width: 500px;
-		    height: 360px; /* 고정 높이 유지 */
+		    width: 550px;
+		    height: 370px; /* 고정 높이 유지 */
 		    text-align: center;
 		    float: left;
 		    margin: auto;
@@ -42,8 +43,8 @@
 		 .content3 {
 		    display: flex; align-items: center; justify-content: space-between;
 		    align-items: center; /* 수직 중앙 정렬 */
-		    width: 500px;
-		    height: 120px; /* 고정 높이 유지 */
+		    width: 550px;
+		    height: 130px; /* 고정 높이 유지 */
 		    text-align: center;
 		    float: left;
 		    margin: auto;
@@ -52,8 +53,8 @@
 		.content4 {
 		    display: flex; align-items: center; justify-content: space-between;
 		    align-items: center; /* 수직 중앙 정렬 */
-		    width: 500px;
-		    height: 230px; /* 고정 높이 유지 */
+		    width: 550px;
+		    height: 260px; /* 고정 높이 유지 */
 		    text-align: center;
 		    float: left;
 		    margin: auto;
@@ -78,6 +79,15 @@
             text-align: center;
         }
         
+        .horicontentmem {
+            display: flex;  
+   			justify-content: space-between; /* 양쪽으로 배치 */
+   			align-items: center; /* 수직 방향 중앙 정렬 */
+            width: 100%; /* 부모 너비에 맞춤 */
+            height: 100%; /*부모 너비에 맞춤*/
+            text-align: center;
+        }
+        
 		.left-div, .right-div {
 		    width: 50%; /* 여백을 고려하여 너비 설정 */
 		    box-sizing: border-box;
@@ -91,6 +101,10 @@
         }
         .nochange {
         	color: gray;
+        }
+        
+        h2{
+          font-size: 17px;
         }
         
         table {
@@ -200,7 +214,7 @@
 
 <div id="wrap">
 	<div class="side">
-		<div class="content"><b>대여 현황</b><br><br><br>
+		<div class="content"><h2>대여 현황</h2><br><br>
 				
 		[최근 일주일 간 대여 현황]<br><br>
 		<div>
@@ -318,7 +332,7 @@
 	
 	<div class="content2">
 		<div class="content">
-			<b>2024 대여 파이프라인</b>
+			<h2>2024 대여 파이프라인</h2>
 			<div class="horicontent">
 				<div class="left-div">
 		        	<br><br>[대여 중 / 대여종료 비율]<br><br>
@@ -414,13 +428,15 @@
 	
 	<div class="content4">
 		<div class="statuscontent">
-			<b>회원 등급 현황</b><br>
+			<h2>회원 등급 현황</h2><br> 나중에 분기별로 보여줘야 함.
 			<div class="status-container">
 				<img class="statusicon" src="/images/img/membership.png" alt="">&nbsp;&nbsp;&nbsp;
 				<div class="status-text">
-					<span class="pending-highlight">· 등급 </span>
-					<br><br>
-					· 처리 완료 : <span id="completedCount"></span> 건
+					<p>Silver : 6 명</p>
+					<p>Gold : 9 명</p>
+					<p>Platinum : 104 명</p>
+					<p>Diamond : 54 명</p>
+					
 				</div>
 			</div>
 		</div>
@@ -428,15 +444,14 @@
 	
 	<div class="content3">
 		<div class="content">
-			<div class="horicontent">
+			<div class="horicontentmem">
 				<div class="left-div">
-					<b>회원 증감 수</b><br><br>
+					<h2>회원 증감 수</h2><br>
 					<p>· 금일 가입 회원 수 : <span id="todaySignupCount"></span> 명 <span id="resultSignup"></span></p>
 					<p>· 전체 누적 회원 수 : <span id="totalMemberCount"></span> 명</p>
-					<br>
 				</div>
 				<div class="right-div">
-					<b>방문 현황</b><br><br>
+					<h2>방문 현황</h2><br>
 					<p>· 금일 방문자 수 : <span id="todayVisitorsCount"></span> 명 <span id="resultVisit"></span><br></p>
 					<p>· 전체 누적 방문자 수 : <span id="totalVisitorsCount"></span> 명</p>
 				</div>
@@ -447,13 +462,13 @@
 	
 	<div class="content1">
 		<div class="statuscontent">
-			<b>회원 요청 사항 현황</b><br>
+			<h2>회원 요청 사항 현황</h2><br>
 			<div class="status-container">
-				<img class="statusicon" src="/images/img/RequestStatus.png" alt="">&nbsp;&nbsp;&nbsp;
+				<img class="statusicon" src="/images/img/RequestStatus.png" alt="">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 				<div class="status-text">
-					<span class="pending-highlight">· <a href="/master/memberRequest" class="pending">처리 필요 : <span id="pendingCount"></span> 건</a></span>
+					<span class="pending-highlight">· <a href="/master/memberRequest" class="pending">처리 필요 : <span id="pendingCount" ></span> 건</a></span>
 					<br><br>
-					· 처리 완료 : <span id="completedCount"></span> 건
+					<span style="color: gray;">· 처리 완료 : <span id="completedCount"></span> 건</span>
 				</div>
 			</div>
 		</div>
