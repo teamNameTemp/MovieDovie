@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.board.dto.RequestDTO;
+import com.board.dto.movie.MovieDTO;
 import com.board.entity.BookmarkEntity;
 import com.board.entity.FavGenreEntity;
 import com.board.entity.LikeEntity;

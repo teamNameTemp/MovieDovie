@@ -4,6 +4,7 @@ package com.board.service;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
@@ -15,6 +16,7 @@ import com.board.dto.movie.TmdbResponse;
 
 import jakarta.annotation.PostConstruct;
 import lombok.extern.log4j.Log4j2;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 @Service
@@ -163,12 +165,15 @@ public class TmdbAPIServiceImpl implements TmdbAPIService {
 				});
 	}
     
-    public Mono<List<MovieDTO>> searchMovies(String query) {
-        return webClient.get()
+    public Mono<List<List<MovieDTO>>> searchMovies(String query,int pageCnt) {
+        return Flux.range(1, pageCnt)
+        		.flatMap(page -> 
+        webClient.get()
             .uri(uriBuilder -> uriBuilder
                 .path("/search/movie")
                 .queryParam("api_key", token)
                 .queryParam("query", query)
+                .queryParam("page", page)
                 .queryParam("language", "ko-KR")
                 .build())
             .retrieve()
@@ -177,7 +182,7 @@ public class TmdbAPIServiceImpl implements TmdbAPIService {
             .onErrorResume(e->{
             	 log.error("Error searching movie = ", e);
   			     return Mono.empty();
-            });
+            })).collect(Collectors.toList());
     }
     
 //    public Mono<PersonResponse> searchPerson(String query) {

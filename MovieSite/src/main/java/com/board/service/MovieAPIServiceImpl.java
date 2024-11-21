@@ -233,6 +233,7 @@ public class MovieAPIServiceImpl implements MovieAPIService {
 		
 		for(MovieEntity entity : entityList) {
 			Map<String,Object> movie = mapper.getMovieSimpleInfo(entity);
+			movie.put("genre", genreRepository.findByMovieId(entity));
 			data.add(movie);
 		}
 		
