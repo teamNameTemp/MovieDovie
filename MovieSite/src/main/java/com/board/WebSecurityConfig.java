@@ -66,7 +66,7 @@ public class WebSecurityConfig {
                .requestMatchers("/make/**").permitAll()
                .requestMatchers("/member/**").permitAll()
                .requestMatchers("/board/**").permitAll()
-               .requestMatchers("/master/**").permitAll()               
+               .requestMatchers("/master/**").permitAll()
                .anyRequest().authenticated());
       //세션 설정
       http

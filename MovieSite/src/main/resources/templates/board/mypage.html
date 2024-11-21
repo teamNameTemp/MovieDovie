@@ -887,43 +887,40 @@ a {
         </tr>
         <tr>
             <th>이름</th>
-            <td>김보병</td>
+            <td th:text="${member.username}"></td>
         </tr>
         <tr>
             <th>별명</th>
-            <td>보병</td>
+            <td th:text="${member.nickname}"></td>
         </tr>
         <tr>
             <th>성별</th>
-            <td>남</td>
+            <td th:text="${member.gender}"></td>
         </tr>
         <tr>
             <th>생일</th>
-            <td>1997-05-03</td>
+           	<td th:text="${member.ssn}"></td>
         </tr>
         <tr>
             <th>전화번호</th>
-            <td>010-9172-6325</td>
+            <td th:text="${member.telno}"></td>
         </tr>
         <tr>
             <th>회원 가입일</th>
-            <td>2020-05-15</td>
+            <td th:text="${member.regdate}"></td>
         </tr>
         
         <tr>
             <th>이메일</th>
-            <td>rlaqhqud@gmail.com</td>
-        </tr>
-        
-        <tr>
-            <th> 회원 아이디</th>
-            <td>rlaqhqud</td>
+            <td th:text="${member.email}"></td>
         </tr>
         
          <tr>
 			<th>좋아하는 장르</th>
-            <td></td>
         </tr>
+
+		<a href="/member/modifyMemberInfo" class="btn_modify" style="position: absolute; top: 10px; right: 10px; background-color: #4dbf00; color: white; padding: 10px 15px; border-radius: 5px; text-decoration: none; font-size: 14px;">회원 정보 수정</a>
+					<table class="user-info-table">
     </table>
 </div>
 

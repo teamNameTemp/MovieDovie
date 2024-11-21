@@ -124,8 +124,16 @@ public class BoardController {
 	}
 	
 	@GetMapping("/mypage")
-	public void getMyPage() {
+	public void getMyPage(HttpSession session, Model model) {
+		String email = (String) session.getAttribute("email");
+		String nickname = (String) session.getAttribute("nickname");
 		
+		
+		//멤버인포
+		MemberDTO member = memberService.memberInfo(email);
+		
+		model.addAttribute("member",member);
+		model.addAttribute("nickname",nickname);
 	}
 	
 	// 장르 필터

@@ -3,7 +3,6 @@
 <head>
 <meta charset="UTF-8">
 <title>회원가입</title>
-<link rel="stylesheet" href="/css/board.css">
 <style>
 	/* 기존 스타일 유지 */
 	.imageZone {
@@ -99,6 +98,26 @@
 	    color: white;
 	    margin-bottom: 20px;
 	}
+	
+	.agreement-container {
+	    text-align: left;
+	    margin-top: 20px;
+	}
+
+	.agreement-container label {
+	    display: block;
+	    margin-bottom: 10px;
+	    font-size: 0.9em;
+	}
+
+	.agreement-container input[type="checkbox"] {
+	    margin-right: 10px;
+	}
+
+	.agreement-container .optional {
+	    color: gray;
+	    font-size: 0.8em;
+	}
 </style>
 <script>	
 window.onload = () => {
@@ -106,6 +125,64 @@ window.onload = () => {
 	var imgCheck = "N";
 	var imgZone = document.querySelector('#imageZone');
 	var fileEvent = document.querySelector('#imageFile');
+	var emailCodeMatch = false; 
+	
+	// 인증번호 확인 로직
+	function checkMatchCode(confirmationCode) {
+	    $('#emailConfirm').on("keyup", function() {
+	        var userCode = $('#emailConfirm').val();
+
+	        if (confirmationCode !== userCode) {
+	            $('#emailCode').html("<span>인증번호가 잘못되었습니다.</span>").css({
+	                "color": "#FA3E3E",
+	                "font-weight": "bold",
+	                "font-size": "10px"
+	            });
+	            emailCodeMatch = false; // 인증 실패
+	        } else {
+	            $('#emailCode').html("<span>인증 성공</span>").css({
+	                "color": "#0D6EFD",
+	                "font-weight": "bold",
+	                "font-size": "10px"
+	            });
+	            emailCodeMatch = true; // 인증 성공
+	        }
+	    });
+	}
+
+	// 이메일 인증번호 발송 및 서버 응답 처리
+	function checkEmail() {
+	    var email = $('#email').val();
+
+	    const formData = new FormData();
+	    formData.append("email", email);
+
+	    fetch("/member/signup/mailConfirm", {
+	        method: "POST",
+	        body: formData
+	    })
+	        .then(response => {
+	            if (!response.ok) {
+	                throw new Error('메일 발송에 실패했습니다.');
+	            }
+	            return response.json();
+	        })
+	        .then(data => {
+	            if (data.message === 'good') {
+	                alert("해당 이메일로 인증번호 발송이 완료되었습니다.");
+	                
+	                // 서버에서 받은 인증번호를 저장
+	                let confirmationCode = data.code; // 서버 응답에서 인증번호 받음
+	                checkMatchCode(confirmationCode); // 인증번호 전달
+	            } else {
+	                alert("메일 발송 실패");
+	            }
+	        })
+	        .catch(error => {
+	            console.error(error);
+	            alert("서버와의 통신에 문제가 발생했습니다.");
+	        });
+	}
 		
 	//imageZone 영역 클릭 시 파일이벤트 처리. 자바스크립트에선 이벤트 발생 시 이벤트 정보를 담고 있는 event(e)라는 객체를 자동 생성.
 	imgZone.addEventListener('click', (e)=> {
@@ -139,6 +216,7 @@ window.onload = () => {
 	    reader.readAsDataURL(imgFile);
 	    imgCheck = "Y";
 	};
+
 
 		
 
@@ -297,6 +375,13 @@ window.onload = () => {
 		    return false;
 		}
 		
+
+		if (!emailCodeMatch) {
+		    alert("이메일 인증을 완료해주세요.");
+		    $('#emailConfirm').focus();
+		    return false;
+		}
+		
 		if (!emailAvailable) {
 		    alert("이미 존재하는 이메일입니다. 다른 이메일을 사용해주세요.");
 		    email.focus();
@@ -382,6 +467,9 @@ window.onload = () => {
 		   });	   
 	});
 	
+	// 이메일 인증 버튼과 연결
+	document.querySelector('.btn').addEventListener('click', checkEmail);
+	
 };
 </script>
 </head>
@@ -397,6 +485,15 @@ window.onload = () => {
 					<label>이메일</label>
 					<input type="email" id="email" name="email" class="input_field" placeholder="이메일">
 					<div id="emailValidationMessage" class="validation-message"></div>
+					<button class="btn" type="button" onclick="checkEmail()">인증번호 발송</button>
+				</div><br>
+				
+				<div>
+					<label for="emailConfirm">인증번호 입력</label>
+					<input type="text" class="input_field" id="emailConfirm" placeholder="인증번호 입력">
+						<div class="invalid-feedback" id="emailCode">
+							<small class="text-danger"></small>
+						</div>
 				</div><br>
 
 				<div>
@@ -438,6 +535,18 @@ window.onload = () => {
 					<input type="text" id="telno" name="telno" class="input_field" placeholder="전화번호" maxlength="12">
 					<div id="telnoValidationMessage" class="validation-message"></div>
 				</div><br><br>
+				
+				<div class="agreement-container">
+				     <label>
+				         <input type="checkbox" id="agreePrivacy" name="agreePrivacy" required>
+				         개인정보 수집 및 이용에 동의합니다. (필수)
+				     </label>
+				     <label>
+				         <input type="checkbox" id="agreeMarketing" name="agreeMarketing">
+				         마케팅 정보 수신에 동의합니다. (선택)
+				     </label>
+				     <div class="optional">선택 사항은 동의하지 않아도 회원가입이 가능합니다.</div>
+				 </div><br>
 
 				<div>
 					<input type="button" id="btnRegister" class="btn_register" value="회원가입"><br><br><br><br>
@@ -449,5 +558,81 @@ window.onload = () => {
 				
     </div>
 </div>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    function checkEmail() {
+        var email = $('#email').val();
+
+        const formData = new FormData();
+        formData.append("email", email);
+
+        fetch("/member/signup/mailConfirm", {
+            method: "POST",
+            body: formData
+        })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('메일 발송에 실패했습니다.');
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data.message === 'good') {
+                    alert("해당 이메일로 인증번호 발송이 완료되었습니다.");
+                    
+                    // 서버에서 받은 인증번호를 저장
+                    let confirmationCode = data.code; // 서버 응답에서 인증번호 받음
+                    checkMatchCode(confirmationCode); // 인증번호 전달
+                } else {
+                    alert("실패");
+                }
+            })
+            .catch(error => {
+                console.error(error);
+                alert("서버와의 통신에 문제가 발생했습니다.");
+            });
+    }
+
+    function checkMatchCode(confirmationCode) {
+        $('#emailConfirm').on("keyup", function() {
+            var userCode = $('#emailConfirm').val();
+
+            if (confirmationCode !== userCode) {
+                $('#emailCode').html("<span>인증번호가 잘못되었습니다.</span>").css({
+                    "color": "#FA3E3E",
+                    "font-weight": "bold",
+                    "font-size": "10px"
+                });
+            } else {
+                $('#emailCode').html("<span>인증 성공</span>").css({
+                    "color": "#0D6EFD",
+                    "font-weight": "bold",
+                    "font-size": "10px"
+                });
+            }
+        });
+    }
+	
+	document.getElementById('btnRegister').addEventListener('click', function() {
+	    const agreePrivacy = document.getElementById('agreePrivacy').checked;
+	    const agreeMarketing = document.getElementById('agreeMarketing').checked;
+
+	    // 필수 동의 확인
+	    if (!agreePrivacy) {
+	        alert("개인정보 수집 및 이용에 동의해야 회원가입이 가능합니다.");
+	        return false;
+	    }
+
+	    // 선택적 마케팅 동의 확인 (디버깅용으로 확인 메시지만 추가)
+	    if (agreeMarketing) {
+	        console.log("마케팅 정보 수신에 동의하셨습니다.");
+	    } else {
+	        console.log("마케팅 정보 수신에 동의하지 않으셨습니다.");
+	    }
+		
+		    alert("모든 검증이 완료되었습니다. 회원가입을 진행합니다.");
+		    // RegistryForm.submit(); // 실제로 제출하려면 주석 해제
+		});
+</script>
 </body>  
 </html>
