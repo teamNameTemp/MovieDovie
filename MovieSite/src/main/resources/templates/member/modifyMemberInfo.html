@@ -102,48 +102,43 @@
 </style>
 <script>	
 window.onload = () => {
+			
 	var imgCheck = "N";
 	var imgZone = document.querySelector('#imageZone');
 	var fileEvent = document.querySelector('#imageFile');
-
-	// 기존 프로필 이미지를 표시
-	const existingProfileImage = '<img th:src="@{'/board/viewProfile/' + ${member.email}}" style="display:block;width:60%;height:auto;margin:auto">';
-	imgZone.innerHTML = existingProfileImage;
-
-	// imageZone 클릭 시 파일 선택
-	imgZone.addEventListener('click', (e) => {
-	    fileEvent.click(e);
+			
+	//imageZone 영역 클릭 시 파일이벤트 처리. 자바스크립트에선 이벤트 발생 시 이벤트 정보를 담고 있는 event(e)라는 객체를 자동 생성.
+	imgZone.addEventListener('click', (e)=> {
+		fileEvent.click(e); //사용자가 만든 UI를 통해 <input type="file">을 클릭하는 것과 같은 효과를 내게 됨.
 	});
-
-	// 파일 선택 시 새 이미지 미리 보기
-	fileEvent.addEventListener('change', (e) => {
-	    const files = e.target.files;
-	    showImage(files);
-	});
-
+			
+	fileEvent.addEventListener('change', (e)=> {
+		const files = e.target.files;//선택한 파일 정보가 e.target.files(배열)에 저장
+		showImage(files); 
+	})
+			
 	const showImage = (files) => {
-	    imgZone.innerHTML = '';
-	    const imgFile = files[0];
+		   imgZone.innerHTML = '';
+		   const imgFile = files[0];
 
-	    if (imgFile.type.indexOf("image") < 0) {
-	        alert("이미지 파일만 올려 주세요.");
-	        return false;
-	    }
+		   if (imgFile.type.indexOf("image") < 0) {
+		       alert("이미지 파일만 올려 주세요.");
+		       return false;
+		   }
 
-	    const reader = new FileReader();
-	    reader.onload = function(event) {
-	        const imgElement = document.createElement('img');
-	        imgElement.src = event.target.result;
-	        imgElement.style.width = "100%"; // 이미지 영역에 맞게 조정
-	        imgElement.style.height = "auto";
-	        imgElement.style.objectFit = "contain";
-	        imgZone.appendChild(imgElement);
-	    };
+		   const reader = new FileReader();
+		   reader.onload = function(event) {
+		       const imgElement = document.createElement('img');
+		       imgElement.src = event.target.result;
+		       imgElement.style.width = "100%";  // 이미지 영역에 맞게 조정
+		       imgElement.style.height = "auto";
+		       imgElement.style.objectFit = "contain";  // 여백 없이 맞춤
+		       imgZone.appendChild(imgElement);
+		   };
 
-	    reader.readAsDataURL(imgFile);
-	    imgCheck = "Y";
+		   reader.readAsDataURL(imgFile);
+		   imgCheck = "Y";
 	};
-
 		
 
 	const btnModify = document.getElementById('btnModify'); 
@@ -353,7 +348,7 @@ window.onload = () => {
 		   	.then((data)=> {
 		   		if(data.message === 'good'){
 		   			alert("회원 정보가 수정되었습니다.");
-		   			document.location.href='/board/viewMemberInfo';
+		   			document.location.href='/board/mypage';
 		   		} else {
 		   			alert("서버 장애로 회원 가입에 실패했습니다.");
 		   		}

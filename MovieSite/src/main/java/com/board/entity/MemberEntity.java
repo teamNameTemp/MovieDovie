@@ -46,9 +46,6 @@ public class MemberEntity {
 	@Column(name="telno", length=50, nullable=false)
 	private String telno;
 	
-	@Column(name="description",length=2000,nullable=true)
-	private String description;
-	
 	@Column(name="regdate", nullable=false)
 	private LocalDateTime regdate;
 	

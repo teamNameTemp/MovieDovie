@@ -32,6 +32,7 @@ public class MemberServiceImpl implements MemberService {
 		member.setLastpwdate(LocalDateTime.now());
 		member.setPwcheck(1L);
 		member.setRole("USER");	
+		
 		memberRepository.save(member.dtoToEntity(member));	
 	}
 	
@@ -118,6 +119,12 @@ public class MemberServiceImpl implements MemberService {
 	@Override
 	public List<Object[]> signupResult(){
 		return memberRepository.signupResult();
+	}
+
+	@Override
+	public String searchPassword(MemberDTO member) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 

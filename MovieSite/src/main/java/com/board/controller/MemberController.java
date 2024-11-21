@@ -1,16 +1,18 @@
 package com.board.controller;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.nio.file.Files;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.net.URLEncoder;
-import java.nio.file.Files;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.UUID;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -18,53 +20,50 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.board.dto.FavGenreDTO;
+import com.board.dto.MailCheckDTO;
 import com.board.dto.MemberDTO;
-import com.board.entity.movie.GenreEntity;
-import com.board.entity.repository.FavGenreRepository;
 import com.board.service.FavGenreServiceImpl;
+import com.board.service.MailService;
 import com.board.service.MemberService;
+import com.board.service.TmdbAPIServiceImpl;
 
+import jakarta.mail.MessagingException;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import com.board.service.TmdbAPIServiceImpl;
-
-import jakarta.servlet.http.HttpSession;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.log4j.Log4j2;
-import com.board.util.PasswordMaker;
 
 
 @AllArgsConstructor
 @Log4j2
 @Controller
+@RequestMapping("/member")
 public class MemberController {
 
 	private final MemberService service;
 	private final BCryptPasswordEncoder pwdEncoder;
 	private final TmdbAPIServiceImpl tmdb;
 	private final FavGenreServiceImpl favGenre;
+	private final MailService mailService;
 
 		
 	//로그인 화면 보기
-	@GetMapping("/member/login")
+	@GetMapping("/login")
 	public void getLogin() { }
 	
 	//로그인 --> Spring Security에 의해 인터셉트
-	@PostMapping("/member/login")
+	@PostMapping("/login")
 	public void postLogin() {}
 	
 	//로그인 처리 --> Spring Security에 의한 로그인 진행 후 처리 할 부분
 	@ResponseBody
-	@PostMapping("/member/loginCheck")
+	@PostMapping("/loginCheck")
 	public String postLoginCheck(MemberDTO member,HttpSession session) {
 	
 		//아이디 존재 여부 확인
@@ -82,13 +81,13 @@ public class MemberController {
 	}
 	
 	//로그아웃
-	@GetMapping("/member/logout")
+	@GetMapping("/logout")
 	public void getLogout() {		
 		log.info("====================== 로그 아웃 ======================");
 	}
 	
 	//로그아웃 전처리
-	@GetMapping("/member/beforeLogout")
+	@GetMapping("/beforeLogout")
 	public String getBeforeLogout(HttpSession session,Model model) {
 		
 		String email = (String)session.getAttribute("email");
@@ -100,12 +99,12 @@ public class MemberController {
 	}
 	
 	//회원 등록 화면 보기
-	@GetMapping("/member/signup")
+	@GetMapping("/signup")
 	public void getSignup() {	}
 	
     // 회원 가입
 	@ResponseBody
-	@PostMapping("/member/signup")
+	@PostMapping("/signup")
 	public Map<String,String> postSignup(MemberDTO member, @RequestParam("kind") String kind, 
 			@RequestParam("fileUpload") MultipartFile mpr) throws Exception {
 		
@@ -148,6 +147,7 @@ public class MemberController {
 		
 		//회원 등록시
 		if(kind.equals("I")) {
+			log.info("회원가입성공!00");
 			//패스워드 암호화
 			member.setPassword(pwdEncoder.encode(member.getPassword()));
 			//마지막 패스워드 변경일 --> 회원 가입 시 처음으로 패스워드 생성한 날도 포함
@@ -180,7 +180,7 @@ public class MemberController {
     
 	//이메일 중복 확인
     @ResponseBody
-    @PostMapping("/member/emailCheck")
+    @PostMapping("/emailCheck")
     public Map<String, Boolean> postEmailCheck(@RequestBody Map<String, String> request) throws Exception {
         String email = request.get("email");
         int result = service.emailCheck(email);
@@ -191,7 +191,7 @@ public class MemberController {
 	
     // 닉네임 중복 확인
     @ResponseBody
-    @PostMapping("/member/nicknameCheck")
+    @PostMapping("/nicknameCheck")
     public Map<String, Boolean> postNicknameCheck(@RequestBody Map<String, String> request) throws Exception {
         String nickname = request.get("nickname");
         int result = service.nicknameCheck(nickname);
@@ -199,51 +199,10 @@ public class MemberController {
         response.put("exists", result > 0); // result가 0보다 크면 이미 존재하는 닉네임임
         return response;
     }
-	
-	//회원 정보 보기
-    @GetMapping("/board/viewMemberInfo")
-    public void getMemberInfo(HttpSession session, Model model,@RequestParam(name="email",required=false) String test ) throws Exception {
-        String email = (String) session.getAttribute("email");
-
-//        if (email == null) {
-//            return "redirect:/member/login"; // 세션이 없는 경우 로그인 페이지로 이동
-//        }
-
-        model.addAttribute("member", service.memberInfo(email));
-//        return "board/viewMemberInfo";
-    }
-
-    @ResponseBody
-    @PostMapping("/board/updateMemberInfo")
-    public Map<String, Object> updateMemberInfo(@RequestBody MemberDTO updatedMember, HttpSession session) {
-        Map<String, Object> response = new HashMap<>();
-        try {
-            String email = (String) session.getAttribute("email");
-
-            if (email == null || !email.equals(updatedMember.getEmail())) {
-                response.put("status", "error");
-                response.put("message", "Unauthorized request.");
-                return response;
-            }
-
-            // 회원 정보 수정
-            service.modifyMemberInfo(updatedMember);
-
-            // 최신 정보 반환
-            MemberDTO refreshedMember = service.memberInfo(email);
-            response.put("status", "success");
-            response.put("member", refreshedMember);
-        } catch (Exception e) {
-            response.put("status", "error");
-            response.put("message", "Update failed: " + e.getMessage());
-        }
-
-        return response;
-    }
 
 	
 	//회원 정보 수정 화면 보기
-	@GetMapping("/board/modifyMemberInfo")
+	@GetMapping("/modifyMemberInfo")
 	public void getMemberInfoModify(Model model, HttpSession session) {	
 		String email = (String)session.getAttribute("email");
 		model.addAttribute("member", service.memberInfo(email));		
@@ -251,7 +210,7 @@ public class MemberController {
 	
 	
 	//회원 프로필 이미지 보기
-	@GetMapping("/board/viewProfile/{email}")
+	@GetMapping("viewProfile/{email}")
 	public void filedownload(@PathVariable String email, HttpServletResponse rs) throws Exception {		
 		
 		//운영체제에 따라 이미지가 저장될 디렉토리 구조 설정 시작
@@ -288,6 +247,21 @@ public class MemberController {
 		rs.getOutputStream().flush(); //버퍼에 있는 내용을 write
 		rs.getOutputStream().close(); //스트림 닫기
 	}
+	
+	//회원가입 이메일 인증
+    @ResponseBody
+    @PostMapping("/signup/mailConfirm")		   
+    public Map<String,Object> mailConfirm(MailCheckDTO mailCheckDTO) throws MessagingException, UnsupportedEncodingException  {
+        Map<String,Object> data = new HashMap<>();
+    	
+    	String authCode = mailService.sendEmail(mailCheckDTO.getEmail());
+        System.out.println("이메일 인증");
+        data.put("ok", true);
+        data.put("message", "good");
+        data.put("code", authCode); // 인증번호를 클라이언트로 전달
+        return 	data;
+    }
+	
 	// 추천 장르
 	@GetMapping("/selectGenre")
 	public void getMovieSelect(Model model, HttpSession session) {
@@ -332,18 +306,10 @@ public class MemberController {
 		return response;
 	}
 		
-	//회원 가입 시 아이디 중복 확인
-	@ResponseBody
-	@PostMapping("/emailCheck")
-	public int postEmailCheck(@RequestBody String email) throws Exception{
-		
-		int result = service.emailCheck(email);
-		return result;
-	}
 	
 	//이전 비밀번호와 비교
     @ResponseBody
-    @PostMapping("/member/checkPreviousPassword")
+    @PostMapping("/checkPreviousPassword")
     public Map<String, Boolean> checkPreviousPassword(@RequestBody Map<String, String> request, HttpSession session) {
         Map<String, Boolean> response = new HashMap<>();
         String newPassword = request.get("password");
@@ -367,12 +333,12 @@ public class MemberController {
 
 
 	//이메일 찾기 화면 보기
-	@GetMapping("/member/searchEmail")
+	@GetMapping("/searchEmail")
 	public void getSearchEmail() {}
 	
 	//이메일 찾기
 	@ResponseBody
-	@PostMapping("/member/searchEmail")
+	@PostMapping("/searchEmail")
 	public String postSearchEmail(MemberDTO member) {
 		
 		String email = service.searchEmail(member) == null?"ID_NOT_FOUND":service.searchEmail(member);		
@@ -380,22 +346,17 @@ public class MemberController {
 	}
 	
 	//비밀번호 찾기
-	@GetMapping("/member/searchPassword")
+	@GetMapping("/searchPassword")
 	public void getSearchPassword() {}
 	
 
 	
 	//카카오
-	 @GetMapping("/member/auth/kakao")
+	 @GetMapping("/auth/kakao")
 	 public String kakaoLogin() {
-	    return "redirect:/board/selectGenre"; 
+	    return "redirect:/member/selectGenre"; 
 	 }
 	 
-	 
-	 
-
-
-	
 //	@GetMapping("/member/auth/kakao/callback")
 //	public String kakaoCallback() {
 //		return "redirect:/board/selectGenre";

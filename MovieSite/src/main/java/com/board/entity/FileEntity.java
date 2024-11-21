@@ -18,13 +18,13 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@Entity(name="file")
-@Table(name="jpa_file")
+@Entity(name="profilefile")
+@Table(name="profilefile")
 public class FileEntity {
 	
 	@Id
-	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "FILE_SEQ")
-	@SequenceGenerator(name="FILE_SEQ", sequenceName = "jpa_file_seq", initialValue = 1, allocationSize = 1)
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "PROFILE_FILE_SEQ")
+	@SequenceGenerator(name="PROFILE_FILE_SEQ", sequenceName = "profile_file_seq", initialValue = 1, allocationSize = 1)
 	private Long fileseqno;
 	
 	@Column(name="seqno", nullable=false)

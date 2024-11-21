@@ -5,6 +5,8 @@ import org.springframework.data.domain.Page;
 import com.board.dto.MemberDTO;
 import com.board.entity.repository.MemberRepository;
 
+import jakarta.mail.internet.MimeMessage;
+
 public interface MemberService {
 	
 	//회원가입
@@ -16,9 +18,6 @@ public interface MemberService {
 	//사용자 기본 정보 수정
 	public void modifyMemberInfo(MemberDTO memberDTO);
 
-	//이메일 중복 확인
-	public int emailCheck(String email);
-	
 	//패스워드 수정
 	public void modifyMemberPassword(MemberDTO member);
 	
