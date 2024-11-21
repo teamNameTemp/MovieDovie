@@ -14,7 +14,7 @@ public class DataCalculate {
         long daysSinceRelease = ChronoUnit.DAYS.between(release, today);
         
         int basePrice = 5000; // 기본 대여 가격
-        int result;
+        int result=0;
 
         if (daysSinceRelease < 30) {
             // 개봉 1개월 이내: 기본 가격의 150%

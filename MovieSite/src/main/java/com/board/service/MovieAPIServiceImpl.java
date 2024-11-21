@@ -67,7 +67,7 @@ public class MovieAPIServiceImpl implements MovieAPIService {
 		saveTheDataBases(trend);
 	}
 	
-	//매달 대여 가격 업데이트
+	//매일 대여 가격 업데이트
 	@Scheduled(cron = "0 0 0 * * ?")
 	@Transactional
 	public void autoUpdatePrice() {

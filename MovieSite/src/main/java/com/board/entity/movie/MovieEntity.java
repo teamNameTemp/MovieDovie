@@ -70,6 +70,7 @@ public class MovieEntity {
     
     private String uploadCheck;
     
+    @Column(name="price" ,columnDefinition = "integer default 0")
     private int price;
     
 }
