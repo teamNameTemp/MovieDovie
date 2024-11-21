@@ -124,9 +124,11 @@ public class BoardController {
 	public void getMyPage(Model model, HttpSession session) {
 		String email = (String) session.getAttribute("email");
 		MemberDTO memberInfo = memberService.memberInfo(email);
-		model.addAttribute("member",memberInfo);
-		
+		String nickname = (String) session.getAttribute("nickname");
 		//대여
+		List<Map<String,Object>> rents = rent.getAllMyRent(email, "Y");
+		model.addAttribute("rents",rents);
+		log.info(rents);
 		//북마크
 		List<Map<String,Object>> bookmarks = bookmark.getAllBookmarkByEmail(email);
 		model.addAttribute("bookmarks",bookmarks);
@@ -136,7 +138,9 @@ public class BoardController {
 		//좋아요
 		List<Map<String,Object>> likes = like.getAllLikeByEmail(email);
 		model.addAttribute("likes",likes);
-		
+
+		model.addAttribute("nickname",nickname);
+		model.addAttribute("member",memberInfo);
 	}
 	
 	// 장르 필터
@@ -516,7 +520,6 @@ public class BoardController {
 		if(keyword != null) {
 			List<Map<String,Object>> list = movie.findByKeywordMovieList(keyword);
 			model.addAttribute("movies",list);
-			log.info(list);
 		}
 	}
 	

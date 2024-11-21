@@ -2,6 +2,7 @@ package com.board.service;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -65,7 +66,7 @@ public class RentServiceImpl implements RentService {
 			// 대여 할 시 돈 차감
 			rent = RentEntity.builder().rentdate(LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES))
 					.returndate(LocalDateTime.now().plus(3, ChronoUnit.DAYS).truncatedTo(ChronoUnit.MINUTES))
-					.status("Y").price(movieE.getPrice()).email(memE).movieId(movieE).build();
+					.status("Y").sales(movieE.getPrice()).email(memE).movieId(movieE).build();
 			rentRepository.save(rent);
 		} else {
 			// 이미 대여 중
@@ -132,6 +133,27 @@ public class RentServiceImpl implements RentService {
 	// 관리자 페이지 - 통계 : 올해 대여 TOP 회원 확인
 	public List<Object[]> findTopRenters() {
 		return rentRepository.findTopRenters();
+	}
+
+	@Override
+	public List<Map<String, Object>> getAllMyRent(String email, String status) {
+		List<Map<String,Object>> data = new ArrayList<>();
+		
+		MemberEntity memE = memberRepository.findById(email)
+				.orElseThrow(() -> new RuntimeException("Member not found " + email));
+	
+		List<RentEntity> list = rentRepository.findAllByEmailAndStatus(memE, "Y");
+		for(RentEntity rent : list) {
+			Map<String,Object> map = new HashMap<>();
+			
+			map.put("id", rent.getMovieId().getMovieId());
+			map.put("title", rent.getMovieId().getTitle());
+			map.put("returndate", rent.getReturndate());
+			map.put("posterPath",rent.getMovieId().getPosterPath());
+			map.put("backdrop", rent.getMovieId().getBackdropPath());
+			data.add(map);
+		}
+		return data;
 	}
 
 }
