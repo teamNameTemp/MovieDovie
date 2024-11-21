@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.server.ResponseStatusException;
 
 import com.board.dto.MemberDTO;
 import com.board.dto.ReplyInterface;
@@ -503,4 +505,31 @@ public class BoardController {
 		return result;
 	}
 
+//	private Map<String, Object> getMovieInfo(String movieCd) throws JsonProcessingException {
+//		String movieInfoResult = kobis.getMovieInfo(movieCd);
+//		return convertToMapper.getMovieInfo(movieInfoResult);
+//	}
+
+//---------검색trying-------------------------
+	@GetMapping("/search")
+	public void searchPage(Model model,@RequestParam(name="keyword",required = false) String keyword) {
+		if(keyword != null) {
+			List<Map<String,Object>> list = movie.findByKeywordMovieList(keyword);
+			model.addAttribute("movies",list);
+			log.info(list);
+		}
+	}
+	
+	@PostMapping("/search/movies")
+	@ResponseBody
+	public List<List<MovieDTO>> searchMovies(@RequestParam ("keyword") String keyword) {
+
+		try {
+			List<List<MovieDTO>> movies = tmdb.searchMovies(keyword,3).block();
+			return movies;
+		} catch (Exception e) {
+			log.error("Error fetching movies: ", e);
+			throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "영화 검색 중 오류 발생");
+		}
+	}
 }

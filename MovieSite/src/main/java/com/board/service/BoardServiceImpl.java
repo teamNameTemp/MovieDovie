@@ -12,7 +12,9 @@ import lombok.AllArgsConstructor;
 
 @Service
 @AllArgsConstructor
-public class BoardServiceImpl implements BoardService {@Override
+public class BoardServiceImpl implements BoardService {
+
+	@Override
 	public MovieDTO view(Long seqno) throws Exception {
 		// TODO Auto-generated method stub
 		return null;
@@ -21,7 +23,6 @@ public class BoardServiceImpl implements BoardService {@Override
 	@Override
 	public void hitno(Long seqno) throws Exception {
 		// TODO Auto-generated method stub
-		
 	}
 
 
