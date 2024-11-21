@@ -58,13 +58,13 @@ function loadMore() {
     }
 }
 
-function updateLoadMoreButton() {
+/*function updateLoadMoreButton() {
     const loadMoreBtn = document.getElementById('loadMoreBtn');
     if (loadMoreBtn) {
         loadMoreBtn.style.display = currentGroupIndex < totalGroups - 1 ? 'block' : 'none';
     }
 }
-
+*/
 // 페이지 로드 시 이벤트 리스너 추가
 document.addEventListener('DOMContentLoaded', () => {
     const searchButton = document.getElementById('searchButton');
@@ -82,5 +82,5 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // 초기 "더 보기" 버튼 상태 설정
-    updateLoadMoreButton();
+    //updateLoadMoreButton();
 });

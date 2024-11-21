@@ -67,12 +67,12 @@ public class MakeController {
 	
     @PostMapping("/make/movie/searchKeyword")
 	@ResponseBody
-	public List<Map<String,Object>> postSearchKeyword(@RequestParam("keyword") String keyword){
-    	// List<List<MovieDTO>> list = tmdb.searchMovies(keyword,2).block();
+	public List<MovieDTO> postSearchKeyword(@RequestParam("keyword") String keyword){
+    	 List<List<MovieDTO>> list = tmdb.searchMovies(keyword,2).block();
 
-        List<Map<String,Object>> list = movie.findByKeywordMovieList(keyword);
+//        List<Map<String,Object>> list = movie.findByKeywordMovieList(keyword);
 //    	log.info(tmdb.searchPerson(keyword).block());
-    	return list;
+    	return list.get(0);
     }
 
 

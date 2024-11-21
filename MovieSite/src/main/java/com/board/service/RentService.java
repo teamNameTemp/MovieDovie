@@ -6,6 +6,7 @@ import java.util.Map;
 
 public interface RentService {
 
+	public List<Map<String,Object>> getAllMyRent(String email, String status);
 	public void updateRent(String email, Long movieId);
 	//영화 대여 시작
 	public String rentMovie(String email, Long movieId);

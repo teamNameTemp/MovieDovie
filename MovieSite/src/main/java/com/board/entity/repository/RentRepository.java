@@ -14,7 +14,7 @@ import com.board.entity.movie.MovieEntity;
 
 public interface RentRepository extends JpaRepository<RentEntity, Long>{
 
-
+	public List<RentEntity> findAllByEmailAndStatus(MemberEntity member, String status);
 	public RentEntity findByEmailAndMovieId(MemberEntity member, MovieEntity movie);
 	public RentEntity findByEmailAndMovieIdAndStatus(MemberEntity member, MovieEntity movie,String status);
 	//모든 회원 자동 반납 확인
