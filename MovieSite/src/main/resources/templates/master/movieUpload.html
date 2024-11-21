@@ -13,16 +13,50 @@
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@100;300;400;500;700;900&family=Sen:wght@400;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css">
 <style>
+#wrap {
+    width: 1400px;
+    height: 1360px;
+    font-size: 14px;
+    text-align: center;
+    margin-left: 75px;
+    display: flex;  /* flexbox 활성화 */
+    justify-content: space-between;  /* 자식 요소를 수평으로 정렬 */
+    align-items: flex-start;  /* 자식 요소들을 세로 방향으로 상단에 정렬 */
+}
+
+.content1 {
+    display: flex;
+    flex-direction: column; /* 세로 방향으로 정렬 */
+    align-items: center; /* 수직 중앙 정렬 */
+    width: 530px;
+    height: 1300px; /* 고정 높이 유지 */
+    text-align: center;
+    float: none;
+    border: 2px solid lightgray;
+}
+      
+.content2 {
+    display: flex;
+    flex-direction: column; /* 세로 방향으로 정렬 */
+    align-items: center;    /* 자식 요소를 중앙에 정렬 */
+    width: 870px;
+    height: 1300px;
+    text-align: center;
+    float: none;  
+    border: 2px solid lightgray;   
+}
+
 
 .boardView {
-  width:70%;
+  width:90%;
   height:auto;
   margin:auto;
   text-align: left;
-  padding: 60px;
+  padding: 20px;
   background-color:#FFFFFF;
-  border:3px solid gray;
+  border:2px solid lightgray;
   border-radius: 4px;
+  float: flex;
 }
 
 .main {
@@ -46,11 +80,11 @@
   width: 78%;
   border:none;
   border-bottom: 2px solid #adadad;
-  margin: 14px 0;
-  padding: 9px;
+  margin: 10px 0;
+  padding: 8px;
   outline:none;
   color: #636e72;
-  font-size:15px;
+  font-size:14px;
   height:25px;
   background: none;
   box-sizing: border-box;
@@ -58,19 +92,19 @@
 
 .imageZone {
 	border: 2px solid #92AAB0;
-	width: 60%;
+	width: 150px;
 	height: auto;
 	color: #92AAB0;
 	text-align: center;
 	vertical-align: middle;
 	margin: auto;
-	padding: 10px 10px;
+	padding: 5px;
 	font-size: 150%;
 }
 
 .input_content{
   width: 85%;
-  height: 200px;
+  height: 170px;
   margin: 15px;
   padding: 15px;
   box-sizing: border-box;
@@ -130,16 +164,20 @@
   margin-bottom: 10px;  /* 항목 간 간격 */
   box-sizing: border-box;  /* padding, margin이 포함되게 */
 }
+
 .search-container {
-    width: 300px;
+    width: 400px;
     margin: 0 auto;
     text-align: center;
 }
 
+
 #keywordInput {
     width: 100%;
     padding: 10px;
-    font-size: 16px;
+    font-size: 15px;
+    border: 2px solid #ccc;
+    border-radius: 4px;
 }
 
 .dropdown-list {
@@ -147,7 +185,7 @@
     padding: 0;
     margin-top: 5px;
     border: 1px solid #ccc;
-    max-height: 200px;
+    max-height: 170px;
     overflow-y: auto;
 }
 
@@ -159,6 +197,32 @@
 
 .dropdown-list li:hover {
     background-color: #f0f0f0;
+}
+
+table {
+  border-collapse: collapse;
+  width: 95%;
+  margin: 1rem auto;
+  background-color: white;
+}
+
+/* 테이블 행 */
+th, td {
+  padding: 1.25px;
+  text-align: center;
+  font-size: 15px;
+  border-bottom: 1px solid #ddd;
+  text-align: center;
+}
+
+th {
+  background-color: #1b1b1b;
+  color: white;
+  padding: 2px;
+}
+
+tr:nth-child(even) {
+  background-color: #4dbf0010;
 }
 
 </style>
@@ -193,6 +257,8 @@ window.onload = () => {
 		 */
 		 
 		const formData = new FormData(UpdateForm);
+
+		
 		 
 		await fetch('/master/movieUpdate', {
 			method: 'POST',
@@ -201,7 +267,7 @@ window.onload = () => {
 		  .then((data)=> {
 			  if(data.message === 'good'){
 				  alert("영화 수정이 완료되었습니다.");
-				  document.location.href='/master/memberRequest?page=1';
+				  document.location.href='/master/movieUpload';
 			  } else {
 				  alert('서버 장애로 영화 업로드에 실패했습니다.');
 			  }
@@ -257,9 +323,9 @@ function selectMovie(movie) {
     document.getElementById('title').value = movie.title; // 영화 제목(한글)
     document.getElementById('originalTitle').value = movie.originalTitle; // 영화 제목(원어)
     document.getElementById('releaseDate').value = movie.releaseDate; // 개봉일
-    document.getElementById('originalLanguage').value = movie.originalLanguage; // 언어
     document.getElementById('overview').value = movie.overview; // 줄거리
-    document.getElementById('runtime').value = movie.runtime; // 상영시간
+    document.getElementById('runtime').value = movie.runtime; // 상영 시간
+    document.getElementById('tagline').value = movie.tagline; // 태그라인
     document.getElementById('certification').value = movie.certification; // 관람등급
     
     // Set genres checkboxes based on selected genres in the movie object
@@ -294,75 +360,110 @@ function selectMovie(movie) {
 <body class="p-3 m-0 border-0 bd-example m-0 border-0">
 <div th:replace = "~{/fragments/nav/masterSidebar::masterSidebar}"></div>
 <div th:replace="~{/fragments/nav/masterMenubar::masterMenubar}"></div>
-<br><br><br><br><br>
-<div class="main">
-	
-	<div class="search-container">
-        <h1>영화 수정</h1><br>
-        <input type="text" id="keywordInput" placeholder="keyword" onkeyup="searchMovies()">
-        <ul id="dropdownList" class="dropdown-list"></ul>
-    </div>
+<br><br><br><br>
+<div id="wrap">
+		&nbsp;&nbsp;
+		<div class="content1">
+		
+		<br><h2>관람 등급 설정이 필요한 영화</h2><br>
+			<table class="table table-sm">
+			  <thead class="table-light">
+			    <tr>
+			      <th scope="col">영화 제목</th>
+			      <th scope="col">관람 등급</th>
+			      <th scope="col">북마크 수</th>
+			    </tr>
+			  </thead>
+			  <tbody id = "certIsNull"></tbody>
+			</table>
+			<script>
+		  		fetch('/master/certIsNull')
+		  			.then(response => response.json())
+		  			.then(data => {
+		  				const tbody = document.getElementById('certIsNull');
+		  				if (data.length === 0){
+		  					tbody.innerHTML = '<tr><td colspan="3"><br>현재 모든 영화에 관람 등급 값이 있습니다.<br><br></td></tr>';
+		  				} else {
+		  					 data.forEach(item => {
+		  	                    const movie = item.movie;  // movie는 Map 객체 안에 있는 MovieEntity
+		  	                    const bookmarkCount = item.bookmarkCount;  // bookmarkCount는 Map 객체 안의 북마크 수
 
-     <br>
-     <div class="boardView">
-    	<br>
-    	<form id="UpdateForm" name="UpdateForm" method="POST" enctype="multipart/form-data">
-	        <!-- 영화 포스터 업로드 영역 -->
-	        <input type="file" name="posterUpload" id="posterFile" style="display:none"/>
-	        <div class="imageZone" id="posterZone"><br>영화 포스터<br><br></div><br>
-
-			<!-- 영화 제목 (한글) -->
-	        <div class="form-group">
-	            <label for="title">영화 제목(한글):</label>
-	            <input type="text" class="input_field" id="title" name="title" placeholder="영화 제목(한글) (예: 해리 포터와 마법사의 돌)">
-	        </div>
-	        
-	        <!-- 영화 제목 (원어) -->
-	        <div class="form-group">
-	            <label for="originalTitle">영화 제목(원어):</label>
-	            <input type="text" class="input_field" id="originalTitle" name="originalTitle" placeholder="영화 제목(영어) (예: Harry Potter and the Philosopher's Stone)">
-	        </div>
-	        
-	        <!-- 개봉일 -->
-	        <div class="form-group">
-	            <label for="releaseDate">개봉일:</label>
-	            <input type="text" class="input_field" id="releaseDate" name="releaseDate" placeholder="제작 연도">
-	        </div>
-	        
-	        <!-- 언어 -->
-	        <div class="form-group">
-	            <label for="originalLanguage">언어:</label>
-	            <input type="text" class="input_field" id="originalLanguage" name="originalLanguage" placeholder="언어">
-	        </div>
-	        
-	        
-	        <!-- 줄거리 -->
-	        <div class="form-group">
-	            <label for="overview">줄거리:</label>
-	            <textarea class="input_content" id="overview" cols="100" rows="500" name="overview" placeholder="1000자 이내로 줄거리를 입력하세요"></textarea>
-	        </div>
-	        
-	        
-	        <!-- 상영 시간 -->
-	        <div class="form-group">
-	            <label for="runtime">상영시간 (분):</label>
-	            <input type="text" class="input_field" id="runtime" name="runtime" placeholder="상영시간 (분 단위로 숫자만 입력하세요)">
-	        </div><br>
-	        
-	        <!-- 관람 등급 -->
-	        <div class="form-group">
-	            <label for="certification">관람 등급:</label>
-	            <input type="text" class="certification" id="certification" name=certification placeholder="관람등급">
-	        </div><br>
-	        
-	        
-   		</form>
-   		<input type="button" id="btnRegister" class="btn_write" value="영화 수정">	
-
-     </div>
-     <br><br>
-     
+		  	                    const row = document.createElement('tr');
+		  	                    row.innerHTML = `
+		  	                        <td><a href="/board/movieDetail?movieId=${movie.movieId}">${movie.title}</a></td>
+		  	                        <td>${movie.certification}</td>
+		  	                        <td>${bookmarkCount}</td>
+		  	                    `;
+		  	                    tbody.appendChild(row);
+		  	                });
+		  				}
+		  			}).catch(error => console.error('Error => ', error));
+		  	</script>
+		</div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+		<div class="content2">
+			<br><h2>영화 정보 업데이트</h2><br>
+		    <div class="search-container">
+		        <input type="text" id="keywordInput" placeholder="영화 제목을 검색하세요" onkeyup="searchMovies()">
+		        <ul id="dropdownList" class="dropdown-list"></ul>
+	    	</div>
+		    <br>
+		    <div class="boardView">
+		    	<form id="UpdateForm" name="UpdateForm" method="POST" enctype="multipart/form-data">
+			        
+			        <!-- 영화 포스터 업로드 영역 -->
+			        <input type="file" name="posterUpload" id="posterFile" style="display:none"/>
+			        <div class="imageZone" id="posterZone"><br>영화 포스터<br><br></div><br>
+		
+					<!-- 영화 제목 (한글) -->
+			        <div class="form-group">
+			            <label for="title">영화 제목(한글):</label>
+			            <input type="text" class="input_field" id="title" name="title" placeholder="영화 제목(한글)">
+			        </div>
+			        
+			        <!-- 영화 제목 (원어) -->
+			        <div class="form-group">
+			            <label for="originalTitle">영화 제목(원어):</label>
+			            <input type="text" class="input_field" id="originalTitle" name="originalTitle" placeholder="영화 제목(영어)">
+			        </div>
+			        
+			        <!-- 개봉일 -->
+			        <div class="form-group">
+			            <label for="releaseDate">개봉일:</label>
+			            <input type="text" class="input_field" id="releaseDate" name="releaseDate" placeholder="제작 연도">
+			        </div>
+			        
+			        <!-- 상영 시간 -->
+			        <div class="form-group">
+			            <label for="releaseDate">상영 시간:</label>
+			            <input type="text" class="input_field" id="runtime" name="runtime" placeholder="상영 시간 (분으로 숫자만 입력하세요)">
+			        </div>
+			        
+			        <!-- 줄거리 -->
+			        <div class="form-group">
+			            <label for="overview">줄거리:</label>
+			            <textarea class="input_content" id="overview" cols="100" rows="500" name="overview" placeholder="1000자 이내로 줄거리를 입력하세요"></textarea>
+			        </div>
+			        
+			        
+			        <!-- 태그 라인 (한 줄 요약) -->
+			        <div class="form-group">
+			            <label for="tagline">한 줄 요약:</label>
+			            <input type="text" class="input_field" id="tagline" name="tagline" placeholder="한 줄로 영화를 설명해주세요 (예: 운명의 반격이 시작된다!)">
+			        </div><br>
+			        
+			        <!-- 관람 등급 -->
+			        <div class="form-group">
+			            <label for="certification">관람 등급:</label>
+			            <input type="text" class="certification" id="certification" name=certification placeholder="관람등급">
+			        </div><br>
+			        
+			        
+		   		</form>
+		   		<input type="button" id="btnRegister" class="btn_write" value="영화 업데이트">	
+		
+		     </div>
+		     <br><br>
+		</div>
 </div>
-
 </body>
 </html>

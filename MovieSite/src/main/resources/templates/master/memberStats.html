@@ -3,51 +3,68 @@
 <head>
 <meta charset="UTF-8">
 <title>회원 활동 통계</title>
+	<style>
+	@import url('https://fonts.googleapis.com/css2?family=Jua&display=swap');
+	</style>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-	<link rel="stylesheet" th:href="@{/css/styles.css}">
 	<link rel="stylesheet" href="/css/movieListStyle.css">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css">
 	<style>
-		#wrap {width: 1200px; height: 1000px; font-size: 15px; text-align: center; margin : auto; }
+		#wrap {width: 1300px; height: 1000px; font-size: 17px; text-align: center; margin : auto; }
 	 	
 	 	.side {
 	 		display: flex;
-		 	float: left; width: 700px; height: 902px; text-align: center; 
-		 	flex-direction: column; /* 세로 방향으로 정렬 */
+		 	float: left; width: 750px; height: 950px; text-align: center; 
 	    	align-items: center; /* 수평 중앙 정렬 */
 	    }
 	    
 	    .content1 {
-		    display: flex; flex-direction: column; align-items: center; justify-content: space-between;
+		    display: flex; align-items: center; justify-content: space-between;
 		    align-items: center; /* 수직 중앙 정렬 */
-		    width: 500px;
-		    height: 280px; /* 고정 높이 유지 */
-		    text-align: center;
+		    width: 550px;
+		    height: 190px; /* 고정 높이 유지 */
 		    text-align: center;
 		    float: left;
 		    margin: auto;
-		    min-height: 200px;
 		}
 		
 		.content2 {
-		    display: flex; flex-direction: column; align-items: center; justify-content: space-between;
+		    display: flex; align-items: center; justify-content: space-between;
 		    align-items: center; /* 수직 중앙 정렬 */
-		    width: 500px;
-		    height: 400px; /* 고정 높이 유지 */
-		    text-align: center;
+		    width: 550px;
+		    height: 370px; /* 고정 높이 유지 */
 		    text-align: center;
 		    float: left;
 		    margin: auto;
-		    min-height: 200px;
+		}
+		
+		 .content3 {
+		    display: flex; align-items: center; justify-content: space-between;
+		    align-items: center; /* 수직 중앙 정렬 */
+		    width: 550px;
+		    height: 130px; /* 고정 높이 유지 */
+		    text-align: center;
+		    float: left;
+		    margin: auto;
+		}
+		
+		.content4 {
+		    display: flex; align-items: center; justify-content: space-between;
+		    align-items: center; /* 수직 중앙 정렬 */
+		    width: 550px;
+		    height: 260px; /* 고정 높이 유지 */
+		    text-align: center;
+		    float: left;
+		    margin: auto;
 		}
 
 	 	.content {
             width: 100%; /* 부모 너비에 맞춤 */
             height: 100%; /*부모 너비에 맞춤*/
             text-align: center;
+            font-size: 13px; 
             background-color: white;
             padding: 3%; /* 패딩 10% */
             border: 1.8px solid lightgray;
@@ -62,25 +79,19 @@
             text-align: center;
         }
         
+        .horicontentmem {
+            display: flex;  
+   			justify-content: space-between; /* 양쪽으로 배치 */
+   			align-items: center; /* 수직 방향 중앙 정렬 */
+            width: 100%; /* 부모 너비에 맞춤 */
+            height: 100%; /*부모 너비에 맞춤*/
+            text-align: center;
+        }
+        
 		.left-div, .right-div {
-		    width: 48%; /* 여백을 고려하여 너비 설정 */
+		    width: 50%; /* 여백을 고려하여 너비 설정 */
 		    box-sizing: border-box;
 		}
-        
-		.progress-bar {
-		    width: 100%;
-		    height: 30px;
-		    background-color: #dedede;
-		    font-weight: 600;
-		}
-		
-		.progress-bar .progress {
-            height: 100%;
-            padding: 0;
-            text-align: center;
-            background-color:#4dbf00;
-            color: white;
-        }
         
 	    .positive {
             color: tomato; /* 방문자 수 증가 */
@@ -90,6 +101,10 @@
         }
         .nochange {
         	color: gray;
+        }
+        
+        h2{
+          font-size: 17px;
         }
         
         table {
@@ -199,7 +214,7 @@
 
 <div id="wrap">
 	<div class="side">
-		<div class="content"><b>대여 현황</b><br><br><br>
+		<div class="content"><h2>대여 현황</h2><br><br>
 				
 		[최근 일주일 간 대여 현황]<br><br>
 		<div>
@@ -317,7 +332,7 @@
 	
 	<div class="content2">
 		<div class="content">
-			<b>2024 대여 파이프라인</b>
+			<h2>2024 대여 파이프라인</h2>
 			<div class="horicontent">
 				<div class="left-div">
 		        	<br><br>[대여 중 / 대여종료 비율]<br><br>
@@ -369,7 +384,7 @@
 				</div>
 				
 	        	<div class="right-div">
-	        		<br><br>[대여 수 Top 10 회원]<br><br>
+	        		<br><br>[대여 수 Top 10 회원]<br>
 					<div>
 					  <table class="table table-sm">
 						  <thead class="table-light">
@@ -410,72 +425,63 @@
 			</div>
 		</div>
 	</div>
-	<div class="content1">
-		<div class="content">
-			<b>2024 구매 전환률</b><br><br>  
-			<!-- 구매 전환률 (Conversion Rate) = 영화 전체 대여 수 / 영화 상세페이지를 클릭한 전체 횟수(hitno) * 100% -->
-			<p><div class="progress-bar">           
-				<div class="progress" id="progress" style="width: 60%;">60%</div><br><br>
-			</div></p>
-		</div>
 	
-	<div class="content1">
+	<div class="content4">
+		<div class="statuscontent">
+			<h2>회원 등급 현황</h2><br> 나중에 분기별로 보여줘야 함.
+			<div class="status-container">
+				<img class="statusicon" src="/images/img/membership.png" alt="">&nbsp;&nbsp;&nbsp;
+				<div class="status-text">
+					<p>Silver : 6 명</p>
+					<p>Gold : 9 명</p>
+					<p>Platinum : 104 명</p>
+					<p>Diamond : 54 명</p>
+					
+				</div>
+			</div>
+		</div>
+	</div>
+	
+	<div class="content3">
 		<div class="content">
-			<b>회원 증감 수</b><br>
-			<p>· 금일 가입 회원 수 : <span id="todaySignupCount"></span> 명 <span id="resultSignup"></span></p>
-			<p>· 전체 누적 회원 수 : <span id="totalMemberCount"></span> 명</p>
-			<br>
-			<hr style="border-width:1.5px 0 0 0; border-style:dashed; border-color:#4dbf00;">
-			<br>
-			<b>방문 현황</b><br>
-			<p>· 금일 방문자 수 : <span id="todayVisitorsCount"></span> 명 <span id="resultVisit"></span><br></p>
-			<p>· 전체 누적 방문자 수 : <span id="totalVisitorsCount"></span> 명</p>
+			<div class="horicontentmem">
+				<div class="left-div">
+					<h2>회원 증감 수</h2><br>
+					<p>· 금일 가입 회원 수 : <span id="todaySignupCount"></span> 명 <span id="resultSignup"></span></p>
+					<p>· 전체 누적 회원 수 : <span id="totalMemberCount"></span> 명</p>
+				</div>
+				<div class="right-div">
+					<h2>방문 현황</h2><br>
+					<p>· 금일 방문자 수 : <span id="todayVisitorsCount"></span> 명 <span id="resultVisit"></span><br></p>
+					<p>· 전체 누적 방문자 수 : <span id="totalVisitorsCount"></span> 명</p>
+				</div>
+			</div>
 		</div>
 	</div>
 	
 	
 	<div class="content1">
 		<div class="statuscontent">
-			<b>회원 요청 사항 현황</b><br>
+			<h2>회원 요청 사항 현황</h2><br>
 			<div class="status-container">
-				<img class="statusicon" src="/images/img/RequestStatus.png" alt="">&nbsp;&nbsp;&nbsp;
+				<img class="statusicon" src="/images/img/RequestStatus.png" alt="">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 				<div class="status-text">
-					<span class="pending-highlight">· <a href="/master/memberRequest" class="pending">처리 필요 : <span id="pendingCount"></span> 건</a></span>
+					<span class="pending-highlight">· <a href="/master/memberRequest" class="pending">처리 필요 : <span id="pendingCount" ></span> 건</a></span>
 					<br><br>
-					· 처리 완료 : <span id="completedCount"></span> 건
+					<span style="color: gray;">· 처리 완료 : <span id="completedCount"></span> 건</span>
 				</div>
 			</div>
 		</div>
 	</div>
+	
+	
+	
 
-</div>
+
 
 </div>
     
 <script>
-
-	//회원 구매 전환율 % 구하기
-    const updateProgressBar = async() => {
-	    await fetch('/master/conversionRate', { //향후 컨트롤러에 작성 필요 ->tbl_movie 의 hitno 필요
-	        method: 'GET',
-	        headers: { "content-type": "application/json" }
-	    })
-	    .then((response) => response.json())
-	    .then((data) => {
-	        // conversionRate 값을 사용하여 progress 바 업데이트
-	        const conversionRate = data.conversionRate; // 서버에서 받은 데이터 구조에 맞게 수정
-	        const progressElement = document.getElementById('progress');
-	
-	        // width와 텍스트 업데이트
-	        progressElement.style.width = conversionRate + '%';
-	        progressElement.textContent = conversionRate + '%';
-	    })
-	    .catch((error) => {
-	        console.error('============= Error :', error);
-	    });
-	}
-	updateProgressBar(); // 페이지 로드 시 프로그레스 바 업데이트
-    
 
 	//회원 가입 수 증감 색상 표시
 	const signupResult = async() => {

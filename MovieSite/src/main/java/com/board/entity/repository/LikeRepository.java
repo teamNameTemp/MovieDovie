@@ -14,40 +14,48 @@ import com.board.entity.movie.MovieEntity;
 public interface LikeRepository extends JpaRepository<LikeEntity, Long>{
 
 	//관리자페이지 - 통계 : 각 영화에 대해 좋아요 %가 높은 영화 순으로 나열 (좋아요 수 10개 이상부터 보여주기.)
-	@Query(value = "select movieseqno, "
-			+ "count(*) as totalCount, "
-			+ "count(CASE WHEN likecheck = 'Y' THEN 1 END) as likeCount, "
-			+ "round(count(case when likecheck = 'Y' THEN 1 END) * 100.0 / count(*),2) as likePercentage "
-			+ "from like "
-			+ "group by movieseqno "
-			+ "having count(case when likecheck = 'Y' then 1 end) >= 10 "
-			+ "order by likePercentage DESC", nativeQuery = true)
+	@Query(value = "select m.title, "
+	        + "ld.movie_id, "
+	        + "count(*) as totalCount, "
+	        + "count(CASE WHEN ld.likecheck = 'Y' THEN 1 END) as likeCount, "
+	        + "round(count(case when ld.likecheck = 'Y' THEN 1 END) * 100.0 / count(*),2) as likePercentage "
+	        + "from likedislike ld "
+	        + "join movie m on ld.movie_id = m.movie_id "
+	        + "group by m.title, ld.movie_id "
+	        + "having count(case when ld.likecheck = 'Y' then 1 end) >= 10 "
+	        + "order by likePercentage DESC", nativeQuery = true)
 	public List<Object[]> likeResult();
 	
 	
 	//관리자페이지 - 통계 : 각 영화에 대해 싫어요 %가 높은 영화 순으로 나열 (싫어요 수 10개 이상부터 보여주기.)
-	@Query(value = "select movieseqno, "
-			+ "count(*) as totalCount, "
-			+ "count(CASE WHEN dislikecheck = 'Y' THEN 1 END) as dislikeCount, "
-			+ "round(count(case when dislikecheck = 'Y' THEN 1 END) * 100.0 / count(*),2) as dislikePercentage "
-			+ "from like "
-			+ "group by movieseqno "
-			+ "having count(case when dislikecheck = 'Y' then 1 end) >= 10 "
-			+ "order by dislikePercentage DESC", nativeQuery = true)
+	@Query(value = "select m.title, "
+	        + "ld.movie_id, "
+	        + "count(*) as totalCount, "
+	        + "count(CASE WHEN ld.dislikecheck = 'Y' THEN 1 END) as dislikeCount, "
+	        + "round(count(case when ld.dislikecheck = 'Y' THEN 1 END) * 100.0 / count(*),2) as dislikePercentage "
+	        + "from likedislike ld "
+	        + "join movie m on ld.movie_id = m.movie_id "
+	        + "group by m.title, ld.movie_id "
+	        + "having count(case when ld.dislikecheck = 'Y' then 1 end) >= 10 "
+	        + "order by dislikePercentage DESC", nativeQuery = true)
 	public List<Object[]> dislikeResult();
 	
 	
 	//관리자페이지 - 통계 : 호불호가 높은 영화 순으로 나열 (totalCount 수 20개 이상부터 보여주기.)
-	@Query(value = "select movieseqno, "
-			+ "count(*) as totalCount, "
-			+ "count(CASE WHEN likecheck = 'Y' THEN 1 END) as likeCount, "
-			+ "count(CASE WHEN dislikecheck = 'Y' THEN 1 END) as dislikeCount, "
-			+ "round(count(case when likecheck = 'Y' THEN 1 END) * 100.0 / count(*),0) as likePercentage, "
-			+ "round(count(case when dislikecheck = 'Y' THEN 1 END) * 100.0 / count(*),0) as dislikePercentage "
-			+ "from like "
-			+ "group by movieseqno "
-			+ "having (count(*) >= 20) and (count(case when likecheck = 'Y' THEN 1 END) * 100.0 / count(*) <= 60) and (count(case when dislikecheck = 'Y' THEN 1 END) * 100.0 / count(*) <=60) "
-			+ "order by totalCount DESC", nativeQuery = true)
+	@Query(value = "select m.title, "
+	        + "ld.movie_id, "
+	        + "count(*) as totalCount, "
+	        + "count(CASE WHEN ld.likecheck = 'Y' THEN 1 END) as likeCount, "
+	        + "count(CASE WHEN ld.dislikecheck = 'Y' THEN 1 END) as dislikeCount, "
+	        + "round(count(case when ld.likecheck = 'Y' THEN 1 END) * 100.0 / count(*), 0) as likePercentage, "
+	        + "round(count(case when ld.dislikecheck = 'Y' THEN 1 END) * 100.0 / count(*), 0) as dislikePercentage "
+	        + "from likedislike ld "
+	        + "join movie m on ld.movie_id = m.movie_id "
+	        + "group by m.title, ld.movie_id "
+	        + "having (count(*) >= 20) "
+	        + "and (count(case when ld.likecheck = 'Y' THEN 1 END) * 100.0 / count(*) <= 60) "
+	        + "and (count(case when ld.dislikecheck = 'Y' THEN 1 END) * 100.0 / count(*) <= 60) "
+	        + "order by totalCount DESC", nativeQuery = true)
 	public List<Object[]> divisiveResult();
 
 	//나의 like 정보 가져오기

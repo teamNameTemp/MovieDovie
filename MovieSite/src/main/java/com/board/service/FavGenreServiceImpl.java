@@ -39,6 +39,35 @@ public class FavGenreServiceImpl implements FavGenreService {
 	    
 	}
 
+	//관리자페이지 - 통계 : 남성이 좋아하는 장르 인기 순으로 뽑아내기
+	@Override
+	public List<Object[]> findTopGenresForMale(){
+		
+		List<Object[]> result = favGenreRepository.findTopGenresForMale();
+	    
+	    if (result == null || result.isEmpty()) {
+	        // 데이터가 없으면 빈 리스트를 반환하거나 적절한 처리를 할 수 있습니다.
+	        return Collections.emptyList();  // 또는 다른 처리가 필요하면 여기에서 수행
+	    }
+	    
+	    return result;
+	}
+		
+	//관리자페이지 - 통계 : 여성이 좋아하는 장르 인기 순으로 뽑아내기
+	@Override
+	public List<Object[]> findTopGenresForFemale(){
+		
+		List<Object[]> result = favGenreRepository.findTopGenresForFemale();
+	    
+	    if (result == null || result.isEmpty()) {
+	        // 데이터가 없으면 빈 리스트를 반환하거나 적절한 처리를 할 수 있습니다.
+	        return Collections.emptyList();  // 또는 다른 처리가 필요하면 여기에서 수행
+	    }
+	    
+	    return result;
+	}
+	
+	
 	@Override
 	public void saveTheFavGenre(FavGenreDTO favGenre) {
 		FavGenreEntity favGenreEntity = favGenreRepository.findByEmail(favGenre.getEmail());

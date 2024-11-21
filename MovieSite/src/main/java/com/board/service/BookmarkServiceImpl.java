@@ -97,4 +97,5 @@ public class BookmarkServiceImpl implements BookmarkService {
 		return data;
 	}
 
+	
 }
