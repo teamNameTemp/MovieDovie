@@ -14,6 +14,7 @@ import javax.swing.border.TitledBorder;
 
 import org.hibernate.bytecode.internal.bytebuddy.PrivateAccessorException;
 import org.springframework.data.domain.Page;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
@@ -34,11 +35,13 @@ import com.board.entity.movie.MovieEntity;
 import com.board.entity.repository.movie.MovieRepository;
 import com.board.entity.repository.MemberRepository;
 import com.board.entity.repository.RequestRepository;
+import com.board.service.BookmarkService;
 import com.board.service.FavGenreService;
 import com.board.service.LikeService;
 import com.board.service.MasterService;
 import com.board.service.MemberLogService;
 import com.board.service.MemberService;
+import com.board.service.MovieAPIService;
 import com.board.service.NotificationService;
 import com.board.service.RentService;
 import com.board.service.RequestReplyService;
@@ -66,6 +69,7 @@ public class MasterController {
 	private final MovieRepository movieRepository;
 	private final NotificationService notificationService;
 	private final MemberRepository memberRepository;
+	private final BookmarkService bookmarkService;
 
 	// 회원의 요청 목록 보기
 	@GetMapping("/memberRequest")
@@ -178,6 +182,7 @@ public class MasterController {
 	            
 	            //댓글 등록 알람 전달
 	            String masterNickname = (String)session.getAttribute("nickname");
+	            String masterEmail= (String)session.getAttribute("email");
 	            List<RequestDTO> requestList = requestService.findBySeqno(dto.getReqseqno());
 	           
                 RequestDTO requestDTO = requestList.get(0);
@@ -187,8 +192,10 @@ public class MasterController {
             
 	    		String content = masterNickname + "님이 '" + title + "'에 댓글을 달았습니다.";
 	    		String type = "reply";
-	    		notificationService.newNotiForUser(recieverEmail, content, type, seqno);
-	           
+	    		if(!masterEmail.equals(recieverEmail)) {
+	    			notificationService.newNotiForUser(recieverEmail, content, type, seqno);
+	    		}
+	    		
 	            break;
 	        case "U":
 	            requestReplyService.replyUpdate(dto); // 댓글 수정
@@ -352,9 +359,9 @@ public class MasterController {
 
 		if (!results.isEmpty()) {
 			Object[] counts = results.get(0);
-			response.put("yesterdayVisitors", ((Number) counts[0]).intValue());
-			response.put("todayVisitors", ((Number) counts[1]).intValue());
-			response.put("totalVisitors", ((Number) counts[2]).intValue());
+			response.put("yesterdayVisitors", counts[0] != null ? ((Number) counts[0]).intValue() : 0);
+			response.put("todayVisitors", counts[1] != null? ((Number) counts[1]).intValue() : 0);
+			response.put("totalVisitors", counts[2] != null? ((Number) counts[2]).intValue() : 0);
 		} else {
 			response.put("yesterdayVisitors", 0);
 			response.put("todayVisitors", 0);
@@ -415,6 +422,65 @@ public class MasterController {
 		}
 		return response;
 	}
+	
+	// 관리자 페이지 - 통계 : 여성이 가장 좋아하는 장르 인기 순으로 보여주기
+	@GetMapping("/topFavGenreForFemale")
+	@ResponseBody
+	public List<Map<String, Object>> getTopFavGenreForFemale() {
+
+		List<Object[]> list = favGenreService.findTopGenresForFemale();
+
+		// 만약 리스트가 비어있다면 빈 리스트를 반환하거나 기본 값을 넣어줄 수 있음
+		if (list.isEmpty()) {
+			Map<String, Object> defaultMap = new HashMap<>();
+			defaultMap.put("genre", "없음");
+			defaultMap.put("count", 0);
+
+			List<Map<String, Object>> response = new ArrayList<>();
+			response.add(defaultMap); // 기본 데이터 추가
+			return response;
+		}
+
+		// 리스트에 데이터가 있으면 정상 처리
+		List<Map<String, Object>> response = new ArrayList<>();
+		for (Object[] item : list) {
+			Map<String, Object> map = new HashMap<>();
+			map.put("genre", item[0]);
+			map.put("count", item[1]);
+			response.add(map);
+		}
+		return response;
+	}
+	
+	// 관리자 페이지 - 통계 : 남성이 가장 좋아하는 장르 인기 순으로 보여주기
+	@GetMapping("/topFavGenreForMale")
+	@ResponseBody
+	public List<Map<String, Object>> getTopFavGenreForMale() {
+
+		List<Object[]> list = favGenreService.findTopGenresForMale();
+
+		// 만약 리스트가 비어있다면 빈 리스트를 반환하거나 기본 값을 넣어줄 수 있음
+		if (list.isEmpty()) {
+			Map<String, Object> defaultMap = new HashMap<>();
+			defaultMap.put("genre", "없음");
+			defaultMap.put("count", 0);
+
+			List<Map<String, Object>> response = new ArrayList<>();
+			response.add(defaultMap); // 기본 데이터 추가
+			return response;
+		}
+
+		// 리스트에 데이터가 있으면 정상 처리
+		List<Map<String, Object>> response = new ArrayList<>();
+		for (Object[] item : list) {
+			Map<String, Object> map = new HashMap<>();
+			map.put("genre", item[0]);
+			map.put("count", item[1]);
+			response.add(map);
+		}
+		return response;
+	}
+	
 
 	// 관리자 페이지 - 통계 : 좋아요 % 높은 영화 순위 보여주기
 	@GetMapping("/topLikeMovie")
@@ -427,10 +493,12 @@ public class MasterController {
 
 		for (Object[] item : list) {
 			Map<String, Object> map = new HashMap<>();
-			map.put("movieseqno", item[0]);
-			map.put("totalCount", item[1]);
-			map.put("likeCount", item[2]);
-			map.put("likePercentage", item[3]);
+			
+			map.put("title", item[0]);
+			map.put("movieseqno", item[1]);
+			map.put("totalCount", item[2]);
+			map.put("likeCount", item[3]);
+			map.put("likePercentage", item[4]);
 			response.add(map);
 		}
 		return response;
@@ -447,10 +515,13 @@ public class MasterController {
 
 		for (Object[] item : list) {
 			Map<String, Object> map = new HashMap<>();
-			map.put("movieseqno", item[0]);
-			map.put("totalCount", item[1]);
-			map.put("dislikeCount", item[2]);
-			map.put("dislikePercentage", item[3]);
+			
+			map.put("title", item[0]);
+			map.put("movieseqno", item[1]);
+			map.put("totalCount", item[2]);
+			map.put("dislikeCount", item[3]);
+			map.put("dislikePercentage", item[4]);
+			
 			response.add(map);
 		}
 		return response;
@@ -467,16 +538,17 @@ public class MasterController {
 
 		for (Object[] item : list) {
 			Map<String, Object> map = new HashMap<>();
-			map.put("movieseqno", item[0]);
-			map.put("totalCount", item[1]);
-			map.put("likeCount", item[2]);
-			map.put("dislikeCount", item[3]);
-			map.put("likePercentage", item[4]);
-			map.put("dislikePercentage", item[5]);
+			map.put("title", item[0]);
+			map.put("movieseqno", item[1]);
+			map.put("totalCount", item[2]);
+			map.put("likeCount", item[3]);
+			map.put("dislikeCount", item[4]);
+			map.put("likePercentage", item[5]);
+			map.put("dislikePercentage", item[6]);
 
-			// item[4]와 item[5]가 BigDecimal타입이라 BigDecimal을 String으로 변환 (소수점 아예 없게.)
-			String likePercentage = ((BigDecimal) item[4]).setScale(0, RoundingMode.HALF_UP).toString();
-			String dislikePercentage = ((BigDecimal) item[5]).setScale(0, RoundingMode.HALF_UP).toString();
+			// item[5]와 item[6]가 BigDecimal타입이라 BigDecimal을 String으로 변환 (소수점 아예 없게.)
+			String likePercentage = ((BigDecimal) item[5]).setScale(0, RoundingMode.HALF_UP).toString();
+			String dislikePercentage = ((BigDecimal) item[6]).setScale(0, RoundingMode.HALF_UP).toString();
 
 			// 비율 합성
 			String likeVsDislikeRatio = likePercentage + " : " + dislikePercentage;
@@ -498,12 +570,12 @@ public class MasterController {
 	//todo : movieUpload로 되어있는 곳 update로 다 변경
 	@PostMapping("/movieUpdate")
 	@ResponseBody
-	public Map<String,String> postMovieUpdate(MovieDTO movie,
-			@RequestParam("certification") String certi){
+	public Map<String,String> postMovieUpdate(MovieDTO movie, @RequestParam("certification") String certi, @RequestParam("tagline") String tagline){
 		Map<String,String> result = new HashMap<>();
 
 		MovieEntity entity = movieRepository.findByTitle(movie.getTitle());
 
+		entity.setTagline(tagline);
 		entity.setOverview(movie.getOverview());
 		entity.setCertification(certi);
 		
@@ -517,7 +589,7 @@ public class MasterController {
 	@PostMapping("/search")	
 	@ResponseBody
 	public List<MovieEntity> searchMovies(@RequestParam("keyword") String keyword) {
-		List<MovieEntity> list = movieRepository.findByTitleContaining(keyword);
+		List<MovieEntity> list = movieRepository.findByTitleContainingIgnoreCase(keyword);
 //		List<MovieDTO> details = new ArrayList<>();
 //		for(MovieEntity entity : list) {
 //			MovieDTO detail = tmdb.getMovieDetails(entity.getMovieId(), "ko-KR").block();
@@ -528,6 +600,33 @@ public class MasterController {
 		
 	}
 
+	
+	//관리자페이지 : 영화 수정 - Certification 이 null 인 영화 리스트 뽑아내기
+	@GetMapping("/certIsNull")
+	@ResponseBody
+	public List<Map<String, Object>> getCertIsNull(){
+		
+		List<Object[]> list = movieRepository.findByCert();
+		if (list == null) return new ArrayList<>();
+		
+		List<Map<String, Object>> response = new ArrayList<>();
+
+		for (Object[] result : list) {
+			
+			Map<String, Object> map = new HashMap<>();
+			
+		    MovieEntity movie = (MovieEntity) result[0];  // 첫 번째 요소: MovieEntity 객체
+		    Long bookmarkCount = (Long) result[1];  // 두 번째 요소: 북마크 수
+		    
+			map.put("movie", movie); // 첫 번째 요소: MovieEntity 객체
+			map.put("bookmarkCount", bookmarkCount);
+			
+			response.add(map);			
+		}
+		return response;
+		
+	}	
+	
 	// 더미 데이터 만들기 페이지
 //	@GetMapping("/dummyMaker")
 //	public void getDummyMaker() {

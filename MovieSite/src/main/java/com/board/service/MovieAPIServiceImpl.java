@@ -228,7 +228,7 @@ public class MovieAPIServiceImpl implements MovieAPIService {
 	public List<Map<String, Object>> findByKeywordMovieList(String keyword) {
 		List<Map<String,Object>> data = new ArrayList<>();
 		
-		List<MovieEntity> entityList = movieRepository.findByTitleContaining(keyword);
+		List<MovieEntity> entityList = movieRepository.findByTitleContainingIgnoreCase(keyword);
 		if(entityList == null) return data;
 		
 		for(MovieEntity entity : entityList) {
@@ -239,4 +239,12 @@ public class MovieAPIServiceImpl implements MovieAPIService {
 		
 		return data;
 	}
+	
+	//관리자페이지 : 영화 수정 - Certification 이 null 인 영화 리스트 뽑아내기
+	@Override	
+	public List<Object[]> findByCert(){
+		
+		return movieRepository.findByCert();
+	}
+	
 }

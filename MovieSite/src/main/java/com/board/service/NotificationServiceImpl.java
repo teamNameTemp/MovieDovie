@@ -58,7 +58,6 @@ public class NotificationServiceImpl implements NotificationService {
 																.build();
 		notificationRepository.save(notificationEntity);
 		
-		System.out.println("저장된 알람: " + notificationEntity);
 		
 		return notificationRepository.notiForUser(email);
 	}

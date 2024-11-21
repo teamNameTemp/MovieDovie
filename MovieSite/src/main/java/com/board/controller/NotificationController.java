@@ -28,7 +28,7 @@ public class NotificationController {
 
 	private final NotificationService service;
 	
-	
+	/*
 	//알람리스트 띄우기
 	@GetMapping("/board/notification")
 	public void getNotiList(HttpSession session, Model model) throws Exception{
@@ -54,7 +54,7 @@ public class NotificationController {
 	    model.addAttribute("noti", noti);  // 알림 목록을 모델에 추가
 
 	}
-	
+	*/
 	
 	//알람 읽음 처리하기
 	@ResponseBody
@@ -78,6 +78,7 @@ public class NotificationController {
 	
 	//알람 삭제
 	@Transactional
+	@ResponseBody
     @PostMapping("/deleteNoti")
     public String postDeleteNoti(@RequestParam("seqno") Long seqno) throws Exception {
         
@@ -85,7 +86,7 @@ public class NotificationController {
         service.deleteNoti(seqno);
         
         // 삭제 후 리다이렉트 혹은 적절한 화면으로 이동
-        return "redirect:/board/notification";  // 원래 페이지로 리다이렉트인데, 나중에 바꿀 필요가 있음.
+        return "redirect:/board/list";  // 원래 페이지로 리다이렉트인데, 나중에 바꿀 필요가 있음.
     } 
 	
 	

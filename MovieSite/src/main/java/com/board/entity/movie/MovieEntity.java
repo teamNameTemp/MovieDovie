@@ -23,6 +23,7 @@ public class MovieEntity {
 //    @SequenceGenerator(name = "MOVIE_SEQ", sequenceName = "movie_seq", allocationSize = 1)
 //    private Long seqno;
     @Id
+    @Column(name="movie_Id")
     private Long movieId;
 
     @Column(name="adult")

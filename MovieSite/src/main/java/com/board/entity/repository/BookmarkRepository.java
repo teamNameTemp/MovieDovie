@@ -3,6 +3,7 @@ package com.board.entity.repository;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 
 import com.board.entity.BookmarkEntity;
 import com.board.entity.MemberEntity;
@@ -15,4 +16,5 @@ public interface BookmarkRepository  extends JpaRepository<BookmarkEntity, Long>
 	public List<BookmarkEntity> findAllByMovieId(MovieEntity movieId);
 	
 	public List<BookmarkEntity> findAllByEmail(MemberEntity member);
+	
 }
