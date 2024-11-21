@@ -29,7 +29,7 @@ public class WatchDTO {
 		this.seqno = watchEntity.getSeqno();
 		this.status = watchEntity.getStatus();
 		this.watchdate = watchEntity.getWatchdate();
-		this.email = watchEntity.getEmail().getBirth();
+		this.email = watchEntity.getEmail().getEmail();
 		this.movieseqno = watchEntity.getMovieId().getMovieId();
 	}
 		

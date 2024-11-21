@@ -3,14 +3,17 @@ package com.board.service;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Service;
 
 import com.board.dto.MemberDTO;
 import com.board.entity.MemberEntity;
 import com.board.entity.MemberLogEntity;
+import com.board.entity.repository.FileRepository;
 import com.board.entity.repository.MemberLogRepository;
 import com.board.entity.repository.MemberRepository;
+import com.board.util.PasswordMaker;
 
 import lombok.AllArgsConstructor;
 
@@ -20,7 +23,8 @@ public class MemberServiceImpl implements MemberService {
 	
 	private final MemberRepository memberRepository;
 	private final MemberLogRepository memberLogRepository;
-		
+	private final FileRepository fileRepository;
+
 	//회원 가입
 	@Override
 	public void signup(MemberDTO member) {
@@ -28,6 +32,7 @@ public class MemberServiceImpl implements MemberService {
 		member.setLastpwdate(LocalDateTime.now());
 		member.setPwcheck(1L);
 		member.setRole("USER");	
+		
 		memberRepository.save(member.dtoToEntity(member));	
 	}
 	
@@ -37,10 +42,26 @@ public class MemberServiceImpl implements MemberService {
 		return memberRepository.findById(email).map((member) -> new MemberDTO(member)).get();
 	}
 	
-	//이메일 중복 확인
-	public int emailCheck(String email) {
-		return memberRepository.findById(email).isEmpty()?0:1;
-	};
+	//회원 기본 정보 수정
+	public void modifyMemberInfo(MemberDTO member) {
+		MemberEntity memberEntity = memberRepository.findById(member.getEmail()).get();
+		memberEntity.updateMemberInfo(member);
+		memberRepository.save(memberEntity);
+	}
+
+    // 이메일 중복 확인
+    @Override
+    public int emailCheck(String email) {
+    	// 이메일이 존재하면 1 반환, 없으면 0 반환
+        return memberRepository.existsByEmail(email) ? 1 : 0;
+    }
+
+    // 닉네임 중복 확인
+    @Override
+    public int nicknameCheck(String nickname) {
+    	// 닉네임이 존재하면 1 반환, 없으면 0 반환
+        return memberRepository.existsByNickname(nickname) ? 1 : 0;
+    }
 	
 	//패스워드 수정
 	public void modifyMemberPassword(MemberDTO member) {
@@ -92,17 +113,18 @@ public class MemberServiceImpl implements MemberService {
 					.map(m-> m.getEmail()).orElse("ID_NOT_FOUND");
 	}
 	
-	//비밀번호 찾기
-	public String searchPassword(MemberDTO member) {
-		return memberRepository.findByEmailAndUsername(member.getEmail(),member.getUsername())
-					.map(m-> m.getEmail()).orElse("ID_NOT_FOUND");
-	}
 
 
 	//관리자페이지 - 통계 : 회원 가입한 날 확인
 	@Override
 	public List<Object[]> signupResult(){
 		return memberRepository.signupResult();
+	}
+
+	@Override
+	public String searchPassword(MemberDTO member) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 
