@@ -99,4 +99,21 @@ public class WatchedServiceImpl implements WatchedService {
 		return data;
 	}
 
+	@Override
+	public List<Map<String, Object>> getTopList(int topCount) {
+		List<Map<String,Object>> data = new ArrayList<>();
+
+		List<Map<String,Object>> topList = watch.findTopMoviesByWatchedCount(topCount);
+		for(Map<String,Object> d : topList) {
+			Long movieId = (Long)d.get("movieId");
+
+			MovieEntity movieE = movie.findById(movieId).get();
+			Map<String,Object> map = new HashMap<>();
+			map.put("info", movieE);
+			map.put("count", d.get("count"));
+			data.add(map);
+		}
+		return data;
+	}
+
 }
