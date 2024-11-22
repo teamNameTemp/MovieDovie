@@ -6,8 +6,10 @@ import java.util.Map;
 
 public interface RentService {
 
+	public List<Map<String,Object>> getAllMyRent(String email, String status);
+	public void updateRent(String email, Long movieId);
 	//영화 대여 시작
-	public void rentMovie(String email, Long movieId);
+	public String rentMovie(String email, Long movieId);
 	
 	//나의 대여 정보
 	public Map<String,Object> getMyRentInfo(String email, Long movieId);
@@ -23,5 +25,7 @@ public interface RentService {
 
 	//관리자 페이지 - 통계 : 올해 대여 TOP 회원 확인
 	public List<Object[]> findTopRenters();
+	
+	List<Map<String,Object>> getTopList(int topCount);
 	
 }

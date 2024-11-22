@@ -1,11 +1,10 @@
 package com.board.service;
 
 import java.util.List;
-
-import com.board.entity.ReplyEntity;
+import java.util.Map;
 
 public interface ReplyService {
-	public List<ReplyEntity> getList(Long reqseqno);
-	
-	public void saveOrUpdate(String content, String email, Long movieId);
+	public List<Map<String,Object>> getList(Long movieId);
+	public String saveOrUpdate(String content, String email, Long movieId);
+	public List<Map<String, Object>> getTopList(int topCount);
 }

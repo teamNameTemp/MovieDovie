@@ -2,10 +2,7 @@ package com.board.dto;
 
 import java.time.LocalDateTime;
 
-import org.aspectj.weaver.patterns.HasMemberTypePatternForPerThisMatching;
-
 import com.board.entity.MemberEntity;
-import com.board.entity.RentEntity;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -14,28 +11,54 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 
-
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @Getter
 @Setter
-@AllArgsConstructor
-@NoArgsConstructor
-@Builder
 public class MemberDTO {
 	private String email;
 	private String password;
 	private String username;
 	private String nickname;
 	private String gender;
-	private String birth;
+	private String ssn;
 	private String telno;
 	private LocalDateTime regdate;
+	private LocalDateTime lastlogindate;
+	private LocalDateTime lastlogoutdate;
 	private LocalDateTime lastpwdate;
 	private Long pwcheck;
 	private String role;
-	private Long logseqno;
-	private Long genreseqno;
+	private String orgFilename;
+	private String storedFilename;
+	private long filesize;
+	private Long point;
 	
-	
+	//Entity -> DTO
+	public MemberEntity dtoToEntity(MemberDTO memberDTO) {
+		MemberEntity memberEntity = MemberEntity.builder()
+											.email(memberDTO.getEmail())
+											.password(memberDTO.getPassword())
+											.username(memberDTO.getUsername())
+											.nickname(memberDTO.getNickname())
+											.gender(memberDTO.getGender())
+											.ssn(memberDTO.getSsn())
+											.telno(memberDTO.getTelno())
+											.regdate(memberDTO.getRegdate())
+											.lastlogindate(memberDTO.getLastlogindate())
+											.lastlogoutdate(memberDTO.getLastlogoutdate())
+											.lastpwdate(memberDTO.getLastpwdate())
+											.pwcheck(memberDTO.getPwcheck())
+											.role(memberDTO.getRole())
+											.org_filename(memberDTO.getOrgFilename())
+											.stored_filename(memberDTO.getStoredFilename())
+											.filesize(memberDTO.getFilesize())
+											.point(memberDTO.getPoint())
+											.build();
+		return memberEntity;
+	}
+	 
 	//DTO -> Entity
 	public MemberDTO(MemberEntity memberEntity) {
 		this.email = memberEntity.getEmail();
@@ -43,30 +66,19 @@ public class MemberDTO {
 		this.username = memberEntity.getUsername();
 		this.nickname = memberEntity.getNickname();
 		this.gender = memberEntity.getGender();
-		this.birth = memberEntity.getBirth();
+		this.ssn = memberEntity.getSsn();
 		this.telno = memberEntity.getTelno();
-		this.regdate = memberEntity.getRegdate();
+		this.regdate= memberEntity.getRegdate();
+		this.lastlogindate = memberEntity.getLastlogindate();
+		this.lastlogoutdate = memberEntity.getLastlogoutdate();
 		this.lastpwdate = memberEntity.getLastpwdate();
 		this.pwcheck = memberEntity.getPwcheck();
 		this.role = memberEntity.getRole();
-	}
+		this.orgFilename = memberEntity.getOrg_filename();
+		this.storedFilename = memberEntity.getStored_filename();
+		this.filesize = memberEntity.getFilesize();
+		this.point=memberEntity.getPoint();
 		
-	//DTO --> Entity 이동
-	public MemberEntity dtoToEntity(MemberDTO dto) {
 		
-		MemberEntity memberEntity = MemberEntity.builder()
-											.email(dto.getEmail())
-											.password(dto.getPassword())
-											.username(dto.getUsername())
-											.nickname(dto.getNickname())
-											.gender(dto.getGender())
-											.birth(dto.getBirth())
-											.telno(dto.getTelno())
-											.regdate(dto.getRegdate())
-											.lastpwdate(dto.getLastpwdate())
-											.pwcheck(dto.getPwcheck())
-											.role(dto.getRole())
-											.build();									
-		return memberEntity;
 	}
 }
