@@ -78,8 +78,8 @@ public class WebSecurityConfig {
       //스프링 시큐리티의 로그 아웃
       http
          .logout(logout -> logout
-               .logoutUrl("/member/logout")
-               .logoutSuccessUrl("/member/login")
+               .logoutUrl("/member/beforeLogout")
+               .logoutSuccessUrl("/member/logout")
                .invalidateHttpSession(true)
                .deleteCookies("JSESSIONID","remember-me")
                .permitAll());

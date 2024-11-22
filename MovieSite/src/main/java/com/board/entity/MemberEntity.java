@@ -1,7 +1,6 @@
 package com.board.entity;
 
 import java.time.LocalDateTime;
-
 import com.board.dto.MemberDTO;
 
 import jakarta.persistence.Column;
@@ -15,13 +14,14 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Builder
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
 @Getter
 @Setter
 @Entity(name="member")
 @Table(name="member")
 public class MemberEntity {
+	
 	
 	//Column(name="컬럼명", length=길이, nullable=null여부(false : not null / true : null)
 	@Id
@@ -34,10 +34,10 @@ public class MemberEntity {
 	@Column(name="username", length=50, nullable=false)
 	private String username;
 	
-	@Column(name="nickname", length=50, nullable=false)
+	@Column(name="nickname", length=50, nullable=true)
 	private String nickname;
 	
-	@Column(name="gender", length=20, nullable=false)
+	@Column(name="gender", length=20, nullable=true)
 	private String gender;
 	
 	@Column(name="ssn", nullable=true)
@@ -76,6 +76,8 @@ public class MemberEntity {
 	@Column(name="memeberPoint")
 	private Long point;
 	
+	
+	
 	public void updateMemberInfo(MemberDTO member) {
 		
 		this.email = member.getEmail();
@@ -86,6 +88,10 @@ public class MemberEntity {
 		this.telno = member.getTelno();
 		this.filesize = member.getFilesize();
 		this.point=member.getPoint();
+		this.password = member.getPassword();
+		this.lastpwdate = LocalDateTime.now();
+		this.pwcheck = 1L;
+	
 		
 	}
 
