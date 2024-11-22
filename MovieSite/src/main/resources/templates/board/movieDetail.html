@@ -358,6 +358,58 @@ body {
 
 
 /* ///////////////알람 드롭다운 CSS 끝//////////// */
+
+.recommended-movies {
+	display:flex;
+	flex-wrap: nowrap;
+  	overflow-x: auto;
+    background-color: #1b1b1b;
+	padding: 20px;
+	border-radius: 10px;
+	color: #000;
+}
+.recommended-movies::-webkit-scrollbar {
+	width: 10px; /* 스크롤바 너비 설정 */
+	height: 10px;
+}
+
+.recommended-movies::-webkit-scrollbar-thumb {
+	background-color: gray;
+	border-radius: 10px;
+}
+.section-title {
+    color: #ffffff;
+    font-size: 1.8rem;
+    margin-bottom: 1.5rem;
+    padding-left: 0.5rem;
+}
+
+.movie-card {
+ flex: 0 0 auto;
+  padding: 10px;
+    position: relative;
+    border-radius: 8px;
+    transition: transform 0.3s ease;
+}
+
+.movie-card:hover {
+    transform: translateY(-5px);
+}
+
+.movie-image {
+    width: 250px;
+    height: 450px;
+    object-fit: cover;
+    border-radius: 8px;
+}
+
+
+/* 다크 테마 스타일 */
+@media (prefers-color-scheme: dark) {
+    .recommended-movies {
+        background-color: #000000;
+    }
+}
 </style>
 <body>
 	
@@ -498,7 +550,6 @@ body {
 			</div>
 		</div>
 
-		<div class="featured-content-others">
 			<div class="featured-content-others">
 				<div class="section-title">
 					<h3>출연/제작</h3>
@@ -541,7 +592,6 @@ body {
 					</div>
 				</div>
 			</div>
-		</div>
 
 
 		<!-- 포토/포스터 이미지 -->
@@ -590,15 +640,16 @@ body {
 			</div>
 		</div>
 
-		<div class="featured-content-others">
-			<h2>추천 영화</h2>
-			<div class="movie-list-item" th:each="movie : ${fear}">
-				<a th:href="@{/board/movieDetail(movieId=${movie.id})}"> <img
-					class="movie-list-item-img"
-					th:src="${'https://image.tmdb.org/t/p/original' + movie.backdropPath}"
-					alt="">
-				</a> <span class="movie-list-item-title" th:text="${movie.title}"></span>
-				<p class="movie-list-item-desc" th:text="${movie.overview}"></p>
+		<div class="featured-content-others" style="margin-top:60px">
+				<h2 class="section-title">추천 영화</h2>
+			<div class="recommended-movies">
+					<div class="movie-card" th:each="movie : ${recommandList}">
+						<a th:href="@{/board/movieDetail(movieId=${movie.movieId})}">
+							<img class="movie-image"
+							th:src="@{'https://image.tmdb.org/t/p/original' + ${movie.posterPath}}"
+							alt="">
+						</a>
+					</div>
 			</div>
 		</div>
 	</div>

@@ -5,9 +5,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
-import org.springframework.http.HttpStatus;
 import org.springframework.data.domain.Page;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
@@ -24,12 +25,11 @@ import com.board.dto.ReplyInterface;
 import com.board.dto.RequestDTO;
 import com.board.dto.RequestReplyDTO;
 import com.board.dto.movie.MovieDTO;
-import com.board.entity.ReplyEntity;
 import com.board.entity.NotificationEntity;
-import com.board.entity.MemberEntity;
 import com.board.entity.RequestEntity;
 import com.board.entity.RequestReplyEntity;
 import com.board.entity.movie.GenreEntity;
+import com.board.entity.movie.MovieEntity;
 import com.board.service.BoardService;
 import com.board.service.BookmarkService;
 import com.board.service.FavGenreService;
@@ -258,7 +258,18 @@ public class BoardController {
 
 	    model.addAttribute("seqno", seqno);
 	    model.addAttribute("noti", noti);  // 알림 목록을 모델에 추가
-		
+	    
+		// 추천 영화 리스트
+	    List<Map<String,Object>> genres = (List)movieDetail.get("genre");
+	    List<MovieEntity> recommandList = new ArrayList<>();
+	    for(Map<String,Object> genre :genres) {
+	    	String genreNm = (String)genre.get("name");
+	    	List<GenreEntity> list = movie.getGenreList(genreNm);
+	    	List<MovieEntity> movies = list.stream().map(s->s.getMovieId()).collect(Collectors.toList());
+	    	recommandList.addAll(movies);
+	    	break;
+	    }
+	    model.addAttribute("recommandList",recommandList);
 	}
 
 	@PostMapping("/movieDetail/reviews")
