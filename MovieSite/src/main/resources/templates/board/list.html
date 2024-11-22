@@ -4,8 +4,7 @@
 
 <head>
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Jua&display=swap')
-	;
+@import url('https://fonts.googleapis.com/css2?family=Jua&display=swap');
 </style>
 <meta charset="UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -16,81 +15,9 @@
 <link rel="stylesheet"
 	href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css">
 <title>Movie Design</title>
+<th:block th:replace="~{/fragments/header::header}"></th:block>
 </head>
 <style>
-* {
-	box-sizing: border-box;
-	margin: 0;
-	padding: 0px;
-}
-
-body {
-	font-family: "Jua", sans-serif;
-	font-weight: 400;
-	font-style: normal;
-	-webkit-user-select: none;
-	-moz-user-select: none;
-	-ms-user-select: none;
-	user-select: none
-}
-
-.navbar {
-	width: 100%;
-	height: 50px;
-	background-color: black;
-	position: fixed;
-	top: 0;
-}
-
-.navbar-container {
-	display: flex;
-	align-items: center;
-	padding: 0 50px;
-	height: 100%;
-	color: white;
-	font-family: "Jua", sans-serif;
-}
-
-.logo-container {
-	flex: 1;
-}
-
-.logo {
-	font-size: 30px;
-	color: #4dbf00;
-}
-
-.menu-container {
-	flex: 6;
-}
-
-.menu-list {
-	margin-left: 30px;
-	display: flex;
-	list-style: none;
-}
-
-.bell-box {
-	position: relative;
-	height: 20px;
-	background: #3C3D37;
-	border: 10px;
-	border-radius: 20px;
-	width: 80px;
-	height: 30px;
-	display: flex;
-	align-items: center;
-	margin-top: 10px;
-	margin-bottom: 10px;
-}
-
-.menu-list-item {
-	margin-right: 30px;
-}
-
-.menu-list-item.active {
-	font-weight: bold;
-}
 
 .profile-container {
 	flex: 7;
@@ -572,6 +499,46 @@ a {
 	flex-wrap: wrap;
 	justify-content: space-around;
 }
+
+	.recommended-movies {
+	display:flex;
+	flex-wrap: nowrap;
+  	overflow-x: auto;
+  	overflow-y:auto;
+    ;
+	padding: 20px;
+	border-radius: 10px;
+	color: #000;
+}
+.recommended-movies::-webkit-scrollbar {
+	width: 10px; /* 스크롤바 너비 설정 */
+	height: 10px;
+}
+
+.recommended-movies::-webkit-scrollbar-thumb {
+	background-color: gray;
+	border-radius: 10px;
+}
+
+.movie-card {
+ flex: 0 0 auto;
+  padding: 10px;
+    position: relative;
+    border-radius: 8px;
+    transition: transform 0.3s ease;
+}
+
+.movie-card:hover {
+    transform: translateY(-5px);
+}
+
+.movie-image {
+    width: 250px;
+    height: 450px;
+    object-fit: cover;
+    border-radius: 8px;
+}
+
 </style>
 <body>
 	<!--replace 특정 템플릿 조각(프래그먼트)을 다른 위치에 삽입할 때 사용 -->
@@ -699,15 +666,15 @@ a {
 			<!-- Like (좋아요) 많은 순 -->
 			<div class="movie-list-wrapper">
 				<div class="movie-list">
-					<div class="movie-list-item"
-						th:each="movie : ${likes}">
-						<a th:href="@{/board/movieDetail(movieId=${movie.info.movieId})}"> <img
-							class="movie-list-item-img"
+					<div class="movie-list-item" th:each="movie : ${likes}">
+						<a th:href="@{/board/movieDetail(movieId=${movie.info.movieId})}">
+							<img class="movie-list-item-img"
 							th:src="@{'https://image.tmdb.org/t/p/original' + ${movie.info.posterPath}}"
 							alt="">
 						</a>
 						<p class="movie-list-item-desc" th:text="${movie.info.overview}"></p>
-						<p 	th:text="'평점 : ' + ${movie.likePer}" style="text-align:center; margin-top:10px;"></p>
+						<p th:text="'평점 : ' + ${movie.likePer}"
+							style="text-align: center; margin-top: 10px;"></p>
 					</div>
 				</div>
 				<i class="fas fa-chevron-left arrow"></i> <i
@@ -720,15 +687,15 @@ a {
 			<!-- reply (댓글) 많은 순 -->
 			<div class="movie-list-wrapper">
 				<div class="movie-list">
-					<div class="movie-list-item"
-						th:each="movie : ${replies}">
-						<a th:href="@{/board/movieDetail(movieId=${movie.info.movieId})}"> <img
-							class="movie-list-item-img"
+					<div class="movie-list-item" th:each="movie : ${replies}">
+						<a th:href="@{/board/movieDetail(movieId=${movie.info.movieId})}">
+							<img class="movie-list-item-img"
 							th:src="@{'https://image.tmdb.org/t/p/original' + ${movie.info.posterPath}}"
 							alt="">
 						</a>
 						<p class="movie-list-item-desc" th:text="${movie.info.overview}"></p>
-						<p 	th:text="'현재 댓글 수 : ' + ${movie.count}" style="text-align:center; margin-top:10px;"></p>
+						<p th:text="'현재 댓글 수 : ' + ${movie.count}"
+							style="text-align: center; margin-top: 10px;"></p>
 					</div>
 				</div>
 				<i class="fas fa-chevron-left arrow"></i> <i
@@ -740,15 +707,15 @@ a {
 			<h1 class="movie-list-title">이건 꼭 봐야 해! 회원들이 가장 많이 본 영화</h1>
 			<div class="movie-list-wrapper">
 				<div class="movie-list">
-					<div class="movie-list-item"
-						th:each="movie : ${watches}">
-						<a th:href="@{/board/movieDetail(movieId=${movie.info.movieId})}"> <img
-							class="movie-list-item-img"
+					<div class="movie-list-item" th:each="movie : ${watches}">
+						<a th:href="@{/board/movieDetail(movieId=${movie.info.movieId})}">
+							<img class="movie-list-item-img"
 							th:src="@{'https://image.tmdb.org/t/p/original' + ${movie.info.posterPath}}"
 							alt="">
 						</a>
 						<p class="movie-list-item-desc" th:text="${movie.info.overview}"></p>
-						<p 	th:text="'누적 시청 수 : ' + ${movie.count}" style="text-align:center; margin-top:10px;"></p>
+						<p th:text="'누적 시청 수 : ' + ${movie.count}"
+							style="text-align: center; margin-top: 10px;"></p>
 					</div>
 				</div>
 				<i class="fas fa-chevron-left arrow"></i> <i
@@ -759,15 +726,15 @@ a {
 			<h1 class="movie-list-title">최근 일주일 간 대여 Top 영화</h1>
 			<div class="movie-list-wrapper">
 				<div class="movie-list">
-					<div class="movie-list-item"
-						th:each="movie : ${rents}">
-						<a th:href="@{/board/movieDetail(movieId=${movie.info.movieId})}"> <img
-							class="movie-list-item-img"
+					<div class="movie-list-item" th:each="movie : ${rents}">
+						<a th:href="@{/board/movieDetail(movieId=${movie.info.movieId})}">
+							<img class="movie-list-item-img"
 							th:src="@{'https://image.tmdb.org/t/p/original' + ${movie.info.posterPath}}"
 							alt="">
 						</a>
 						<p class="movie-list-item-desc" th:text="${movie.info.overview}"></p>
-						<p 	th:text="'현재 대여 수 : ' + ${movie.count}" style="text-align:center; margin-top:10px;"></p>
+						<p th:text="'현재 대여 수 : ' + ${movie.count}"
+							style="text-align: center; margin-top: 10px;"></p>
 					</div>
 				</div>
 				<i class="fas fa-chevron-left arrow"></i> <i
@@ -776,24 +743,18 @@ a {
 		</div>
 
 		<div class="movie-list-container"
-			style="background: linear-gradient(to bottom, rgba(255, 255, 255, 0), #000), url('/images/admin-003.jpg') center no-repeat; background-size: cover;">
-			<h1 class="movie-list-title" style="color: #8756b0">무비두비에 새로 올라온
-				영화</h1>
-			<div class="movie-list-wrapper">
-				<div class="movie-list">
-					<div class="movie-list-item"
-						th:each="movie : ${directUploadList}">
-						<a th:href="@{/board/movieDetail(movieId=${movie.info.id})}"> <img
-							class="movie-list-item-img"
-							th:src="@{'https://image.tmdb.org/t/p/original' + ${movie.info.posterPath}}"
-							alt="">
-						</a>
-						<p class="movie-list-item-desc" th:text="${movie.info.overview}"></p>
-					</div>
-
+			style="margin-top: 60px; background-color: #1b1b1b;">
+			<h1 class="movie-list-title" style="color: #8756b0; padding: 10px">무비두비에
+				새로 올라온 영화</h1>
+			<div class="recommended-movies">
+				<div class="movie-card" th:each="movie : ${directUploadList}">
+					<a th:href="@{/board/movieDetail(movieId=${movie.info.id})}"> <img
+						class="movie-image"
+						th:src="@{'https://image.tmdb.org/t/p/original' + ${movie.info.posterPath}}"
+						alt="">
+					</a>
+					<p class="movie-list-item-desc" th:text="${movie.info.overview}"></p>
 				</div>
-				<i class="fas fa-chevron-left arrow"></i> <i
-					class="fas fa-chevron-right arrow"></i>
 			</div>
 		</div>
 	</div>
