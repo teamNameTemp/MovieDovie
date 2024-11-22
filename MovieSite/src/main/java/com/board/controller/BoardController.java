@@ -72,6 +72,9 @@ public class BoardController {
 	private final RentService rent;
 	private final NotificationService notificationService;
 
+	@GetMapping("/test")
+	public void getTest() {}
+	
 	@GetMapping("/list")
 	public void getList(Model model, HttpSession session) throws JsonMappingException, JsonProcessingException {
 		String email = (String) session.getAttribute("email");
@@ -415,28 +418,6 @@ public class BoardController {
 		}
 
 		return service.replyView(reply);
-	}
-
-	@GetMapping("/tmdb")
-	public void getTmdb(Model model) {
-		// 한글로 뽑고 영어로 뽑고 해야함 onErrorResume(en-US / ko-KR)
-		List<MovieDTO> trendList = tmdb.getTrendingMovies("day", 1, "ko-KR").block();
-		List<MovieDTO> info = new ArrayList<>();
-		for (MovieDTO d : trendList) {
-			MovieDTO dto = tmdb.getMovieDetails(d.getId(), "ko-KR").block();
-			log.info(dto.getTitle() + dto.getVideos().getResults().size());
-			dto.setTitle(d.getTitle());
-			info.add(dto);
-		}
-
-		log.info(tmdb.getGenreList().block());
-		List<MovieDTO> movies = tmdb.getMoviesByGenreName("액션", 1).block();
-		List<MovieDTO> details = new ArrayList<>();
-		for (MovieDTO d : movies) {
-			MovieDTO detail = tmdb.getMovieDetails(d.getId(), "ko-KR").block();
-			details.add(detail);
-		}
-		model.addAttribute("movies", details);
 	}
 
 	// 요청사항 작성하기
