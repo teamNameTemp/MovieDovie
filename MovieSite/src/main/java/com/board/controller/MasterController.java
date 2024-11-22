@@ -328,6 +328,21 @@ public class MasterController {
 		return response; // JSON 형태로 반환
 	}
 
+	
+	//관리자 페이지 - 통계 : 구매 전환율 확인
+	@GetMapping("/conversionRate")
+	@ResponseBody
+	public Map<String, Object> getConversionRate() {
+		
+		Map<String, Object> map = new HashMap<>();
+		
+		Long conversionRate = 0L;
+		
+		map.put("conversionRate", conversionRate);		
+		return map;
+	}
+	
+	
 	// 관리자 페이지 - 통계 : 회원 가입한 날 확인
 	@GetMapping("/signupResult")
 	@ResponseBody

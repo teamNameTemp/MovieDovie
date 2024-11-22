@@ -201,6 +201,24 @@
 		a.pending:hover{
 			text-decoration : underline;
 		}
+		
+		
+		.progress-bar {
+		    width: 100%;
+		    height: 30px;
+		    background-color: #dedede;
+		    font-weight: 600;
+		}
+		
+		.progress-bar .progress {
+            height: 100%;
+            padding: 0;
+            text-align: center;
+            background-color:#4dbf00;
+            color: white;
+        }
+        
+		
 	</style>
 
 
@@ -428,6 +446,20 @@
 	
 	<div class="content4">
 		<div class="statuscontent">
+			<h2>2024 구매 전환률</h2><br> 
+			<!-- 구매 전환률 (Conversion Rate) = 영화 전체 대여 수 / 영화 상세페이지를 클릭한 전체 횟수(hitno) * 100% -->
+			<p>
+				<div class="progress-bar">           
+					<div class="progress" id="progress" style="width: 60%;">60%</div><br><br>
+				</div>
+			</p>
+		</div>
+	</div>
+	
+	
+	<!-- 
+	<div class="content4">
+		<div class="statuscontent">
 			<h2>회원 등급 현황</h2><br> 나중에 분기별로 보여줘야 함.
 			<div class="status-container">
 				<img class="statusicon" src="/images/img/membership.png" alt="">&nbsp;&nbsp;&nbsp;
@@ -441,6 +473,10 @@
 			</div>
 		</div>
 	</div>
+	 -->
+	
+	
+	
 	
 	<div class="content3">
 		<div class="content">
@@ -482,6 +518,32 @@
 </div>
     
 <script>
+
+
+	//회원 구매 전환율 % 구하기
+	const updateProgressBar = async() => {
+	    await fetch('/master/conversionRate', { //향후 컨트롤러에 작성 필요 ->tbl_movie 의 hitno 필요
+	        method: 'GET',
+	        headers: { "content-type": "application/json" }
+	    })
+	    .then((response) => response.json())
+	    .then((data) => {
+	        // conversionRate 값을 사용하여 progress 바 업데이트
+	        const conversionRate = data.conversionRate; // 서버에서 받은 데이터 구조에 맞게 수정
+	        const progressElement = document.getElementById('progress');
+	
+	        // width와 텍스트 업데이트
+	        progressElement.style.width = conversionRate + '%';
+	        progressElement.textContent = conversionRate + '%';
+	    })
+	    .catch((error) => {
+	        console.error('============= Error :', error);
+	    });
+	}
+	updateProgressBar(); // 페이지 로드 시 프로그레스 바 업데이트
+
+
+
 
 	//회원 가입 수 증감 색상 표시
 	const signupResult = async() => {
