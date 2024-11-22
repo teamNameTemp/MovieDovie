@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.springframework.data.convert.DtoInstantiatingConverter;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -35,13 +34,12 @@ public class MakeController {
     @PostMapping("/make/movie/save-all")
     @ResponseBody
     public Map<String,Object> postSaveAll(){
-    	  List<MovieDTO> list = tmdb.getTrendingMovies("day", 1, "ko-KR").block();
+    	  List<MovieDTO> list = tmdb.getTrendingMovies("week", 1, "ko-KR").block();
           List<MovieDTO> temp = new ArrayList<>();
           
           for(MovieDTO d : list) {
               MovieDTO dto = tmdb.getMovieDetails(d.getId(), "ko-KR").block();
               temp.add(dto);
-              log.info(dto.getVideos().getResults().size() + " : " + dto.getTitle());
           }
 
           movie.saveTheDataBases(temp);
@@ -61,18 +59,18 @@ public class MakeController {
     	//todo : 저장이 안될 시 오류처리 코드 작성해야함
     	data.put("message", "good");
     	
-    	movie.directSave(dto);
+    	movie.saveTheDataBase(dto);
     	return data;
     }
+	
 	
     @PostMapping("/make/movie/searchKeyword")
 	@ResponseBody
 	public List<MovieDTO> postSearchKeyword(@RequestParam("keyword") String keyword){
-    	 List<List<MovieDTO>> list = tmdb.searchMovies(keyword,2).block();
-
-//        List<Map<String,Object>> list = movie.findByKeywordMovieList(keyword);
+    	List<MovieDTO> list = tmdb.searchMovies(keyword).block();
+    	log.info(tmdb.getMovieDetails(list.get(0).getId(),"ko-KR").block());
 //    	log.info(tmdb.searchPerson(keyword).block());
-    	return list.get(0);
+    	return list;
     }
 
 

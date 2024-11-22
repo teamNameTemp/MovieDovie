@@ -1,5 +1,5 @@
 <div th:fragment="menubar">
-    <div class="navbar">
+  	<div class="navbar">
         <div class="navbar-container">
             <div class="logo-container">
                 <h1 class="logo"><a href="/board/list">MovieDovie</a></h1>
@@ -8,18 +8,19 @@
                 <ul class="menu-list">
                     <li class="menu-list-item" style="position:relative; margin-top:18.5px;"><a href="#">추천 영화</a></li>
                     <li class="menu-list-item" style="position:relative; margin-top:18.5px;"><a href="#">장르</a></li>
-                    <li class="menu-list-item" style="position:relative; margin-top:18.5px;"><a href="#">인기 영화</a></li>
+                    <li class="menu-list-item" style="position:relative; margin-top:18.5px;"><a href="#">인기 영화</a></li>         
                 </ul>
-                <div class="search-box" style="position:relative; margin-top:27px;">
-                    <form action="/board/search" method="get">
-                        <input class="search-txt" name="keyword" type="text" placeholder="  작품, 배우, 게시글, 태그를 검색해보세요">
-                        <button class="search-btn" type="submit" onclick="searchMovies()">
-                            <i class="fas fa-search"></i>
-                        </button>
-                    </form>
-                </div>
-            </div>
-            
+	            <div class="search-box" style="position:relative; margin-top:27px;">
+	  				<form action="/board/list" method="">
+	    				<input class="search-txt" type="text" placeholder="  작품, 배우, 게시글, 태그를 검색해보세요" >
+	    				<button class="search-btn" type="submit">
+					  		<i class="fas fa-search"></i>
+				  		</button>
+				  	</form>    
+	        	</div>	  
+			</div>
+          
+          
           	<div class="profile-container">
 	            <div class="dropdown">
 	            	<div class="bell-box">	

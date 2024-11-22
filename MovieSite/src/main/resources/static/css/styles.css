@@ -1,6 +1,5 @@
 @charset "UTF-8";
 
-
 * {
   margin: 0;
 }
@@ -142,7 +141,7 @@ body {
 }
 
 .featured-content {
-  height: 75vh;
+  height: 70vh;
   padding: 5px 80px;
 }
 

@@ -7,7 +7,7 @@ import com.board.dto.movie.MovieDTO;
 import com.board.entity.LikeEntity;
 
 public interface BoardService {
-
+	
 	//상품 상세 정보 보기
 	public MovieDTO view(Long seqno) throws Exception;
 	

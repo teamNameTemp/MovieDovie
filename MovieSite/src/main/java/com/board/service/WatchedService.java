@@ -10,7 +10,4 @@ public interface WatchedService {
 
 	public Map<String, Object> getAllWatchedInfo(Long movieId);
 	public List<Map<String,Object>> getAllWatchedByEmail(String email);
-
-	
-	List<Map<String,Object>> getTopList(int topCount);
 }
