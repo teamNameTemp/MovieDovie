@@ -5,6 +5,7 @@ import java.io.FileNotFoundException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.nio.file.Files;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -32,6 +33,7 @@ import com.board.service.FavGenreServiceImpl;
 import com.board.service.MailService;
 import com.board.service.MemberService;
 import com.board.service.TmdbAPIServiceImpl;
+import com.board.util.PasswordMaker;
 
 import jakarta.mail.MessagingException;
 import jakarta.servlet.http.HttpServletResponse;
@@ -82,20 +84,21 @@ public class MemberController {
 	
 	//로그아웃
 	@GetMapping("/logout")
-	public void getLogout() {		
+	public void getLogout(HttpSession session) {	
+		String email = (String)session.getAttribute("email");
+//		service.lastdateUpdate(email, "logout");
+		service.memberLogRegistry(email, "logout");		
+		session.invalidate(); 
 		log.info("====================== 로그 아웃 ======================");
 	}
-	
 	//로그아웃 전처리
-	@GetMapping("/beforeLogout")
-	public String getBeforeLogout(HttpSession session,Model model) {
-		
+	@PostMapping("/beforeLogout")
+	public void getBeforeLogout(HttpSession session,Model model) {
 		String email = (String)session.getAttribute("email");
 		service.lastdateUpdate(email, "logout");
 		service.memberLogRegistry(email, "logout");		
 		session.invalidate(); 
 		log.info("====================== 로그 아웃 전 로그 등록 및 세션 종료======================");
-		return "redirect:/member/logout";
 	}
 	
 	//회원 등록 화면 보기
@@ -166,6 +169,9 @@ public class MemberController {
 				file.delete();
 			}		
 
+    		String EncodedNewPW = pwdEncoder.encode(member.getPassword());
+			member.setPassword(EncodedNewPW);
+			
 			//회원 수정
 			service.modifyMemberInfo(member);
 		}		
@@ -177,7 +183,14 @@ public class MemberController {
 		return data;
 
 	}
-    
+	
+	@GetMapping("/modifyMemberInfoOauth")
+	public void getMemberInfoModifyOauth(Model model, HttpSession session) {	
+		String email = (String)session.getAttribute("email");
+		model.addAttribute("member", service.memberInfo(email));		
+	}
+	
+	
 	//이메일 중복 확인
     @ResponseBody
     @PostMapping("/emailCheck")
@@ -259,6 +272,7 @@ public class MemberController {
         data.put("ok", true);
         data.put("message", "good");
         data.put("code", authCode); // 인증번호를 클라이언트로 전달
+        System.out.println("코드는" + authCode);
         return 	data;
     }
 	
@@ -347,9 +361,95 @@ public class MemberController {
 	
 	//비밀번호 찾기
 	@GetMapping("/searchPassword")
-	public void getSearchPassword() {}
+	public void getSearchPassword(){
+	}
 	
+	//신규 비밀번호
+	@GetMapping("/modifyMemberPassword")
+	public void getModifyMemberPassword() {
+		
+	}
+	
+	//비밀번호 찾기
+	@ResponseBody
+	@PostMapping("/searchPassword/mailConfirm")
+	public Map<String, Object> postSearchPassword(@RequestParam("email") String email) throws MessagingException, UnsupportedEncodingException {
+	    Map<String, Object> data = new HashMap<>();
 
+	    try {
+	        // 인증번호 생성 및 이메일 전송
+	        String authCode = mailService.sendEmail(email);
+	        System.out.println("이메일 인증: " + authCode);
+
+	        data.put("ok", true);
+	        data.put("message", "good");
+	        data.put("code", authCode); // 인증번호를 클라이언트로 전달
+	    } catch (Exception e) {
+	        System.err.println("이메일 인증 실패: " + e.getMessage());
+	        data.put("ok", false);
+	        data.put("message", "fail");
+	    }
+
+	    return data;
+	}
+
+	//비밀번호 찾기 인증
+    @ResponseBody
+    @PostMapping("/searchPassword/tempPW")		   
+    public Map<String,Object> tempPW(@RequestParam("email") String email, @RequestParam("username") String username) throws MessagingException, UnsupportedEncodingException  {
+       
+    	Map<String,Object> data = new HashMap<>();
+    
+    	if(service.memberInfo(email).getUsername().equals(username)) {
+    		data.put("message", "good");
+    		
+
+        	//임시 패스워드 생성	
+    		PasswordMaker pMaker = new PasswordMaker();
+    		String rawTempPW = pMaker.tempPasswordMaker();
+    		service.makeTempPW(email, pwdEncoder.encode(rawTempPW));
+
+            data.put("rawTempPW", rawTempPW);
+            
+    	}
+        //아이디 존재 여부 확인
+    	else if(service.emailCheck(email) == 0) {
+    		data.put("message", "EMAIL_NOT_FOUND");
+    	}
+    	//username 확인
+    	else if(!service.memberInfo(email).getUsername().equals(username)) {
+    		data.put("message", "USERNAME_NOT_FOUND");
+    	}
+    	
+
+        return data;
+    }
+    
+    //신규 비밀번호 변경
+    @ResponseBody
+    @PostMapping("/modifyMemberPassword")		   
+    public Map<String,Object> postModifyMemberPassword(@RequestParam("email") String email, @RequestParam("old_password") String old_password, @RequestParam("new_password") String new_password) throws MessagingException, UnsupportedEncodingException  {
+       
+    	Map<String,Object> data = new HashMap<>();
+    
+    	if (pwdEncoder.matches(old_password, service.memberInfo(email).getPassword())) {
+    	    // 기존 패스워드와 입력한 old_password 비교 성공
+    	    service.makeTempPW(email, pwdEncoder.encode(new_password));
+
+            data.put("message", "good");
+            
+    	}
+        //아이디 존재 여부 확인
+    	else if(service.emailCheck(email) == 0) {
+    		data.put("message", "EMAIL_NOT_FOUND");
+    	}
+    	//기존 패스워드 확인
+    	else {
+    		data.put("message", "PASSWORD_NOT_FOUND");
+    	}
+    	
+        return data;
+    }
 	
 	//카카오
 	 @GetMapping("/auth/kakao")

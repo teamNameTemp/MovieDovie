@@ -4,17 +4,101 @@
 <meta charset="UTF-8">
 <title>이메일 찾기</title>
 <style>
+/* 기본 스타일 */
 body {
+    margin: 0;
     font-family: Arial, sans-serif;
-    background-color: rgba(20, 20, 20, 0.8); /* 배경을 투명하게 설정 */
-    color: white;
+    background-color: #141414; /* 넷플릭스 특유의 어두운 배경 */
+    color: #ffffff; /* 텍스트는 밝은 색상으로 */
     display: flex;
     justify-content: center;
     align-items: center;
     height: 100vh;
-    margin: 0;
+}
+
+/* 메인 컨테이너 스타일 */
+.main {
+    text-align: center;
+}
+
+.ModifyForm {
+    background-color: #222222; /* 섹션 배경은 어두운 회색 */
+    border-radius: 10px;
+    padding: 30px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    width: 90%;
+    max-width: 400px;
+    margin: auto;
+}
+
+/* 폼 제목 스타일 */
+.ModifyForm h1 {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 20px;
+    color: #e50914; /* 넷플릭스 레드 */
+    text-align: center;
+}
+
+/* 입력 필드 스타일 */
+.input_field {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 15px;
+    border: 1px solid #333333;
+    border-radius: 5px;
+    background-color: #141414; /* 입력 배경 */
+    color: #ffffff; /* 텍스트 색상 */
+    font-size: 16px;
+}
+
+.input_field::placeholder {
+    color: #888888; /* 플레이스홀더 색상 */
+}
+
+/* 버튼 스타일 */
+.btn_write, .btn_cancel {
+    width: 100%;
+    padding: 12px;
+    margin: 10px 0;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.btn_write {
+    background-color: #e50914; /* 넷플릭스 레드 */
+    color: #ffffff;
+    transition: background-color 0.3s ease;
+}
+
+.btn_write:hover {
+    background-color: #f40612; /* 더 밝은 빨간색 */
+}
+
+.btn_cancel {
+    background-color: #333333;
+    color: #ffffff;
+    transition: background-color 0.3s ease;
+}
+
+.btn_cancel:hover {
+    background-color: #444444; /* 조금 더 밝은 회색 */
+}
+
+/* 검색 결과 섹션 */
+.EmailSearchResult {
+    margin-top: 20px;
+    padding: 10px;
+    background-color: #333333; /* 검색 결과 배경 */
+    border-radius: 5px;
+    color: #ffffff;
+    font-size: 14px;
 }
 </style>
+
 
 <script>
 const EmailSearchCheck = async () => {

@@ -2,7 +2,9 @@ package com.board.service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Service;
@@ -24,6 +26,7 @@ public class MemberServiceImpl implements MemberService {
 	private final MemberRepository memberRepository;
 	private final MemberLogRepository memberLogRepository;
 	private final FileRepository fileRepository;
+
 
 	//회원 가입
 	@Override
@@ -71,41 +74,56 @@ public class MemberServiceImpl implements MemberService {
 	}
 	
 	
-	//회원 로그인/로그아웃 로그 등록
-	@Override
-	public void memberLogRegistry(String email, String status) {
-		
+	//임시 패스워드 저장하기
+	@Override	
+	public void makeTempPW(String email, String newPW) {
 		MemberEntity memberEntity = memberRepository.findById(email).get();
-		
-		MemberLogEntity memberLogEntity = MemberLogEntity.builder()
-														 .email(memberEntity.getEmail())
-														 .inouttime(LocalDateTime.now())
-														 .status(status)
-														 .build();		
-		memberLogRepository.save(memberLogEntity);
+		memberEntity.setPassword(newPW);
+		memberRepository.save(memberEntity);	
 	}
 	
-	//마지막 로그인/로그아웃/패스워드 변경일 등록 하기
+	// 회원 로그인/로그아웃 로그 등록
 	@Override
-	public void lastdateUpdate(String email,String status) {
-		MemberEntity memberEntity = memberRepository.findById(email).get();
-		MemberLogEntity memberLogEntity = new MemberLogEntity();
-		
-		switch (status) {
-		case "login":
-		case "logout":
-			memberLogEntity = MemberLogEntity.builder()
-								.email(memberEntity.getEmail())
-								.inouttime(LocalDateTime.now())
-								.status(status).build();
-			break;
-		case "password":
-			memberEntity.setLastpwdate(LocalDateTime.now());
-			break;
-		}
-		memberRepository.save(memberEntity);
-		memberLogRepository.save(memberLogEntity);
+	public void memberLogRegistry(String email, String status) {
+	    MemberEntity memberEntity = memberRepository.findById(email).orElseThrow(() -> 
+	        new RuntimeException("회원 정보가 존재하지 않습니다.")
+	    );
+
+	    MemberLogEntity memberLogEntity = MemberLogEntity.builder()
+	                                                     .email(memberEntity.getEmail())
+	                                                     .inouttime(LocalDateTime.now())
+	                                                     .status(status)
+	                                                     .build();
+
+	    memberLogRepository.save(memberLogEntity);
 	}
+
+	// 마지막 로그인/로그아웃/패스워드 변경일 등록
+	@Override
+	public void lastdateUpdate(String email, String status) {
+	    MemberEntity memberEntity = memberRepository.findById(email).orElseThrow(() -> 
+	        new RuntimeException("회원 정보가 존재하지 않습니다.")
+	    );
+
+	    MemberLogEntity memberLogEntity = null;
+
+	    if ("login".equals(status) || "logout".equals(status)) {
+	        memberLogEntity = MemberLogEntity.builder()
+	                                         .email(memberEntity.getEmail())
+	                                         .inouttime(LocalDateTime.now())
+	                                         .status(status)
+	                                         .build();
+	    } else if ("password".equals(status)) {
+	        memberEntity.setLastpwdate(LocalDateTime.now());
+	    }
+
+	    memberRepository.save(memberEntity);
+
+	    if (memberLogEntity != null) {
+	        memberLogRepository.save(memberLogEntity);
+	    }
+	}
+
 	
 	//이메일 찾기
 	public String searchEmail(MemberDTO member) {
@@ -121,11 +139,6 @@ public class MemberServiceImpl implements MemberService {
 		return memberRepository.signupResult();
 	}
 
-	@Override
-	public String searchPassword(MemberDTO member) {
-		// TODO Auto-generated method stub
-		return null;
-	}
 
 
 }

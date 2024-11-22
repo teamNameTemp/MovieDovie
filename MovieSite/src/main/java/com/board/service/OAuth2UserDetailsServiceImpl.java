@@ -119,8 +119,8 @@ public class OAuth2UserDetailsServiceImpl extends DefaultOAuth2UserService {
                     .role("USER")
                     .regdate(LocalDateTime.now())
                     .nickname("oauth")
-                    .gender(gender != null ? gender : "") // 사용자가 지정한 값 또는 기본값 설정
-                    .telno(phoneNumber != null ? phoneNumber : "") // 사용자가 지정한 값 또는 기본값 설정
+                    .gender(gender != null ? gender : "여성") // 사용자가 지정한 값 또는 기본값 설정
+                    .telno(phoneNumber != null ? phoneNumber : "123") // 사용자가 지정한 값 또는 기본값 설정
                     .build();
             
             return memberRepository.save(member);
