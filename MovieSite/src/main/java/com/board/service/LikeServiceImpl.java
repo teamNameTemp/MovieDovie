@@ -132,4 +132,33 @@ class LikeServiceImpl implements LikeService {
 		}
 		return data;
 	}
+
+	@Override
+	public List<Map<String, Object>> getTopList(int topCount) {
+		List<Map<String,Object>> data = new ArrayList<>();
+		List<Map<String,Object>> likes = likeRepository.findAllByTotal();
+		int idx = topCount;
+		for(Map<String,Object> d : likes) {
+			if(idx == 0)break;
+//			int totalCount = (int)d.get("totalCount");
+//			float likePer = (float)d.get("likePercentage");
+//			if(totalCount >= memberRepository.count() * 0.1 && likerPer >= 70) {
+				Long movieId = (Long)d.get("movieId");
+				
+				MovieEntity movie = movieRepository.findById(movieId).get();
+				Map<String,Object> map = new HashMap<>();
+				map.put("info", movie);
+				map.put("totalCount", d.get("totalCount"));
+				map.put("likeCount", d.get("likeCount"));
+				map.put("dislikeCount", d.get("dislikeCount"));
+				map.put("likePer", d.get("likePercentage"));
+				map.put("dislikePer", d.get("dislikePercentage"));
+				data.add(map);
+				idx--;
+//			}
+
+		}
+		
+		return data;
+	}
 }

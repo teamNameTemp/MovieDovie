@@ -5,8 +5,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.data.domain.Page;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
@@ -16,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.server.ResponseStatusException;
 
 import com.board.dto.MemberDTO;
 import com.board.dto.ReplyInterface;
@@ -23,10 +26,10 @@ import com.board.dto.RequestDTO;
 import com.board.dto.RequestReplyDTO;
 import com.board.dto.movie.MovieDTO;
 import com.board.entity.NotificationEntity;
-import com.board.entity.MemberEntity;
 import com.board.entity.RequestEntity;
 import com.board.entity.RequestReplyEntity;
 import com.board.entity.movie.GenreEntity;
+import com.board.entity.movie.MovieEntity;
 import com.board.service.BoardService;
 import com.board.service.BookmarkService;
 import com.board.service.FavGenreService;
@@ -69,6 +72,9 @@ public class BoardController {
 	private final RentService rent;
 	private final NotificationService notificationService;
 
+	@GetMapping("/test")
+	public void getTest() {}
+	
 	@GetMapping("/list")
 	public void getList(Model model, HttpSession session) throws JsonMappingException, JsonProcessingException {
 		String email = (String) session.getAttribute("email");
@@ -78,7 +84,7 @@ public class BoardController {
 		model.addAttribute("nickname", nickname);
 
 		
-		  List<MovieDTO> trend = tmdb.getTrendingMovies("week", 1, "ko-KR").block();
+		  List<MovieDTO> trend = tmdb.getTrendingMovies("day", 1, "ko-KR").block();
           List<MovieDTO> trendList = new ArrayList<>();
           
           for(MovieDTO d : trend) {
@@ -87,14 +93,6 @@ public class BoardController {
           }
           //트렌드 영화를 못찾을 시 예외로 한번 더 저장
 //          movie.saveTheDataBases(trendList);
-		
-		for(MovieDTO dto : trendList) {
-			Map<String,Object> bookmarkMap = bookmark.getBookmarkInfo((String)session.getAttribute("email"), dto.getId());
-			if(bookmarkMap != null) {
-				dto.setIsBookmarked((String)bookmarkMap.get("status"));
-			}
-//			dto.setIsCart()
-		}
 		
 		
 		//선호 장르별 영화 리스트
@@ -112,10 +110,20 @@ public class BoardController {
 		}	
 		
 		//만장일치! 다들 이 영화 좋아해요
+		List<Map<String,Object>> topLikeList = like.getTopList(20);
+		model.addAttribute("likes",topLikeList);
 		//요즘 인기 폭팔! 댓글 많은 영화
+		List<Map<String,Object>> topReplyList = reply.getTopList(20);
+		model.addAttribute("replies",topReplyList);
 		//이건 꼭 봐야해! 회원들이 가장 많이 본 영화
+		List<Map<String,Object>> topWatchList = watch.getTopList(20);
+		model.addAttribute("watches",topWatchList);
 		//오늘 대여 TOP 영화
+		List<Map<String,Object>> topRentList = rent.getTopList(20);
+		model.addAttribute("rents",topRentList);
 		//무비두비에 새로 올라온 영화
+		List<Map<String,Object>> directList = movie.getDirectUploadList(6);
+		model.addAttribute("directUploadList",directList);
 		
 		model.addAttribute("nickname", session.getAttribute("nickname"));
 		model.addAttribute("dailyMovies", trendList);
@@ -149,9 +157,11 @@ public class BoardController {
 	public void getMyPage(Model model, HttpSession session) {
 		String email = (String) session.getAttribute("email");
 		MemberDTO memberInfo = memberService.memberInfo(email);
-		model.addAttribute("member",memberInfo);
-		
+		String nickname = (String) session.getAttribute("nickname");
 		//대여
+		List<Map<String,Object>> rents = rent.getAllMyRent(email, "Y");
+		model.addAttribute("rents",rents);
+		log.info(rents);
 		//북마크
 		List<Map<String,Object>> bookmarks = bookmark.getAllBookmarkByEmail(email);
 		model.addAttribute("bookmarks",bookmarks);
@@ -161,7 +171,9 @@ public class BoardController {
 		//좋아요
 		List<Map<String,Object>> likes = like.getAllLikeByEmail(email);
 		model.addAttribute("likes",likes);
-		
+
+		model.addAttribute("nickname",nickname);
+		model.addAttribute("member",memberInfo);
 	}
 	
 	// 장르 필터
@@ -180,7 +192,8 @@ public class BoardController {
 		// DB에서 영화 정보 가져오기
 		Map<String, Object> movieDetail = movie.getMovieDetails(movieId);
 		model.addAttribute("movie", movieDetail);
-
+		movie.clickToMovie(movieId);
+		
 		// 사용자가 로그인한 경우에만 회원 정보와 좋아요 정보를 처리
 		if (email != null && !email.isEmpty()) {
 			MemberDTO memberDTO = memberService.memberInfo(email);
@@ -213,9 +226,13 @@ public class BoardController {
 			model.addAttribute("bookmark", myBookmark);
 		}
 		Map<String,Object> myRent = rent.getMyRentInfo(email, movieId);
-		if(myRent == null || myRent.isEmpty()) {
+		if(myRent != null || !myRent.isEmpty()) {
 			model.addAttribute("rent",myRent);
+			rent.updateRent(email, movieId);
 		}
+		
+		List<Map<String,Object>>replies = reply.getList(movieId);
+		model.addAttribute("replies",replies);
 		
 		//movieStat 정보
 		Map<String, Object> likes = like.getAllLikeInfo(movieId);
@@ -244,23 +261,34 @@ public class BoardController {
 
 	    model.addAttribute("seqno", seqno);
 	    model.addAttribute("noti", noti);  // 알림 목록을 모델에 추가
-		
+	    
+		// 추천 영화 리스트
+	    List<Map<String,Object>> genres = (List)movieDetail.get("genre");
+	    List<MovieEntity> recommandList = new ArrayList<>();
+	    for(Map<String,Object> genre :genres) {
+	    	String genreNm = (String)genre.get("name");
+	    	List<GenreEntity> list = movie.getGenreList(genreNm);
+	    	List<MovieEntity> movies = list.stream().map(s->s.getMovieId()).collect(Collectors.toList());
+	    	recommandList.addAll(movies);
+	    	break;
+	    }
+	    model.addAttribute("recommandList",recommandList);
 	}
 
 	@PostMapping("/movieDetail/reviews")
 	@ResponseBody
-	public Map<String, Boolean> postMovieDetailReview(@RequestParam("movieId") Long movieId,
+	public Map<String, Object> postMovieDetailReview(@RequestParam("movieId") Long movieId,
 			@RequestParam("content") String content, HttpSession session) {
 
 		String email = (String) session.getAttribute("email");
 
-		Map<String, Boolean> response = new HashMap<>();
+		Map<String, Object> response = new HashMap<>();
 
 		// 리뷰 업데이트 및 저장
-		reply.saveOrUpdate(content, email, movieId);
+		String result = reply.saveOrUpdate(content, email, movieId);
 
-		response.put("ok", true);
-
+		response.put("message", "good");
+		response.put("action", result);
 		return response;
 	}
 
@@ -347,15 +375,17 @@ public class BoardController {
 		@PostMapping("/movieDetail/rent")
 		@ResponseBody
 		public Map<String, Object> postMovieDetailRent(@RequestParam("movieId") Long movieId,
-				@RequestParam("action") String action, HttpSession session) {
+				HttpSession session) {
 			Map<String, Object> response = new HashMap<>();
 
 			String email = (String) session.getAttribute("email");
 
 			// 대여 등록 및 삭제 
 			try {
-				rent.rentMovie(email,movieId);
+				String status = rent.rentMovie(email,movieId);
 				response.put("message", "good");
+				response.put("status", status);
+				
 				// 모든 like 정보
 //				Map<String, Object> bookmarks = bookmark.getAllBookmarkInfo(movieId);
 //				response.put("count", bookmarks.get("count"));
@@ -388,32 +418,6 @@ public class BoardController {
 		}
 
 		return service.replyView(reply);
-	}
-
-	@GetMapping("/tmdb")
-	public void getTmdb(Model model) {
-		// 한글로 뽑고 영어로 뽑고 해야함 onErrorResume(en-US / ko-KR)
-		List<MovieDTO> trendList = tmdb.getTrendingMovies("day", 1, "ko-KR").block();
-		List<MovieDTO> info = new ArrayList<>();
-		int idx = 5;
-		for (MovieDTO d : trendList) {
-			if (idx == 0)
-				break;
-			MovieDTO dto = tmdb.getMovieDetails(d.getId(), "ko-KR").block();
-			log.info(dto);
-			dto.setTitle(d.getTitle());
-			info.add(dto);
-			idx--;
-		}
-
-		log.info(tmdb.getGenreList().block());
-		List<MovieDTO> movies = tmdb.getMoviesByGenreName("액션", 1).block();
-		List<MovieDTO> details = new ArrayList<>();
-		for (MovieDTO d : movies) {
-			MovieDTO detail = tmdb.getMovieDetails(d.getId(), "ko-KR").block();
-			details.add(detail);
-		}
-		model.addAttribute("movies", details);
 	}
 
 	// 요청사항 작성하기
@@ -602,4 +606,30 @@ public class BoardController {
 		return result;
 	}
 
+//	private Map<String, Object> getMovieInfo(String movieCd) throws JsonProcessingException {
+//		String movieInfoResult = kobis.getMovieInfo(movieCd);
+//		return convertToMapper.getMovieInfo(movieInfoResult);
+//	}
+
+//---------검색trying-------------------------
+	@GetMapping("/search")
+	public void searchPage(Model model,@RequestParam(name="keyword",required = false) String keyword) {
+		if(keyword != null) {
+			List<Map<String,Object>> list = movie.findByKeywordMovieList(keyword);
+			model.addAttribute("movies",list);
+		}
+	}
+	
+	@PostMapping("/search/movies")
+	@ResponseBody
+	public List<List<MovieDTO>> searchMovies(@RequestParam ("keyword") String keyword) {
+
+		try {
+			List<List<MovieDTO>> movies = tmdb.searchMovies(keyword,3).block();
+			return movies;
+		} catch (Exception e) {
+			log.error("Error fetching movies: ", e);
+			throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "영화 검색 중 오류 발생");
+		}
+	}
 }
