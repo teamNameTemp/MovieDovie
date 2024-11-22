@@ -7,10 +7,144 @@
 @import url('https://fonts.googleapis.com/css2?family=Jua&display=swap')
 	;
 
+/* 모달 기본 스타일 */
+.modal {
+	display: none; /* 기본적으로 숨겨짐 */
+	position: fixed;
+	left: 0;
+	top: 0;
+	width: 100%;
+	height: 100%;
+	background-color: rgba(0, 0, 0, 0.5); /* 반투명 배경 */
+	z-index: 1500;
+}
+
+/* 모달 콘텐츠 스타일 */
+.modal-content {
+	background-color: #fff;
+	padding: 20px;
+	border-radius: 10px;
+	width: 80%; /* 너비를 80%로 설정 */
+	max-width: 800px; /* 최대 너비를 설정하여 너무 커지지 않도록 */
+	max-height:400px;
+	position: absolute;
+	color: #000;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%); /* 화면 중앙으로 이동 */
+	overflow-y:auto;
+}
+
+.modal-content::-webkit-scrollbar {
+	width: 10px; /* 스크롤바 너비 설정 */
+	height: 10px;
+}
+
+.modal-content::-webkit-scrollbar-thumb {
+	background-color: gray;
+	border-radius: 10px;
+}
+
+
+/* 닫기 버튼 스타일 */
+.close-btn {
+	color: #aaa;
+	font-size: 28px;
+	font-weight: bold;
+	float: right;
+	cursor: pointer;
+}
+
+.close-btn:hover, .close-btn:focus {
+	color: black;
+	text-decoration: none;
+	cursor: pointer;
+}
+
+/* 대여 현황 박스 스타일 */
+.rental-status-box {
+	background-color: #333;
+	padding: 20px;
+	border-radius: 10px;
+	cursor: pointer;
+	text-align: center;
+}
+
+.rental-status-box h3, .rental-status-box p {
+	color: #fff;
+}
+
+/* 표 스타일 */
+table {
+	width: 100%;
+	border-collapse: collapse;
+	margin-top: 20px;
+}
+
+table, th, td {
+	border: 1px solid #ddd;
+}
+
+th, td {
+	padding: 10px;
+	text-align: center;
+}
+
+th {
+	background-color: #f2f2f2;
+}
+
+.profile-status-box {
+	margin-top: 50px;
+	background-color: #FFFAFA;
+	position: absolute;
+	top: 100px; /* 상단에서 20px 떨어진 위치 */
+	right: 50%; /* 우측에서 20px 떨어진 위치 */
+	z-index: 500;
+	padding: 15px;
+	border-radius: 10px;
+	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* 그림자 효과 */
+	width: 500px;
+	height: 443px;
+	color: #151515; /* 텍스트 색상 */
+	opacity: 1;
+	text-align: center;
+}
+
+.profile-status-box:hover {
+	opacity: 1;
+}
+
+.profile-status-box h3 {
+	margin: 0;
+	font-size: 28px;
+	font-weight: bold;
+}
+
+.profile-status-box p {
+	margin: 5px 0;
+	font-size: 28px;
+}
+
+/* 프로필 사진을 원형으로 만들기 위한 스타일 */
+.profile-status-box .profile-img {
+	width: 200px;
+	height: 200px;
+	border-radius: 50%; /* 원형으로 */
+	object-fit: cover; /* 이미지 비율 유지 */
+	margin-bottom: 10px; /* 이미지와 텍스트 사이의 간격 */
+}
+
+/* 프로필 이름 스타일 */
+.profile-status-box .profile-name {
+	font-size: 30px;
+	font-weight: bold;
+}
+/*대여 정보 박스*/
 .rental-status-box {
 	margin-top: 50px;
 	background-color: gray;
-	position: absolute;
+	position: fixed;
 	top: 20px; /* 상단에서 20px 떨어진 위치 */
 	right: 20px; /* 우측에서 20px 떨어진 위치 */
 	z-index: 500;
@@ -19,6 +153,12 @@
 	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* 그림자 효과 */
 	width: 200px;
 	color: #fff; /* 텍스트 색상 */
+	z-index: 1500;
+	opacity: 0.6;
+}
+
+.rental-status-box:hover {
+	opacity: 1;
 }
 
 .rental-status-box h3 {
@@ -30,6 +170,59 @@
 .rental-status-box p {
 	margin: 5px 0;
 	font-size: 14px;
+}
+
+/* 유저 상태 정보 박스 */
+.user-status-box {
+	margin-top: 50px;
+	background-color: white;
+	position: absolute;
+	top: 100px;
+	right: 20%;
+	z-index: 300;
+	padding: 15px;
+	border-radius: 10px;
+	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* 그림자 효과 */
+	width: 400px; /* 표와 텍스트를 충분히 담을 크기로 설정 */
+	color: #151515; /* 텍스트 색상 */
+	opacity: 1;
+}
+
+.user-status-box:hover {
+	opacity: 1.0;
+}
+
+.user-status-box h3 {
+	margin: 0;
+	font-size: 18px;
+	font-weight: bold;
+	text-align: center;
+	margin-bottom: 10px;
+}
+
+.user-info-table {
+	width: 100%;
+	border-collapse: collapse;
+}
+
+.user-info-table th, .user-info-table td {
+	padding: 8px;
+	text-align: center;
+	border-bottom: 1px solid #ddd;
+}
+
+.user-info-table th {
+	width: 30%; /* 항목, 정보 칸을 동일한 비율로 설정 */
+	background-color: none;
+}
+
+.user-info-table td {
+	width: 70%;
+	color: #151515;
+}
+
+.user-info-table tr:hover {
+	background-color: rgba(255, 255, 255, 0.1); /* 행을 hover했을 때 배경 색 변경 */
 }
 /* 기본 스타일 */
 body {
@@ -55,6 +248,15 @@ body {
 	overflow-x: auto;
 }
 
+.myprofile-container::-webkit-scrollbar {
+	width: 10px; /* 스크롤바 너비 설정 */
+	height: 10px;
+}
+
+.myprofile-container::-webkit-scrollbar-thumb {
+	background-color: gray;
+	border-radius: 10px;
+}
 /* 프로필 사진 */
 .myprofile-picture {
 	margin-top: 100px;
@@ -317,6 +519,18 @@ p.movie-list-item-desc {
 	position: relative;
 	transition: all 1s ease-in-out;
 	z-index: 500;
+	background-color: #151515;
+	overflow-x: auto;
+}
+
+.movie-list::-webkit-scrollbar {
+	width: 10px; /* 스크롤바 너비 설정 */
+	height: 10px;
+}
+
+.movie-list::-webkit-scrollbar-thumb {
+	background-color: gray;
+	border-radius: 10px;
 }
 
 .movie-list-item {
@@ -337,8 +551,8 @@ p.movie-list-item-desc {
 .movie-list-item-img {
 	border-radius: 30px;
 	transition: all 1s ease-in-out;
-	width: 270px;
-	height: 400px;
+	width: 202.5px;
+	height: 300px;
 	object-fit: cover;
 	z-index: 0;
 	cursor: pointer;
@@ -623,53 +837,107 @@ a {
 	<div class="container">
 		<!-- 프로필 영역 -->
 		<div class="myprofile-container"
-			style="background-color: #4dbf00; background-image: url('/images/admin-003.jpg'); background-size: cover; background-position: center;">
-			<!-- 대여현황 박스 -->
-			<div class="rental-status-box">
-				<h3 style="color: #fff;">대여 현황</h3>
-				<p style="color: #fff;">현재 대여 중: 3</p>
-				<p style="color: #fff;">반납 예정일: 2024-12-01</p>
+			style="background-color: #4dbf00; background-image: url('/images/background.jpg'); background-size: cover; background-position: center;">
+			<div class="profile-status-box">
+				<p style="margin-bottom: 50px;">[[${member.nickname}]]님의 프로필 사진</p>
+				<img src="/images/img/profile.jpg" alt="Profile Image"
+					class="profile-img">
+				<h3 class="profile-name" style="margin-bottom: 10px;">[[${member.username}]]</h3>
 			</div>
-			<!-- 프로필 사진 -->
-			<div class="myprofile-picture">
-				<img src="/images/img/profile.jpg" alt="Profile Picture">
+			<!-- 대여현황 박스 -->
+			<div class="rental-status-box" id="rentalStatusBox">
+				<h3>대여 현황</h3>
+				<p
+					th:text="${#lists.size(rents) == 0 ? '현재 대여 중인 영화가 없습니다.' : '현재 대여 중 : ' + #lists.size(rents)}"></p>
 			</div>
 
-			<!-- 프로필 정보 -->
-			<div class="profile-info">
-				<h1 style="color: gray">[[${member.nickname}]]님 안녕하세요</h1>
-				<h1 style="color: gray; margin-top: 50px;">회원 정보</h1>
-				<h2 style="color: #4dbf00">[[${member.nickname}]]님의 회원 정보입니다.</h2>
-				<h2 style="color: #4dbf00">회원 이름: [[${member.username}]]</h2>
-				<p style="color: #4dbf00">회원 Email: [[${member.email}]]</p>
+			<div id="rentalModal" class="modal">
+				<div class="modal-content">
+					<span class="close-btn" id="closeModal">&times;</span>
+					<h2>대여 리스트</h2>
+
+					<!-- 대여 목록 표 -->
+					<table>
+						<thead>
+							<tr>
+								<th>영화 이름</th>
+								<th>대여 만료 날짜</th>
+							</tr>
+						</thead>
+						<tbody style="overflow-y:auto;">
+							<tr th:each="rent : ${rents}">
+								<td th:text="${rent.title}"></td>
+								<td
+									th:text="${#temporals.format(rent.returndate,'yyyy-MM-dd hh:mm')}"></td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
 			</div>
-			<div class="movie-list-container" style="margin-left: 0px;">
+
+			<div class="user-status-box">
+				<h3 th:text="${member.username + '의 정보'}"></h3>
+				<table class="user-info-table">
+					<tr>
+						<th>이름</th>
+						<td th:text="${member.username}"></td>
+					</tr>
+					<tr>
+						<th>별명</th>
+						<td th:text="${member.nickname}"></td>
+					</tr>
+					<tr>
+						<th>성별</th>
+						<td th:text="${member.gender}"></td>
+					</tr>
+					<tr>
+						<th>전화번호</th>
+						<td th:text="${member.telno}"></td>
+					</tr>
+					<tr>
+						<th>회원 가입일</th>
+						<td th:text="${#temporals.format(member.regdate, 'yyyy-MM-dd')}"></td>
+					</tr>
+
+					<tr>
+						<th>이메일</th>
+						<td th:text="${member.email}"></td>
+					</tr>
+
+				</table>
+			</div>
+
+
+
+
+			<div class="movie-list-container"
+				style="margin-left: 0px; margin-top: 600px;">
 				<h1 class="movie-list-title" style="color: #4dbf00;">대여 영화 리스트</h1>
 				<div class="movie-list-wrapper">
-					<div class="movie-list">
+					<div class="movie-list"
+						style="background-color: transparent; background-image: none;">
 
-						<div class="movie-list-item">
-							<img class="movie-list-item-img">
-							<p class="movie-list-item-desc">2024-00-00</p>
+						<div class="movie-list-item" th:each="movie : ${rents}">
+							<a th:href="@{/board/movieDetail(movieId=${movie.id})}"> <img
+								class="movie-list-item-img"
+								th:src="${'https://image.tmdb.org/t/p/original' + movie.posterPath}"
+								alt="">
+							</a>
+							<p class="movie-list-item-desc" th:text="${#temporals.format(movie.returndate, 'yyyy-MM-dd hh:mm')}"></p>
 						</div>
-
 					</div>
 
 				</div>
 			</div>
-			<i class="fas fa-chevron-left arrow"></i>
+
 		</div>
-
-
-		<i class="fas fa-chevron-right arrow"></i>
 	</div>
 
-	<!-- 북마크한 영화 리스트 -->
-	<div class="movie-list-container"
-		th:if="${bookmarks != null and !bookmarks.isEmpty()}">
+	<div class="movie-list-container">
 		<h1 class="movie-list-title">북마크한 영화 리스트</h1>
 		<div class="movie-list-wrapper">
 			<div class="movie-list">
+
 				<div class="movie-list-item" th:each="movie : ${bookmarks}">
 					<a th:href="@{/board/movieDetail(movieId=${movie.id})}"> <img
 						class="movie-list-item-img"
@@ -677,15 +945,15 @@ a {
 						alt="">
 					</a>
 				</div>
+
 			</div>
-			<i class="fas fa-chevron-left arrow"></i> <i
-				class="fas fa-chevron-right arrow"></i>
+
+
+
 		</div>
 	</div>
 
-	<!-- 내가 시청한 영화 -->
-	<div class="movie-list-container"
-		th:if="${watches != null and !watches.isEmpty()}">
+	<div class="movie-list-container">
 		<h1 class="movie-list-title">내가 시청한 영화</h1>
 		<div class="movie-list-wrapper">
 			<div class="movie-list">
@@ -697,14 +965,13 @@ a {
 					</a>
 				</div>
 			</div>
-			<i class="fas fa-chevron-left arrow"></i> <i
-				class="fas fa-chevron-right arrow"></i>
+
+
+
 		</div>
 	</div>
 
-	<!-- 내가 좋아요 한 영화 -->
-	<div class="movie-list-container"
-		th:if="${likes != null and !likes.isEmpty()}">
+	<div class="movie-list-container">
 		<h1 class="movie-list-title">내가 좋아요 한 영화</h1>
 		<div class="movie-list-wrapper">
 			<div class="movie-list">
@@ -716,10 +983,31 @@ a {
 					</a>
 				</div>
 			</div>
-			<i class="fas fa-chevron-left arrow"></i> <i
-				class="fas fa-chevron-right arrow"></i>
 		</div>
 	</div>
-	<script src="/js/app.js"></script>
+	<script>
+        // HTML 요소들 선택
+        const rentalStatusBox = document.getElementById('rentalStatusBox');
+        const rentalModal = document.getElementById('rentalModal');
+        const closeModal = document.getElementById('closeModal');
+
+        // 대여 현황 박스를 클릭하면 모달 열기
+        rentalStatusBox.addEventListener('click', function() {
+            rentalModal.style.display = 'block';
+        });
+
+        // 모달 닫기 버튼 클릭하면 모달 닫기
+        closeModal.addEventListener('click', function() {
+            rentalModal.style.display = 'none';
+        });
+
+        // 모달 밖을 클릭하면 모달 닫기
+        window.addEventListener('click', function(event) {
+            if (event.target === rentalModal) {
+                rentalModal.style.display = 'none';
+            }
+        });
+    </script>
 </body>
 </html>
+

@@ -1,3 +1,4 @@
+
 /* ===== 1. 기본 설정 ===== */
 :root {
 	--primary-color: #e50914;
@@ -226,6 +227,69 @@
 	background-color: #0017ff;
 }
 
+.review-show-container {
+  display: none;
+  flex-wrap: wrap;
+  gap: 20px;
+  padding: 20px;
+  justify-content: center;
+}
+
+.show{
+	display:flex;	
+}
+
+.post-it {
+  width: 200px;
+  min-height: 200px;
+  padding: 20px;
+  background-color: #feff9c;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  border-radius: 2px;
+  transform: rotate(-1deg);
+  transition: transform 0.3s ease;
+  
+   word-wrap: break-word;
+  overflow-wrap: break-word;
+  word-break: break-word;
+}
+
+.post-it:nth-child(even) {
+  transform: rotate(1deg);
+  background-color: #7afcff;
+}
+
+.post-it:hover {
+  transform: scale(1.05) rotate(0);
+  z-index: 1;
+}
+
+.post-it > h3 {
+  margin-top: 0;
+  font-size: 1.2em;
+  color: #333;
+}
+
+.post-it > p {
+	margin-top :10px;	
+	margin-bottom:10px;
+  font-size: 0.9em;
+  line-height: 1.4;
+  color:black;
+  
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
+.post-it .date {
+   position: absolute;
+  bottom: 10px;
+  right: 10px;
+  font-size: 0.8em;
+  color: #666;
+}
+
 .review-container {
 	padding: 20px;
 	border-radius: 8px;
@@ -250,10 +314,32 @@
 	border-radius: 4px;
 	cursor: pointer;
 	font-size: 16px;
+	margin-bottom:20px;
 }
 
 .submit-btn:hover {
 	background-color: #f40612;
+}
+
+.show-btn {
+	width:100%;
+	background-color: #45a049;
+	color: white;
+	padding: 10px 20px;
+	border: none;
+	border-radius: 4px;
+	cursor: pointer;
+	font-size: 16px;
+	margin-bottom:20px;
+}
+
+.show-btn.disabled{
+	opacity:0.5;
+	cursor:not-allowed;
+}
+
+.show-btn:hover {
+	background-color: #4CAF50;
 }
 
 .review-list {

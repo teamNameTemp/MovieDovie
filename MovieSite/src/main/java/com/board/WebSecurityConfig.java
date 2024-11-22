@@ -6,13 +6,10 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-
-import com.board.service.OAuth2UserDetailsServiceImpl;
 import com.board.service.UserDetailsServiceImpl;
-
 import lombok.AllArgsConstructor;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 
 
@@ -69,7 +66,7 @@ public class WebSecurityConfig {
                .requestMatchers("/make/**").permitAll()
                .requestMatchers("/member/**").permitAll()
                .requestMatchers("/board/**").permitAll()
-               .requestMatchers("/master/**").permitAll()               
+               .requestMatchers("/master/**").permitAll()
                .anyRequest().authenticated());
       //세션 설정
       http
