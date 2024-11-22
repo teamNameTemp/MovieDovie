@@ -34,7 +34,7 @@ public class AuthSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
 
         // 로그인 날짜 및 회원 로그 정보 등록
         service.lastdateUpdate(member.getEmail(), "login");
-        service.memberLogRegistry(member.getEmail(), "login");
+//        service.memberLogRegistry(member.getEmail(), "login");
 
         // 세션 생성 및 설정
         HttpSession session = request.getSession();
