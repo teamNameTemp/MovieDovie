@@ -57,11 +57,6 @@ public class RentEntity {
 	@JoinColumn(name="movieId")
 	private MovieEntity movieId;
 	
-	@Column(name="payment_type")
-	private String paymentType; //구매 방법 ('CASH' 혹은 'POINT')
-
-	@Column(name="sales", columnDefinition = "integer default 0")
-	private int sales;
 	
 	/*
 	//FK 만들기

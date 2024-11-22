@@ -40,20 +40,14 @@ public class MemberEntity {
 	@Column(name="gender", length=20, nullable=false)
 	private String gender;
 	
-	@Column(name="ssn", nullable=true)
-	private String ssn;
+	@Column(name="birth", nullable=true)
+	private String birth;
 	
 	@Column(name="telno", length=50, nullable=false)
 	private String telno;
 	
 	@Column(name="regdate", nullable=false)
 	private LocalDateTime regdate;
-	
-	@Column(name="lastlogindate", nullable=true)
-	private LocalDateTime lastlogindate;
-	
-	@Column(name="lastlogoutdate", nullable=true)
-	private LocalDateTime lastlogoutdate;
 	
 	@Column(name="lastpwdate", nullable=true)
 	private LocalDateTime lastpwdate;
@@ -64,28 +58,30 @@ public class MemberEntity {
 	@Column(name="role", length=50, nullable=false)
 	private String role;
 	
-	@Column(name="org_filename")
-	private String org_filename;
 	
-	@Column(name="stored_filename")
-	private String stored_filename;
+	/*
+	//FK 만들기
+	//FK 읽어올 때 Eager, Lazy 두 가지 타입이 있음.
+	//Eager : 부모키가 있는 테이블부터 검사해서 부모키가 제대로 되어 있는지 확인하고 자식키를 읽음 -> 정확도는 높지만 성능이 저하.
+	//Lazy : 자식키가 있는 테이블만 읽음 -> 정확도는 떨어지지만 성능이 향상.
+	@ManyToOne(fetch = FetchType.LAZY)
+	@OnDelete(action = OnDeleteAction.CASCADE)
+	@JoinColumn(name = "logseqno", referencedColumnName = "seqno", nullable = false)
+	private MemberLogEntity logseqno;
 	
-	@Column(name="filesize",nullable=true)
-	private Long filesize;
-	
-	@Column(name="memeberPoint")
-	private Long point;
+	@ManyToOne(fetch = FetchType.LAZY)
+	@OnDelete(action = OnDeleteAction.CASCADE)
+	@JoinColumn(name = "genreseqno", referencedColumnName = "seqno", nullable = false)
+	private GenreEntity genreseqno;
+	*/
 	
 	public void updateMemberInfo(MemberDTO member) {
 		
-		this.email = member.getEmail();
 		this.username = member.getUsername();
 		this.nickname = member.getNickname();
 		this.gender = member.getGender();
-		this.ssn = member.getSsn();
+		this.birth = member.getBirth();
 		this.telno = member.getTelno();
-		this.filesize = member.getFilesize();
-		this.point=member.getPoint();
 		
 	}
 

@@ -55,7 +55,7 @@ public class BookmarkServiceImpl implements BookmarkService {
 		MemberEntity memE = member.findByEmail(email)
 				.orElseThrow(()->new RuntimeException("Member not found"));
 		MovieEntity movieE = movie.findById(movieId)
-				.orElseThrow(() -> new RuntimeException("=======Movie not found" + movieId ));
+				.orElseThrow(() -> new RuntimeException("Movie not found : " + movieId ));
 		BookmarkEntity bookmarkE = bookmark.findByEmailAndMovieId(memE, movieE);
 		if (bookmarkE == null) {
 			return data;

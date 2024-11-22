@@ -21,10 +21,8 @@ public interface LikeService {
 	//나의 like 정보
 	public Map<String,Object> getLikeInfo(String email, Long movieId);
 	
-	//현재 영화의 전체 like정보 추출
+	//전체 like정보 추출
 	public Map<String,Object> getAllLikeInfo(Long movieId);
 	
 	public List<Map<String,Object>> getAllLikeByEmail(String email);
-	
-	public List<Map<String,Object>> getTopList(int topCount);
 }
