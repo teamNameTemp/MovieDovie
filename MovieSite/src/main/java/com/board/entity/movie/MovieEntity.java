@@ -1,6 +1,7 @@
 package com.board.entity.movie;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -69,7 +70,11 @@ public class MovieEntity {
     
     private String certification;
     
+    @Column(name="upload_check", columnDefinition = "varchar(1) default 'N'")
     private String uploadCheck;
+    
+    @Column(name="upload_date")
+    private LocalDateTime uploadDate;
     
     @Column(name="price" ,columnDefinition = "integer default 0")
     private int price;

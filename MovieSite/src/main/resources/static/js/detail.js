@@ -163,13 +163,34 @@ document.addEventListener('DOMContentLoaded', () => {
 
 	submitReview.addEventListener('click', () => {
 		const review = reviewText.value.trim();
-
+		const action = "add";
+		
 		if (review === '') {
-			alert('리뷰 내용을 입력해주세요.');
+			 Swal.fire({
+			  text: "리뷰를 작성해주세요.",
+			  icon: "question"
+			});
 			return;
 		}
 
-
+/*		Swal.fire({
+		  title: "리뷰를 수정하시겠습니까?",
+		  text: "작성된 리뷰가 수정됩니다.",
+		  icon: "warning",
+		  showCancelButton: true,
+		  confirmButtonColor: "#3085d6",
+		  cancelButtonColor: "#d33",
+		  confirmButtonText: "수정하기"
+		}).then((result) => {
+		  if (result.isConfirmed) {
+		    Swal.fire({
+		      title: "수정!",
+		      text: "리뷰가 수정되었습니다.",
+		      icon: "success"
+		    });
+		  }
+		});*/
+		
 		const newForm = new FormData();
 		newForm.append("movieId", movieId);
 		newForm.append("content", review);
@@ -180,9 +201,9 @@ document.addEventListener('DOMContentLoaded', () => {
 		}).then(response => response.json())
 			.then(data => {
 				if (data.action == "save") {
-					alert("리뷰가 등록되었습니다.");
+					swal("성공!", "리뷰가 등록되었습니다.", "success");
 				} else if (data.action == "update") {
-					alert("리뷰가 수정되었습니다.");
+					swal("성공!", "리뷰가 수정되었습니다.", "success");
 				} else {
 					throw new Error('리뷰 등록에 실패했습니다.');
 				}
@@ -190,7 +211,6 @@ document.addEventListener('DOMContentLoaded', () => {
 				alert(error.message);
 			});
 
-		location.reload();
 		// 입력 필드 초기화
 		reviewText.value = '';
 	});

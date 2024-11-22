@@ -404,6 +404,7 @@ body {
 					TMDB 평점: <span th:text="${movie.info.voteAverage}"></span> (투표 수: <span
 						th:text="${movie.info.voteCount}"></span>)
 				</h2>
+				<span th:text="'영화 클릭 수 : ' + ${movie.info.hitno}"></span>
 				<br>
 				<button class="rent-btn"
 					th:text="${rent != null and 'Y' == rent['status']} ? '대여 중' : '대여하기 (' + ${movie.info.price} + '원)'"
@@ -483,12 +484,12 @@ body {
 					<button th:disabled="${#lists.size(replies) == 0}"
 						th:classappend="${#lists.size(replies)==0} ? 'disabled' : ''"
 						id="showReview" class="show-btn">리뷰
-						보기([[${#lists.size(replies)}]])</button>
+						보기([[${#lists.size(replies)}]]) <span style="color:red; font-weight:bold;">스포일러 주의!</span></button>
 				</div>
 				<!-- 리뷰들이 여기에 추가됩니다 -->
 				<div class="review-show-container">
 					<div class="post-it" th:each="reply : ${replies}">
-						<h3 th:text="${reply.nickname}"></h3>
+						<h3 class="replyNickname" th:text="${reply.nickname}"></h3>
 						<p th:text="${reply.content}"></p>
 						<span class="date"
 							th:text="${#temporals.format(reply.regdate, 'yyyy-MM-dd hh:mm')}"></span>

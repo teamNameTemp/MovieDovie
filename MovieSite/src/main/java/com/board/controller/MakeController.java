@@ -61,7 +61,7 @@ public class MakeController {
     	//todo : 저장이 안될 시 오류처리 코드 작성해야함
     	data.put("message", "good");
     	
-    	movie.saveTheDataBase(dto);
+    	movie.directSave(dto);
     	return data;
     }
 	

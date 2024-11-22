@@ -8,6 +8,7 @@ import java.util.Map;
 
 import org.springframework.stereotype.Service;
 
+import com.board.dto.ReplyInterface;
 import com.board.entity.MemberEntity;
 import com.board.entity.ReplyEntity;
 import com.board.entity.movie.MovieEntity;
@@ -75,4 +76,20 @@ public class ReplyServiceImpl implements ReplyService {
 		
 	}
 
+	@Override
+	public List<Map<String,Object>> getTopList(int topCount) {
+		List<Map<String,Object>> data = new ArrayList<>();
+		List<Map<String,Object>> replys = replyRepository.findTopMoviesByReplyCount(topCount);
+		for(Map<String,Object> d : replys) {
+			Long movieId = (Long)d.get("movieId");
+
+			MovieEntity movie = movieRepository.findById(movieId).get();
+			Map<String,Object> map = new HashMap<>();
+			map.put("info", movie);
+			map.put("count", d.get("count"));
+			data.add(map);
+		}
+		
+		return data;
+	}
 }

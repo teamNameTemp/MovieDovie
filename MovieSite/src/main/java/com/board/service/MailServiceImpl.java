@@ -40,7 +40,7 @@ public class MailServiceImpl implements MailService{
     }
 
     // 메일 양식 작성
-    public MimeMessage createEmailForm(String email) throws MessagingException, UnsupportedEncodingException {
+    public MimeMessage createEmailForm(String email) throws UnsupportedEncodingException, MessagingException {
         createCode();
         String setFrom = "anstjdwn6@gmail.com";
         String toEmail = email;
@@ -73,7 +73,7 @@ public class MailServiceImpl implements MailService{
     }
 
     //실제 메일 전송
-    public String sendEmail(String email) throws MessagingException, UnsupportedEncodingException {
+    public String sendEmail(String email) throws UnsupportedEncodingException, MessagingException {
     	System.out.println("인증번호 전송");
         //메일전송에 필요한 정보 설정
         MimeMessage emailForm = createEmailForm(email);

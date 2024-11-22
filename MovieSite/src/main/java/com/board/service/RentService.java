@@ -26,4 +26,6 @@ public interface RentService {
 	//관리자 페이지 - 통계 : 올해 대여 TOP 회원 확인
 	public List<Object[]> findTopRenters();
 	
+	List<Map<String,Object>> getTopList(int topCount);
+	
 }

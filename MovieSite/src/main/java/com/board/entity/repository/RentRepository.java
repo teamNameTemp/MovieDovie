@@ -2,9 +2,9 @@ package com.board.entity.repository;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
@@ -20,13 +20,23 @@ public interface RentRepository extends JpaRepository<RentEntity, Long>{
 	//모든 회원 자동 반납 확인
 	public List<RentEntity> findAllByReturndateBeforeAndStatus(LocalDateTime returndate, String status);
 	
-	
-	//관리자 페이지 - 통계 : 대여 수 확인 (startDate에 원하는 날짜, endDate에 원하는 날짜 넣으면 그 사이의 값들이 나옴)
-	@Query(value = "SELECT TRUNC(r.rentdate) AS rent_date, COUNT(*) " +
+	//오늘부터 7일전까지의 대여 현황
+	@Query(value = "SELECT r.movie_id AS movieId, COUNT(*) AS count " +
             "FROM rent r " +
             "WHERE r.rentdate BETWEEN :startDate AND :endDate " +
-            "GROUP BY TRUNC(r.rentdate) " +
-            "ORDER BY TRUNC(r.rentdate)", nativeQuery = true)
+            "GROUP BY r.movie_id " +
+            "ORDER BY COUNT(*) DESC", 
+     nativeQuery = true)
+	List<Map<String, Object>> findByRecentWeekList(@Param("startDate") LocalDateTime startDate, 
+                                            @Param("endDate") LocalDateTime endDate);
+	
+	//관리자 페이지 - 통계 : 대여 수 확인 (startDate에 원하는 날짜, endDate에 원하는 날짜 넣으면 그 사이의 값들이 나옴)
+	@Query(value = "SELECT TRUNC(r.rentdate) AS rent_date, COUNT(*)" +
+            "FROM rent r " +
+            "WHERE r.rentdate BETWEEN :startDate AND :endDate " +
+            "GROUP BY TRUNC(r.rentdate)" +
+            "ORDER BY TRUNC(r.rentdate), COUNT(*) DESC", 
+    nativeQuery = true)
 	public List<Object[]> RentCount(@Param("startDate") LocalDateTime startDate, @Param("endDate") LocalDateTime endDate);
 
 

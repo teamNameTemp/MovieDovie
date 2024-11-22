@@ -1,5 +1,6 @@
 package com.board.service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
@@ -17,6 +18,7 @@ import com.board.entity.movie.MovieEntity;
 import com.board.entity.repository.MemberRepository;
 import com.board.entity.repository.RentRepository;
 import com.board.entity.repository.movie.MovieRepository;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -153,6 +155,28 @@ public class RentServiceImpl implements RentService {
 			map.put("backdrop", rent.getMovieId().getBackdropPath());
 			data.add(map);
 		}
+		return data;
+	}
+
+	@Override
+	public List<Map<String, Object>> getTopList(int topCount) {
+		List<Map<String,Object>> data = new ArrayList<>();
+		LocalDateTime startOfToday = LocalDateTime.now().minusDays(6);
+		LocalDateTime endOfToday = LocalDateTime.now();
+		List<Map<String,Object>> rents = rentRepository.findByRecentWeekList(startOfToday, endOfToday);
+		
+		int idx = topCount;
+		for(Map<String,Object> m : rents) {
+			if(idx==0)break;
+			Long movieId = (Long) m.get("movieId");
+			MovieEntity movie = movieRepositoty.findById(movieId).get();
+			Map<String,Object> map = new HashMap<>();
+			map.put("info", movie);
+			map.put("count", m.get("count"));
+			data.add(map);
+			idx--;
+		}
+		
 		return data;
 	}
 
