@@ -11,8 +11,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.MessagingException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -33,12 +32,10 @@ import com.board.service.MailService;
 import com.board.service.MemberService;
 import com.board.service.TmdbAPIServiceImpl;
 
-import jakarta.mail.MessagingException;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-
 
 @AllArgsConstructor
 @Log4j2
@@ -251,7 +248,7 @@ public class MemberController {
 	//회원가입 이메일 인증
     @ResponseBody
     @PostMapping("/signup/mailConfirm")		   
-    public Map<String,Object> mailConfirm(MailCheckDTO mailCheckDTO) throws MessagingException, UnsupportedEncodingException  {
+    public Map<String,Object> mailConfirm(MailCheckDTO mailCheckDTO) throws MessagingException, UnsupportedEncodingException, jakarta.mail.MessagingException  {
         Map<String,Object> data = new HashMap<>();
     	
     	String authCode = mailService.sendEmail(mailCheckDTO.getEmail());

@@ -107,10 +107,20 @@ public class BoardController {
 		}	
 		
 		//만장일치! 다들 이 영화 좋아해요
+		List<Map<String,Object>> topLikeList = like.getTopList(20);
+		model.addAttribute("likes",topLikeList);
 		//요즘 인기 폭팔! 댓글 많은 영화
+		List<Map<String,Object>> topReplyList = reply.getTopList(20);
+		model.addAttribute("replies",topReplyList);
 		//이건 꼭 봐야해! 회원들이 가장 많이 본 영화
+		List<Map<String,Object>> topWatchList = watch.getTopList(20);
+		model.addAttribute("watches",topWatchList);
 		//오늘 대여 TOP 영화
+		List<Map<String,Object>> topRentList = rent.getTopList(20);
+		model.addAttribute("rents",topRentList);
 		//무비두비에 새로 올라온 영화
+		List<Map<String,Object>> directList = movie.getDirectUploadList(6);
+		model.addAttribute("directUploadList",directList);
 		
 		model.addAttribute("nickname", session.getAttribute("nickname"));
 		model.addAttribute("dailyMovies", trendList);
@@ -179,7 +189,8 @@ public class BoardController {
 		// DB에서 영화 정보 가져오기
 		Map<String, Object> movieDetail = movie.getMovieDetails(movieId);
 		model.addAttribute("movie", movieDetail);
-
+		movie.clickToMovie(movieId);
+		
 		// 사용자가 로그인한 경우에만 회원 정보와 좋아요 정보를 처리
 		if (email != null && !email.isEmpty()) {
 			MemberDTO memberDTO = memberService.memberInfo(email);

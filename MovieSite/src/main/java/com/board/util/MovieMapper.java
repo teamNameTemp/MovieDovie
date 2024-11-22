@@ -1,6 +1,7 @@
 package com.board.util;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -228,6 +229,8 @@ public class MovieMapper {
                 .voteAverage(dto.getVoteAverage())
                 .voteCount(dto.getVoteCount())
                 .status(dto.getStatus())
+                .uploadCheck("N")
+                .uploadDate(LocalDateTime.now())
                 .certification(getCertification(dto.getReleaseDates()))
                 .price(calc.calcRentPrice(dto.getReleaseDate()))
                 .build();

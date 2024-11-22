@@ -1,10 +1,13 @@
 package com.board.service;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
@@ -90,27 +93,24 @@ public class MovieAPIServiceImpl implements MovieAPIService {
 	@Override
 	public Map<String, Object> getMovieDetails(Long id) {
 		Map<String, Object> data = new HashMap<>();
-		MovieEntity entity = movieRepository.findById(id).get();
+		Optional<MovieEntity> entity = movieRepository.findById(id);
 
-		if (entity == null) {
-			data.put("movie", tmdb.getMovieDetails(id, "ko-KR").block());
-			return data;
-		} else {
-			data.put("info", entity);
+		if (entity.isPresent()) {
+			data.put("info", entity.get());
 			
 			//아래 엔티티들 리스트로 뽑을 수 있게 리포지토리 쿼리문 변경
-			data.put("company", mapper.getCompanyList(companyRepository.findByMovieId(entity)));
-			data.put("country", mapper.getCountryList(countryRepository.findByMovieId(entity)));
-			data.put("cast", mapper.getCastList(castRepository.findByMovieId(entity)));
-			data.put("crew", mapper.getCrewList(crewRepository.findByMovieId(entity)));
-			data.put("genre", mapper.getGenreList(genreRepository.findByMovieId(entity)));
-			data.put("video", mapper.getVideoList(videoRepository.findByMovieId(entity)));
-			data.put("language", mapper.getLanguageList(languageRepository.findByMovieId(entity)));
-			data.put("backdrops", mapper.getBackdropList(imageRepository.findByMovieId(entity)));
-			data.put("posters", mapper.getPosterList(imageRepository.findByMovieId(entity)));
+			data.put("company", mapper.getCompanyList(companyRepository.findByMovieId(entity.get())));
+			data.put("country", mapper.getCountryList(countryRepository.findByMovieId(entity.get())));
+			data.put("cast", mapper.getCastList(castRepository.findByMovieId(entity.get())));
+			data.put("crew", mapper.getCrewList(crewRepository.findByMovieId(entity.get())));
+			data.put("genre", mapper.getGenreList(genreRepository.findByMovieId(entity.get())));
+			data.put("video", mapper.getVideoList(videoRepository.findByMovieId(entity.get())));
+			data.put("language", mapper.getLanguageList(languageRepository.findByMovieId(entity.get())));
+			data.put("backdrops", mapper.getBackdropList(imageRepository.findByMovieId(entity.get())));
+			data.put("posters", mapper.getPosterList(imageRepository.findByMovieId(entity.get())));
 			
-			return data;
 		}
+		return data;
 	}
 	@Override
 	public List<GenreEntity> getGenreList(String genre){
@@ -128,6 +128,26 @@ public class MovieAPIServiceImpl implements MovieAPIService {
 		for(GenreEntity genre : genres) {
 			data.add(mapper.getMovieSimpleInfo(genre.getMovieId()));
 		}
+		
+		return data;
+	}
+	
+	@Override
+	public List<Map<String,Object>> getDirectUploadList(int minusDay){
+		List<Map<String,Object>> data = new ArrayList<>();
+		
+		//7일전까지의 업로드 리스트 가져오기
+		LocalDateTime start = LocalDateTime.now().minusDays(minusDay);
+		LocalDateTime end = LocalDateTime.now();
+		
+		List<MovieEntity> list = movieRepository.findAllByDirectUpload(start, end);
+		
+		for(MovieEntity m : list) {
+			Map<String,Object> map = new HashMap<>();
+			map.put("info", mapper.getMovieSimpleInfo(m));
+			data.add(map);
+		}
+		
 		
 		return data;
 	}
@@ -245,6 +265,27 @@ public class MovieAPIServiceImpl implements MovieAPIService {
 	public List<Object[]> findByCert(){
 		
 		return movieRepository.findByCert();
+	}
+
+	@Override
+	@Modifying
+	@Transactional
+	public int clickToMovie(Long movieId) {
+		MovieEntity movie = movieRepository.findById(movieId).get();
+		int hitno = movie.getHitno()+1;
+		
+		movie.setHitno(hitno);
+		movieRepository.save(movie);
+		return hitno;
+	}
+
+	@Override
+	public void directSave(MovieDTO movie) {
+		MovieEntity movieEntity = mapper.toEntity(movie);
+		movieEntity.setUploadCheck("Y");
+		movieRepository.save(movieEntity);
+
+		this.mapperListSave(movie);
 	}
 	
 }
