@@ -161,7 +161,6 @@ public class BoardController {
 		//대여
 		List<Map<String,Object>> rents = rent.getAllMyRent(email, "Y");
 		model.addAttribute("rents",rents);
-		log.info(rents);
 		//북마크
 		List<Map<String,Object>> bookmarks = bookmark.getAllBookmarkByEmail(email);
 		model.addAttribute("bookmarks",bookmarks);
