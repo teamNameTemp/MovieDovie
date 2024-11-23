@@ -613,7 +613,12 @@ public class BoardController {
 
 //---------검색trying-------------------------
 	@GetMapping("/search")
-	public void searchPage(Model model,@RequestParam(name="keyword",required = false) String keyword) {
+	public void searchPage(Model model,
+	@RequestParam(name="keyword",required = false) String keyword,
+	HttpSession session) {
+
+		String nickname = (String) session.getAttribute("nickname");
+		model.addAttribute("nickname", nickname);
 		if(keyword != null) {
 			List<Map<String,Object>> list = movie.findByKeywordMovieList(keyword);
 			model.addAttribute("movies",list);

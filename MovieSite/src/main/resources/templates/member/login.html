@@ -200,13 +200,23 @@ const loginCheck = async () => {
 	const password = document.querySelector('#password');
 			
 	if(email.value === ''){
-		alert("아이디를 입력하세요");
+		Swal.fire({
+			text: "아이디를 입력하세요",
+			icon: "warning",
+			timer: 1500,
+			showConfirmButton: false
+		});
 		email.focus();
 		return false;
 	}
 	
 	if(password.value === ''){
-		alert("암호를 입력하세요");
+		Swal.fire({
+			text: "암호를 입력하세요",
+			icon: "warning",
+			timer: 1500,
+			showConfirmButton: false
+		});
 		password.focus();
 		return false;
 	}
