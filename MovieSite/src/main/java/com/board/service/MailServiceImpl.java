@@ -42,9 +42,9 @@ public class MailServiceImpl implements MailService{
     // 메일 양식 작성
     public MimeMessage createEmailForm(String email) throws UnsupportedEncodingException, MessagingException {
         createCode();
-        String setFrom = "anstjdwn6@gmail.com";
+        String setFrom = "moviedovie@gmail.com";
         String toEmail = email;
-        String title = "회원가입 인증번호";
+        String title = "무비두비 이메일 인증번호";
 
         MimeMessage message = mailSender.createMimeMessage();
         message.addRecipients(MimeMessage.RecipientType.TO, toEmail);
@@ -60,7 +60,7 @@ public class MailServiceImpl implements MailService{
         msgOfEmail += "<p>감사합니다.<p>";
         msgOfEmail += "<br>";
         msgOfEmail += "<div align='center' style='border:1px solid black; font-family:verdana';>";
-        msgOfEmail += "<h3 style='color:blue;'>회원가입 인증 코드입니다.</h3>";
+        msgOfEmail += "<h3 style='color:blue;'>이메일 인증 코드입니다.</h3>";
         msgOfEmail += "<div style='font-size:130%'>";
         msgOfEmail += "인증번호 : <strong>";
         msgOfEmail += authNum + "</strong><div><br/> ";
