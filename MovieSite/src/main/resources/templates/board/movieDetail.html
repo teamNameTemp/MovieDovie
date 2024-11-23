@@ -1,657 +1,341 @@
 <!DOCTYPE html>
-<html lang="ko" xmlns:th="http://www.thymeleaf.org"
-	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
-<head>
-<meta charset="UTF-8">
-<meta http-equiv="X-UA-Compatible" content="IE=edge">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link rel="stylesheet" href="/css/movieDetailStyle.css">
-<link rel="stylesheet" href="/css/movieListStyle.css">
-<link
-	href="https://fonts.googleapis.com/css2?family=Roboto:wght@100;300;400;500;700;900&family=Sen:wght@400;700;800&display=swap"
-	rel="stylesheet">
-<link rel="stylesheet"
-	href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css">
-<title th:text="${movie.info.title}">영화 상세</title>
-<th:block th:replace="~{/fragments/header::header}"></th:block>
-<script src="/js/detail.js" defer></script>
-
-</head>
-<style>
-* {
-	margin: 0;
-	padding: 0;
-	box-sizing: border-box;
-}
-
-body {
-	font-family: 'Noto Sans KR', sans-serif;
-	background-color: #000;
-	color: #fff;
-}
-
-.movie-container {
-	position: relative;
-	width: 100%;
-	height: 100vh;
-	background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)),
-		no-repeat center center;
-	background-size: cover;
-}
-
-.movie-info {
-	position: absolute;
-	top: 50px;
-	left: 50px;
-	max-width: 800px;
-}
-
-.movie-category {
-	font-size: 14px;
-	color: #ccc;
-	margin-bottom: 10px;
-}
-
-.movie-title {
-	font-size: 48px;
-	font-weight: bold;
-	margin-bottom: 20px;
-}
-
-.movie-subtitle {
-	font-size: 18px;
-	color: #ccc;
-	margin-bottom: 30px;
-}
-
-.movie-description {
-	font-size: 16px;
-	line-height: 1.6;
-	margin-bottom: 30px;
-	color: #fff;
-}
-
-.movie-rating {
-	font-size: 18px;
-	margin-bottom: 30px;
-}
-
-.movie-poster {
-	position: absolute;
-	top: 50px;
-	right: 50px;
-	width: 300px;
-	border-radius: 10px;
-	box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
-}
-
-.action-buttons {
-	display: flex;
-	gap: 15px;
-	padding: 15px 0;
-	border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-.action-btn {
-	display: flex;
-	align-items: center;
-	gap: 8px;
-	padding: 8px 16px;
-	background: rgba(255, 255, 255, 0.1);
-	border: none;
-	border-radius: 20px;
-	color: #fff;
-	cursor: pointer;
-	transition: all 0.2s ease;
-}
-
-.action-btn i {
-	font-size: 1.2em;
-}
-
-.action-btn span {
-	font-size: 0.9em;
-}
-
-.action-btn .count {
-	margin-left: 4px;
-	opacity: 0.7;
-}
-
-/* 호버 효과 */
-.action-btn:hover {
-	background: rgba(255, 255, 255, 0.2);
-}
-
-/* 활성화 상태 */
-.action-btn.active {
-	background: #e50914;
-}
-
-/* 개별 버튼 스타일 */
-.action-btn.watched.active {
-	background: #1e88e5;
-}
-
-.action-btn.like.active {
-	background: #4caf50;
-}
-
-.action-btn.dislike.active {
-	background: #f44336;
-}
-
-.action-btn.bookmark.active {
-	background: #ffc107;
-	color: #000;
-}
-
-/* 반응형 스타일 */
-@media ( max-width : 768px) {
-	.action-buttons {
-		flex-wrap: wrap;
-		gap: 10px;
-	}
-	.action-btn {
-		flex: 1 1 calc(50% - 10px);
-		justify-content: center;
-	}
-}
-
-@media ( max-width : 480px) {
-	.action-btn {
-		flex: 1 1 100%;
-	}
-}
-
-.trailer-btn {
-	align-items: center;
-	justify-content: center;
-	padding: 10px 20px;
-	border: none;
-	border-radius: 5px;
-	font-size: 16px;
-	font-weight: bold;
-	cursor: pointer;
-	transition: all 0.3s ease;
-}
-
-.rent-btn {
-	margin-bottom:20px;
-	align-items: center;
-	justify-content: center;
-	padding: 10px 20px;
-	border: none;
-	border-radius: 5px;
-	font-size: 16px;
-	font-weight: bold;
-	cursor: pointer;
-	transition: all 0.3s ease;
-}
-
-.trailer-btn {
-	background-color: #FF0000;
-	color: white;
-}
-
-.trailer-btn:hover {
-	background-color: #CC0000;
-}
-
-.trailer-btn i {
-	margin-right: 10px;
-	font-size: 20px;
-}
-
-.trailer-btn p {
-	margin: 0;
-}
-
-.rent-btn {
-	background-color: #4CAF50;
-	color: white;
-}
-
-.rent-btn:hover {
-	background-color: #45a049;
-}
-
-.rent-btn.disabled {
-	opacity: 0.5;
-	cursor: not-allowed;
-}
-
-/* 반응형 디자인을 위한 미디어 쿼리 */
-@media ( max-width : 768px) {
-	.trailer-btn, .rent-btn {
-		font-size: 14px;
-		padding: 8px 16px;
-	}
-	.trailer-btn i {
-		font-size: 18px;
-	}
-}
-
-/* ///////////////알람 드롭다운 CSS 시작//////////// */
-.dropdown-item {
-    display: flex;            /* Flexbox로 항목을 배치 */
-    align-items: center;      /* 세로로 가운데 정렬 */
-    border-bottom: 1px solid #ddd;  /* 아랫쪽에 회색 선 추가 */
-}
-
-.noti-icon {
-	padding-left: 8px;
-    width: 25px;             /* 아이콘의 크기 */
-}
-
-.deleteicon {
-    position: absolute;  /* 부모 요소를 기준으로 절대 위치 */
-    top: 10px;           /* 부모 요소 상단에서 10px 떨어진 위치 */
-    right: 10px;         /* 부모 요소 오른쪽에서 10px 떨어진 위치 */
-    width: 13px;         /* 아이콘 크기 */
-    cursor: pointer;     /* 클릭 가능한 커서로 변경 */
-}
-
-.deleteicon:hover {
-    transform: scale(1.3);  /* 아이콘 크기를 1.3배로 확대 */
-    opacity: 0.7; 
-}
-
-.noti-text {
-    position: relative;  /* 삭제 아이콘을 기준으로 위치를 설정하기 위해 상대적인 위치 설정 */
-    display: flex;
-    flex-direction: column;  /* 내용은 세로로 쌓기 */
-    width: 100%;             /* noti-text가 부모의 100% 너비를 차지하게 설정 */
-    overflow: hidden;        /* 내용이 넘치지 않도록 처리 */
-    padding-right: 17px;
-}
-
-.noti-content{
-    font-size: 12px;         /* 알림 내용 폰트 크기 */
-    margin-bottom: 5px;      /* 내용과 날짜 사이 간격 */
-    color: black;             /* 글자 색 */
-}
-
-.noti-date {
-    font-size: 10px;         /* 날짜 폰트 크기 */
-    color: #999;             /* 날짜 색상 */
-}
-
-.noti-content-read{
-    font-size: 13px;         /* 알림 내용 폰트 크기 */
-    margin-bottom: 5px;      /* 내용과 날짜 사이 간격 */
-    color: #C2C1BF;             /* 글자 색 */
-}
-
-.noti-date-read {
-    font-size: 11px;         /* 날짜 폰트 크기 */
-    color: #C2C1BF;             /* 날짜 색상 */
-}
-
-.dropdown-content-noti{
-  display : none;   /*여기 주석은 향후 없애기 hover 하면 보이게끔 하려고 하심..*/
-  position : absolute;
-  z-index : 1; /*다른 요소들보다 앞에 배치*/
-  font-weight: 400;
-  background-color:  #fcfcfc;
-  min-width : 230px;
-  border-radius: 8px;
-  overflow: scroll;
-  box-shadow: 0px 0px 10px 3px rgba(190, 190, 190, 0.6);
-  height: 200px;
-  left: 50%;  /* 아이콘의 가로 중앙에 맞추기 */
-  transform: translateX(-50%);  /* 정확히 중앙에 위치하도록 이동 */
-  top: 100%;  /* 드롭다운이 버튼 바로 아래에 표시되도록 */
-}
-
-.dropdown-content-noti a{
-  flex-direction: column;  /* 내용은 세로로 쌓기 */
-  text-decoration : none;
-  color : rgb(37, 37, 37);
-  font-size: 12px;
-  padding : 10px;
-}
-
-/* .dropdown-item에 호버 효과 추가*/
-.dropdown-content-noti .dropdown-item:hover {
-    background-color: #f1f1f1; /* 전체 배경색 변경 */
-}
-	
-.dropdown-content-noti {
-  display: none; /*기본적으로 숨김*/
-}
-
-.dropdown:hover .dropdown-content-noti {
-    display: block; /* 부모 요소에 hover 시 표시 */
-}
-
-.dropdown-content-noti::-webkit-scrollbar-thumb {
-  border-radius: 2px;
-  background-color: rgb(194, 194, 194);
-}
-
-.dropdown-content-noti::-webkit-scrollbar {
-  width: 5px;
-  height: 10px;
-}
-
-/* 드롭다운이 보일 때 */
-.dropdown-content-noti.show {
-  display: block;
-}
-
-.center-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 190px;
-    background-color: #f9f9f9; /* 부드러운 배경색 */
-    margin: 0;
-}
-
-/* 메시지 텍스트 스타일 */
-.center-text {
-    color: #000; /* 텍스트 색상: 검정 */
-    font-size: 1rem; /* 적당한 크기 */
-    text-align: center; /* 가운데 정렬 */
-}
-
-
-/* ///////////////알람 드롭다운 CSS 끝//////////// */
-
-.recommended-movies {
-	display:flex;
-	flex-wrap: nowrap;
-  	overflow-x: auto;
-    background-color: #1b1b1b;
-	padding: 20px;
-	border-radius: 10px;
-	color: #000;
-}
-.recommended-movies::-webkit-scrollbar {
-	width: 10px; /* 스크롤바 너비 설정 */
-	height: 10px;
-}
-
-.recommended-movies::-webkit-scrollbar-thumb {
-	background-color: gray;
-	border-radius: 10px;
-}
-.section-title {
-    color: #ffffff;
-    font-size: 1.8rem;
-    margin-bottom: 1.5rem;
-    padding-left: 0.5rem;
-}
-
-.movie-card {
- flex: 0 0 auto;
-  padding: 10px;
-    position: relative;
-    border-radius: 8px;
-    transition: transform 0.3s ease;
-}
-
-.movie-card:hover {
-    transform: translateY(-5px);
-}
-
-.movie-image {
-    width: 250px;
-    height: 450px;
-    object-fit: cover;
-    border-radius: 8px;
-}
-
-
-/* 다크 테마 스타일 */
-@media (prefers-color-scheme: dark) {
-    .recommended-movies {
-        background-color: #000000;
-    }
-}
-</style>
-<body>
-	
-	<!--replace 특정 템플릿 조각(프래그먼트)을 다른 위치에 삽입할 때 사용 -->
-	<th:block th:if="${#strings.equals(role, 'USER')}">
-		<div th:replace="~{/fragments/nav/menubar::menubar}"></div>
-	    <div th:replace="~{/fragments/nav/sidebar::sidebar}"></div>
-	</th:block>
-	<th:block th:if="${#strings.equals(role, 'MASTER')}">
-		<div th:replace="~{/fragments/nav/masterBoardMenubar::masterBoardMenubar}"></div>
-		<div th:replace="~{/fragments/nav/masterSidebar::masterSidebar}"></div>
-	</th:block>
-
-	<div class="movie-container">
-		<!-- 영화 정보 -->
-		<div class="featured-content featured-background"
-			th:style="'background: linear-gradient(to left, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.8) 70%, rgba(0, 0, 0, 0.8) 100%), url(https://image.tmdb.org/t/p/original' + ${movie.info.backdropPath} + '); background-size: cover; background-position: 20% center; display: flex; align-items: flex-start;'">
-			<div class="featured-desc"
-				style="flex: 1; padding-right: 5%; padding-right: 40%;">
-				<p class="#" style="font-size: small; color: white;">
-					<!-- 제목위 미니정보 -->
-					<span th:text="${movie.info.certification}"></span> <span
-						class="movie-category" th:each="genre, iterStat : ${movie.genre}"
-						th:text="${genre.name} + (${iterStat.last} ? '' : '/')"> </span> <span
-						class="movie-category"
-						th:text="'  |  ' +${movie.info.runtime + '분'}"></span> <span
-						class="movie-category"
-						th:text="'  |  ' + ${#temporals.format(movie.info.releaseDate, 'yyyy-MM-dd')}"></span>
-				</p>
-				<!-- 제목위 미니정보 -->
-				<h1 class="movie-title" th:text="${movie.info.title}"
-					style="display: inline;"></h1>
-				<span class="movie-subtitle" th:text="${movie.info.originalTitle}"></span>
-
-				<button style="width: 50px; height: auto;"
-					th:if="${#strings.equals(role, 'MASTER')}">수정</button>
-				<br>
-				<p class="movie-subtitle" th:text="${movie.info.tagline}"></p>
-				<hr>
-				<br>
-				<p class="movie-description" th:text="${movie.info.overview}"></p>
-				<br>
-				<h2>
-					TMDB 평점: <span th:text="${movie.info.voteAverage}"></span> (투표 수: <span
-						th:text="${movie.info.voteCount}"></span>)
-				</h2>
-				<span th:text="'영화 클릭 수 : ' + ${movie.info.hitno}"></span>
-				<br>
-				<button class="rent-btn"
-					th:text="${rent != null and 'Y' == rent['status']} ? '대여 중' : '대여하기 (' + ${movie.info.price} + '원)'"
-					th:disabled="${rent != null and 'Y' == rent['status']}"
-					th:classappend="${rent != null and 'Y' == rent['status']} ? 'disabled' : ''">
-				</button>
-				<a th:if="${rent != null and 'Y' == rent['status']}"
-					th:href="${#lists.size(movie.video) > 0} ? @{'https://www.youtube.com/watch?v=' + ${movie.video[0].key}} : '#'"
-					th:target="${#lists.size(movie.video) > 0} ? '_blank' : '_self'"
-					style="color: white; text-decoration: none;">
-					<button class="trailer-btn"
-						th:disabled="${#lists.size(movie.video) == 0}">
-						<p style="color: white;"
-							th:text="${#lists.size(movie.video) > 0} ? '재생하기' : '영상 없음'"></p>
-					</button>
-				</a>
-			</div>
-			<aside class="poster-container">
-				<!-- 포스터 + 버튼 영역 -->
-				<img class="movie-poster" th:if="${movie.info.posterPath}"
-					th:src="${'https://image.tmdb.org/t/p/original' + movie.info.posterPath}"
-					th:alt="${movie.info.title}"> <br>
-					<span
-					th:if="${#lists.size(movie.video) > 0}"> <a
-					th:href="@{'https://www.youtube.com/watch?v=' + ${movie.video[0].key}}"
-					target="_blank" style="color: white; text-decoration: none;">
-						<button class="btn-trailer">
-							<i class="fab fa-youtube"></i>
-							<p style="color: white;">트레일러 보기</p>
-						</button>
-				</a>
-				</span>
-			</aside>
-
-
-		</div>
-
-
-		<!-- movie stat -->
-		<div class="featured-content" style="height:300px">
-
-			<div class="action-buttons">
-				<button class="action-btn watched"
-					th:classappend="${watch != null and watch.status == 'Y'} ? 'active' : ''">
-					<i class="fas fa-eye"></i> <span>봤어요</span> <span class="count"
-						th:text="${watches != null and watches.count != null} ? ${watches.count} :'0'"></span>
-				</button>
-				<button class="action-btn like"
-					th:classappend="${like != null and like.like == 'Y'} ? 'active' : ''">
-					<i class="fas fa-thumbs-up"></i> <span>좋아요</span> <span
-						class="count"
-						th:text="${likes != null and likes.likeCount != null} ? ${likes.likeCount} : '0'">
-						0 </span>
-				</button>
-
-				<button class="action-btn dislike"
-					th:classappend="${like != null and like.dislike == 'Y'} ? 'active' : ''">
-					<i class="fas fa-thumbs-down"></i> <span>싫어요</span> <span
-						class="count"
-						th:text="${likes != null and likes.dislikeCount != null} ? ${likes.dislikeCount} : '0'">
-						0 </span>
-				</button>
-				<button class="action-btn bookmark"
-					th:classappend="${bookmark != null and bookmark.status == 'Y'} ? 'active' : ''">
-					<i class="fas fa-bookmark"></i> <span>북마크</span> <span
-						class="count"
-						th:text="${bookmarks != null and bookmarks.count != null} ? ${bookmarks.count} : '0'">0</span>
-				</button>
-			</div>
-
-
-			<div class="review-container">
-				<div class="review-form">
-					<textarea id="reviewText" class="review-input"
-						placeholder="이 영화에 대한 감상을 작성해주세요..."></textarea>
-					<button id="submitReview" class="submit-btn">리뷰 등록</button>
-					<button th:disabled="${#lists.size(replies) == 0}"
-						th:classappend="${#lists.size(replies)==0} ? 'disabled' : ''"
-						id="showReview" class="show-btn">리뷰
-						보기([[${#lists.size(replies)}]]) <span style="color:red; font-weight:bold;">스포일러 주의!</span></button>
-				</div>
-				<!-- 리뷰들이 여기에 추가됩니다 -->
-				<div class="review-show-container">
-					<div class="post-it" th:each="reply : ${replies}">
-						<h3 class="replyNickname" th:text="${reply.nickname}"></h3>
-						<p th:text="${reply.content}"></p>
-						<span class="date"
-							th:text="${#temporals.format(reply.regdate, 'yyyy-MM-dd hh:mm')}"></span>
-					</div>
-				</div>
-			</div>
-		</div>
-
-			<div class="featured-content-others">
-				<div class="section-title">
-					<h3>출연/제작</h3>
-					<br> <br>
-				</div>
-				<div class="movie-list">
-					<div class="scroll-container">
-						<!-- 감독을 먼저 표시 -->
-						<div th:each="crewMember : ${movie.crew}"
-							th:if="${crewMember.jobTitle == 'Director'}"
-							class="person-card director">
-							<div class="card">
-								<img th:if="${crewMember.profilePath}"
-									th:src="@{'https://image.tmdb.org/t/p/w200' + ${crewMember.profilePath}}"
-									th:alt="${crewMember.name + ' Profile'}"> <img
-									th:unless="${crewMember.profilePath}"
-									src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png"
-									th:alt="${crewMember.name + ' Profile'}">
-								<h4 th:text="${crewMember.name}"></h4>
-								<p th:text="${crewMember.jobTitle}"></p>
-							</div>
-						</div>
-
-						<!-- 출연진 표시 -->
-						<div
-							th:each="actor : ${#lists.size(movie.cast) > 9 ? movie.cast.subList(0, 10) : movie.cast}"
-							class="person-card">
-							<div class="card">
-								<img th:if="${actor.profilePath}"
-									th:src="@{'https://image.tmdb.org/t/p/w200' + ${actor.profilePath}}"
-									th:alt="${actor.name + ' Profile'}"> <img
-									th:unless="${actor.profilePath}"
-									src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png"
-									th:alt="${actor.name + ' Profile'}">
-								<h4 th:text="${actor.name}"></h4>
-								<p th:text="${actor.characterName}"></p>
-							</div>
-						</div>
-
-					</div>
-				</div>
-			</div>
-
-
-		<!-- 포토/포스터 이미지 -->
-		<div class="featured-content-others">
-			<div class="cast-crew-tabs">
-				<div class="tab-container">
-					<button id="backdropButton" class="tab-button active">포토</button>
-					<button id="posterButton" class="tab-button">포스터</button>
-				</div>
-			</div>
-			<div id="backdropSection" class="movie-list" style="display: block;">
-				<div class="scroll-container">
-					<div
-						th:each="backdrop, iterStat : ${movie.backdrops}"
-						class="image-card">
-						<div class="card">
-							<img th:if="${backdrop.filePath}"
-								th:src="@{'https://image.tmdb.org/t/p/original' + ${backdrop.filePath}}"
-								th:alt="backdrop"
-								style="width: 640px; height: 360px; clear: both;">
-						</div>
-					</div>
-					<div th:if="${#lists.size(movie.backdrops) > 10}"
-						class="more-button-container">
-						<a href="/all-backdrops" class="more-button">더보기</a>
-					</div>
-				</div>
-			</div>
-
-			<div id="posterSection" class="movie-list" style="display: none;">
-				<div class="scroll-container">
-					<div
-						th:each="poster, iterStat : ${movie.posters}"
-						class="image-card">
-						<div class="card">
-							<img th:if="${poster.filePath}"
-								th:src="@{'https://image.tmdb.org/t/p/original' + ${poster.filePath}}"
-								th:alt="'Poster Image'" style="width: 320px; height: 480px;">
-						</div>
-					</div>
-					<div th:if="${#lists.size(movie.posters) > 10}"
-						class="more-button-container">
-						<a href="/all-posters" class="more-button">더보기</a>
-					</div>
-				</div>
-			</div>
-		</div>
-
-		<div class="featured-content-others" style="margin-top:60px">
-				<h2 class="section-title">추천 영화</h2>
-			<div class="recommended-movies">
-					<div class="movie-card" th:each="movie : ${recommandList}">
-						<a th:href="@{/board/movieDetail(movieId=${movie.movieId})}">
-							<img class="movie-image"
-							th:src="@{'https://image.tmdb.org/t/p/original' + ${movie.posterPath}}"
-							alt="">
-						</a>
-					</div>
-			</div>
-		</div>
-	</div>
-</body>
+<html
+  lang="ko"
+  xmlns:th="http://www.thymeleaf.org"
+  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+>
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="/css/movieDetailStyle.css" />
+    <th:block th:replace="~{/fragments/header::header}"></th:block>
+    <script src="/js/detail.js" defer></script>
+    <title th:text="${movie.info.title}">영화 상세</title>
+  </head>
+  <body>
+    <!--replace 특정 템플릿 조각(프래그먼트)을 다른 위치에 삽입할 때 사용 -->
+    <th:block th:if="${#strings.equals(role, 'USER')}">
+      <div th:replace="~{/fragments/nav/menubar::menubar}"></div>
+      <div th:replace="~{/fragments/nav/sidebar::sidebar}"></div>
+    </th:block>
+    <th:block th:if="${#strings.equals(role, 'MASTER')}">
+      <div
+        th:replace="~{/fragments/nav/masterBoardMenubar::masterBoardMenubar}"
+      ></div>
+      <div th:replace="~{/fragments/nav/masterSidebar::masterSidebar}"></div>
+    </th:block>
+
+    <div class="movie-container">
+      <!-- 영화 정보 -->
+      <div
+        class="featured-content featured-background"
+        th:style="'background: linear-gradient(to left, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.8) 70%, rgba(0, 0, 0, 0.8) 100%), url(https://image.tmdb.org/t/p/original' + ${movie.info.backdropPath} + '); background-size: cover; background-position: 20% center; display: flex; align-items: flex-start;'"
+      >
+        <div
+          class="featured-desc"
+          style="flex: 1; padding-right: 5%; padding-right: 40%"
+        >
+          <p class="#" style="font-size: small; color: white">
+            <!-- 제목위 미니정보 -->
+            <span th:text="${movie.info.certification}"></span>
+            <span
+              class="movie-category"
+              th:each="genre, iterStat : ${movie.genre}"
+              th:text="${genre.name} + (${iterStat.last} ? '' : '/')"
+            >
+            </span>
+            <span
+              class="movie-category"
+              th:text="'  |  ' +${movie.info.runtime + '분'}"
+            ></span>
+            <span
+              class="movie-category"
+              th:text="'  |  ' + ${#temporals.format(movie.info.releaseDate, 'yyyy-MM-dd')}"
+            ></span>
+          </p>
+          <!-- 제목위 미니정보 -->
+          <h1
+            class="movie-title"
+            th:text="${movie.info.title}"
+            style="display: inline"
+          ></h1>
+          <span
+            class="movie-subtitle"
+            th:text="${movie.info.originalTitle}"
+          ></span>
+
+          <button
+            style="width: 50px; height: auto"
+            th:if="${#strings.equals(role, 'MASTER')}"
+          >
+            수정
+          </button>
+          <br />
+          <p class="movie-subtitle" th:text="${movie.info.tagline}"></p>
+          <hr />
+          <br />
+          <p class="movie-description" th:text="${movie.info.overview}"></p>
+          <br />
+          <h2>
+            TMDB 평점: <span th:text="${movie.info.voteAverage}"></span> (투표
+            수: <span th:text="${movie.info.voteCount}"></span>)
+          </h2>
+          <span th:text="'영화 클릭 수 : ' + ${movie.info.hitno}"></span>
+          <br />
+          <button
+            class="rent-btn"
+            th:text="${rent != null and 'Y' == rent['status']} ? '대여 중' : '대여하기 (' + ${movie.info.price} + '원)'"
+            th:disabled="${rent != null and 'Y' == rent['status']}"
+            th:classappend="${rent != null and 'Y' == rent['status']} ? 'disabled' : ''"
+          ></button>
+          <a
+            th:if="${rent != null and 'Y' == rent['status']}"
+            th:href="${#lists.size(movie.video) > 0} ? @{'https://www.youtube.com/watch?v=' + ${movie.video[0].key}} : '#'"
+            th:target="${#lists.size(movie.video) > 0} ? '_blank' : '_self'"
+            style="color: white; text-decoration: none"
+          >
+            <button
+              class="trailer-btn"
+              th:disabled="${#lists.size(movie.video) == 0}"
+            >
+              <p
+                style="color: white"
+                th:text="${#lists.size(movie.video) > 0} ? '재생하기' : '영상 없음'"
+              ></p>
+            </button>
+          </a>
+        </div>
+        <aside class="poster-container">
+          <!-- 포스터 + 버튼 영역 -->
+          <img
+            class="movie-poster"
+            th:if="${movie.info.posterPath}"
+            th:src="${'https://image.tmdb.org/t/p/original' + movie.info.posterPath}"
+            th:alt="${movie.info.title}"
+          />
+          <br />
+          <span th:if="${#lists.size(movie.video) > 0}">
+            <a
+              th:href="@{'https://www.youtube.com/watch?v=' + ${movie.video[0].key}}"
+              target="_blank"
+              style="color: white; text-decoration: none"
+            >
+              <button class="btn-trailer">
+                <i class="fab fa-youtube"></i>
+                <p style="color: white">트레일러 보기</p>
+              </button>
+            </a>
+          </span>
+        </aside>
+      </div>
+
+      <!-- movie stat -->
+      <div class="featured-content" style="height: 300px">
+        <div class="action-buttons">
+          <button
+            class="action-btn watched"
+            th:classappend="${watch != null and watch.status == 'Y'} ? 'active' : ''"
+          >
+            <i class="fas fa-eye"></i> <span>봤어요</span>
+            <span
+              class="count"
+              th:text="${watches != null and watches.count != null} ? ${watches.count} :'0'"
+            ></span>
+          </button>
+          <button
+            class="action-btn like"
+            th:classappend="${like != null and like.like == 'Y'} ? 'active' : ''"
+          >
+            <i class="fas fa-thumbs-up"></i> <span>좋아요</span>
+            <span
+              class="count"
+              th:text="${likes != null and likes.likeCount != null} ? ${likes.likeCount} : '0'"
+            >
+              0
+            </span>
+          </button>
+
+          <button
+            class="action-btn dislike"
+            th:classappend="${like != null and like.dislike == 'Y'} ? 'active' : ''"
+          >
+            <i class="fas fa-thumbs-down"></i> <span>싫어요</span>
+            <span
+              class="count"
+              th:text="${likes != null and likes.dislikeCount != null} ? ${likes.dislikeCount} : '0'"
+            >
+              0
+            </span>
+          </button>
+          <button
+            class="action-btn bookmark"
+            th:classappend="${bookmark != null and bookmark.status == 'Y'} ? 'active' : ''"
+          >
+            <i class="fas fa-bookmark"></i> <span>북마크</span>
+            <span
+              class="count"
+              th:text="${bookmarks != null and bookmarks.count != null} ? ${bookmarks.count} : '0'"
+              >0</span
+            >
+          </button>
+        </div>
+
+        <div class="review-container">
+          <div class="review-form">
+            <textarea
+              id="reviewText"
+              class="review-input"
+              placeholder="이 영화에 대한 감상을 작성해주세요..."
+            ></textarea>
+            <button id="submitReview" class="submit-btn">리뷰 등록</button>
+            <button
+              th:disabled="${#lists.size(replies) == 0}"
+              th:classappend="${#lists.size(replies)==0} ? 'disabled' : ''"
+              id="showReview"
+              class="show-btn"
+            >
+              리뷰 보기([[${#lists.size(replies)}]])
+              <span style="color: red; font-weight: bold">스포일러 주의!</span>
+            </button>
+          </div>
+          <!-- 리뷰들이 여기에 추가됩니다 -->
+          <div class="review-show-container">
+            <div class="post-it" th:each="reply : ${replies}">
+              <h3 class="replyNickname" th:text="${reply.nickname}"></h3>
+              <p th:text="${reply.content}"></p>
+              <span
+                class="date"
+                th:text="${#temporals.format(reply.regdate, 'yyyy-MM-dd hh:mm')}"
+              ></span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="featured-content-others">
+        <div class="section-title">
+          <h3>출연/제작</h3>
+        </div>
+        <div class="movie-list">
+          <div class="scroll-container">
+            <!-- 감독을 먼저 표시 -->
+            <div
+              th:each="crewMember : ${movie.crew}"
+              th:if="${crewMember.jobTitle == 'Director'}"
+              class="person-card director"
+            >
+              <div class="card">
+                <img
+                  th:if="${crewMember.profilePath}"
+                  th:src="@{'https://image.tmdb.org/t/p/w200' + ${crewMember.profilePath}}"
+                  th:alt="${crewMember.name + ' Profile'}"
+                />
+                <img
+                  th:unless="${crewMember.profilePath}"
+                  src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png"
+                  th:alt="${crewMember.name + ' Profile'}"
+                />
+                <h4 th:text="${crewMember.name}"></h4>
+                <p th:text="${crewMember.jobTitle}"></p>
+              </div>
+            </div>
+
+            <!-- 출연진 표시 -->
+            <div
+              th:each="actor : ${#lists.size(movie.cast) > 9 ? movie.cast.subList(0, 10) : movie.cast}"
+              class="person-card"
+            >
+              <div class="card">
+                <img
+                  th:if="${actor.profilePath}"
+                  th:src="@{'https://image.tmdb.org/t/p/w200' + ${actor.profilePath}}"
+                  th:alt="${actor.name + ' Profile'}"
+                />
+                <img
+                  th:unless="${actor.profilePath}"
+                  src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png"
+                  th:alt="${actor.name + ' Profile'}"
+                />
+                <h4 th:text="${actor.name}"></h4>
+                <p th:text="${actor.characterName}"></p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 포토/포스터 이미지 -->
+      <div class="featured-content-others">
+        <div class="cast-crew-tabs">
+          <div class="tab-container">
+            <button id="backdropButton" class="tab-button active">포토</button>
+            <button id="posterButton" class="tab-button">포스터</button>
+          </div>
+        </div>
+        <div id="backdropSection" class="movie-list" style="display: block">
+          <div class="scroll-container">
+            <div
+              th:each="backdrop, iterStat : ${movie.backdrops}"
+              class="image-card"
+            >
+              <div class="card">
+                <img
+                  th:if="${backdrop.filePath}"
+                  th:src="@{'https://image.tmdb.org/t/p/original' + ${backdrop.filePath}}"
+                  th:alt="backdrop"
+                  style="width: 640px; height: 360px; clear: both"
+                />
+              </div>
+            </div>
+            <div
+              th:if="${#lists.size(movie.backdrops) > 10}"
+              class="more-button-container"
+            >
+              <a href="/all-backdrops" class="more-button">더보기</a>
+            </div>
+          </div>
+        </div>
+
+        <div id="posterSection" class="movie-list" style="display: none">
+          <div class="scroll-container">
+            <div
+              th:each="poster, iterStat : ${movie.posters}"
+              class="image-card"
+            >
+              <div class="card">
+                <img
+                  th:if="${poster.filePath}"
+                  th:src="@{'https://image.tmdb.org/t/p/original' + ${poster.filePath}}"
+                  th:alt="'Poster Image'"
+                  style="width: 320px; height: 480px"
+                />
+              </div>
+            </div>
+            <div
+              th:if="${#lists.size(movie.posters) > 10}"
+              class="more-button-container"
+            >
+              <a href="/all-posters" class="more-button">더보기</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="featured-content-others">
+        <h2 class="section-title">추천 영화</h2>
+        <div class="recommended-movies">
+          <div class="movie-card" th:each="movie : ${recommandList}">
+            <a th:href="@{/board/movieDetail(movieId=${movie.movieId})}">
+              <img
+                class="movie-image"
+                th:src="@{'https://image.tmdb.org/t/p/original' + ${movie.posterPath}}"
+                alt=""
+              />
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
 </html>
