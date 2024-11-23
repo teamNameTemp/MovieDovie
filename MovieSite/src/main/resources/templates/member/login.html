@@ -5,138 +5,147 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>로그인</title>
 <style>
-	body {
-		font-family: Arial, sans-serif;
-	    background-color: rgba(20, 20, 20, 0.8); /* 배경을 투명하게 설정 */
-	    color: white;
-	    display: flex;
-	    justify-content: center;
-	    height: 100vh;
-	    margin: 0;
-	}
+    /* 전체 배경 설정 */
+    body {
+        margin: 0;
+        font-family: 'Arial', sans-serif;
+        background-color: #141414; /* 다크 테마 배경 */
+        color: #ffffff; /* 흰색 텍스트 */
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+    }
 
-	.main {
-	    text-align: center;
-	}
-	.WriteForm {
-	    background-color: rgba(34, 34, 34, 0.9); /* 투명한 배경색 */
-	    padding: 4px 70px;
-	    border-radius: 5px;
-	    border: 2px solid transparent; /* 테두리를 투명하게 설정 */
-	    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
-	    margin: 0 auto; /* 중앙 정렬 */
-		text-align: center;
-	}
-	
-	.input_field {
-	    width: 100%;
-		box-sizing: border-box;
-	    padding: 24px 16px ;
-	    margin-bottom: 15px;
-	    border: 1px solid white;
-	    border-radius: 3px;
-	    background-color: #333;
-	    color: white;
-		
-	}
+    /* 메인 컨테이너 */
+    .main {
+        width: 100%;
+        max-width: 400px;
+        padding: 20px;
+        background-color: rgba(0, 0, 0, 0.75); /* 반투명 검정 배경 */
+        border-radius: 8px; /* 모서리를 둥글게 */
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5); /* 부드러운 그림자 */
+    }
 
-	.input_field:focus {
-	    border: 1px solid #e50914; /* 포커스 시 강조 색상 */
-	}
+    /* 타이틀 */
+    .WriteForm h1 {
+        font-size: 24px;
+        margin-bottom: 20px;
+        color: #ffffff; /* 흰색 텍스트 */
+        font-weight: bold;
+    }
 
-	.btn_login {
-	    width: 100%;
-	    padding: 10px;
-	    background-color: #4dbf00 ; /* 로그인 버튼 색상 */
-	    border: none;
-	    border-radius: 3px;
-	    color: white;
-	    font-size: 16px;
-	    cursor: pointer;
-		box-sizing: border-box;
-	}
+    /* 입력 필드 스타일 */
+    .input_field {
+        width: 100%;
+        padding: 12px;
+        margin-bottom: 15px;
+        border: none;
+        border-radius: 4px;
+        background-color: #333333; /* 어두운 입력 배경 */
+        color: #ffffff; /* 흰색 텍스트 */
+        font-size: 14px;
+    }
 
-	.btn_login:hover {
-	    background-color: #f40612; /* 버튼 호버 시 색상 */
-	}
+    .input_field::placeholder {
+        color: #888888; /* 연한 텍스트 색상 */
+    }
 
-	.bottomText {
-	    margin-top: 10px;
-	    color: white;
-		font-size: 25px;
-	}
-	
-	.bottomText1 {
-		margin-top: 10px;
-		color: white;
-		font-size: 18px;
-	}
-	
-	h1 {
-		font-size: 50px;
-		color: white;
-		margin-bottom: 20px;
-	}
-	
-	a {
-		color: white;
-	}
+    /* 체크박스와 레이블 */
+    input[type="checkbox"] {
+        margin-right: 8px;
+    }
 
-	.input_field::placeholder {
-	    font-size: 16px; /* 글씨 크기 조정 */
-	    color: #bbb; /* 색상 조정 (진하게 하려면 어두운 색으로) */
-	    font-weight: normal; /* 글씨를 진하게 설정 */
-	}
-	
-	.btn_login {
-	    width: 100%;
-	    padding: 15px 0;
-	    margin-bottom: 10px;
-	    border-radius: 5px;
-	    border: none;
-	    font-size: 16px;
-	    cursor: pointer;
-	}
-	
-	.oauth-buttons {
-	    display: flex;
-	    flex-direction: column;
-	}
+    label {
+        font-size: 14px;
+        color: #ffffff; /* 흰색 텍스트 */
+    }
 
-	.oauth-btn {
-	    width: 100%;
-	    padding: 15px 0;
-	    margin-bottom: 10px;
-	    border-radius: 5px;
-	    border: none;
-	    font-size: 16px;
-	    cursor: pointer;
-	}
+    /* 메시지 스타일 */
+    #msg {
+        font-size: 14px;
+        color: #e50914; /* 넷플릭스 강조색: 빨간색 */
+    }
 
-	.kakao {
-	    background-color: #FEE500; /* 카카오 노란색 */
-	    color: #3C1E1E; /* 카카오 텍스트 색상 */
-	}
+    /* 버튼 스타일 */
+    .btn_login {
+        width: 100%;
+        padding: 12px;
+        background-color: #e50914; /* 넷플릭스 빨간색 */
+        color: #ffffff; /* 흰색 텍스트 */
+        border: none;
+        border-radius: 4px;
+        font-size: 16px;
+        font-weight: bold;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    }
 
-	.naver {
-	    background-color: #03C75A; /* 네이버 초록색 */
-	    color: white; /* 네이버 텍스트 색상 */
-	}
+    .btn_login:hover {
+        background-color: #f6121d; /* 더 밝은 빨간색 */
+    }
 
-	.facebook {
-	    background-color: #1877F2; /* 페이스북 파란색 */
-	    color: white; /* 페이스북 텍스트 색상 */
-	}
+    /* 소셜 로그인 버튼 스타일 */
+    .oauth-buttons {
+        margin-top: 20px;
+    }
 
-	.apple {
-	    background-color: black; /* 애플 검정색 */
-	    color: white; /* 애플 텍스트 색상 */
-	}
+    .oauth-btn {
+        width: 100%;
+        margin-bottom: 10px;
+        padding: 12px;
+        border: none;
+        border-radius: 4px;
+        font-size: 14px;
+        font-weight: bold;
+        cursor: pointer;
+        color: #ffffff;
+    }
 
+    .oauth-btn.kakao {
+        background-color: #fee500; /* 카카오 노란색 */
+        color: #3c1e1e; /* 텍스트 색상 */
+    }
 
+    .oauth-btn.kakao:hover {
+        background-color: #ffde00;
+    }
 
+    .oauth-btn.naver {
+        background-color: #03c75a; /* 네이버 초록색 */
+    }
 
+    .oauth-btn.naver:hover {
+        background-color: #02a84a;
+    }
+
+    .oauth-btn.google {
+        background-color: #4285f4; /* 구글 파란색 */
+    }
+
+    .oauth-btn.google:hover {
+        background-color: #357ae8;
+    }
+
+    /* 링크 스타일 */
+    .bottomText a, .bottomText1 a {
+        text-decoration: none;
+        color: #ffffff;
+        font-size: 14px;
+    }
+
+    .bottomText a:hover, .bottomText1 a:hover {
+        text-decoration: underline;
+    }
+
+    /* 하단 텍스트 */
+    .bottomText, .bottomText1 {
+        margin-top: 20px;
+        font-size: 14px;
+        color: #aaaaaa; /* 연한 회색 */
+    }
 </style>
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.2/rollups/aes.js"></script>
 <script>
 window.onload = async () => {
@@ -233,10 +242,10 @@ const loginCheck = async () => {
 			if(data.message === 'good'){
 				cookieManage(email.value,password.value);
 				login();
-			}else if(data.message === 'ID_NOT_FOUND'){
-				msg.innerHTML = '존재하지 않는 아이디입니다.';
+			}else if(data.message === 'EMAIL_NOT_FOUND'){
+				msg.innerHTML = '존재하지 않는 이메일입니다.';
 			}else if(data.message === 'PASSWORD_NOT_FOUND'){
-				msg.innerHTML = '잘못된 패스워드입니다.';
+				msg.innerHTML = '잘못된 비밀번호입니다.';
 			}else {
 				alert("시스템 장애로 로그인이 실패 했습니다.");
 			}
@@ -288,9 +297,20 @@ const cookieManage = (email,password) => {
 	}		
 }
 
-const press = () => {
-	if(event.keyCode == 13) loginCheck();
-}	
+const press = (event) => {
+	if(event.keyCode == 13) {
+		event.preventDefault();
+		loginCheck();
+	}
+};
+
+// 이벤트로 URL로 리다이렉트하는 함수
+function redirectToUrl(event, url) {
+    // 기본 이벤트 동작을 방지
+    event.preventDefault();
+    // 지정된 URL로 리다이렉트
+    window.location.href = url;
+}
 	
 </script>
 
@@ -298,7 +318,7 @@ const press = () => {
 <div class="main" align="center">
     <div class="WriteForm">
         <h1>로그인</h1><br><br>
-    <form name="loginForm" id="loginForm" method="POST" onsubmit="event.preventDefault(); loginCheck();">
+    <form name="loginForm" id="loginForm" method="POST">
         <input type="text" class="input_field" id="email" name="email" placeholder="이메일을 입력하세요">
         <input type="password" class="input_field" id="password" name="password" placeholder="비밀번호를 입력하세요" onkeydown="press(event)">
         <p id="msg" style="color:red; text-align:center"></p>
