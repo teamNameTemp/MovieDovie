@@ -38,17 +38,6 @@ public class DataCalculate {
     //등급에 따른 마일리지 추가
     public int calcMileage(String grade, int price) {
         int result = 0;
-        if(grade.equals("BRONZE")) {
-            result = (int)(price * 0.01);
-        } else if(grade.equals("SILVER")) {
-            result = (int)(price * 0.02);
-        } else if(grade.equals("GOLD")) {
-            result = (int)(price * 0.03);
-        } else if(grade.equals("PLATINUM")) {
-            result = (int)(price * 0.04);
-        } else {
-            result = 0;
-        }
 
         switch (grade) {
             case "DIAMOND":
@@ -68,5 +57,13 @@ public class DataCalculate {
                 break;
         }
         return result;
+    }
+
+    //나이 계산
+    public boolean calcAge(String ssn) {
+        int year = Integer.parseInt(ssn.substring(0, 2));
+        int age = 2024 - year;
+
+        return age >= 18;
     }
 }

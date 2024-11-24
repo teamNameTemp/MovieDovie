@@ -91,9 +91,6 @@ public class BoardController {
               MovieDTO dto = tmdb.getMovieDetails(d.getId(), "ko-KR").block();
               trendList.add(dto);
           }
-          //트렌드 영화를 못찾을 시 예외로 한번 더 저장
-//          movie.saveTheDataBases(trendList);
-		
 		
 		//선호 장르별 영화 리스트
 		Map<String, Object> favGenreList = new HashMap<>();
