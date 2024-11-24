@@ -73,9 +73,12 @@ public class MemberEntity {
 	@Column(name="filesize",nullable=true)
 	private Long filesize;
 	
-	@Column(name="memeberPoint")
+	@Column(name="memeberPoint", columnDefinition = "integer default 0")
 	private Long point;
 	
+	//회원등급	
+	@Column(name="member_grade", length=50, nullable=true,columnDefinition = "varchar(50) default 'BRONZE'")
+	private String grade;
 	
 	
 	public void updateMemberInfo(MemberDTO member) {

@@ -56,10 +56,13 @@
             </div>
           </div>
           <div class="profile-info">
-            <h1>[[${member.username}]]</h1>
+            <h1>[[${member.username}]]<span th:text="'(' + ${member.grade} + ')'" style="font-size:20px; color: #999;" ></span></h1>
             <span class="membership-date"
               >회원 가입일: [[${#temporals.format(member.regdate, 'yyyy년 MM월
               dd일')}]]</span
+            >
+            <span class="membership-date"
+              >등급 변경일 추가할 칸?????</span
             >
           </div>
         </div>
@@ -84,6 +87,30 @@
                 ></p>
               </div>
             </a>
+          </div>
+        </div>
+      </div>
+      <div class="profile-content">
+        <!-- 멤버십 & 결제 정보 -->
+        <div class="content-section">
+          <div
+            style="
+              display: flex;
+              justify-content: space-between;
+              align-items: center;
+            "
+          >
+            <h2>결제 정보</h2>
+          </div>
+          <div class="info-card">
+            <div class="info-row">
+              <span class="label">누적 결제 금액</span>
+              <span class="value" th:text="${accumulatedPayment} + '원'"></span>
+            </div>
+            <div class="info-row">
+              <span class="label">나의 포인트</span>
+              <span class="value" th:text="${member.point} + 'P'"</span>
+            </div>
           </div>
         </div>
       </div>
