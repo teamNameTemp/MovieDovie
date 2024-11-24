@@ -204,6 +204,7 @@ tr:hover {
 .membership-date {
   color: #999;
   font-size: 1.1em;
+  display: block;
 }
 
 /* 콘텐츠 섹션 */

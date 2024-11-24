@@ -34,4 +34,39 @@ public class DataCalculate {
 
         return result;
     }
+
+    //등급에 따른 마일리지 추가
+    public int calcMileage(String grade, int price) {
+        int result = 0;
+        if(grade.equals("BRONZE")) {
+            result = (int)(price * 0.01);
+        } else if(grade.equals("SILVER")) {
+            result = (int)(price * 0.02);
+        } else if(grade.equals("GOLD")) {
+            result = (int)(price * 0.03);
+        } else if(grade.equals("PLATINUM")) {
+            result = (int)(price * 0.04);
+        } else {
+            result = 0;
+        }
+
+        switch (grade) {
+            case "DIAMOND":
+                result = (int)(price * 0.05);
+            break;
+            case "PLATINUM":
+                result = (int)(price * 0.04);
+            break;  
+            case "GOLD":                    
+                result = (int)(price * 0.03);
+            break;
+            case "SILVER":
+                result = (int)(price * 0.02);
+            break;
+            default:
+                result = (int)(price * 0.01);
+                break;
+        }
+        return result;
+    }
 }

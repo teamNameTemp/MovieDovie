@@ -173,6 +173,10 @@ public class BoardController {
 
 		model.addAttribute("nickname",nickname);
 		model.addAttribute("member",memberInfo);
+
+		//누적 결제 금액
+		Long accumulatedPayment = rent.getMyAccumulatedPayment(email);
+		model.addAttribute("accumulatedPayment",accumulatedPayment);
 	}
 	
 	// 장르 필터

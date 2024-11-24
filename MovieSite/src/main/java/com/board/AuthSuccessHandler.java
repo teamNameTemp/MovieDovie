@@ -49,7 +49,7 @@ public class AuthSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
         log.info("------------------------ 로그인 성공 : 세션 생성 ------------------------ ");
 
         // 로그인 성공 후 리다이렉트할 URL 설정
-        if(favGenre.getFavGenre() == null){
+        if(favGenre.getFavGenre() == null || favGenre.getFavGenre().isEmpty()){
             setDefaultTargetUrl("/member/selectGenre");
         }
         else{
