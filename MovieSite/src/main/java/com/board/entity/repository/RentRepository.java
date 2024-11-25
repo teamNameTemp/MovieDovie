@@ -39,6 +39,15 @@ public interface RentRepository extends JpaRepository<RentEntity, Long>{
     nativeQuery = true)
 	public List<Object[]> RentCount(@Param("startDate") LocalDateTime startDate, @Param("endDate") LocalDateTime endDate);
 
+	
+	//관리자 페이지 - 통계 : 매출 확인 (startDate에 원하는 날짜, endDate에 원하는 날짜 넣으면 그 사이의 값들이 나옴)
+	@Query(value = "SELECT TRUNC(r.rentdate) AS rent_date, SUM(r.sales)" +
+            "FROM rent r " +
+            "WHERE r.rentdate BETWEEN :startDate AND :endDate " +
+            "GROUP BY TRUNC(r.rentdate)" +
+            "ORDER BY TRUNC(r.rentdate)", nativeQuery = true)
+	public List<Object[]> Sales(@Param("startDate") LocalDateTime startDate, @Param("endDate") LocalDateTime endDate);
+
 
 	//관리자 페이지 - 통계 : 월별 대여 수 확인
 	@Query(value = "SELECT TO_CHAR(r.rentdate, 'YYYY-MM') AS month, "
@@ -82,19 +91,20 @@ public interface RentRepository extends JpaRepository<RentEntity, Long>{
 	@Query(value = "SELECT COUNT(r.seqno) FROM rent r")
 	public int getTotalRent();
 	
-	//관리자 페이지 - 통계 : 월별 영화발매일 별 매출 확인
+	//관리자 페이지 - 통계 : 월별 영화발매일 별 대여 건수 확인
 	@Query(value = "SELECT TO_CHAR(r.rentdate, 'YYYY-MM') AS month, "
-		    + "SUM(CASE WHEN r.sales = 10000 THEN r.sales ELSE 0 END) AS sales_10000, "
-		    + "SUM(CASE WHEN r.sales = 6000 THEN r.sales ELSE 0 END) AS sales_6000, "
-		    + "SUM(CASE WHEN r.sales = 5000 THEN r.sales ELSE 0 END) AS sales_5000, "
-		    + "SUM(CASE WHEN r.sales = 4000 THEN r.sales ELSE 0 END) AS sales_4000, "
-		    + "SUM(CASE WHEN r.sales = 1000 THEN r.sales ELSE 0 END) AS sales_1000 "
-		    + "FROM rent r "
-		    + "WHERE EXTRACT(YEAR FROM r.rentdate) = :year "
-		    + "GROUP BY TO_CHAR(r.rentdate, 'YYYY-MM') "
-		    + "ORDER BY month", nativeQuery = true)
-	public List<Object[]> SalesByReleaseDateByMonth(@Param("year") int year);
+	    + "COUNT(CASE WHEN r.sales = 10000 THEN r.seqno END) AS count_10000, "
+	    + "COUNT(CASE WHEN r.sales = 6000 THEN r.seqno END) AS count_6000, "
+	    + "COUNT(CASE WHEN r.sales = 5000 THEN r.seqno END) AS count_5000, "
+	    + "COUNT(CASE WHEN r.sales = 4000 THEN r.seqno END) AS count_4000, "
+	    + "COUNT(CASE WHEN r.sales = 1000 THEN r.seqno END) AS count_1000 "
+	    + "FROM rent r "
+	    + "WHERE EXTRACT(YEAR FROM r.rentdate) = :year "
+	    + "GROUP BY TO_CHAR(r.rentdate, 'YYYY-MM') "
+	    + "ORDER BY month", nativeQuery = true)
+	public List<Object[]> getRentCountByReleaseDateAndMonth(@Param("year") int year);
 
+	/*
 	//관리자 페이지 - 통계 : 분기별 영화발매일 별 매출 확인
 	@Query(value = "SELECT TO_CHAR(r.rentdate, 'YYYY-Q') AS quarter, "
 		    + "SUM(CASE WHEN r.sales = 10000 THEN r.sales ELSE 0 END) AS sales_10000, "
@@ -107,4 +117,5 @@ public interface RentRepository extends JpaRepository<RentEntity, Long>{
 		    + "GROUP BY TO_CHAR(r.rentdate, 'YYYY-Q') "
 		    + "ORDER BY quarter", nativeQuery = true)
 	public List<Object[]> SalesByReleaseDateByQuarter(@Param("year") int year);
+	*/
 }

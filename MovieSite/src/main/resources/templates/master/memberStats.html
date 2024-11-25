@@ -12,12 +12,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css">
 	<style>
-		#wrap {width: 1300px; height: 1000px; font-size: 17px; text-align: center; margin : auto; }
+		#wrap {width: 1450px; height: 1000px; font-size: 17px; text-align: center; margin : auto; }
 	 	
 	 	.side {
 	 		display: flex;
-		 	float: left; width: 750px; height: 950px; text-align: center; 
+		 	float: left; width: 900px; height: 950px; text-align: center; 
 	    	align-items: center; /* 수평 중앙 정렬 */
+	    	justify-content: space-between; /* 양쪽으로 배치 */
 	    }
 	    
 	    .content1 {
@@ -69,6 +70,8 @@
             padding: 3%; /* 패딩 10% */
             border: 1.8px solid lightgray;
             box-sizing: border-box; /* 패딩 포함한 크기 계산 */
+            justify-content: space-between; /* 양쪽으로 배치 */
+		    align-items: center; /* 수평 중앙 정렬 */
         }
         
         
@@ -268,7 +271,7 @@
 		    position: relative;
 		    z-index: 10;
 		    width: 100%;
-		    height: 190px;
+		    height: auto;
 		    display: flex;
 		    align-items: center;
 		    justify-content: center;
@@ -279,17 +282,16 @@
 
 </head>
 <body class="p-3 m-0 border-0 bd-example m-0 border-0">
-<div th:replace = "~{/fragments/nav/masterSidebar::masterSidebar}"></div>
 <div th:replace="~{/fragments/nav/masterMenubar::masterMenubar}"></div>
-<br><br><br><br><br>
+<br><br><br><br>
 
 
 <div id="wrap">
 	<div class="side">
-		<div class="content"><h2>대여 매출 현황</h2><br><br>
+		<div class="content">
+		<h2>월별 매출 현황</h2><br><br>
 		
-		[월별 매출 현황]<br><br>
-		<div>
+		<div style="display: flex; justify-content: center; align-items: center; width: 100%; height: 350px;">
 		  <canvas id="MonthlySales"></canvas>
 		</div>
 		<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -349,7 +351,8 @@
 		                      beginAtZero: true
 		                  }
 		              }
-		          }
+		          },
+		          plugins: [legendMargin]
 		      });
 		  })
 		  .catch(error => console.error('Error fetching data:', error));
@@ -357,10 +360,10 @@
 				
 		<br><br>
 		<hr style="border-width:1.5px 0 0 0; border-style:dashed; border-color:#4dbf00;">
-		<br><br>	
+		<br><br><br>
 		
-		[월별 대여 현황]<br><br>
-		<div>
+		<h2>월별 대여 현황</h2><br><br>
+		<div style="display: flex; justify-content: center; align-items: center; width: 100%; height: 350px;">
 		  <canvas id="MonthlyRent"></canvas>
 		</div>
 		<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -420,7 +423,8 @@
 		                      beginAtZero: true
 		                  }
 		              }
-		          }
+		          },
+		          plugins: [legendMargin]
 		      });
 		  })
 		  .catch(error => console.error('Error fetching data:', error));
@@ -430,162 +434,112 @@
 	</div>
 	
 	<div class="content4">
-		<div class="content">
-			<h2>[구매 전환률]</h2><br> 
-			<div class="horicontentforCR">
-				<!-- 구매 전환률 (Conversion Rate) = 영화 전체 대여 수 / 영화 상세페이지를 클릭한 전체 횟수(hitno) * 100% -->
-				<div class="left70-div">
-					<div class="progress-bar">           
-						<div class="progress" id="progress" th:style="'width:' + ${conversionRate} + '%;'">
-        					<span class="progress-text" th:text="${conversionRate} + '%'"></span>
-						</div>
-					</div>
-				</div>
-				<div class="right30-div" id="conversionRate">
-					<p>· 전체 대여 수 = <span th:text="${RentCount}"></span></p>
-					<p>· 상세페이지 클릭 수 = <span th:text="${HitnoCount}"></span></p>
-				</div>
-			</div>
-			<h2>[최근 일주일 간 대여 현황]</h2><br>
-			<div class="canvas-container">
-			  <canvas id="weeklyRent"></canvas>
-			</div>
-			<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-			<script>
-				  fetch('/master/weeklyRent')
-				    .then(response => response.json())
-				    .then(data => {
-				      const labels = data.map(item => {
-				        const date = new Date(item.date);
-				        return (date.getMonth() + 1) + '/' + date.getDate(); // MM/DD 형식으로 변환
-				      });
-				      const rentData = data.map(item => item.count); //대여수 생성
-				
-				      const ctxxxxx = document.getElementById('weeklyRent');
-				      new Chart(ctxxxxx, {
-				        type: 'bar',
-				        data: {
-				          labels: labels,
-				          datasets: [{
-				            label: '대여 수',
-				            data: rentData,
-				            borderWidth: 1,
-				            borderColor: '#4dbf00',
-				            backgroundColor: '#4dbf0090'
-				          }]
-				        },
-				        options: {
-				          scales: {
-				            y: {
-				              beginAtZero: true,
-				              ticks: {
-				                stepSize: 1
-				              }
-				            }
-				          }
-				        }
-				      });
-				    })
-				    .catch(error => console.error('Error fetching data:', error));
-				</script>
-		</div>
+    <div class="content">
+        <h2>영화 개봉 기간별 대여 건수</h2><br>
+        <div class="canvas-container">
+            <canvas id="MonthlyRentByRD"></canvas>
+        </div>
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+        <script>
+	        Promise.all([
+	            fetch('/master/MonthlyRentByReleaseDateCurrentYear').then(response => response.json()),
+	            fetch('/master/MonthlyRentByReleaseDateLastYear').then(response => response.json())
+	        ])
+	        .then(([currentYearData, lastYearData]) => {
+	            // Initialize arrays for each category
+	            const currentYearCounts_10000 = Array(12).fill(0);
+	            const currentYearCounts_6000 = Array(12).fill(0);
+	            const currentYearCounts_5000 = Array(12).fill(0);
+	            const currentYearCounts_4000 = Array(12).fill(0);
+	            const currentYearCounts_1000 = Array(12).fill(0);
+	
+	            const lastYearCounts_10000 = Array(12).fill(0);
+	            const lastYearCounts_6000 = Array(12).fill(0);
+	            const lastYearCounts_5000 = Array(12).fill(0);
+	            const lastYearCounts_4000 = Array(12).fill(0);
+	            const lastYearCounts_1000 = Array(12).fill(0);
+	
+	            // Process current year data
+	            currentYearData.forEach(item => {
+	                const date = new Date(item.date);
+	                const month = date.getMonth(); // 0-11 range
+	                currentYearCounts_10000[month] += item.count_10000;
+	                currentYearCounts_6000[month] += item.count_6000;
+	                currentYearCounts_5000[month] += item.count_5000;
+	                currentYearCounts_4000[month] += item.count_4000;
+	                currentYearCounts_1000[month] += item.count_1000;
+	            });
+	
+	            // Process last year data
+	            lastYearData.forEach(item => {
+	                const date = new Date(item.date);
+	                const month = date.getMonth(); // 0-11 range
+	                lastYearCounts_10000[month] += item.count_10000;
+	                lastYearCounts_6000[month] += item.count_6000;
+	                lastYearCounts_5000[month] += item.count_5000;
+	                lastYearCounts_4000[month] += item.count_4000;
+	                lastYearCounts_1000[month] += item.count_1000;
+	            });
+	
+	            // Create month labels
+	            const monthLabels = Array.from({ length: 12 }, (_, i) => `${i + 1}월`);
+	
+	            const ctxmonthbyrd = document.getElementById('MonthlyRentByRD').getContext('2d');
+	
+	            new Chart(ctxmonthbyrd, {
+	                type: 'bar',
+	                data: {
+	                    labels: monthLabels,
+	                    datasets: [
+	                        { label: '1개월 이내', data: [...lastYearCounts_10000.map((val, i) => val + currentYearCounts_10000[i])], backgroundColor: '#FF6384', stack: 'combined' },
+	                        { label: '1-3개월', data: [...lastYearCounts_6000.map((val, i) => val + currentYearCounts_6000[i])], backgroundColor: '#36A2EB', stack: 'combined' },
+	                        { label: '3-6개월', data: [...lastYearCounts_5000.map((val, i) => val + currentYearCounts_5000[i])], backgroundColor: '#FFCE56', stack: 'combined' },
+	                        { label: '6개월-1년', data: [...lastYearCounts_4000.map((val, i) => val + currentYearCounts_4000[i])], backgroundColor: '#4BC0C0', stack: 'combined' },
+	                        { label: '1년 이상', data: [...lastYearCounts_1000.map((val, i) => val + currentYearCounts_1000[i])], backgroundColor: '#9966FF', stack: 'combined' }
+	                    ]
+	                },
+	                options: {
+	                    responsive: true,
+	                    plugins: {
+	                        legend: {
+	                            display: true, // 범례는 표시
+	                            labels: {
+	                            	color: '#000', // 범례 글자 색상 설정
+	                            	boxWidth: 13,  // 범례 색상 박스 너비
+	                            	padding: 15
+	                            }, 
+	                        },
+	                        tooltip: {
+	                            enabled: true // 툴팁은 유지
+	                        }
+	                    },
+	                    scales: {
+	                        x: {
+	                            stacked: true,
+	                        },
+	                        y: {
+	                            stacked: true,
+	                            title: {
+	                                display: true,
+	                                text: '대여 건수'
+	                            }
+	                        }
+	                    } 
+	                },
+	                plugins: [legendMargin]
+	            });
+	        })
+	        .catch(error => console.error('Error fetching data:', error));
+	        
+	      
+        </script>
+    </div>
 	</div>
 		
 	<div class="content2">
 		<div class="content">
-			<h2>2024 대여/매출 현황</h2>
-			<div class="horicontent">
-				<div class="left-div">
-		        	<br>[대여 중 / 대여종료 비율]<br><br>
-					<div style=" align-items: center; ">
-					  <canvas id="RentStatus" width="200"></canvas>
-					</div>
-					<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-					<script>
-					  fetch('/master/rentStatus')
-					  	.then(response => response.json())
-					  	.then(data => {
-					  	  const labels = data.map(item => {
-					  		  if(item.status === 'N') {
-					  			  return "대여 종료";
-					  		  } else if (item.status === 'Y'){
-					  			  return "대여 중";
-					  		  }
-					  	  });
-					  	  const counts = data.map(item => item.count);
-					  		
-					  	  // 상태에 따라 색상 설정
-					      const backgroundColors = data.map(item => {
-					        return item.status === 'N' ? '#d2d2d2' : '#4dbf00';
-					      });
-					  	  
-					  	  const ctxz = document.getElementById('RentStatus');
+			<h2>영화 장르별 매출 현황</h2>
 			
-						  new Chart(ctxz, {
-						    type: 'doughnut',
-						    data: {
-						      labels: labels,
-						      datasets: [{
-						        label: '대여 건수',
-						        data: counts,
-						        backgroundColor: backgroundColors,
-						        hoverOffset: 4,
-								borderRadius : 5,
-								spacing : 3
-						      }]
-						    },
-						    options: {
-						    	responsive: false,
-						    	cutout: 40
-						    }
-						  });
-					  
-					  	})
-					</script>
-				</div>
-				
-	        	<div class="right-div">
-	        		<br>[매출 Top 10 회원]<br>
-					<div>
-					  <table class="table table-sm">
-						  <thead class="table-light">
-						    <tr>
-						      <th scope="col">순위</th>
-						      <th scope="col">닉네임</th>
-						      <th scope="col">매출</th>
-						      <th scope="col">대여 수</th>
-						    </tr>
-						  </thead>
-						  <tbody id = "topRentersBody"></tbody>
-						</table>
-					  	
-					  	<script>
-					  		fetch('/master/topRenters')
-					  			.then(response => response.json())
-					  			.then(data => {
-					  				const tbody = document.getElementById('topRentersBody');
-					  				if (data.length === 0){
-					  					tbody.innerHTML = '<tr><td colspan="3">올해 대여한 회원이 없습니다.</td></tr>';
-					  				} else {
-					  					data.forEach((item, index) => {
-					  						if(index < 10){
-						  						const row = document.createElement('tr');
-						  						row.innerHTML = `
-						  							<td>${index + 1}</td>
-						  							<td>${item.nickname}</td>
-						  							<td>${item.sales}</td>
-						  							<td>${item.rentCount}</td>
-						  						`;
-						  						tbody.appendChild(row);
-					  						}
-					  					});
-					  				}
-					  			}).catch(error => console.error('Error => ', error));
-					  	</script>
-					  
-					</div>
-	        	</div>	
-			</div>
 		</div>
 	</div>
 	
@@ -807,7 +761,18 @@
 	}
 	requestStatus();
 	
-    
+	
+	//Chart.js 에서 legend 와 chart 사이의 마진
+	const legendMargin = {
+    	    id: 'legendMargin',
+    	    beforeInit(chart) {
+    	        const originalFit = chart.legend.fit;
+    	        chart.legend.fit = function fit() {
+    	            originalFit.bind(chart.legend)();
+    	            this.height += 15; // Adjust this value to increase/decrease space
+    	        };
+    	    }
+    	};
 </script>
 
 </body>
