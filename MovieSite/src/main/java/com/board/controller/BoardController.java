@@ -91,9 +91,6 @@ public class BoardController {
               MovieDTO dto = tmdb.getMovieDetails(d.getId(), "ko-KR").block();
               trendList.add(dto);
           }
-          //트렌드 영화를 못찾을 시 예외로 한번 더 저장
-//          movie.saveTheDataBases(trendList);
-		
 		
 		//선호 장르별 영화 리스트
 		Map<String, Object> favGenreList = new HashMap<>();
@@ -161,7 +158,6 @@ public class BoardController {
 		//대여
 		List<Map<String,Object>> rents = rent.getAllMyRent(email, "Y");
 		model.addAttribute("rents",rents);
-		log.info(rents);
 		//북마크
 		List<Map<String,Object>> bookmarks = bookmark.getAllBookmarkByEmail(email);
 		model.addAttribute("bookmarks",bookmarks);
@@ -174,6 +170,10 @@ public class BoardController {
 
 		model.addAttribute("nickname",nickname);
 		model.addAttribute("member",memberInfo);
+
+		//누적 결제 금액
+		Long accumulatedPayment = rent.getMyAccumulatedPayment(email);
+		model.addAttribute("accumulatedPayment",accumulatedPayment);
 	}
 	
 	// 장르 필터
@@ -226,7 +226,7 @@ public class BoardController {
 			model.addAttribute("bookmark", myBookmark);
 		}
 		Map<String,Object> myRent = rent.getMyRentInfo(email, movieId);
-		if(myRent != null || !myRent.isEmpty()) {
+		if(myRent != null) {
 			model.addAttribute("rent",myRent);
 			rent.updateRent(email, movieId);
 		}
@@ -613,7 +613,12 @@ public class BoardController {
 
 //---------검색trying-------------------------
 	@GetMapping("/search")
-	public void searchPage(Model model,@RequestParam(name="keyword",required = false) String keyword) {
+	public void searchPage(Model model,
+	@RequestParam(name="keyword",required = false) String keyword,
+	HttpSession session) {
+
+		String nickname = (String) session.getAttribute("nickname");
+		model.addAttribute("nickname", nickname);
 		if(keyword != null) {
 			List<Map<String,Object>> list = movie.findByKeywordMovieList(keyword);
 			model.addAttribute("movies",list);

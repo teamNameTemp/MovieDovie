@@ -61,6 +61,11 @@ public interface RentRepository extends JpaRepository<RentEntity, Long>{
             "GROUP BY r.email " +
             "ORDER BY rentCount DESC", nativeQuery = true)
 	public List<Object[]> findTopRenters();
+
+	@Query("SELECT COALESCE(SUM(r.sales), 0) " +
+			"FROM rent r " +
+			"WHERE r.email.email = :email")
+    Long getTotalSalesByEmail(@Param("email") String email);
 	
 	
 }

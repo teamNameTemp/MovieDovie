@@ -34,6 +34,7 @@ public class MemberDTO {
 	private String storedFilename;
 	private long filesize;
 	private Long point;
+	private String grade;
 	
 	//Entity -> DTO
 	public MemberEntity dtoToEntity(MemberDTO memberDTO) {
@@ -55,6 +56,7 @@ public class MemberDTO {
 											.stored_filename(memberDTO.getStoredFilename())
 											.filesize(memberDTO.getFilesize())
 											.point(memberDTO.getPoint())
+											.grade(memberDTO.getGrade())
 											.build();
 		return memberEntity;
 	}
@@ -76,7 +78,10 @@ public class MemberDTO {
 		this.role = memberEntity.getRole();
 		this.orgFilename = memberEntity.getOrg_filename();
 		this.storedFilename = memberEntity.getStored_filename();
-		this.filesize = memberEntity.getFilesize();
+		this.grade = memberEntity.getGrade();
+		// filesize가 null이면 기본값으로 설정 (예: 0L)
+	    this.filesize = memberEntity.getFilesize() != null ? memberEntity.getFilesize() : 0L;
+	    
 		this.point=memberEntity.getPoint();
 		
 		

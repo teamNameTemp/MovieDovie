@@ -79,6 +79,7 @@ public class MovieEntity {
     @Column(name="price" ,columnDefinition = "integer default 0")
     private int price;
     
+    @Column(name="hitno", columnDefinition = "integer default 0")
     private int hitno;
     
 }
