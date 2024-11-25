@@ -13,6 +13,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.messaging.MessagingException;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -80,24 +81,18 @@ public class MemberController {
 	}
 	
 	//로그아웃
-	@GetMapping("/logout")
+	@PostMapping("/logout")
 	public void getLogout(HttpSession session,Model model) {	
-		String email = (String)session.getAttribute("email");
-		String nickname = (String)session.getAttribute("nickname");
-		model.addAttribute("nickname", nickname);
-//		service.lastdateUpdate(email, "logout");
-		service.memberLogRegistry(email, "logout");		
-		session.invalidate(); 
-		log.info("====================== 로그 아웃 ======================");
-	}
-	//로그아웃 전처리
-	@PostMapping("/beforeLogout")
-	public void getBeforeLogout(HttpSession session,Model model) {
-		String email = (String)session.getAttribute("email");
-		service.lastdateUpdate(email, "logout");
-		service.memberLogRegistry(email, "logout");		
-		session.invalidate(); 
-		log.info("====================== 로그 아웃 전 로그 등록 및 세션 종료======================");
+		String email = (String) session.getAttribute("email");
+
+		// 이메일이 세션에 존재하는지 확인
+		if (email != null) {
+			service.lastdateUpdate(email, "logout");
+			service.memberLogRegistry(email, "logout");
+		}
+		
+		// 세션 무효화
+		session.invalidate();	
 	}
 	
 	//회원 등록 화면 보기
