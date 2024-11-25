@@ -7,6 +7,9 @@ import com.board.dto.movie.MovieDTO;
 import com.board.entity.movie.GenreEntity;
 
 public interface MovieAPIService {
+
+	//주간 트렌드 영화 가져오기
+	public List<Map<String, Object>> getWeeklyTrend();
 	//DB에 저장되어 있는 영화상세정보가져오기
 	public Map<String,Object> getMovieDetails(Long id);
 	
@@ -24,6 +27,7 @@ public interface MovieAPIService {
 	//저장 및 업데이트
 	public void saveTheDataBases(List<MovieDTO> list);
 	public void saveTheDataBase(MovieDTO movie);
+	public void saveWeeklyTrend(List<MovieDTO> list);
 	
 	//관리자 업로드 저장 및 업데이트
 	void directSave(MovieDTO movie) ;

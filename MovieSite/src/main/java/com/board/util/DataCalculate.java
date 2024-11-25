@@ -1,7 +1,10 @@
 package com.board.util;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
+import java.time.temporal.WeekFields;
+import java.util.Locale;
 
 import org.springframework.stereotype.Component;
 
@@ -9,7 +12,7 @@ import org.springframework.stereotype.Component;
 public class DataCalculate {
 	
 	//개봉날짜에 따른 대여 비용 계산
-	public int calcRentPrice(LocalDate release) {
+	public static int calcRentPrice(LocalDate release) {
         LocalDate today = LocalDate.now();
         long daysSinceRelease = ChronoUnit.DAYS.between(release, today);
         
@@ -36,7 +39,7 @@ public class DataCalculate {
     }
 
     //등급에 따른 마일리지 추가
-    public int calcMileage(String grade, int price) {
+    public static int calcMileage(String grade, int price) {
         int result = 0;
 
         switch (grade) {
@@ -60,10 +63,16 @@ public class DataCalculate {
     }
 
     //나이 계산
-    public boolean calcAge(String ssn) {
+    public static int calcAge(String ssn) {
         int year = Integer.parseInt(ssn.substring(0, 2));
-        int age = 2024 - year;
+        int age = LocalDate.now().getYear() - year;
 
-        return age >= 18;
+        return age;
+    }
+
+    //주차 계산
+    public static int getWeekOfMonth(LocalDateTime date) {
+        WeekFields weekFields = WeekFields.of(Locale.KOREA);
+        return date.get(weekFields.weekOfMonth());
     }
 }
