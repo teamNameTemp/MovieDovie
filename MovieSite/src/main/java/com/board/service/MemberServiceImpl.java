@@ -60,6 +60,7 @@ public class MemberServiceImpl implements MemberService {
     	// 닉네임이 존재하면 1 반환, 없으면 0 반환
         return memberRepository.existsByNickname(nickname) ? 1 : 0;
     }
+
 	
 	//패스워드 수정
 	public void modifyMemberPassword(MemberDTO member) {
