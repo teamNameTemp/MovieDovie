@@ -227,7 +227,7 @@ public class MemberController {
         String os = System.getProperty("os.name").toLowerCase();
         String path;
         if (os.contains("win")) {
-            path = "c:\\Repository\\profile\\";
+            path = "c:\\Repository\\movidovie\\profile\\";
         } else {
             path = "/home/tjdwn/Repository/moviedovie/profile";
         }
