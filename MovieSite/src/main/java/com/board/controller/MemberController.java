@@ -81,8 +81,10 @@ public class MemberController {
 	
 	//로그아웃
 	@GetMapping("/logout")
-	public void getLogout(HttpSession session) {	
+	public void getLogout(HttpSession session,Model model) {	
 		String email = (String)session.getAttribute("email");
+		String nickname = (String)session.getAttribute("nickname");
+		model.addAttribute("nickname", nickname);
 //		service.lastdateUpdate(email, "logout");
 		service.memberLogRegistry(email, "logout");		
 		session.invalidate(); 
