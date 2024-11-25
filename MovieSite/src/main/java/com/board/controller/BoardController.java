@@ -84,14 +84,10 @@ public class BoardController {
 		model.addAttribute("nickname", nickname);
 
 		
-		  List<MovieDTO> trend = tmdb.getTrendingMovies("day", 1, "ko-KR").block();
-          List<MovieDTO> trendList = new ArrayList<>();
-          
-          for(MovieDTO d : trend) {
-              MovieDTO dto = tmdb.getMovieDetails(d.getId(), "ko-KR").block();
-              trendList.add(dto);
-          }
-		
+		//주간 트렌드 영화
+		List<Map<String, Object>> weeklyTrend = movie.getWeeklyTrend();
+		model.addAttribute("weeklyTrend", weeklyTrend);
+	
 		//선호 장르별 영화 리스트
 		Map<String, Object> favGenreList = new HashMap<>();
 		Optional<Map<String, Object>> genre = favGenre.getFavGenre();
@@ -123,7 +119,6 @@ public class BoardController {
 		model.addAttribute("directUploadList",directList);
 		
 		model.addAttribute("nickname", session.getAttribute("nickname"));
-		model.addAttribute("dailyMovies", trendList);
 		model.addAttribute("favGenre", genre.get());
 		model.addAttribute("favGenreList", favGenreList);
 
