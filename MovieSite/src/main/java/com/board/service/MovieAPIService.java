@@ -3,10 +3,8 @@ package com.board.service;
 import java.util.List;
 import java.util.Map;
 
-
 import com.board.dto.movie.MovieDTO;
 import com.board.entity.movie.GenreEntity;
-import com.board.entity.movie.MovieEntity;
 
 public interface MovieAPIService {
 	//DB에 저장되어 있는 영화상세정보가져오기

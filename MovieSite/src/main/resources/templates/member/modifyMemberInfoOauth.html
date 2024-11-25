@@ -3,7 +3,6 @@
 <head>
 <meta charset="UTF-8">
 <title>회원 정보 수정</title>
-<link rel="stylesheet" href="/css/board.css">
 <style>
 	/* 기존 스타일 유지 */
 	.imageZone {
@@ -321,7 +320,7 @@ window.onload = () => {
 		   	.then((data)=> {
 		   		if(data.message === 'good'){
 		   			alert("회원 정보가 수정되었습니다.");
-		   			document.location.href='/board/mypage';
+		   			document.location.href='/member/selectGenre';
 		   		} else {
 		   			alert("서버 장애로 회원 가입에 실패했습니다.");
 		   		}
