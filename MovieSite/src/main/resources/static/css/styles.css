@@ -85,7 +85,7 @@ body {
 .navbar-container {
   display: flex;
   align-items: center;
-  padding: 0 100px 0 50px;
+  padding: 0 100px 0 0;
   height: 100%;
   color: white;
   font-family: "Jua", sans-serif;

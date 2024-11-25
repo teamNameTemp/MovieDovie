@@ -77,6 +77,7 @@ public class BoardController {
 	public void getList(Model model, HttpSession session) throws JsonMappingException, JsonProcessingException {
 		String email = (String) session.getAttribute("email");
 		MemberDTO memberDTO = memberService.memberInfo(email);
+		model.addAttribute("member", memberDTO);
 		
 		String nickname = (String) session.getAttribute("nickname");
 		model.addAttribute("nickname", nickname);
