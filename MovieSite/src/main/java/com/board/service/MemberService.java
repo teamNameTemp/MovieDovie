@@ -26,7 +26,8 @@ public interface MemberService {
 	
 	//닉네임 중복 확인
 	public int nicknameCheck(String nickname);
-	
+
+
 	//회원 로그인/로그아웃 로그 등록
 	public void memberLogRegistry(String email, String status);
 	

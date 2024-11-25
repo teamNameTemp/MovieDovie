@@ -114,7 +114,7 @@ public class MemberController {
 		if(os.contains("win"))
 			path = "c:\\Repository\\profile\\";
 		else 
-			path = "/home/tjdwn/Repository/profile";
+			path = "/home/tjdwn/Repository/moviedovie/profile";
 		
 		//디렉토리가 존재하는지 체크해서 없다면 생성
 		File p = new File(path);
@@ -210,52 +210,123 @@ public class MemberController {
         return response;
     }
 
-	
-	//회원 정보 수정 화면 보기
-	@GetMapping("/modifyMemberInfo")
-	public void getMemberInfoModify(Model model, HttpSession session) {	
-		String email = (String)session.getAttribute("email");
-		model.addAttribute("member", service.memberInfo(email));		
-	}
-	
-	
+
+	//회원수정
+    @GetMapping("/modifyMemberInfo")
+    public void getMemberInfoModify(Model model, HttpSession session) {    
+        String email = (String) session.getAttribute("email");
+        model.addAttribute("member", service.memberInfo(email));        
+    }
+
+    @ResponseBody
+    @PostMapping("/modifyMemberInfo")
+    public Map<String, String> postMemberInfoModify(MemberDTO member, @RequestParam("kind") String kind, 
+            @RequestParam("fileUpload") MultipartFile mpr) throws Exception {
+
+        // 운영체제에 따라 이미지가 저장될 디렉토리 구조 설정 시작
+        String os = System.getProperty("os.name").toLowerCase();
+        String path;
+        if (os.contains("win")) {
+            path = "c:\\Repository\\profile\\";
+        } else {
+            path = "/home/tjdwn/Repository/moviedovie/profile";
+        }
+
+        // 디렉토리가 존재하는지 체크해서 없다면 생성
+        File p = new File(path);
+        if (!p.exists()) p.mkdir();
+        // 운영체제에 따라 이미지가 저장될 디렉토리 구조 설정 종료
+
+        File targetFile = null;
+        String org_filename = "";
+        String org_fileExtension = "";
+        String stored_filename = "";
+
+        if (!mpr.isEmpty()) {
+            org_filename = mpr.getOriginalFilename();
+            org_fileExtension = org_filename.substring(org_filename.lastIndexOf("."));
+            stored_filename = UUID.randomUUID().toString().replaceAll("-", "") + org_fileExtension;
+
+            try {
+                targetFile = new File(path + stored_filename);
+                mpr.transferTo(targetFile);
+
+                member.setOrgFilename(stored_filename);
+                member.setStoredFilename(stored_filename);
+                member.setFilesize(mpr.getSize());
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+        if (kind.equals("I")) { // 회원 등록 시
+            log.info("회원가입 성공!");
+            member.setPassword(pwdEncoder.encode(member.getPassword()));
+            service.signup(member);
+        }
+
+        if (kind.equals("U")) { // 회원 수정 시
+            if (!mpr.isEmpty()) { // 프로필 이미지 변경 시 기존 파일 삭제
+                MemberDTO m = service.memberInfo(member.getEmail());
+                File file = new File(path + m.getStoredFilename());
+                if (file.exists()) {
+                    file.delete();
+                }
+            }
+
+            String EncodedNewPW = pwdEncoder.encode(member.getPassword());
+            member.setPassword(EncodedNewPW);
+            service.modifyMemberInfo(member);
+        }
+
+        Map<String, String> data = new HashMap<>();
+        data.put("message", "good");
+        data.put("username", URLEncoder.encode(member.getUsername(), "UTF-8"));
+
+        return data;
+    }
+
+
+
+
 	//회원 프로필 이미지 보기
 	@GetMapping("viewProfile/{email}")
 	public void filedownload(@PathVariable String email, HttpServletResponse rs) throws Exception {		
 		
-		//운영체제에 따라 이미지가 저장될 디렉토리 구조 설정 시작
-		String os = System.getProperty("os.name").toLowerCase();
-		String path;
-		if(os.contains("win"))
-			path = "c:\\Repository\\profile\\";
-		else 
-			path = "/home/tjdwn/Repository/profile";
-		
-		//디렉토리가 존재하는지 체크해서 없다면 생성
-		File p = new File(path);
-		if(!p.exists()) p.mkdir();
-		//운영체제에 따라 이미지가 저장될 디렉토리 구조 설정 종료
-
-		MemberDTO member = service.memberInfo(email);
-		
-		//다운로드할 파일의 경로와 파일명을 매개변수로 입력 받아 byte 데이터타입의 1차원 배열로 저장
-		File file = new File(path + member.getStoredFilename());
-		if (!file.exists()) {
-		    throw new FileNotFoundException("File not found at: " + file.getAbsolutePath());
-		}
-
-		// 파일을 byte[]로 읽기
-		byte[] fileBytes = Files.readAllBytes(file.toPath());
-
-		
-		//예) HTTP Response Header는 Content-Disposition: attachment; filename="hello.jpg";
-		//   HTTP Response Body에는 1차원 바이트 타입으로 변환된 배열을 넣음
-		rs.setContentType("application/octet-stream");
-		rs.setContentLength(fileBytes.length);
-		rs.setHeader("Content-Disposition", "attachment; filename=\"" + URLEncoder.encode(member.getOrgFilename(), "UTF-8") + "\";");
-		rs.getOutputStream().write(fileBytes); //stream을 통해 1차원 byte 타입 배열로 변환된 데이터(추후 파일로 변환)를 Buffer에 씀...
-		rs.getOutputStream().flush(); //버퍼에 있는 내용을 write
-		rs.getOutputStream().close(); //스트림 닫기
+//		//운영체제에 따라 이미지가 저장될 디렉토리 구조 설정 시작
+//		String os = System.getProperty("os.name").toLowerCase();
+//		String path;
+//		if(os.contains("win"))
+//			path = "c:\\Repository\\profile\\";
+//		else 
+//			path = "/home/tjdwn/Repository/moviedovie/profile";
+//		
+//		//디렉토리가 존재하는지 체크해서 없다면 생성
+//		File p = new File(path);
+//		if(!p.exists()) p.mkdir();
+//		//운영체제에 따라 이미지가 저장될 디렉토리 구조 설정 종료
+//
+//		MemberDTO member = service.memberInfo(email);
+//		
+//		//다운로드할 파일의 경로와 파일명을 매개변수로 입력 받아 byte 데이터타입의 1차원 배열로 저장
+//		File file = new File(path + member.getStoredFilename());
+//		if (!file.exists()) {
+//		    throw new FileNotFoundException("File not found at: " + file.getAbsolutePath());
+//		}
+//
+//		// 파일을 byte[]로 읽기
+//		byte[] fileBytes = Files.readAllBytes(file.toPath());
+//
+//		
+//		//예) HTTP Response Header는 Content-Disposition: attachment; filename="hello.jpg";
+//		//   HTTP Response Body에는 1차원 바이트 타입으로 변환된 배열을 넣음
+//		rs.setContentType("application/octet-stream");
+//		rs.setContentLength(fileBytes.length);
+//		rs.setHeader("Content-Disposition", "attachment; filename=\"" + URLEncoder.encode(member.getOrgFilename(), "UTF-8") + "\";");
+//		rs.getOutputStream().write(fileBytes); //stream을 통해 1차원 byte 타입 배열로 변환된 데이터(추후 파일로 변환)를 Buffer에 씀...
+//		rs.getOutputStream().flush(); //버퍼에 있는 내용을 write
+//		rs.getOutputStream().close(); //스트림 닫기
 	}
 	
 	//회원가입 이메일 인증
