@@ -63,10 +63,10 @@ public class WebSecurityConfig {
       //스프링 시큐리티의 접근권한 설정(Authentication)
       http
          .authorizeHttpRequests((authz)-> authz
-               .requestMatchers("/make/**").permitAll()
+               .requestMatchers("/make/**").hasAnyAuthority("MASTER","USER")
                .requestMatchers("/member/**").permitAll()
-               .requestMatchers("/board/**").permitAll()
-               .requestMatchers("/master/**").permitAll()
+               .requestMatchers("/board/**").hasAnyAuthority("MASTER","USER")
+               .requestMatchers("/master/**").hasAnyAuthority("MASTER","USER")
                .anyRequest().authenticated());
       //세션 설정
       http
@@ -78,8 +78,8 @@ public class WebSecurityConfig {
       //스프링 시큐리티의 로그 아웃
       http
          .logout(logout -> logout
-               .logoutUrl("/member/logout")
-               .logoutSuccessUrl("/member/login")
+               .logoutUrl("/member/beforeLogout")
+               .logoutSuccessUrl("/member/logout")
                .invalidateHttpSession(true)
                .deleteCookies("JSESSIONID","remember-me")
                .permitAll());

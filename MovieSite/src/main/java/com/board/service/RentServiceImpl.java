@@ -1,6 +1,5 @@
 package com.board.service;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
@@ -18,7 +17,7 @@ import com.board.entity.movie.MovieEntity;
 import com.board.entity.repository.MemberRepository;
 import com.board.entity.repository.RentRepository;
 import com.board.entity.repository.movie.MovieRepository;
-import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
+import com.board.util.DataCalculate;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -31,6 +30,7 @@ public class RentServiceImpl implements RentService {
 	private final RentRepository rentRepository;
 	private final MovieRepository movieRepositoty;
 	private final MemberRepository memberRepository;
+	private final DataCalculate calc;
 
 	@Override
 	public void updateRent(String email, Long movieId) {
@@ -65,7 +65,15 @@ public class RentServiceImpl implements RentService {
 
 		// 대여 할 시
 		if (rent == null) {
-			// 대여 할 시 돈 차감
+
+			//rent.payment에따라 포인트/결제 처리
+			//등급에 따른 마일리지 추가
+			//1.포인트계산
+			// int mileage = calc.calcMileage(memE.getGrade(), movieE.getPrice());
+			// memE.setPoint(memE.getPoint() - movieE.getPrice());
+			// memE.setMileage(memE.getMileage() + mileage);
+			//2.결제 처리
+			
 			rent = RentEntity.builder().rentdate(LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES))
 					.returndate(LocalDateTime.now().plus(3, ChronoUnit.DAYS).truncatedTo(ChronoUnit.MINUTES))
 					.status("Y").sales(movieE.getPrice()).email(memE).movieId(movieE).build();
@@ -178,6 +186,11 @@ public class RentServiceImpl implements RentService {
 		}
 		
 		return data;
+	}
+
+	@Override
+	public Long getMyAccumulatedPayment(String email) {
+		return rentRepository.getTotalSalesByEmail(email);
 	}
 
 }

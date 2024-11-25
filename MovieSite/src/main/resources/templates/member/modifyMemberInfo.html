@@ -3,103 +3,167 @@
 <head>
 <meta charset="UTF-8">
 <title>회원 정보 수정</title>
-<link rel="stylesheet" href="/css/board.css">
 <style>
-	/* 기존 스타일 유지 */
-	.imageZone {
-	    box-sizing: border-box;
-	    border: 2px solid #92AAB0;
-	    width: 80%;
-	    max-width: 350px;
-	    height: auto;
-	    color: #92AAB0;
-	    text-align: center;
-	    margin: auto;
-	    font-size: 150%;
-	    position: relative;
-	    overflow: hidden;
-	    display: flex;
-	    align-items: center;
-	    justify-content: center;
-	}
+/* 기본 스타일 */
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background-color: #141414; /* 넷플릭스 어두운 배경 */
+    color: #ffffff;
+    display: flex;
+    justify-content: center;
+    height: 100vh;
+}
 
-	.imageZone img {
-	    width: 100%;
-	    height: auto;
-	    display: block;
-	    object-fit: contain;
-	}
+/* 메인 컨테이너 */
+.main {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
 
-	body {
-	    background-color: rgba(20, 20, 20, 0.8);
-	    color: white;
-	    display: flex;
-	    justify-content: center;
-	    align-items: center;
-	    margin: 0;
-	}
+/* 폼 컨테이너 */
+.WriteForm {
+    background-color: #222222; /* 폼 배경 */
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    width: 90%;
+    max-width: 500px;
+    margin: auto;
+}
 
-	.main {
-	    text-align: center;
-	}
+/* 폼 제목 */
+.WriteForm h1 {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 20px;
+    color: #e50914; /* 넷플릭스 레드 */
+}
 
-	.WriteForm {
-	    background-color: rgba(34, 34, 34, 0.9);
-	    padding: 30px 70px;
-	    border-radius: 5px;
-	    border: 2px solid transparent;
-	    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
-	    margin: 0 auto;
-	    text-align: center;
-	}
+/* 입력 필드 */
+.input_field {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 15px;
+    border: 1px solid #333333;
+    border-radius: 5px;
+    background-color: #141414;
+    color: #ffffff;
+    font-size: 16px;
+}
 
-	.input_field {
-	    box-sizing: border-box;
-	    padding: 15px;
-	    margin-bottom: 5px; /* 메시지와의 간격 조정 */
-	    border: 1px solid white;
-	    border-radius: 3px;
-	    background-color: #333;
-	    color: white;
-	    width: 100%;
-	}
+.input_field::placeholder {
+    color: #888888;
+}
 
-	.input_field:focus {
-	    border: 1px solid #e50914;
-	}
+/* 라벨 스타일 */
+label {
+    font-size: 16px;
+    font-weight: bold;
+    margin-bottom: 5px;
+    display: block;
+    text-align: left;
+}
 
-	.validation-message {
-	    color: red; /* 오류 메시지 기본 색상 */
-	    font-size: 0.9em;
-	    margin-bottom: 10px; /* 입력 필드와 간격 추가 */
-	}
+/* 버튼 스타일 */
+.btn_modify {
+    width: 100%;
+    padding: 12px;
+    margin: 10px 0;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    font-weight: bold;
+    background-color: #e50914;
+    color: #ffffff;
+    transition: background-color 0.3s ease;
+}
 
-	.validation-message.valid {
-	    color: green; /* 유효할 때 메시지 색상 */
-	}
+.btn_modify:hover {
+    background-color: #f40612; /* 호버 시 밝은 빨간색 */
+}
 
-	.btn_modify {
-	    width: 100%;
-	    padding: 10px;
-	    background-color: #4dbf00;
-	    border: none;
-	    border-radius: 3px;
-	    color: white;
-	    font-size: 16px;
-	    cursor: pointer;
-	    margin-top: 10px;
-	}
+.btn_cancel {
+    width: 100%;
+    padding: 12px;
+    margin: 10px 0;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    font-weight: bold;
+    background-color: #444444;
+    color: #ffffff;
+    transition: background-color 0.3s ease;
+}
 
-	.btn_modify:hover {
-	    background-color: #f40612;
-	}
+.btn_cancel:hover {
+    background-color: #555555;
+}
 
-	h1 {
-	    font-size: 50px;
-	    color: white;
-	    margin-bottom: 20px;
-	}
+/* 프로필 이미지 영역 */
+.imageZone {
+    width: 100%;
+    padding: 10px;
+    background-color: #333333;
+    text-align: center;
+    color: #888888;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.imageZone:hover {
+    background-color: #444444;
+}
+
+/* 인증 메시지 스타일 */
+.validation-message {
+    color: red;
+    font-size: 12px;
+}
+
+/* 라디오 버튼 */
+input[type="radio"] {
+    margin-right: 5px;
+}
+
+/* 체크박스 및 동의 영역 */
+.agreement-container {
+    background-color: #333333;
+    padding: 15px;
+    border-radius: 5px;
+    margin-bottom: 20px;
+}
+
+.agreement-container label {
+    display: inline-block;
+    font-size: 14px;
+    margin-right: 10px;
+}
+
+.agreement-container input[type="checkbox"] {
+    margin-right: 5px;
+}
+
+.optional {
+    font-size: 12px;
+    color: #888888;
+    margin-top: 5px;
+}
+
+/* 반응형 디자인 */
+@media (max-width: 600px) {
+    .WriteForm {
+        width: 95%;
+        padding: 20px;
+    }
+}
 </style>
+
+
 <script>	
 window.onload = () => {
 			
@@ -157,38 +221,7 @@ window.onload = () => {
 	let emailAvailable = false;
 	let nicknameAvailable = false;
 
-	// 이메일 유효성 검사
-	const isValidEmail = (email) => {
-	    const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-	    return emailPattern.test(email);
-	};
 
-	// 이메일 입력란에 'input' 이벤트 리스너 추가
-	email.addEventListener('input', async () => {
-	    if (isValidEmail(email.value)) {
-	        // 서버에서 이메일 중복 확인
-	        const response = await fetch('/member/emailCheck', {
-	            method: 'POST',
-	            headers: { 'Content-Type': 'application/json' },
-	            body: JSON.stringify({ email: email.value })
-	        });
-	        const data = await response.json();
-
-	        if (data.exists) {
-	            emailValidationMessage.textContent = "이미 존재하는 이메일입니다.";
-	            emailValidationMessage.style.color = "red";
-	            emailAvailable = false;
-	        } else {
-	            emailValidationMessage.textContent = "사용 가능한 이메일입니다.";
-	            emailValidationMessage.style.color = "green";
-	            emailAvailable = true;
-	        }
-	    } else {
-	        emailValidationMessage.textContent = "잘못된 이메일 형식입니다.";
-	        emailValidationMessage.style.color = "red";
-	        emailAvailable = false;
-	    }
-	});
 
 	// 닉네임 유효성 검사 및 중복 확인
 	nickname.addEventListener('input', async () => {
@@ -293,18 +326,6 @@ window.onload = () => {
 			return false;
 		}		
 		
-		if (!isValidEmail(email.value)) {
-		    alert("이메일을 확인해주세요.");
-		    email.focus();
-		    return false;
-		}
-		
-		if (!emailAvailable) {
-		    alert("이미 존재하는 이메일입니다. 다른 이메일을 사용해주세요.");
-		    email.focus();
-		    return false;
-		}
-		
 		if (!isValidPassword(password.value)) {
 		    alert("비밀번호를 확인해주세요.");
 		    password.focus();
@@ -370,7 +391,7 @@ window.onload = () => {
 
 				<div>
 					<label>이메일</label>
-					<input type="email" id="email" name="email" class="input_field" placeholder="이메일">
+					<input type="email" id="email" name="email" class="input_field" th:value="${member.email}" readonly>
 					<div id="emailValidationMessage" class="validation-message"></div>
 				</div><br>
 
@@ -410,14 +431,14 @@ window.onload = () => {
 
 				<div>
 					<label>전화번호</label>
-					<input type="text" id="telno" name="telno" class="input_field" placeholder="전화번호" maxlength="12">
+					<input type="text" id="telno" name="telno" class="input_field" placeholder="전화번호" maxlength="12" th:value="${member.telno}">
 					<div id="telnoValidationMessage" class="validation-message"></div>
 				</div><br><br>
 
 				<div>
 					<input type="button" id="btnModify" class="btn_modify" value="회원 수정"><br><br><br><br>
 					<input type="button" class="btn_cancel" value="취소" onclick="history.back()">
-					<input type="hidden" name="kind" value="I">
+					<input type="hidden" name="kind" value="U">
 					
 				</div><br>
             </div>
