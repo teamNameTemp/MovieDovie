@@ -12,6 +12,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import com.board.dto.movie.MovieDTO;
+import com.board.entity.MemberEntity;
 import com.board.entity.movie.CastEntity;
 import com.board.entity.movie.CompanyEntity;
 import com.board.entity.movie.CountryEntity;
@@ -21,6 +22,7 @@ import com.board.entity.movie.ImageEntity;
 import com.board.entity.movie.LanguageEntity;
 import com.board.entity.movie.MovieEntity;
 import com.board.entity.movie.VideoEntity;
+import com.board.entity.repository.MemberRepository;
 import com.board.entity.repository.movie.CastRepository;
 import com.board.entity.repository.movie.CompanyRepository;
 import com.board.entity.repository.movie.CountryRepository;
@@ -94,7 +96,7 @@ public class MovieAPIServiceImpl implements MovieAPIService {
 	public Map<String, Object> getMovieDetails(Long id) {
 		Map<String, Object> data = new HashMap<>();
 		Optional<MovieEntity> entity = movieRepository.findById(id);
-
+		
 		if (entity.isPresent()) {
 			data.put("info", entity.get());
 			
@@ -126,7 +128,9 @@ public class MovieAPIServiceImpl implements MovieAPIService {
 		List<Map<String,Object>> data = new ArrayList<>();
 		
 		for(GenreEntity genre : genres) {
-			data.add(mapper.getMovieSimpleInfo(genre.getMovieId()));
+			Map<String,Object> map = mapper.getMovieSimpleInfo(genre.getMovieId());
+			map.put("info", mapper.getMovieSimpleInfo(genre.getMovieId()));
+			data.add(map);
 		}
 		
 		return data;

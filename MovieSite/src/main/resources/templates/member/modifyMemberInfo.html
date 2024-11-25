@@ -398,7 +398,7 @@ window.onload = () => {
 
 				<div>
 					<label>전화번호</label>
-					<input type="text" id="telno" name="telno" class="input_field" placeholder="전화번호" maxlength="12">
+					<input type="text" id="telno" name="telno" class="input_field" placeholder="전화번호" maxlength="12" th:value="${member.telno}">
 					<div id="telnoValidationMessage" class="validation-message"></div>
 				</div><br><br>
 

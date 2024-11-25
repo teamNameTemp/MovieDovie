@@ -1,8 +1,6 @@
 package com.board.util;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -10,10 +8,6 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Component;
-
-import com.board.util.DataCalculate;
-
-import lombok.RequiredArgsConstructor;
 
 import com.board.dto.movie.MovieDTO;
 import com.board.entity.movie.CastEntity;
@@ -25,6 +19,8 @@ import com.board.entity.movie.ImageEntity;
 import com.board.entity.movie.LanguageEntity;
 import com.board.entity.movie.MovieEntity;
 import com.board.entity.movie.VideoEntity;
+
+import lombok.RequiredArgsConstructor;
 
 @Component
 @RequiredArgsConstructor

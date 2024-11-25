@@ -2,20 +2,14 @@ package com.board.service;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Service;
 
 import com.board.dto.MemberDTO;
 import com.board.entity.MemberEntity;
 import com.board.entity.MemberLogEntity;
-import com.board.entity.repository.FileRepository;
 import com.board.entity.repository.MemberLogRepository;
 import com.board.entity.repository.MemberRepository;
-import com.board.util.PasswordMaker;
 
 import lombok.AllArgsConstructor;
 
@@ -25,7 +19,6 @@ public class MemberServiceImpl implements MemberService {
 	
 	private final MemberRepository memberRepository;
 	private final MemberLogRepository memberLogRepository;
-	private final FileRepository fileRepository;
 
 
 	//회원 가입

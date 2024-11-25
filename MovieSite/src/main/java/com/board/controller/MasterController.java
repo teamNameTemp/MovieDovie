@@ -8,13 +8,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
-import javax.swing.border.TitledBorder;
-
-import org.hibernate.bytecode.internal.bytebuddy.PrivateAccessorException;
 import org.springframework.data.domain.Page;
-import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
@@ -33,15 +28,11 @@ import com.board.entity.RequestEntity;
 import com.board.entity.RequestReplyEntity;
 import com.board.entity.movie.MovieEntity;
 import com.board.entity.repository.movie.MovieRepository;
-import com.board.entity.repository.MemberRepository;
-import com.board.entity.repository.RequestRepository;
-import com.board.service.BookmarkService;
 import com.board.service.FavGenreService;
 import com.board.service.LikeService;
 import com.board.service.MasterService;
 import com.board.service.MemberLogService;
 import com.board.service.MemberService;
-import com.board.service.MovieAPIService;
 import com.board.service.NotificationService;
 import com.board.service.RentService;
 import com.board.service.RequestReplyService;
@@ -68,8 +59,6 @@ public class MasterController {
 	private final RequestReplyService requestReplyService;
 	private final MovieRepository movieRepository;
 	private final NotificationService notificationService;
-	private final MemberRepository memberRepository;
-	private final BookmarkService bookmarkService;
 
 	// 회원의 요청 목록 보기
 	@GetMapping("/memberRequest")
@@ -192,7 +181,9 @@ public class MasterController {
             
 	    		String content = masterNickname + "님이 '" + title + "'에 댓글을 달았습니다.";
 	    		String type = "reply";
+				log.info(123);
 	    		if(!masterEmail.equals(recieverEmail)) {
+					log.info(456);
 	    			notificationService.newNotiForUser(recieverEmail, content, type, seqno);
 	    		}
 	    		
