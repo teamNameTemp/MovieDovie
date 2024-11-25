@@ -216,6 +216,7 @@ public class MemberController {
 	public void getMemberInfoModify(Model model, HttpSession session) {	
 		String email = (String)session.getAttribute("email");
 		model.addAttribute("member", service.memberInfo(email));		
+		//연결
 	}
 	
 	
