@@ -38,6 +38,7 @@ public class MovieMapper {
 		data.put("posterPath", movie.getPosterPath());
 		data.put("releaseDate", movie.getReleaseDate());
 		data.put("certification", movie.getCertification());
+		data.put("backdropPath", movie.getBackdropPath());
 		
 		return data;
 	}

@@ -622,10 +622,10 @@ public class BoardController {
 	
 	@PostMapping("/search/movies")
 	@ResponseBody
-	public List<List<MovieDTO>> searchMovies(@RequestParam ("keyword") String keyword) {
+	public List<Map<String,Object>> searchMovies(@RequestParam ("keyword") String keyword) {
 
 		try {
-			List<List<MovieDTO>> movies = tmdb.searchMovies(keyword,3).block();
+			List<Map<String,Object>> movies = movie.findByKeywordMovieList(keyword);
 			return movies;
 		} catch (Exception e) {
 			log.error("Error fetching movies: ", e);
