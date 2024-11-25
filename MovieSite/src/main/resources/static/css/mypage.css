@@ -246,6 +246,7 @@ tr:hover {
   flex: 1;
 }
 
+.pwEdit-btn ,
 .edit-btn {
   margin-bottom: 20px;
   background: transparent;
