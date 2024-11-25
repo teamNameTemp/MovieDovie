@@ -221,6 +221,7 @@ body {
   transform: translateX(-50%);
   top: 100%;
   overflow: scroll;
+  z-index: 1500;
 }
 
 /* 공통 스크롤바 스타일 */
