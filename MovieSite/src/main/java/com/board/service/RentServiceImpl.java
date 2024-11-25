@@ -133,6 +133,12 @@ public class RentServiceImpl implements RentService {
 	public List<Object[]> RentCountByMonth(int year) {
 		return rentRepository.RentCountByMonth(year);
 	}
+	
+	//관리자페이지 - 통계 : 월별 매출 확인
+	@Override	
+	public List<Object[]> SalesByMonth(int year){
+		return rentRepository.SalesByMonth(year);
+	}
 
 	// 관리자 페이지 - 통계 : 올해 대여 status 수 확인
 	@Override
@@ -142,7 +148,7 @@ public class RentServiceImpl implements RentService {
 
 	// 관리자 페이지 - 통계 : 올해 대여 TOP 회원 확인
 	public List<Object[]> findTopRenters() {
-		return rentRepository.findTopRenters();
+		return rentRepository.findTopRenterNickname();
 	}
 
 	@Override
@@ -191,6 +197,18 @@ public class RentServiceImpl implements RentService {
 	@Override
 	public Long getMyAccumulatedPayment(String email) {
 		return rentRepository.getTotalSalesByEmail(email);
+	}
+	
+	//관리자 페이지 - 통계 : 월별 영화발매일 별 매출 확인
+	@Override	
+	public List<Object[]> SalesByReleaseDateByMonth(int year){
+		return rentRepository.SalesByReleaseDateByMonth(year);
+	}
+		
+	//관리자 페이지 - 통계 : 분기별 영화발매일 별 매출 확인
+	@Override
+	public List<Object[]> SalesByReleaseDateByQuarter(int year){
+		return rentRepository.SalesByReleaseDateByQuarter(year);
 	}
 
 }

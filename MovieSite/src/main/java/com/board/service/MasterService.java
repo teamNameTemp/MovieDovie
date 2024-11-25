@@ -7,6 +7,9 @@ import com.board.entity.RequestEntity;
 
 public interface MasterService {
 	
+	//구매 전환율 구하기
+	public double conversionRate();
+	
 	//요청 게시물 목록 보기
 	public Page<RequestEntity> list(int pageNum, int postNum, String keyword) throws Exception;
 
