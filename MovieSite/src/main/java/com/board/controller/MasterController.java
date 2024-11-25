@@ -255,6 +255,26 @@ public class MasterController {
 
 		return response; // JSON 형태로 반환
 	}
+	
+	// 관리자 페이지 - 통계 : 최근 일주일 간 대여 수 확인
+	@GetMapping("/weeklySales")
+	@ResponseBody
+	public List<Map<String, Object>> getWeeklySales() {
+		LocalDateTime now = LocalDateTime.now();
+		LocalDateTime sevenDaysAgo = now.minusDays(7);
+
+		List<Object[]> results = rentService.Sales(sevenDaysAgo, now);
+		List<Map<String, Object>> response = new ArrayList<>();
+
+		for (Object[] result : results) {
+			Map<String, Object> map = new HashMap<>();
+			map.put("date", result[0]); // 대여 날짜
+			map.put("sales", result[1]); // 매출
+			response.add(map);
+		}
+
+		return response; // JSON 형태로 반환
+	}
 
 	// 관리자 페이지 - 통계 : 작년 월별 매출 확인
 	@GetMapping("/MonthlySalesLastYear")
@@ -550,25 +570,25 @@ public class MasterController {
 	}
 	
 	// 관리자 페이지 - 통계 : 올해 월별 영화발매일 별 매출 확인
-	@GetMapping("/MonthlySalesByReleaseDateCurrentYear")
+	@GetMapping("/MonthlyRentByReleaseDateCurrentYear")
 	@ResponseBody
 	public List<Map<String, Object>> getMonthlySalesByReleaseDateCurrentYear() {
 
 		int currentYear = LocalDate.now().getYear(); // 올해 연도 계산
 
 		// 올해 연도에 대한 월별 대여 수 조회
-		List<Object[]> resultsCurrentYear = rentService.SalesByReleaseDateByMonth(currentYear);
+		List<Object[]> resultsCurrentYear = rentService.RentCountByReleaseDateAndMonth(currentYear);
 
 		List<Map<String, Object>> response = new ArrayList<>();
 
 		for (Object[] result : resultsCurrentYear) {
 			Map<String, Object> map = new HashMap<>();
 			map.put("date", result[0]); // 매출 날짜 (예 : 2023-11)
-			map.put("sales_10000", result[1] != null ? result[1] : 0); // 발매일 1개월 이내 (null 처리)
-			map.put("sales_6000", result[2] != null ? result[2] : 0); // 발매된지 1-3개월 (null 처리)
-			map.put("sales_5000", result[3] != null ? result[3] : 0); // 발매된지 3-6개월 (null 처리)
-			map.put("sales_4000", result[4] != null ? result[4] : 0); // 발매된지 6개월-1년 (null 처리)
-			map.put("sales_1000", result[5] != null ? result[5] : 0); // 발매된지 1년 이상 (null 처리)
+			map.put("count_10000", result[1] != null ? result[1] : 0); // 발매일 1개월 이내 (null 처리)
+			map.put("count_6000", result[2] != null ? result[2] : 0); // 발매된지 1-3개월 (null 처리)
+			map.put("count_5000", result[3] != null ? result[3] : 0); // 발매된지 3-6개월 (null 처리)
+			map.put("count_4000", result[4] != null ? result[4] : 0); // 발매된지 6개월-1년 (null 처리)
+			map.put("count_1000", result[5] != null ? result[5] : 0); // 발매된지 1년 이상 (null 처리)
 			response.add(map);
 		}
 
@@ -576,7 +596,7 @@ public class MasterController {
 	}
 	
 	// 관리자 페이지 - 통계 : 작년 월별 영화발매일 별 매출 확인
-	@GetMapping("/MonthlySalesByReleaseDateLastYear")
+	@GetMapping("/MonthlyRentByReleaseDateLastYear")
 	@ResponseBody
 	public List<Map<String, Object>> getMonthlySalesByReleaseDateLastYear() {
 
@@ -584,18 +604,18 @@ public class MasterController {
 		int lastYear = LocalDate.now().getYear() - 1; // 작년 연도 계산
 
 		// 작년 연도에 대한 월별 대여 수 조회
-		List<Object[]> resultsLastYear = rentService.SalesByReleaseDateByMonth(lastYear);
+		List<Object[]> resultsLastYear = rentService.RentCountByReleaseDateAndMonth(lastYear);
 
 		List<Map<String, Object>> response = new ArrayList<>();
 
 		for (Object[] result : resultsLastYear) {
 			Map<String, Object> map = new HashMap<>();
 			map.put("date", result[0]); // 매출 날짜 (예 : 2024-11)
-			map.put("sales_10000", result[1] != null ? result[1] : 0); // 발매일 1개월 이내 (null 처리)
-			map.put("sales_6000", result[2] != null ? result[2] : 0); // 발매된지 1-3개월 (null 처리)
-			map.put("sales_5000", result[3] != null ? result[3] : 0); // 발매된지 3-6개월 (null 처리)
-			map.put("sales_4000", result[4] != null ? result[4] : 0); // 발매된지 6개월-1년 (null 처리)
-			map.put("sales_1000", result[5] != null ? result[5] : 0); // 발매된지 1년 이상 (null 처리)
+			map.put("count_10000", result[1] != null ? result[1] : 0); // 발매일 1개월 이내 (null 처리)
+			map.put("count_6000", result[2] != null ? result[2] : 0); // 발매된지 1-3개월 (null 처리)
+			map.put("count_5000", result[3] != null ? result[3] : 0); // 발매된지 3-6개월 (null 처리)
+			map.put("count_4000", result[4] != null ? result[4] : 0); // 발매된지 6개월-1년 (null 처리)
+			map.put("count_1000", result[5] != null ? result[5] : 0); // 발매된지 1년 이상 (null 처리)
 			response.add(map);
 		}
 
@@ -737,10 +757,8 @@ public class MasterController {
 			Map<String, Object> map = new HashMap<>();
 			
 		    MovieEntity movie = (MovieEntity) result[0];  // 첫 번째 요소: MovieEntity 객체
-		    Long bookmarkCount = (Long) result[1];  // 두 번째 요소: 북마크 수
 		    
-			map.put("movie", movie); // 첫 번째 요소: MovieEntity 객체
-			map.put("bookmarkCount", bookmarkCount);
+			map.put("movie", movie); // MovieEntity 객체
 			
 			response.add(map);			
 		}

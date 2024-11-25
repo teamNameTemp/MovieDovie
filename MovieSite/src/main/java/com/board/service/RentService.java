@@ -17,6 +17,9 @@ public interface RentService {
 	
 	//관리자페이지 - 통계 : 대여 수 확인 (startDate에 원하는 날짜, endDate에 원하는 날짜 넣으면 그 사이의 값들이 나옴)
     public List<Object[]> RentCount(LocalDateTime startDate, LocalDateTime endDate);
+
+	//관리자페이지 - 통계 : 매출 확인 (startDate에 원하는 날짜, endDate에 원하는 날짜 넣으면 그 사이의 값들이 나옴)
+    public List<Object[]> Sales(LocalDateTime startDate, LocalDateTime endDate);
     
 	//관리자페이지 - 통계 : 월별 대여 수 확인
 	public List<Object[]> RentCountByMonth(int year);
@@ -32,9 +35,7 @@ public interface RentService {
 	
 	List<Map<String,Object>> getTopList(int topCount);
 	
-	//관리자 페이지 - 통계 : 월별 영화발매일 별 매출 확인
-	public List<Object[]> SalesByReleaseDateByMonth(int year);
+	//관리자 페이지 - 통계 : 월별 영화발매일 별 대여 건수 확인
+	public List<Object[]> RentCountByReleaseDateAndMonth(int year);
 	
-	//관리자 페이지 - 통계 : 분기별 영화발매일 별 매출 확인
-	public List<Object[]> SalesByReleaseDateByQuarter(int year);
 }

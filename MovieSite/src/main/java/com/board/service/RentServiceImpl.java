@@ -127,6 +127,12 @@ public class RentServiceImpl implements RentService {
 	public List<Object[]> RentCount(LocalDateTime startDate, LocalDateTime endDate) {
 		return rentRepository.RentCount(startDate, endDate);
 	}
+	
+	//관리자페이지 - 통계 : 매출 확인 (startDate에 원하는 날짜, endDate에 원하는 날짜 넣으면 그 사이의 값들이 나옴)
+    @Override
+	public List<Object[]> Sales(LocalDateTime startDate, LocalDateTime endDate){
+		return rentRepository.Sales(startDate, endDate);
+	}
 
 	// 관리자페이지 - 통계 : 월별 대여 수 확인
 	@Override
@@ -199,16 +205,10 @@ public class RentServiceImpl implements RentService {
 		return rentRepository.getTotalSalesByEmail(email);
 	}
 	
-	//관리자 페이지 - 통계 : 월별 영화발매일 별 매출 확인
+	//관리자 페이지 - 통계 : 월별 영화발매일 별 대여 건수 확인
 	@Override	
-	public List<Object[]> SalesByReleaseDateByMonth(int year){
-		return rentRepository.SalesByReleaseDateByMonth(year);
+	public List<Object[]> RentCountByReleaseDateAndMonth(int year){
+		return rentRepository.getRentCountByReleaseDateAndMonth(year);
 	}
 		
-	//관리자 페이지 - 통계 : 분기별 영화발매일 별 매출 확인
-	@Override
-	public List<Object[]> SalesByReleaseDateByQuarter(int year){
-		return rentRepository.SalesByReleaseDateByQuarter(year);
-	}
-
 }
