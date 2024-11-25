@@ -215,7 +215,8 @@ public class MemberController {
 	@GetMapping("/modifyMemberInfo")
 	public void getMemberInfoModify(Model model, HttpSession session) {	
 		String email = (String)session.getAttribute("email");
-		model.addAttribute("member", service.memberInfo(email));		
+		model.addAttribute("member", service.memberInfo(email));	
+		//ㄴㅇㄹㄴ	
 	}
 	
 	
