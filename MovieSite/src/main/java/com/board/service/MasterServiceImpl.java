@@ -37,6 +37,7 @@ import com.board.entity.repository.MemberRepository;
 import com.board.entity.repository.RentRepository;
 import com.board.entity.repository.RequestRepository;
 import com.board.entity.repository.WatchReopository;
+import com.board.entity.repository.movie.MovieRepository;
 
 import lombok.AllArgsConstructor;
 
@@ -52,10 +53,22 @@ public class MasterServiceImpl implements MasterService{
 	private final LikeRepository likeRepository;
 	private final FavGenreRepository favGenreRepository;
 	private final RentRepository rentRepository;
+	private final MovieRepository movieRepository;
 	private static final String[] GENDERS = {"Male", "Female"};
     private final Random random;
     private static final String[] YorN = {"Y", "N"};
     private static final String[] INOUT = {"LOGIN", "LOGOUT"};
+    
+    //구매 전환율 구하기
+  	@Override
+    public double conversionRate() {
+  		
+  		int rentCount = rentRepository.getTotalRent();
+  		int hitnoCount = movieRepository.getTotalHitno();
+  		
+  		double rate = (double)rentCount / hitnoCount * 100;
+  		return Math.round(rate * 10.0) / 10.0;
+  	}
     
 	//요청 게시물 목록 보기
 	@Override

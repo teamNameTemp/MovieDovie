@@ -27,6 +27,7 @@ import com.board.dto.movie.MovieDTO;
 import com.board.entity.RequestEntity;
 import com.board.entity.RequestReplyEntity;
 import com.board.entity.movie.MovieEntity;
+import com.board.entity.repository.RentRepository;
 import com.board.entity.repository.movie.MovieRepository;
 import com.board.service.FavGenreService;
 import com.board.service.LikeService;
@@ -59,6 +60,7 @@ public class MasterController {
 	private final RequestReplyService requestReplyService;
 	private final MovieRepository movieRepository;
 	private final NotificationService notificationService;
+	private final RentRepository rentRepository;
 
 	// 회원의 요청 목록 보기
 	@GetMapping("/memberRequest")
@@ -219,7 +221,19 @@ public class MasterController {
 	}
 
 	@GetMapping("/memberStats")
-	public void getMemberStats() {
+	public void getMemberStats(Model model) {
+		
+		model.addAttribute("RentCount", rentRepository.getTotalRent());
+		model.addAttribute("HitnoCount", movieRepository.getTotalHitno());
+		
+	}
+	
+	@GetMapping("/dashboard")
+	public void getDashboard(Model model) {
+		
+		model.addAttribute("RentCount", rentRepository.getTotalRent());
+		model.addAttribute("HitnoCount", movieRepository.getTotalHitno());
+		
 	}
 
 	// 관리자 페이지 - 통계 : 최근 일주일 간 대여 수 확인
@@ -242,6 +256,53 @@ public class MasterController {
 		return response; // JSON 형태로 반환
 	}
 
+	// 관리자 페이지 - 통계 : 작년 월별 매출 확인
+	@GetMapping("/MonthlySalesLastYear")
+	@ResponseBody
+	public List<Map<String, Object>> getMonthlySalesLastYear() {
+		// 현재 연도를 가져와서 작년 연도를 계산
+		int lastYear = LocalDate.now().getYear() - 1; // 작년 연도 계산
+
+		// 작년 연도에 대한 월별 대여 수 조회
+		List<Object[]> resultsLastYear = rentService.SalesByMonth(lastYear);
+
+		List<Map<String, Object>> response = new ArrayList<>();
+
+		for (Object[] result : resultsLastYear) {
+            Map<String, Object> map = new HashMap<>();
+            map.put("date", result[0]);
+            map.put("sales", result[1] != null ? result[1] : 0);
+            response.add(map);
+	    }
+	    
+
+		return response; // JSON 형태로 반환
+	}
+
+	// 관리자 페이지 - 통계 : 올해 월별 매출 확인
+	@GetMapping("/MonthlySalesCurrentYear")
+	@ResponseBody
+	public List<Map<String, Object>> getMonthlySalesCurrentYear() {
+
+		int currentYear = LocalDate.now().getYear(); // 올해 연도 계산
+
+		// 올해 연도에 대한 월별 대여 수 조회
+		List<Object[]> resultsCurrentYear = rentService.SalesByMonth(currentYear);
+
+		List<Map<String, Object>> response = new ArrayList<>();
+
+		for (Object[] result : resultsCurrentYear) {
+			Map<String, Object> map = new HashMap<>();
+			map.put("date", result[0]); // 대여 날짜
+			map.put("sales", result[1] != null ? result[1] : 0); // Sales (null 처리)
+			response.add(map);
+		}
+
+		return response; // JSON 형태로 반환
+	}
+	
+	
+	
 	// 관리자 페이지 - 통계 : 작년 월별 대여 수 확인
 	@GetMapping("/MonthlyRentLastYear")
 	@ResponseBody
@@ -307,13 +368,14 @@ public class MasterController {
 	@GetMapping("/topRenters")
 	@ResponseBody
 	public List<Map<String, Object>> getTopRenters() {
-		List<Object[]> list = rentService.findTopRenters();
+		List<Object[]> list = rentRepository.findTopRenterNickname();
 
 		List<Map<String, Object>> response = new ArrayList<>();
 		for (Object[] item : list) {
 			Map<String, Object> map = new HashMap<>();
-			map.put("email", item[0]);
+			map.put("nickname", item[0]);
 			map.put("rentCount", item[1]);
+			map.put("sales", item[2]);
 			response.add(map);
 		}
 		return response; // JSON 형태로 반환
@@ -323,13 +385,13 @@ public class MasterController {
 	//관리자 페이지 - 통계 : 구매 전환율 확인
 	@GetMapping("/conversionRate")
 	@ResponseBody
-	public Map<String, Object> getConversionRate() {
+	public Map<String, Object> getConversionRate(Model model) {
 		
 		Map<String, Object> map = new HashMap<>();
-		
-		Long conversionRate = 0L;
-		
-		map.put("conversionRate", conversionRate);		
+
+		model.addAttribute("conversionRate", service.conversionRate());
+
+		map.put("conversionRate", service.conversionRate());		
 		return map;
 	}
 	
@@ -485,6 +547,59 @@ public class MasterController {
 			response.add(map);
 		}
 		return response;
+	}
+	
+	// 관리자 페이지 - 통계 : 올해 월별 영화발매일 별 매출 확인
+	@GetMapping("/MonthlySalesByReleaseDateCurrentYear")
+	@ResponseBody
+	public List<Map<String, Object>> getMonthlySalesByReleaseDateCurrentYear() {
+
+		int currentYear = LocalDate.now().getYear(); // 올해 연도 계산
+
+		// 올해 연도에 대한 월별 대여 수 조회
+		List<Object[]> resultsCurrentYear = rentService.SalesByReleaseDateByMonth(currentYear);
+
+		List<Map<String, Object>> response = new ArrayList<>();
+
+		for (Object[] result : resultsCurrentYear) {
+			Map<String, Object> map = new HashMap<>();
+			map.put("date", result[0]); // 매출 날짜 (예 : 2023-11)
+			map.put("sales_10000", result[1] != null ? result[1] : 0); // 발매일 1개월 이내 (null 처리)
+			map.put("sales_6000", result[2] != null ? result[2] : 0); // 발매된지 1-3개월 (null 처리)
+			map.put("sales_5000", result[3] != null ? result[3] : 0); // 발매된지 3-6개월 (null 처리)
+			map.put("sales_4000", result[4] != null ? result[4] : 0); // 발매된지 6개월-1년 (null 처리)
+			map.put("sales_1000", result[5] != null ? result[5] : 0); // 발매된지 1년 이상 (null 처리)
+			response.add(map);
+		}
+
+		return response; // JSON 형태로 반환
+	}
+	
+	// 관리자 페이지 - 통계 : 작년 월별 영화발매일 별 매출 확인
+	@GetMapping("/MonthlySalesByReleaseDateLastYear")
+	@ResponseBody
+	public List<Map<String, Object>> getMonthlySalesByReleaseDateLastYear() {
+
+		// 현재 연도를 가져와서 작년 연도를 계산
+		int lastYear = LocalDate.now().getYear() - 1; // 작년 연도 계산
+
+		// 작년 연도에 대한 월별 대여 수 조회
+		List<Object[]> resultsLastYear = rentService.SalesByReleaseDateByMonth(lastYear);
+
+		List<Map<String, Object>> response = new ArrayList<>();
+
+		for (Object[] result : resultsLastYear) {
+			Map<String, Object> map = new HashMap<>();
+			map.put("date", result[0]); // 매출 날짜 (예 : 2024-11)
+			map.put("sales_10000", result[1] != null ? result[1] : 0); // 발매일 1개월 이내 (null 처리)
+			map.put("sales_6000", result[2] != null ? result[2] : 0); // 발매된지 1-3개월 (null 처리)
+			map.put("sales_5000", result[3] != null ? result[3] : 0); // 발매된지 3-6개월 (null 처리)
+			map.put("sales_4000", result[4] != null ? result[4] : 0); // 발매된지 6개월-1년 (null 처리)
+			map.put("sales_1000", result[5] != null ? result[5] : 0); // 발매된지 1년 이상 (null 처리)
+			response.add(map);
+		}
+
+		return response; // JSON 형태로 반환
 	}
 	
 

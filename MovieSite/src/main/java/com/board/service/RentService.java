@@ -21,6 +21,9 @@ public interface RentService {
 	//관리자페이지 - 통계 : 월별 대여 수 확인
 	public List<Object[]> RentCountByMonth(int year);
     
+	//관리자페이지 - 통계 : 월별 매출 확인
+	public List<Object[]> SalesByMonth(int year);
+	
 	//관리자 페이지 - 통계 : 올해 대여 status 수 확인
 	public List<Object[]> RentStatus();
 
@@ -29,4 +32,9 @@ public interface RentService {
 	
 	List<Map<String,Object>> getTopList(int topCount);
 	
+	//관리자 페이지 - 통계 : 월별 영화발매일 별 매출 확인
+	public List<Object[]> SalesByReleaseDateByMonth(int year);
+	
+	//관리자 페이지 - 통계 : 분기별 영화발매일 별 매출 확인
+	public List<Object[]> SalesByReleaseDateByQuarter(int year);
 }
