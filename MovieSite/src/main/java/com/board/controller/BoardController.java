@@ -226,7 +226,7 @@ public class BoardController {
 			model.addAttribute("bookmark", myBookmark);
 		}
 		Map<String,Object> myRent = rent.getMyRentInfo(email, movieId);
-		if(myRent != null || !myRent.isEmpty()) {
+		if(myRent != null) {
 			model.addAttribute("rent",myRent);
 			rent.updateRent(email, movieId);
 		}
