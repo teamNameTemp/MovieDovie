@@ -112,9 +112,9 @@ public class MemberController {
 		String os = System.getProperty("os.name").toLowerCase();
 		String path;
 		if(os.contains("win"))
-			path = "c:\\Repository\\profile\\";
+			path = "c:\\Repository\\moviedovie\\profile\\";
 		else 
-			path = "/home/tjdwn/Repository/profile";
+			path = "/home/gladius/Repository/moviedovie/profile";
 		
 		//디렉토리가 존재하는지 체크해서 없다면 생성
 		File p = new File(path);
