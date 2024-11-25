@@ -62,12 +62,45 @@ public class DataCalculate {
         return result;
     }
 
+    //매출액에 따른 등급 계산
+    public static String calcGrade(int totalSales) {
+        String grade = "BRONZE";
+
+        switch (totalSales) {
+            case 0:
+                grade = "BRONZE";
+                break;
+        }
+
+        return grade;
+    }   
+
     //나이 계산
     public static int calcAge(String ssn) {
         int year = Integer.parseInt(ssn.substring(0, 2));
         int age = LocalDate.now().getYear() - year;
 
         return age;
+    }
+
+    public static boolean calcIsAdult(String certification,int age) {
+        if(certification == null) return true;
+        switch (certification) {    
+            case "19+":
+            case "19":
+            return age>=19?true:false;
+            case "18":
+            return age>=18?true:false;
+            case "15":
+            return age>=15?true:false;
+            case "12":
+            return age>=12?true:false;
+            case "ALL":
+            case "All":
+                return true;
+            default:
+                return true;
+        }
     }
 
     //주차 계산

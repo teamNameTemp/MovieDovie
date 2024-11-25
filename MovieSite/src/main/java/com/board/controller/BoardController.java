@@ -24,7 +24,6 @@ import com.board.dto.MemberDTO;
 import com.board.dto.ReplyInterface;
 import com.board.dto.RequestDTO;
 import com.board.dto.RequestReplyDTO;
-import com.board.dto.movie.MovieDTO;
 import com.board.entity.NotificationEntity;
 import com.board.entity.RequestEntity;
 import com.board.entity.RequestReplyEntity;
@@ -42,8 +41,8 @@ import com.board.service.RentService;
 import com.board.service.ReplyService;
 import com.board.service.RequestReplyService;
 import com.board.service.RequestService;
-import com.board.service.TmdbAPIServiceImpl;
 import com.board.service.WatchedService;
+import com.board.util.DataCalculate;
 import com.board.util.PageUtil;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
@@ -58,7 +57,6 @@ import lombok.extern.log4j.Log4j2;
 @RequestMapping("/board")
 public class BoardController {
 	private final MovieAPIServiceImpl movie;
-	private final TmdbAPIServiceImpl tmdb;
 	private final BoardService service;
 	private final MemberService memberService;
 	private final MasterService masterService;
@@ -98,7 +96,8 @@ public class BoardController {
 				// 인자로 받은 장르이름을 가진 모든 장르엔티티를 가져온다.
 				List<GenreEntity> genres = movie.getGenreList(genreNm);
 				// 해당 장르를 포함하고 있는 영화리스트를 가져온다.
-				favGenreList.put(genreNm, movie.findByGenreGetMovieList(genres));
+				List<Map<String,Object>> genreList = movie.findByGenreGetMovieList(genres,DataCalculate.calcAge(memberDTO.getSsn()));
+				favGenreList.put(genreNm, genreList);
 			}
 		}	
 		

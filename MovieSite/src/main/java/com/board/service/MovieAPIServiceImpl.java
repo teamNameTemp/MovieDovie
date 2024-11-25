@@ -155,10 +155,15 @@ public class MovieAPIServiceImpl implements MovieAPIService {
 	
 	//같은 장르의 영화리스트 가져오기
 	@Override
-	public List<Map<String,Object>> findByGenreGetMovieList(List<GenreEntity> genres){
+	public List<Map<String,Object>> findByGenreGetMovieList(List<GenreEntity> genres,int age){
 		List<Map<String,Object>> data = new ArrayList<>();
 		
 		for(GenreEntity genre : genres) {
+			String certification = genre.getMovieId().getCertification();
+			
+			if(!DataCalculate.calcIsAdult(certification, age)) {
+				continue;
+			}
 			Map<String,Object> map = mapper.getMovieSimpleInfo(genre.getMovieId());
 			map.put("info", mapper.getMovieSimpleInfo(genre.getMovieId()));
 			data.add(map);
