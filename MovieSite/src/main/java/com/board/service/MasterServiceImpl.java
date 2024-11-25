@@ -9,6 +9,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Random;
 
 import org.springframework.data.domain.Page;
@@ -68,8 +69,9 @@ public class MasterServiceImpl implements MasterService{
 	@Override
 	public RequestDTO view(Long seqno) {
 		//Entity --> DTO, xxxRepository의 리턴값은 Optional type 이기 때문에, List 타입이 아닌 최종 값을 얻기 위해선 뒤에 get()을 붙여줘야 함.
-		return requestRepository.findById(seqno).map(view -> new RequestDTO(view)).get();
-
+		return requestRepository.findById(seqno)
+	            .map(view -> new RequestDTO(view))
+	            .orElseThrow(() -> new NoSuchElementException("요청 ID " + seqno + "에 해당하는 게시물을 찾을 수 없습니다."));
 	}
 
 	//요청 게시물 이전 보기
