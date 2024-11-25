@@ -17,13 +17,11 @@
     <!--replace 특정 템플릿 조각(프래그먼트)을 다른 위치에 삽입할 때 사용 -->
     <th:block th:if="${#strings.equals(role, 'USER')}">
       <div th:replace="~{/fragments/nav/menubar::menubar}"></div>
-      <div th:replace="~{/fragments/nav/sidebar::sidebar}"></div>
     </th:block>
     <th:block th:if="${#strings.equals(role, 'MASTER')}">
       <div
         th:replace="~{/fragments/nav/masterBoardMenubar::masterBoardMenubar}"
       ></div>
-      <div th:replace="~{/fragments/nav/masterSidebar::masterSidebar}"></div>
     </th:block>
 
     <div class="movie-container">

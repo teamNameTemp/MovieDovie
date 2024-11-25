@@ -97,24 +97,6 @@ body {
   object-fit: cover;
 }
 
-.sidebar {
-  width: 50px;
-  height: 100%;
-  background-color: black;
-  position: fixed;
-  top: 0;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding-top: 60px;
-}
-
-.left-menu-icon {
-  color: white;
-  font-size: 20px;
-  margin-bottom: 40px;
-}
-
 .container {
   background-color: #151515;
   min-height: calc(100vh - 50px);
@@ -311,10 +293,6 @@ p.movie-list-item-desc {
 .navbar-container.active {
   background-color: white;
   color: black;
-}
-
-.sidebar.active{
-    background-color: white;
 }
 
 .left-menu-icon.active{

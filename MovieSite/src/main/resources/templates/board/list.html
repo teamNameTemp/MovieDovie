@@ -235,13 +235,11 @@
     <!--replace 특정 템플릿 조각(프래그먼트)을 다른 위치에 삽입할 때 사용 -->
     <th:block th:if="${#strings.equals(role, 'USER')}">
       <div th:replace="~{/fragments/nav/menubar::menubar}"></div>
-      <div th:replace="~{/fragments/nav/sidebar::sidebar}"></div>
     </th:block>
     <th:block th:if="${#strings.equals(role, 'MASTER')}">
       <div
         th:replace="~{/fragments/nav/masterBoardMenubar::masterBoardMenubar}"
       ></div>
-      <div th:replace="~{/fragments/nav/masterSidebar::masterSidebar}"></div>
     </th:block>
 
     <div class="container">
@@ -251,12 +249,11 @@
         th:style="'background: linear-gradient(to bottom, rgba(255, 255, 255, 0), #000), url(' + 'https://image.tmdb.org/t/p/original' + ${weeklyTrend.get(0
         ).backdropPath} + ') center no-repeat; background-size:cover;'"
       >
-        &nbsp;&nbsp;&nbsp;
-        <p class="featured-desc" style="color: #c92fb9">fdsfsdf</p>
+      <br><br><br>
 
         <div
           class="movie-list-container"
-          style="margin-top: 550px; margin-left: 0px; margin-right: 0px"
+          style="margin-top: 350px; margin-left: 0px; margin-right: 0px"
         >
           <h1 class="movie-list-title">전세계의 주목! 오늘 Top 20 인기 영화</h1>
           <div class="movie-list-wrapper">
