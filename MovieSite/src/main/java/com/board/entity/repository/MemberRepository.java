@@ -21,6 +21,8 @@ public interface MemberRepository extends JpaRepository<MemberEntity, String>{
     // 닉네임 중복 확인을 위한 메서드 (닉네임이 존재하는지 확인)
     boolean existsByNickname(String nickname);
     
+
+    
 	
 	public Optional<MemberEntity> findByUsernameAndTelno(String username, String telno);
 	public Optional<MemberEntity> findByEmailAndUsername(String email, String username);
