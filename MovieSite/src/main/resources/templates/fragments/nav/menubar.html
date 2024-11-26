@@ -73,7 +73,7 @@
 
                 <div class="profile-text-container">[[${nickname}]]님, 안녕하세요!</div>
                 <div class="dropdown">
-                    <img class="profile-picture" src="/images/admin-002.jpg" alt="">
+                    <img class="profile-picture" th:src="@{'/profile/' + ${member.storedFilename}}" alt="">
       				<div class="dropdown-content">
             			<a href="/board/mypage">프로필 정보</a>
         				<a href="/member/logout">로그 아웃</a>
