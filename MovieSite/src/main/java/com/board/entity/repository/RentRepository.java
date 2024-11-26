@@ -118,4 +118,31 @@ public interface RentRepository extends JpaRepository<RentEntity, Long>{
 		    + "ORDER BY quarter", nativeQuery = true)
 	public List<Object[]> SalesByReleaseDateByQuarter(@Param("year") int year);
 	*/
+	
+	//관리자 페이지 - 통계 : 최근 일주일 간 영화발매일 별 대여 건수 확인
+    @Query("SELECT " +
+            "COUNT(CASE WHEN r.sales = 10000 THEN r.seqno ELSE NULL END) AS count10000, " +
+            "COUNT(CASE WHEN r.sales = 6000 THEN r.seqno ELSE NULL END) AS count6000, " +
+            "COUNT(CASE WHEN r.sales = 5000 THEN r.seqno ELSE NULL END) AS count5000, " +
+            "COUNT(CASE WHEN r.sales = 4000 THEN r.seqno ELSE NULL END) AS count4000, " +
+            "COUNT(CASE WHEN r.sales = 1000 THEN r.seqno ELSE NULL END) AS count1000 " +
+            "FROM rent r " +
+            "WHERE r.rentdate >= :sevenDaysAgo")
+     public List<Object[]> getRentCountByReleaseDateLastSevenDays(@Param("sevenDaysAgo") LocalDateTime sevenDaysAgo);
+     
+     
+     //관리자 페이지 - 통계 : 영화 장르별 매출 현황 YTD 
+     @Query(value = "SELECT g.genre_name AS genreName, SUM(r.sales) AS totalSales " +
+    	       "FROM rent r " +
+    	       "JOIN (SELECT g.movie_id, MIN(g.genre_name) AS genre_name " +
+    	       "      FROM genre g " +
+    	       "      GROUP BY g.movie_id) g " +
+    	       "ON r.movie_id = g.movie_id " +
+    	       "WHERE EXTRACT(YEAR FROM r.rentdate) = EXTRACT(YEAR FROM SYSDATE) " +
+    	       "GROUP BY g.genre_name " +
+    	       "ORDER BY SUM(r.sales) DESC",
+    	       nativeQuery = true)
+    public List<Object[]> getYTDSalesByGenre();
+     
+     
 }

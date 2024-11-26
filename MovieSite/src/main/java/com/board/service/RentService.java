@@ -4,6 +4,8 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.data.repository.query.Param;
+
 public interface RentService {
 
 	public Long getMyAccumulatedPayment(String email);
@@ -38,4 +40,9 @@ public interface RentService {
 	//관리자 페이지 - 통계 : 월별 영화발매일 별 대여 건수 확인
 	public List<Object[]> RentCountByReleaseDateAndMonth(int year);
 	
+	//관리자 페이지 - 통계 : 최근 일주일 간 영화발매일 별 대여 건수 확인
+	public List<Object[]> getRentCountByReleaseDateLastSevenDays(@Param("sevenDaysAgo") LocalDateTime sevenDaysAgo);
+	
+	//관리자 페이지 - 통계 : 영화 장르별 매출 현황 YTD 
+	public List<Object[]> getYTDSalesByGenre();
 }

@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.data.repository.query.Param;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -211,4 +212,16 @@ public class RentServiceImpl implements RentService {
 		return rentRepository.getRentCountByReleaseDateAndMonth(year);
 	}
 		
+	//관리자 페이지 - 통계 : 최근 일주일 간 영화발매일 별 대여 건수 확인
+	@Override	
+	public List<Object[]> getRentCountByReleaseDateLastSevenDays(@Param("sevenDaysAgo") LocalDateTime sevenDaysAgo){
+		return rentRepository.getRentCountByReleaseDateLastSevenDays(sevenDaysAgo);
+	}
+	
+	//관리자 페이지 - 통계 : 영화 장르별 매출 현황 YTD 
+	@Override	
+	public List<Object[]> getYTDSalesByGenre(){
+		return rentRepository.getYTDSalesByGenre();
+	}
+	
 }

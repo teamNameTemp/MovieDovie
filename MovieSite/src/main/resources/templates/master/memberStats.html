@@ -35,7 +35,7 @@
 		    display: flex; align-items: center; justify-content: space-between;
 		    align-items: center; /* 수직 중앙 정렬 */
 		    width: 550px;
-		    height: 320px; /* 고정 높이 유지 */
+		    height: 340px; /* 고정 높이 유지 */
 		    text-align: center;
 		    float: left;
 		    margin: auto;
@@ -55,7 +55,7 @@
 		    display: flex; align-items: center; justify-content: space-between;
 		    align-items: center; /* 수직 중앙 정렬 */
 		    width: 550px;
-		    height: 360px; /* 고정 높이 유지 */
+		    height: 340px; /* 고정 높이 유지 */
 		    text-align: center;
 		    float: left;
 		    margin: auto;
@@ -333,8 +333,8 @@
 		                      label: '작년 매출',
 		                      data: lastYearSales,
 		                      borderWidth: 1,
-		                      borderColor: '#FF6384',
-		                      backgroundColor: '#FF638490'
+		                      borderColor: '#FFC534',
+		                      backgroundColor: '#FFC53490'
 		                  },
 		                  {
 		                      label: '올해 매출',
@@ -405,8 +405,8 @@
 		                      label: '작년 대여 수',
 		                      data: lastYearCounts,
 		                      borderWidth: 1,
-		                      borderColor: '#FF6384',
-		                      backgroundColor: '#FF638490'
+		                      borderColor: '#FFC534',
+		                      backgroundColor: '#FFC53490'
 		                  },
 		                  {
 		                      label: '올해 대여 수',
@@ -538,7 +538,59 @@
 		
 	<div class="content2">
 		<div class="content">
-			<h2>영화 장르별 매출 현황</h2>
+			<h2>영화 장르별 매출 현황 YTD</h2><br>
+			<div class="canvas-container">
+			  <canvas id="YTDSalesByGenre"></canvas>
+			</div>
+			<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+			<script>
+			  fetch('/master/YTDSalesByGenre')
+			    .then(response => response.json())
+			    .then(data => {
+			      const labels = data.map(item => item.genre);
+			      const sales = data.map(item => item.sales); 
+			
+			      const ctxYTDSalesByGenre = document.getElementById('YTDSalesByGenre');
+			      new Chart(ctxYTDSalesByGenre, {
+			        type: 'bar',
+			        data: {
+			          labels: labels,
+			          datasets: [{
+			            label: '장르',
+			            data: sales,
+			            borderWidth: 1,
+			            borderColor: '#FF6384',
+			            backgroundColor: '#FF638490'
+			          }]
+			        },
+			        options: {
+			          scales: {
+			            y: {
+			              beginAtZero: true,
+			              ticks: {
+			                stepSize: 10000
+			              }
+			            }
+			          },
+			          plugins: {
+	                        legend: {
+	                            display: false, // 범례 표시안함
+	                            labels: {
+	                            	color: '#000', // 범례 글자 색상 설정
+	                            	boxWidth: 13,  // 범례 색상 박스 너비
+	                            	padding: 15
+	                            }, 
+	                        },
+	                        tooltip: {
+	                            enabled: true // 툴팁은 유지
+	                        }
+	                    }
+			        },plugins: [legendMargin]
+			      });
+			    })
+			    .catch(error => console.error('Error fetching data:', error));
+			</script>
+			
 			
 		</div>
 	</div>

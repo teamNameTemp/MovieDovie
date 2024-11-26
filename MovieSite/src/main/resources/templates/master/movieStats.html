@@ -189,9 +189,9 @@
 			  	  const labels = data.map(item => item.genre);
 			  	  const counts = data.map(item => item.count);
 			  
-			  	  // 상위 10개 항목만 추출
-			      const top10Labels = labels.slice(0, 7);  // 상위 7개의 장르
-			      const top10Counts = counts.slice(0, 7);  // 상위 7개의 카운트
+			  	  // 상위 7개 항목만 추출
+			      const top7Labels = labels.slice(0, 7);  // 상위 7개의 장르
+			      const top7Counts = counts.slice(0, 7);  // 상위 7개의 카운트
 			      
 			  	  
 			  	  const favGenre = document.getElementById('topFavGenre');
@@ -199,10 +199,10 @@
 				  new Chart(favGenre, {
 				    type: 'pie',
 				    data: {
-				      labels: top10Labels,
+				      labels: top7Labels,
 				      datasets: [{
 				        label: '장르',
-				        data: top10Counts,
+				        data: top7Counts,
 				        hoverOffset: 4,
 				      }]
 				    },
