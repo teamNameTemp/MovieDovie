@@ -24,7 +24,6 @@ import com.board.dto.MemberDTO;
 import com.board.dto.ReplyInterface;
 import com.board.dto.RequestDTO;
 import com.board.dto.RequestReplyDTO;
-import com.board.dto.movie.MovieDTO;
 import com.board.entity.NotificationEntity;
 import com.board.entity.RequestEntity;
 import com.board.entity.RequestReplyEntity;
@@ -42,8 +41,8 @@ import com.board.service.RentService;
 import com.board.service.ReplyService;
 import com.board.service.RequestReplyService;
 import com.board.service.RequestService;
-import com.board.service.TmdbAPIServiceImpl;
 import com.board.service.WatchedService;
+import com.board.util.DataCalculate;
 import com.board.util.PageUtil;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
@@ -58,7 +57,6 @@ import lombok.extern.log4j.Log4j2;
 @RequestMapping("/board")
 public class BoardController {
 	private final MovieAPIServiceImpl movie;
-	private final TmdbAPIServiceImpl tmdb;
 	private final BoardService service;
 	private final MemberService memberService;
 	private final MasterService masterService;
@@ -79,19 +77,16 @@ public class BoardController {
 	public void getList(Model model, HttpSession session) throws JsonMappingException, JsonProcessingException {
 		String email = (String) session.getAttribute("email");
 		MemberDTO memberDTO = memberService.memberInfo(email);
+		model.addAttribute("member", memberDTO);
 		
 		String nickname = (String) session.getAttribute("nickname");
 		model.addAttribute("nickname", nickname);
 
 		
-		  List<MovieDTO> trend = tmdb.getTrendingMovies("day", 1, "ko-KR").block();
-          List<MovieDTO> trendList = new ArrayList<>();
-          
-          for(MovieDTO d : trend) {
-              MovieDTO dto = tmdb.getMovieDetails(d.getId(), "ko-KR").block();
-              trendList.add(dto);
-          }
-		
+		//주간 트렌드 영화
+		List<Map<String, Object>> weeklyTrend = movie.getWeeklyTrend();
+		model.addAttribute("weeklyTrend", weeklyTrend);
+	
 		//선호 장르별 영화 리스트
 		Map<String, Object> favGenreList = new HashMap<>();
 		Optional<Map<String, Object>> genre = favGenre.getFavGenre();
@@ -102,7 +97,8 @@ public class BoardController {
 				// 인자로 받은 장르이름을 가진 모든 장르엔티티를 가져온다.
 				List<GenreEntity> genres = movie.getGenreList(genreNm);
 				// 해당 장르를 포함하고 있는 영화리스트를 가져온다.
-				favGenreList.put(genreNm, movie.findByGenreGetMovieList(genres));
+				List<Map<String,Object>> genreList = movie.findByGenreGetMovieList(genres,DataCalculate.calcAge(memberDTO.getSsn()));
+				favGenreList.put(genreNm, genreList);
 			}
 		}	
 		
@@ -123,7 +119,6 @@ public class BoardController {
 		model.addAttribute("directUploadList",directList);
 		
 		model.addAttribute("nickname", session.getAttribute("nickname"));
-		model.addAttribute("dailyMovies", trendList);
 		model.addAttribute("favGenre", genre.get());
 		model.addAttribute("favGenreList", favGenreList);
 
@@ -207,6 +202,8 @@ public class BoardController {
 			throws JsonMappingException, JsonProcessingException {
 		String email = (String) session.getAttribute("email");
 		String nickname = (String) session.getAttribute("nickname");
+		MemberDTO member= memberService.memberInfo(email);
+		model.addAttribute("member",member);
 
 		// DB에서 영화 정보 가져오기
 		Map<String, Object> movieDetail = movie.getMovieDetails(movieId);
@@ -635,9 +632,14 @@ public class BoardController {
 	public void searchPage(Model model,
 	@RequestParam(name="keyword",required = false) String keyword,
 	HttpSession session) {
-
+		String email = (String) session.getAttribute("email");
 		String nickname = (String) session.getAttribute("nickname");
+		
+		MemberDTO member = memberService.memberInfo(email);
+		
+		model.addAttribute("member", member);
 		model.addAttribute("nickname", nickname);
+
 		if(keyword != null) {
 			List<Map<String,Object>> list = movie.findByKeywordMovieList(keyword);
 			model.addAttribute("movies",list);
@@ -646,10 +648,10 @@ public class BoardController {
 	
 	@PostMapping("/search/movies")
 	@ResponseBody
-	public List<List<MovieDTO>> searchMovies(@RequestParam ("keyword") String keyword) {
+	public List<Map<String,Object>> searchMovies(@RequestParam ("keyword") String keyword) {
 
 		try {
-			List<List<MovieDTO>> movies = tmdb.searchMovies(keyword,3).block();
+			List<Map<String,Object>> movies = movie.findByKeywordMovieList(keyword);
 			return movies;
 		} catch (Exception e) {
 			log.error("Error fetching movies: ", e);

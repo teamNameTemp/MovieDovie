@@ -6,9 +6,10 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+
 import com.board.service.UserDetailsServiceImpl;
+
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 
@@ -54,7 +55,7 @@ public class WebSecurityConfig {
          .rememberMe((me) -> me
             .key("movie")
             .alwaysRemember(false)
-            .tokenValiditySeconds(3600*24*7)
+            .tokenValiditySeconds(3600*24*7) //토큰 유효기간
             .rememberMeParameter("remember-me")
             .userDetailsService(userDetailsService) //사용자 인증 정보 확인
             .authenticationSuccessHandler(authSuccessHandler));
@@ -78,16 +79,17 @@ public class WebSecurityConfig {
       //스프링 시큐리티의 로그 아웃
       http
          .logout(logout -> logout
-               .logoutUrl("/member/beforeLogout")
-               .logoutSuccessUrl("/member/logout")
+               .logoutUrl("/member/logout")
+               .logoutSuccessUrl("/member/login")
                .invalidateHttpSession(true)
-               .deleteCookies("JSESSIONID","remember-me")
+               .clearAuthentication(true)
+               .deleteCookies("JSESSIONID", "remember-me")
                .permitAll());
       
       //OAuth2 설정 
       http
          .oauth2Login((login) -> login
-         .loginPage("/member/selectGenre")
+         .loginPage("/member/login")//소셜 로그인 페이지
          .successHandler(oAuth2SuccessHandler)
          .failureHandler(oAuth2FailureHandler));
       

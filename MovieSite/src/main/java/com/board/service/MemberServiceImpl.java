@@ -12,6 +12,7 @@ import com.board.entity.MemberEntity;
 import com.board.entity.MemberLogEntity;
 import com.board.entity.repository.MemberLogRepository;
 import com.board.entity.repository.MemberRepository;
+import com.board.util.DataCalculate;
 
 import lombok.AllArgsConstructor;
 
@@ -29,7 +30,8 @@ public class MemberServiceImpl implements MemberService {
 		member.setRegdate(LocalDateTime.now());
 		member.setLastpwdate(LocalDateTime.now());
 		member.setPwcheck(1L);
-		member.setRole("USER");	
+		member.setRole("USER");
+		member.setGrade(DataCalculate.calcGrade(0));	
 		
 		memberRepository.save(member.dtoToEntity(member));	
 	}
@@ -60,6 +62,7 @@ public class MemberServiceImpl implements MemberService {
     	// 닉네임이 존재하면 1 반환, 없으면 0 반환
         return memberRepository.existsByNickname(nickname) ? 1 : 0;
     }
+
 	
 	//패스워드 수정
 	public void modifyMemberPassword(MemberDTO member) {

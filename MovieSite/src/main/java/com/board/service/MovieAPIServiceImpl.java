@@ -12,7 +12,6 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import com.board.dto.movie.MovieDTO;
-import com.board.entity.MemberEntity;
 import com.board.entity.movie.CastEntity;
 import com.board.entity.movie.CompanyEntity;
 import com.board.entity.movie.CountryEntity;
@@ -22,7 +21,7 @@ import com.board.entity.movie.ImageEntity;
 import com.board.entity.movie.LanguageEntity;
 import com.board.entity.movie.MovieEntity;
 import com.board.entity.movie.VideoEntity;
-import com.board.entity.repository.MemberRepository;
+import com.board.entity.movie.WeeklyTrendEntity;
 import com.board.entity.repository.movie.CastRepository;
 import com.board.entity.repository.movie.CompanyRepository;
 import com.board.entity.repository.movie.CountryRepository;
@@ -32,6 +31,7 @@ import com.board.entity.repository.movie.ImageRepository;
 import com.board.entity.repository.movie.LanguageRepository;
 import com.board.entity.repository.movie.MovieRepository;
 import com.board.entity.repository.movie.VideoRepository;
+import com.board.entity.repository.movie.WeeklyTrendRepository;
 import com.board.util.DataCalculate;
 import com.board.util.MovieMapper;
 
@@ -54,14 +54,14 @@ public class MovieAPIServiceImpl implements MovieAPIService {
 	private final VideoRepository videoRepository;
 	private final ImageRepository imageRepository;
 	private final MovieMapper mapper;
-	private final DataCalculate calc;
+	private final WeeklyTrendRepository weeklyTrendRepository;
 	
-	//매 시간 마다 트렌드 영화 업데이트 및 저장
-	@Scheduled(cron = "0 0 * * * ?")
+	//매주 월요일 0시 0분 0초에 트렌드 영화 업데이트 및 저장
+	@Scheduled(cron = "0 0 0 * * MON")
 	@Transactional
 	public void autoTrendListSave() {
 		
-		List<MovieDTO> trendDataList = tmdb.getTrendingMovies("day", 1, "ko-KR").block();
+		List<MovieDTO> trendDataList = tmdb.getTrendingMovies("week", 1, "ko-KR").block();
 		List<MovieDTO> trend = new ArrayList<>();
 		for(MovieDTO dto : trendDataList) {
 			MovieDTO movie = tmdb.getMovieDetails(dto.getId(), "ko-KR").block();
@@ -69,9 +69,40 @@ public class MovieAPIServiceImpl implements MovieAPIService {
 		}
 		
 		log.info(trend.size() + "개의 트렌드 영화가 저장 및 업데이트 되었습니다.");
-		saveTheDataBases(trend);
+		saveWeeklyTrend(trend);
 	}
-	
+
+	public void saveWeeklyTrend(List<MovieDTO> list) {
+		LocalDateTime now = LocalDateTime.now();
+		saveTheDataBases(list);
+		
+		for(MovieDTO dto : list) {
+			MovieEntity movie = movieRepository.findById(dto.getId()).get();
+			WeeklyTrendEntity weekly = WeeklyTrendEntity.builder()
+				.year(now.getYear())
+				.month(now.getMonthValue())
+				.monthOfWeek(DataCalculate.getWeekOfMonth(now))
+				.movieId(movie)
+				.build();
+			
+			weeklyTrendRepository.save(weekly);
+		}
+	}
+
+	public List<Map<String, Object>> getWeeklyTrend() {
+		LocalDateTime now = LocalDateTime.now();
+		List<WeeklyTrendEntity> list = 
+		weeklyTrendRepository.findByYearAndMonthAndMonthOfWeek(now.getYear(), now.getMonthValue(), DataCalculate.getWeekOfMonth(now));
+		
+		List<Map<String, Object>> data = new ArrayList<>();
+		for(WeeklyTrendEntity w : list) {
+			Map<String, Object> map = mapper.getMovieSimpleInfo(w.getMovieId());
+			data.add(map);
+		}
+		
+		return data;
+
+	}
 	//매일 대여 가격 업데이트
 	@Scheduled(cron = "0 0 0 * * ?")
 	@Transactional
@@ -79,7 +110,7 @@ public class MovieAPIServiceImpl implements MovieAPIService {
 		List<MovieEntity> list = movieRepository.findAll();
 		int idx = 0;
 		for(MovieEntity movie : list) {
-			int price = calc.calcRentPrice(movie.getReleaseDate());
+			int price = DataCalculate.calcRentPrice(movie.getReleaseDate());
 			if(price != movie.getPrice()) {
 				movie.setPrice(price);
 				idx++;
@@ -124,10 +155,15 @@ public class MovieAPIServiceImpl implements MovieAPIService {
 	
 	//같은 장르의 영화리스트 가져오기
 	@Override
-	public List<Map<String,Object>> findByGenreGetMovieList(List<GenreEntity> genres){
+	public List<Map<String,Object>> findByGenreGetMovieList(List<GenreEntity> genres,int age){
 		List<Map<String,Object>> data = new ArrayList<>();
 		
 		for(GenreEntity genre : genres) {
+			String certification = genre.getMovieId().getCertification();
+			
+			if(!DataCalculate.calcIsAdult(certification, age)) {
+				continue;
+			}
 			Map<String,Object> map = mapper.getMovieSimpleInfo(genre.getMovieId());
 			map.put("info", mapper.getMovieSimpleInfo(genre.getMovieId()));
 			data.add(map);

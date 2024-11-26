@@ -49,6 +49,7 @@ public class AuthSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
         log.info("------------------------ 로그인 성공 : 세션 생성 ------------------------ ");
 
         // 로그인 성공 후 리다이렉트할 URL 설정
+        // todo: 첫 로그인 시 즐겨찾기 장르 선택 페이지로 이동안되는 문제
         if(favGenre.getFavGenre() == null || favGenre.getFavGenre().isEmpty()){
             setDefaultTargetUrl("/member/selectGenre");
         }

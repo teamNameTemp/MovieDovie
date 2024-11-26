@@ -85,7 +85,7 @@ body {
 .navbar-container {
   display: flex;
   align-items: center;
-  padding: 0 100px 0 50px;
+  padding: 0 100px 0 0;
   height: 100%;
   color: white;
   font-family: "Jua", sans-serif;
@@ -123,25 +123,6 @@ body {
 
 .menu-list-item.active {
   font-weight: bold;
-}
-
-.sidebar {
-  width: 50px;
-  height: 100%;
-  background-color: black;
-  position: fixed;
-  top: 0;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding-top: 60px;
-  z-index: 1000; /* 다른 요소들 위에 표시되도록 설정 */
-}
-
-.left-menu-icon {
-  color: white;
-  font-size: 20px;
-  margin-bottom: 40px;
 }
 
 .profile-container {
@@ -221,6 +202,7 @@ body {
   transform: translateX(-50%);
   top: 100%;
   overflow: scroll;
+  z-index: 1500;
 }
 
 /* 공통 스크롤바 스타일 */
@@ -285,10 +267,6 @@ body {
   color: black;
 }
 
-.sidebar.active {
-  background-color: white;
-}
-
 .left-menu-icon.active {
   color: black;
 }
@@ -317,6 +295,11 @@ body {
   justify-content: center;
   border: none;
   outline: none;
+}
+
+.search-btn::disabled{
+  background-color: #ccc;
+  cursor: not-allowed;
 }
 
 .search-box input::placeholder {
