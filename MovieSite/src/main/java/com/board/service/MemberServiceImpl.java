@@ -33,6 +33,7 @@ public class MemberServiceImpl implements MemberService {
 		member.setPwcheck(1L);
 		member.setRole("USER");
 		member.setGrade(DataCalculate.calcGrade(0));	
+		member.setPoint(0L);
 		
 		memberRepository.save(member.dtoToEntity(member));	
 	}
@@ -151,7 +152,7 @@ public class MemberServiceImpl implements MemberService {
 		memberEntity.setFilesize(member.getFilesize());
 		memberEntity.setOrg_filename(member.getOrgFilename());
 		memberEntity.setStored_filename(member.getStoredFilename());
-		
+
 		memberRepository.save(memberEntity);
 	}
 
