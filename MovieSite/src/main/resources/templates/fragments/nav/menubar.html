@@ -73,7 +73,9 @@
 
                 <div class="profile-text-container">[[${nickname}]]님, 안녕하세요!</div>
                 <div class="dropdown">
-                    <img class="profile-picture" th:src="@{'/profile/' + ${member.storedFilename}}" alt="">
+                    <a href="/board/mypage">
+                        <img class="profile-picture" th:src="@{'/profile/' + ${member.storedFilename}}" alt="">
+                    </a>
       				<div class="dropdown-content">
             			<a href="/board/mypage">프로필 정보</a>
         				<a href="/member/logout">로그 아웃</a>
