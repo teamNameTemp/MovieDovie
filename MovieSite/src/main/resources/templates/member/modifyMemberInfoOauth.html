@@ -120,9 +120,9 @@ window.onload = () => {
 	})
 			
 	const showImage = (files) => {
-		   imgZone.innerHTML = '';
-		   const imgFile = files[0];
-
+		imgZone.innerHTML = '';
+		const imgFile = files[0];
+		
 		   if (imgFile.type.indexOf("image") < 0) {
 		       alert("이미지 파일만 올려 주세요.");
 		       return false;
