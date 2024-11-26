@@ -1,8 +1,10 @@
 package com.board.service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Service;
 
 import com.board.dto.MemberDTO;
@@ -132,6 +134,10 @@ public class MemberServiceImpl implements MemberService {
 		return memberRepository.signupResult();
 	}
 
-
+	//관리자페이지 - 통계 : 최근 7일간 회원가입한 회원 수 확인
+	@Override	
+	public int newMembersInLastSevenDays(@Param("sevenDaysAgo") LocalDateTime sevenDaysAgo) {
+		return memberRepository.newMembersInLastSevenDays(sevenDaysAgo);
+	}
 
 }

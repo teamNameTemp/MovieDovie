@@ -12,7 +12,44 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css">
 	<style>
-		#wrap {width: 1450px; height: 640px; font-size: 17px; text-align: center; margin : auto;}
+		#wrap {width: 1450px; height: 660px; font-size: 17px; text-align: center; margin : auto;}
+	 	
+	 	.outerbox {
+            width: 1453.5px; 
+            height: 645px; 
+            border: 1.8px solid lightgray;
+            text-align: center; 
+        }
+	 	
+	 	.first {
+	 		display: flex;
+	 		align-items: center;
+	 		justify-content: center;
+	    	width: 900px; 
+		 	height: 10px; 
+		 	text-align: center; 
+		 	float: left; 
+		 	background-color: white;
+            padding: 1%; /* 패딩 1% */
+            border: 1.8px solid lightgray;
+            box-sizing: border-box; /* 패딩 포함한 크기 계산 */
+            margin: auto;
+	 	}
+	 	
+	 	.second {
+	 		display: flex;
+	 		align-items: center;
+	 		justify-content: center;
+	    	width: 550px; 
+		 	height: 10px; 
+		 	text-align: center; 
+		 	float: left; 
+		 	background-color: white;
+            padding: 1%; /* 패딩 1% */
+            border: 1.8px solid lightgray;
+            box-sizing: border-box; /* 패딩 포함한 크기 계산 */
+            margin: auto;
+	 	}
 	 	
 	 	.side1 {
 	 		display: flex;
@@ -45,6 +82,24 @@
 	    	width: 450px; 
 		 	height: 450px; 
 		 	text-align: center;
+	    }
+	    
+	    .totalCount {
+	    	position: absolute;
+		    top: 8px;
+		    right: 10px;
+		    z-index: 1;
+		    font-size:43px;
+		    margin-right:8px;
+	    }
+	    
+	    .totalSales {
+	    	position: absolute;
+		    top: 8px;
+		    right: 10px;
+		    z-index: 1;
+		    font-size:33px;
+		    margin-right:8px;
 	    }
 	    
 	    .side2 {
@@ -125,8 +180,8 @@
             padding: 3%; /* 패딩 10% */
             border: 1.8px solid lightgray;
             box-sizing: border-box; /* 패딩 포함한 크기 계산 */
+            position: relative;
         }
-        
         
         .horicontent {
             display: flex;  
@@ -364,10 +419,15 @@
 
 
 <div id="wrap">
+	<div class="outerbox">
+	<div class="first">WEEKLY DASHBOARD ([[${#temporals.format(sevenDaysAgo, 'MM/dd')}]] - [[${#temporals.format(now, 'MM/dd')}]])</div>
+	<div class="second">OVERALL DASHBOARD </div>
+	
 	<div class="side1">
 		<div class="side1-content1">
 		<div class="content">
 		<h2>최근 일주일 간 매출 현황</h2><br>
+		<div class="totalSales" th:text="${T(com.board.util.SalesFormatter).formatSales(totalSales)}"></div>
 		<div class="canvas-container">
 		  <canvas id="weeklySales"></canvas>
 		</div>
@@ -391,8 +451,8 @@
 		            label: '매출',
 		            data: rentData,
 		            borderWidth: 1,
-		            borderColor: '#4dbf00',
-		            backgroundColor: '#4dbf0090'
+		            borderColor: '#FF6384',
+		            backgroundColor: '#FF6384'
 		          }]
 		        },
 		        options: {
@@ -418,12 +478,14 @@
 				<div class="horicontentmem">
 					<div class="left-div">
 						<h2>최근 일주일 신규 회원 수</h2><br>
-						<p>· 수 : <span id="todaySignupCount"></span> 명 <span id="resultSignup"></span></p>
+						<p><span th:text="${signup7days}" style="font-size:43px;"></span>&nbsp;<span id="resultSignup"></span></p>
+						<span id="todaySignupCount" style="display:none"></span> 
 						<span id="totalMemberCount" style="display:none"></span>
 					</div>
 					<div class="right-div">
 						<h2>최근 일주일 방문자 수</h2><br>
-						<p>· 수 : <span id="todayVisitorsCount"></span> 명 <span id="resultVisit"></span><br></p>
+						<p><span th:text="${visit7days}" style="font-size:43px;"></span>&nbsp;<span id="resultVisit"></span></p>
+						<span id="todayVisitorsCount" style="display:none"></span> 
 						<span id="totalVisitorsCount" style="display:none"></span>
 					</div>
 				</div>
@@ -453,7 +515,7 @@
 			  					tbody.innerHTML = '<tr><td colspan="3"><br>현재 모든 영화에 관람 등급 값이 있습니다.<br><br></td></tr>';
 			  				} else {
 			  					 data.forEach((item, index) => {
-			  						if(index < 6){
+			  						if(index < 5){
 				  	                    const movie = item.movie;  // movie는 Map 객체 안에 있는 MovieEntity
 				  	                    const hitno = item.hitno;  // bookmarkCount는 Map 객체 안의 북마크 수
 		
@@ -478,6 +540,7 @@
 		<div class="side2-content1">
 			<div class="content">
 			<h2>최근 일주일 간 대여 현황</h2><br>
+				<div class="totalCount" th:text="${totalRentCount}"></div>
 				<div class="canvas-container">
 				  <canvas id="weeklyRent"></canvas>
 				</div>
@@ -502,7 +565,7 @@
 					            data: rentData,
 					            borderWidth: 1,
 					            borderColor: '#4dbf00',
-					            backgroundColor: '#4dbf0090'
+					            backgroundColor: '#4dbf00'
 					          }]
 					        },
 					        options: {
@@ -525,6 +588,47 @@
 		<div class="side2-content2">
 			<div class="content">
 				<h2>최근 일주일 간 개봉 기간 별 대여 비율</h2><br>
+				<div style="display: flex; justify-content: center;">
+					<canvas id="RentByRDLast7Days" width = "245"></canvas>
+				</div>
+				<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+				<script>
+				  fetch('/master/RentByReleaseDateLast7days')
+				  	.then(response => response.json())
+				  	.then(data => {
+				  		// 데이터가 리스트 형태로 오므로, 첫 번째 요소만 사용
+			            const chartData = data[0];
+			            
+			            const ctxRD = document.getElementById('RentByRDLast7Days').getContext('2d');
+			            new Chart(ctxRD, {
+			                type: 'pie',
+			                data: {
+			                    labels: ['1개월 이내', '1-3개월', '3-6개월', '6개월-1년', '1년 이상'],
+			                    datasets: [{
+			                        data: [
+			                            chartData.count_10000,
+			                            chartData.count_6000,
+			                            chartData.count_5000,
+			                            chartData.count_4000,
+			                            chartData.count_1000
+			                        ]
+			                    }]
+			                },
+			                options: {
+			                    responsive: false,
+			                    plugins: {
+			                        legend: {
+			                            position: 'top',
+			                            labels: {
+					                        boxWidth: 10  // 레전드의 색상 박스 너비
+					                        //padding: 15,   // 레전드 항목 간의 간격
+					                    }
+			                        }
+			                    }
+			                }
+			            });
+			         })
+				</script>
 			</div>
 		</div>
 		
@@ -532,7 +636,7 @@
 	
 	<div class="content2">
 		<div class="content">
-			<h2>2024 대여/매출 현황</h2><br>
+			<h2><span th:text="${currentYear}"></span> 대여/매출 현황</h2><br>
 			<div class="horicontent">
 				<div class="left-div">
 		        	<br>[대여 중 / 대여종료 비율]<br><br>
@@ -697,7 +801,7 @@
 			</div>
 		</div>
 	</div>
-	
+	</div>
 	
 	
 
@@ -788,11 +892,11 @@
 			  const resultDivSignup = document.getElementById('resultSignup');
 				
 				if (differenceSignup > 0) {
-				    resultDivSignup.innerHTML = `<span class="positive">▲ +${differenceSignup}</span>`;
+				    resultDivSignup.innerHTML = `<span class="positive">▲+${differenceSignup}</span>`;
 				} else if (differenceSignup < 0) {
-				    resultDivSignup.innerHTML = `<span class="negative">▼ ${differenceSignup}</span>`;
+				    resultDivSignup.innerHTML = `<span class="negative">▼${differenceSignup}</span>`;
 				} else {
-				    resultDivSignup.innerHTML = `<span class="nochange"> → 변동 없음</span>`;
+				    resultDivSignup.innerHTML = `<span class="nochange">···</span>`;
 				}
 	  
 		  }).catch((error) => {
@@ -821,11 +925,11 @@
 			  const resultDivSignup = document.getElementById('resultVisit');
 				
 			  if (differenceVisitors > 0) {
-				    resultDivSignup.innerHTML = `<span class="positive">▲ +${differenceVisitors}</span>`;
+				    resultDivSignup.innerHTML = `<span class="positive">▲+${differenceVisitors}</span>`;
 				} else if (differenceVisitors < 0) {
-				    resultDivSignup.innerHTML = `<span class="negative">▼ ${differenceVisitors}</span>`;
+				    resultDivSignup.innerHTML = `<span class="negative">▼${differenceVisitors}</span>`;
 				} else {
-				    resultDivSignup.innerHTML = `<span class="nochange"> → 변동 없음</span>`;
+				    resultDivSignup.innerHTML = `<span class="nochange">···</span>`;
 				}
 
 		  }).catch((error) => {
