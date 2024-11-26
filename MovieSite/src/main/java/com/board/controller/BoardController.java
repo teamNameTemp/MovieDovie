@@ -447,8 +447,9 @@ public class BoardController {
 		// 이메일로 회원 정보 가져오기
 		MemberDTO memberDTO = memberService.memberInfo(email);
 		model.addAttribute("nickname", memberDTO.getNickname());
+		model.addAttribute("member", memberDTO);
 
-		model.addAttribute("maxSeqno", (masterService.getMaxSeqno(email) != null ? masterService.getMaxSeqno(email) : 0) + 1);
+		model.addAttribute("maxSeqno", (masterService.getMaxSeqno(email) != null ? masterService.getMaxSeqno(email)+1 : "FIRST_REQ"));
 
 
 		/////////////////// 알람 처리 ///////////////////
@@ -497,11 +498,13 @@ public class BoardController {
 
 		String email = (String) session.getAttribute("email"); // 현재 로그인 중인 사람의 이메일
 		model.addAttribute("email", email);
-
+		
 		// 이메일로 회원 정보 가져오기
 		MemberDTO memberDTO = memberService.memberInfo(email);
 		model.addAttribute("nickname", memberDTO.getNickname());
-
+		
+		model.addAttribute("member", memberDTO);
+		
 		PageUtil page = new PageUtil();
 
 		Page<RequestEntity> list = requestService.mylist(pageNum, postNum, keyword, email);
@@ -548,6 +551,7 @@ public class BoardController {
 		// 이메일로 회원 정보 가져오기
 		MemberDTO memberDTO = memberService.memberInfo(email);
 		model.addAttribute("nickname", memberDTO.getNickname());
+		model.addAttribute("member", memberDTO);
 
 		model.addAttribute("view", masterService.view(seqno));
 		model.addAttribute("status", masterService.statusCheck(seqno));
