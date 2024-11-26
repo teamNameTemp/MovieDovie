@@ -12,6 +12,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.messaging.MessagingException;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -50,7 +51,6 @@ public class MemberController {
 	private final FavGenreServiceImpl favGenre;
 	private final MailService mailService;
 
-		
 	//로그인 화면 보기
 	@GetMapping("/login")
 	public void getLogin() { }
