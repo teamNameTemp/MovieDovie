@@ -75,12 +75,17 @@ public class BoardController {
 	
 	@GetMapping("/list")
 	public void getList(Model model, HttpSession session) throws JsonMappingException, JsonProcessingException {
-		String email = (String) session.getAttribute("email");
-		MemberDTO memberDTO = memberService.memberInfo(email);
-		model.addAttribute("member", memberDTO);
 		
+		//세션정보
+		String email = (String) session.getAttribute("email");
 		String nickname = (String) session.getAttribute("nickname");
+		
+		MemberDTO memberDTO = memberService.memberInfo(email);
+		
+		model.addAttribute("member", memberDTO);
 		model.addAttribute("nickname", nickname);
+		model.addAttribute("nickname", session.getAttribute("nickname"));
+		model.addAttribute("role", memberDTO.getRole());
 
 		
 		//주간 트렌드 영화
@@ -101,6 +106,8 @@ public class BoardController {
 				favGenreList.put(genreNm, genreList);
 			}
 		}	
+		model.addAttribute("favGenre", genre.get());
+		model.addAttribute("favGenreList", favGenreList);
 		
 		//만장일치! 다들 이 영화 좋아해요
 		List<Map<String,Object>> topLikeList = like.getTopList(20);
@@ -117,14 +124,6 @@ public class BoardController {
 		//무비두비에 새로 올라온 영화
 		List<Map<String,Object>> directList = movie.getDirectUploadList(6);
 		model.addAttribute("directUploadList",directList);
-		
-		model.addAttribute("nickname", session.getAttribute("nickname"));
-		model.addAttribute("favGenre", genre.get());
-		model.addAttribute("favGenreList", favGenreList);
-
-
-		model.addAttribute("role", memberDTO.getRole());
-
 		
 		/////////////////// 알람 처리 ///////////////////
 		model.addAttribute("email", email);
@@ -147,9 +146,15 @@ public class BoardController {
 	
 	@GetMapping("/mypage")
 	public void getMyPage(Model model, HttpSession session) {
+
+		//세션정보
 		String email = (String) session.getAttribute("email");
-		MemberDTO memberInfo = memberService.memberInfo(email);
 		String nickname = (String) session.getAttribute("nickname");
+
+		MemberDTO memberInfo = memberService.memberInfo(email);
+		model.addAttribute("nickname",nickname);
+		model.addAttribute("member",memberInfo);
+		
 		//대여
 		List<Map<String,Object>> rents = rent.getAllMyRent(email, "Y");
 		model.addAttribute("rents",rents);
@@ -163,8 +168,6 @@ public class BoardController {
 		List<Map<String,Object>> likes = like.getAllLikeByEmail(email);
 		model.addAttribute("likes",likes);
 
-		model.addAttribute("nickname",nickname);
-		model.addAttribute("member",memberInfo);
 
 		//누적 결제 금액
 		Long accumulatedPayment = rent.getMyAccumulatedPayment(email);
@@ -375,7 +378,7 @@ public class BoardController {
 		try {
 			bookmark.saveOrUpdate(action, movieId, email);
 			response.put("message", "good");
-			// 모든 like 정보
+			// 모든 bookmarks 정보
 			Map<String, Object> bookmarks = bookmark.getAllBookmarkInfo(movieId);
 			response.put("count", bookmarks.get("count"));
 		} catch (Exception e) {
@@ -388,31 +391,25 @@ public class BoardController {
 	}
 	
 	// 대여 관련 처리
-		@PostMapping("/movieDetail/rent")
-		@ResponseBody
-		public Map<String, Object> postMovieDetailRent(@RequestParam("movieId") Long movieId,
-				HttpSession session) {
-			Map<String, Object> response = new HashMap<>();
+	@PostMapping("/movieDetail/rent")
+	@ResponseBody
+	public Map<String, Object> postMovieDetailRent(@RequestParam("movieId") Long movieId,
+			HttpSession session) {
+		Map<String, Object> response = new HashMap<>();
 
-			String email = (String) session.getAttribute("email");
+		String email = (String) session.getAttribute("email");
 
-			// 대여 등록 및 삭제 
-			try {
-				String status = rent.rentMovie(email,movieId);
-				response.put("message", "good");
-				response.put("status", status);
-				
-				// 모든 like 정보
-//				Map<String, Object> bookmarks = bookmark.getAllBookmarkInfo(movieId);
-//				response.put("count", bookmarks.get("count"));
-			} catch (Exception e) {
-				log.error("rent 오류 : ", e);
-//				response.put("message", "error");
-//				response.put("error", e.getMessage());
-			}
-
-			return response;
+		// 대여 등록 및 삭제 
+		try {
+			String status = rent.rentMovie(email,movieId);
+			response.put("message", "good");
+			response.put("status", status);
+		} catch (Exception e) {
+			log.error("rent 오류 : ", e);
 		}
+
+		return response;
+	}
 
 	// 댓글 처리
 	@ResponseBody
@@ -628,12 +625,7 @@ public class BoardController {
 
 		return result;
 	}
-
-//	private Map<String, Object> getMovieInfo(String movieCd) throws JsonProcessingException {
-//		String movieInfoResult = kobis.getMovieInfo(movieCd);
-//		return convertToMapper.getMovieInfo(movieInfoResult);
-//	}
-
+	
 //---------검색trying-------------------------
 	@GetMapping("/search")
 	public void searchPage(Model model,
