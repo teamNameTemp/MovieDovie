@@ -497,8 +497,12 @@ window.onload = () => {
 		    return;
 		}
 
+		
 	    // 모든 조건을 만족한 후 회원가입 처리
 	    const formData = new FormData(RegistryForm);
+		const ssn = ssnFront + "-" + ssnBack;
+		console.log(ssn);
+		formData.append("ssn", ssn);
 	    try {
 	        const response = await fetch('/member/signup', { method: 'POST', body: formData });
 	        const data = await response.json();

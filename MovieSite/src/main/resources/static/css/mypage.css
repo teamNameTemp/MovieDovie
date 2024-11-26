@@ -26,6 +26,8 @@ body {
   background: #777;
 }
 
+
+
 /* 상태 박스 공통 스타일 */
 .rental-status-box,
 .profile-status-box,
@@ -45,7 +47,7 @@ body {
   top: 20px;
   right: 20px;
   width: 200px;
-  z-index: 1500;
+  z-index: 500;
   transition: opacity 0.3s ease;
 }
 
@@ -246,6 +248,7 @@ tr:hover {
   flex: 1;
 }
 
+.pwEdit-btn ,
 .edit-btn {
   margin-bottom: 20px;
   background: transparent;
@@ -371,20 +374,6 @@ tr:hover {
   height: 100%;
   object-fit: cover;
 }
-
-/* 사이드바 */
-.sidebar {
-  width: 50px;
-  height: 100%;
-  background-color: black;
-  position: fixed;
-  top: 0;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding-top: 60px;
-}
-
 .left-menu-icon {
   color: white;
   font-size: 20px;
@@ -595,3 +584,5 @@ tr:hover {
   font-size: 14px;
   color: #999;
 }
+
+

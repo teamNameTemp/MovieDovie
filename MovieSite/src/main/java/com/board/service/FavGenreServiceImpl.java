@@ -15,9 +15,11 @@ import com.board.entity.repository.MemberRepository;
 
 import jakarta.servlet.http.HttpSession;
 import lombok.AllArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 
 @Service
 @AllArgsConstructor
+@Log4j2
 public class FavGenreServiceImpl implements FavGenreService {
 
 	public final MemberRepository memberRepository;
@@ -96,9 +98,8 @@ public class FavGenreServiceImpl implements FavGenreService {
 	@Override
 	public Optional<Map<String, Object>> getFavGenre() {
 		Map<String,Object> data = new HashMap<>();
-		
 		FavGenreEntity genre = favGenreRepository.findByEmail((String)session.getAttribute("email"));
-		if(genre == null)return Optional.of(data);
+		if(genre == null)return Optional.empty();
 		
 		data.put("genre1",genre.getGenre1());
 		data.put("genre2",genre.getGenre2());

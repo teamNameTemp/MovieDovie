@@ -113,6 +113,7 @@ label {
     color: #888888;
     border-radius: 5px;
     cursor: pointer;
+	box-sizing: border-box;
 }
 
 .imageZone:hover {
@@ -164,186 +165,203 @@ input[type="radio"] {
 </style>
 
 
-<script>   
+<script>	
 window.onload = () => {
-         
-   var imgCheck = "N";
-   var imgZone = document.querySelector('#imageZone');
-   var fileEvent = document.querySelector('#imageFile');
-         
-   //imageZone 영역 클릭 시 파일이벤트 처리. 자바스크립트에선 이벤트 발생 시 이벤트 정보를 담고 있는 event(e)라는 객체를 자동 생성.
-   imgZone.addEventListener('click', (e)=> {
-      fileEvent.click(e); //사용자가 만든 UI를 통해 <input type="file">을 클릭하는 것과 같은 효과를 내게 됨.
-   });
-         
-   fileEvent.addEventListener('change', (e)=> {
-      const files = e.target.files;//선택한 파일 정보가 e.target.files(배열)에 저장
-      showImage(files); 
-   })
-         
-   const showImage = (files) => {
-         imgZone.innerHTML = '';
-         const imgFile = files[0];
+			
+	var imgCheck = "N";
+	var imgZone = document.querySelector('#imageZone');
+	var fileEvent = document.querySelector('#imageFile');
+			
+	//imageZone 영역 클릭 시 파일이벤트 처리. 자바스크립트에선 이벤트 발생 시 이벤트 정보를 담고 있는 event(e)라는 객체를 자동 생성.
+	imgZone.addEventListener('click', (e)=> {
+		fileEvent.click(e); //사용자가 만든 UI를 통해 <input type="file">을 클릭하는 것과 같은 효과를 내게 됨.
+	});
+			
+	fileEvent.addEventListener('change', (e)=> {
+		const files = e.target.files;//선택한 파일 정보가 e.target.files(배열)에 저장
+		showImage(files); 
+	})
+			
+	const showImage = (files) => {
+		   imgZone.innerHTML = '';
+		   const imgFile = files[0];
 
-         if (imgFile.type.indexOf("image") < 0) {
-             alert("이미지 파일만 올려 주세요.");
-             return false;
-         }
+		   console.log(files.type);
+		console.log(imgFile.type);
+		   if (imgFile.type.indexOf("image") < 0) {
+		       alert("이미지 파일만 올려 주세요.");
+		       return false;
+		   }
 
-         const reader = new FileReader();
-         reader.onload = function(event) {
-             const imgElement = document.createElement('img');
-             imgElement.src = event.target.result;
-             imgElement.style.width = "100%";  // 이미지 영역에 맞게 조정
-             imgElement.style.height = "auto";
-             imgElement.style.objectFit = "contain";  // 여백 없이 맞춤
-             imgZone.appendChild(imgElement);
-         };
+		   const reader = new FileReader();
+		   reader.onload = function(event) {
+		       const imgElement = document.createElement('img');
+		       imgElement.src = event.target.result;
+		       imgElement.style.width = "100%";  // 이미지 영역에 맞게 조정
+		       imgElement.style.height = "auto";
+		       imgElement.style.objectFit = "contain";  // 여백 없이 맞춤
+		       imgZone.appendChild(imgElement);
+		   };
 
-         reader.readAsDataURL(imgFile);
-         imgCheck = "Y";
-   };
-      
+		   reader.readAsDataURL(imgFile);
+		   imgCheck = "Y";
+	};
+		
 
-   const btnModify = document.getElementById('btnModify'); 
-   const telno = document.getElementById('telno'); 
-   const telnoValidationMessage = document.getElementById('telnoValidationMessage'); 
-   const ModifyForm = document.getElementById('ModifyForm'); 
-   
-   let emailAvailable = false;
-   let nicknameAvailable = false;
-
-
-
-   // 닉네임 유효성 검사 및 중복 확인
-   nickname.addEventListener('input', async () => {
-       // 닉네임이 비어있지 않으면
-       if (nickname.value !== '') {
-           // 서버에서 닉네임 중복 확인 요청
-           const response = await fetch('/member/nicknameCheck', {
-               method: 'POST',
-               headers: { 'Content-Type': 'application/json' },
-               body: JSON.stringify({ nickname: nickname.value })
-           });
-           const data = await response.json();
-       } else {
-           // 닉네임 입력란이 비어 있으면 메시지 지우기
-           nicknameValidationMessage.textContent = "";
-           nicknameAvailable = false; // 닉네임 사용 불가능
-       }
-   });
+	const btnModify = document.getElementById('btnModify'); 
+	const email = document.getElementById('email'); 
+	const emailValidationMessage = document.getElementById('emailValidationMessage'); 
+	const password = document.getElementById('password'); 
+	const passwordValidationMessage = document.getElementById('passwordValidationMessage'); 
+	const password1 = document.getElementById('password1'); 
+	const gender = document.querySelectorAll('input[name=gender]:checked');
+	const nickname = document.getElementById('nickname'); 
+	const nicknameValidationMessage = document.getElementById('nicknameValidationMessage'); 
+	const telno = document.getElementById('telno'); 
+	const telnoValidationMessage = document.getElementById('telnoValidationMessage'); 
+	const ModifyForm = document.getElementById('ModifyForm'); 
+	
+	let emailAvailable = false;
+	let nicknameAvailable = false;
 
 
-   // 전화번호 유효성 검사
-   const isValidTelno = (telno) => {
-          const telnoPattern = /^\d{11,12}$/;
-          return telnoPattern.test(telno);
-   };
-   
-   telno.addEventListener('input', () => {
-          if (isValidTelno(telno.value)) {
-              telnoValidationMessage.textContent = "유효한 전화번호입니다.";
-              telnoValidationMessage.style.color = "green";
-          } else {
-              telnoValidationMessage.textContent = "숫자 11~12자리 입력해주세요.";
-              telnoValidationMessage.style.color = "red";
-          }
-   });
 
-   btnModify.addEventListener('click', async ()=> {
-      
-      if(imgCheck == 'N') {
-         alert("프로필 이미지를 등록하세요");
-         return false;
-      }      
-      
-      if(nickname.value == '') {
-         alert("닉네임을 입력하세요");
-         nickname.focus();
-         return false;
-      }
-   
-      if (!isValidTelno(telno.value)) {
-          alert("전화번호를 확인해주세요.");
-          telno.focus();
-          return false;
-      }
+	// 닉네임 유효성 검사 및 중복 확인
+	nickname.addEventListener('input', async () => {
+	    // 닉네임이 비어있지 않으면
+	    if (nickname.value !== '') {
+	        // 서버에서 닉네임 중복 확인 요청
+	        const response = await fetch('/member/nicknameCheck', {
+	            method: 'POST',
+	            headers: { 'Content-Type': 'application/json' },
+	            body: JSON.stringify({ nickname: nickname.value })
+	        });
+	        const data = await response.json();
+	    } else {
+	        // 닉네임 입력란이 비어 있으면 메시지 지우기
+	        nicknameValidationMessage.textContent = "";
+	        nicknameAvailable = false; // 닉네임 사용 불가능
+	    }
+	});
 
-      const beforeTelno = telno.value;
-      const afterTelno = beforeTelno.replace(/\-/ig,"").replace(/\ /ig,"").trim();
-      telno.value = afterTelno;
-      
-      const formData = new FormData(ModifyForm);
-      
-      await fetch('/member/signup', {
-            method: 'POST',
-            body: formData
-         }).then((response)=> response.json())
-            .then((data)=> {
-               if(data.message === 'good'){
-                  alert("회원 정보가 수정되었습니다.");
-                  document.location.href='/board/mypage';
-               } else {
-                  alert("서버 장애로 회원 가입에 실패했습니다.");
-               }
-         }).catch((error)=> {
-            console.log("error = " + error);
-         });      
-   });
-   
+
+	// 전화번호 유효성 검사
+	const isValidTelno = (telno) => {
+	       const telnoPattern = /^\d{11,12}$/;
+	       return telnoPattern.test(telno);
+	};
+	
+	telno.addEventListener('input', () => {
+	       if (isValidTelno(telno.value)) {
+	           telnoValidationMessage.textContent = "유효한 전화번호입니다.";
+	           telnoValidationMessage.style.color = "green";
+	       } else {
+	           telnoValidationMessage.textContent = "숫자 11~12자리 입력해주세요.";
+	           telnoValidationMessage.style.color = "red";
+	       }
+	});
+
+	btnModify.addEventListener('click', async ()=> {
+		
+		if(imgCheck == 'N') {
+			alert("프로필 이미지를 등록하세요");
+			return false;
+		}		
+		
+		
+		if(nickname.value == '') {
+			alert("닉네임을 입력하세요");
+			nickname.focus();
+			return false;
+		}
+		
+	
+		if (!isValidTelno(telno.value)) {
+		    alert("전화번호를 확인해주세요.");
+		    telno.focus();
+		    return false;
+		}
+
+		const beforeTelno = telno.value;
+		const afterTelno = beforeTelno.replace(/\-/ig,"").replace(/\ /ig,"").trim();
+		telno.value = afterTelno;
+		
+		const formData = new FormData(ModifyForm);
+		
+		await fetch('/member/signup', {
+		   	method: 'POST',
+		   	body: formData
+		   }).then((response)=> response.json())
+		   	.then((data)=> {
+		   		if(data.message === 'good'){
+		   			alert("회원 정보가 수정되었습니다.");
+		   			document.location.href='/board/mypage';
+		   		} else {
+		   			alert("서버 장애로 회원 가입에 실패했습니다.");
+		   		}
+		   }).catch((error)=> {
+		   	console.log("error = " + error);
+		   });	   
+	});
+	
 };
 </script>
 </head>
 <body>
 <div class="main" align="center">
     <div class="WriteForm">
-      <h1>회원 정보 수정</h1><br><br>
+		<h1>회원 정보 수정</h1><br><br>
         <form id="ModifyForm" name="ModifyForm" method="POST" enctype="multipart/form-data">
-            <input type="file" name="fileUpload" id="imageFile" style="display:none;"0/>
-            <div class="imageZone" id="imageZone">프로필 이미지</div><br><br>
+				<input type="file" name="fileUpload" id="imageFile" style="display:none;"0/>
+					<div class="imageZone" id="imageZone">
+						<img  class ="imageZone" id="imageZone" th:src="@{'/profile/' + ${member.storedFilename}}" alt="프로필 이미지">
+					</div>
+				<br><br>
 
-            <div>
-               <label>이메일</label>
-               <input type="email" id="email" name="email" class="input_field" th:value="${member.email}" readonly>
-               <div id="emailValidationMessage" class="validation-message"></div>
-            </div><br>
+				<div>
+					<label>이메일</label>
+					<input type="email" id="email" name="email" class="input_field" th:value="${member.email}" readonly>
+					<div id="emailValidationMessage" class="validation-message"></div>
+				</div><br>
 
-            <div>
-               <label>이름</label>
-               <input type="text" id="username" name="username" class="input_field" th:value="${member.username}" readonly>
-            </div><br>
+				<div>
+					<label>이름</label>
+					<input type="text" id="username" name="username" class="input_field" th:value="${member.username}" readonly>
+				</div><br>
 
-            <div>
-               <label>주민등록번호</label>
-               <input type="text" id="ssn" name="ssn" class="input_field" th:value="${member.ssn}" readonly>
-               <div id="ssnValidationMessage" class="validation-message"></div>
-            </div><br>
+				<div>
+					<label>주민등록번호</label>
+					<input type="text" id="ssn" name="ssn" class="input_field" th:value="${member.ssn}" readonly>
+					<div id="ssnValidationMessage" class="validation-message"></div>
+				</div><br>
 
-            <div>
-               성별 : 
-               <label><input type="radio" name="gender" value="남성" th:checked="${member.gender == '남성'}">남성</label>   
-               <label><input type="radio" name="gender" value="여성" th:checked="${member.gender == '여성'}">여성</label>
-            </div><br>
+				<div>
+					성별 : 
+					<label><input type="radio" name="gender" value="남성" th:checked="${member.gender == '남성'}">남성</label>	
+					<label><input type="radio" name="gender" value="여성" th:checked="${member.gender == '여성'}">여성</label>
+				</div><br>
 
-            <div>
-               <label>닉네임</label>
-               <input type="text" id="nickname" name="nickname" class="input_field" th:value="${member.nickname}">
-               <div id="nicknameValidationMessage" class="validation-message"></div>
-            </div><br>
+				<div>
+					<label>닉네임</label>
+					<input type="text" id="nickname" name="nickname" class="input_field" placeholder="닉네임" th:value="${member.nickname}">
+					<div id="nicknameValidationMessage" class="validation-message"></div>
+				</div><br>
 
-            <div>
-               <label>전화번호</label>
-               <input type="text" id="telno" name="telno" class="input_field" placeholder="전화번호" maxlength="12" th:value="${member.telno}">
-               <div id="telnoValidationMessage" class="validation-message"></div>
-            </div><br><br>
+				<div>
+					<label>전화번호</label>
+					<input type="text" id="telno" name="telno" class="input_field" placeholder="전화번호" maxlength="12" th:value="${member.telno}">
+					<div id="telnoValidationMessage" class="validation-message"></div>
+				</div><br><br>
 
-            <div>
-               <input type="button" id="btnModify" class="btn_modify" value="회원 수정"><br><br><br><br>
-               <input type="button" class="btn_cancel" value="취소" onclick="history.back()">
-               <input type="hidden" name="kind" value="U">
-            </div><br>
+				<div>
+					<input type="button" id="btnModify" class="btn_modify" value="회원 수정"><br><br><br><br>
+					<input type="button" class="btn_cancel" value="취소" onclick="history.back()">
+					<input type="hidden" name="kind" value="U">
+					
+				</div><br>
             </div>
         </form>
+				
     </div>
 </div>
 </body>  

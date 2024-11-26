@@ -5,7 +5,6 @@ import java.io.FileNotFoundException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.nio.file.Files;
-import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -80,22 +79,18 @@ public class MemberController {
 	}
 	
 	//로그아웃
-	@GetMapping("/logout")
-	public void getLogout(HttpSession session) {	
-		String email = (String)session.getAttribute("email");
-//		service.lastdateUpdate(email, "logout");
-		service.memberLogRegistry(email, "logout");		
-		session.invalidate(); 
-		log.info("====================== 로그 아웃 ======================");
-	}
-	//로그아웃 전처리
-	@PostMapping("/beforeLogout")
-	public void getBeforeLogout(HttpSession session,Model model) {
-		String email = (String)session.getAttribute("email");
-		service.lastdateUpdate(email, "logout");
-		service.memberLogRegistry(email, "logout");		
-		session.invalidate(); 
-		log.info("====================== 로그 아웃 전 로그 등록 및 세션 종료======================");
+	@PostMapping("/logout")
+	public void getLogout(HttpSession session,Model model) {	
+		String email = (String) session.getAttribute("email");
+
+		// 이메일이 세션에 존재하는지 확인
+		if (email != null) {
+			service.lastdateUpdate(email, "logout");
+			service.memberLogRegistry(email, "logout");
+		}
+		
+		// 세션 무효화
+		session.invalidate();	
 	}
 	
 	//회원 등록 화면 보기
@@ -105,7 +100,7 @@ public class MemberController {
     // 회원 가입
 	@ResponseBody
 	@PostMapping("/signup")
-	public Map<String,String> postSignup(MemberDTO member, @RequestParam("kind") String kind, 
+	public Map<String,String> postSignup(HttpSession session, MemberDTO member, @RequestParam("kind") String kind, 
 			@RequestParam("fileUpload") MultipartFile mpr) throws Exception {
 		
 		//운영체제에 따라 이미지가 저장될 디렉토리 구조 설정 시작
@@ -114,11 +109,11 @@ public class MemberController {
 		if(os.contains("win"))
 			path = "c:\\Repository\\moviedovie\\profile\\";
 		else 
-			path = "/home/tjdwn/Repository/moviedovie/profile";
+			path = "/home/tjdwn/Repository/moviedovie/profile/";
 		
 		//디렉토리가 존재하는지 체크해서 없다면 생성
 		File p = new File(path);
-		if(!p.exists()) p.mkdir();
+		if(!p.exists()) p.mkdirs();
 		//운영체제에 따라 이미지가 저장될 디렉토리 구조 설정 종료
 		
 		File targetFile = null;
@@ -132,13 +127,18 @@ public class MemberController {
 			org_fileExtension = org_filename.substring(org_filename.lastIndexOf("."));			
 			stored_filename = UUID.randomUUID().toString().replaceAll("-", "") + org_fileExtension;
 			
+			log.info(org_filename);
+			log.info(stored_filename);
+			log.info(org_fileExtension);	
+
 			try {
 				targetFile = new File(path + stored_filename);				
 				mpr.transferTo(targetFile);
 				
-				member.setOrgFilename(stored_filename);
+				member.setOrgFilename(org_filename);
 				member.setStoredFilename(stored_filename);
-				member.setFilesize(mpr.getSize());				
+				member.setFilesize(mpr.getSize());	
+				log.info("===================");			
 				
 			}catch(Exception e) {
 				e.printStackTrace();
@@ -147,7 +147,6 @@ public class MemberController {
 		
 		//회원 등록시
 		if(kind.equals("I")) {
-			log.info("회원가입성공!00");
 			//패스워드 암호화
 			member.setPassword(pwdEncoder.encode(member.getPassword()));
 			//마지막 패스워드 변경일 --> 회원 가입 시 처음으로 패스워드 생성한 날도 포함
@@ -165,20 +164,36 @@ public class MemberController {
 				File file = new File(path + m.getStoredFilename());//수정되기 전의 stored_file
 				file.delete();
 			}		
-
-    		String EncodedNewPW = pwdEncoder.encode(member.getPassword());
-			member.setPassword(EncodedNewPW);
-			
+			member.setPassword(service.memberInfo(member.getEmail()).getPassword());
 			//회원 수정
 			service.modifyMemberInfo(member);
 		}		
+
+		//소셜 회원 첫 수정 시
+		if(kind.equals("SU")) {
+			
+			session.setMaxInactiveInterval(3600 * 24 * 7); // 세션 유지 기간 설정
+			session.setAttribute("email", member.getEmail());
+			session.setAttribute("username", member.getUsername());
+			session.setAttribute("role", member.getRole());
+			session.setAttribute("nickname", member.getNickname());
+
+			//프로필 이미지 변경 시에 기존 프로필 이미지 삭제 
+			if(!mpr.isEmpty()) {
+				MemberDTO m = service.memberInfo(member.getEmail());
+				File file = new File(path + m.getStoredFilename());//수정되기 전의 stored_file
+				file.delete();
+			}		
+			member.setPassword(service.memberInfo(member.getEmail()).getPassword());
+			//회원 수정
+			service.modifyMemberInfo(member);
+		}	
 		
 		Map<String,String> data = new HashMap<>();
 		data.put("message", "good");
 		data.put("username", URLEncoder.encode(member.getUsername(),"UTF-8"));
 		
 		return data;
-
 	}
 	
 	@GetMapping("/modifyMemberInfoOauth")
@@ -242,23 +257,26 @@ public class MemberController {
         String org_fileExtension = "";
         String stored_filename = "";
 
-        if (!mpr.isEmpty()) {
-            org_filename = mpr.getOriginalFilename();
-            org_fileExtension = org_filename.substring(org_filename.lastIndexOf("."));
-            stored_filename = UUID.randomUUID().toString().replaceAll("-", "") + org_fileExtension;
-
-            try {
-                targetFile = new File(path + stored_filename);
-                mpr.transferTo(targetFile);
-
-                member.setOrgFilename(stored_filename);
-                member.setStoredFilename(stored_filename);
-                member.setFilesize(mpr.getSize());
-
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
+		if(!mpr.isEmpty()) {
+			
+			org_filename = mpr.getOriginalFilename();
+			if (org_filename != null && !org_filename.isEmpty()) {
+				org_fileExtension = org_filename.substring(org_filename.lastIndexOf("."));			
+				stored_filename = UUID.randomUUID().toString().replaceAll("-", "") + org_fileExtension;
+			}
+			
+			try {
+				targetFile = new File(path + stored_filename);				
+				mpr.transferTo(targetFile);
+				
+				member.setOrgFilename(org_filename);
+				member.setStoredFilename(stored_filename);
+				member.setFilesize(mpr.getSize());				
+				
+			}catch(Exception e) {
+				e.printStackTrace();
+			}
+		}
 
         if (kind.equals("I")) { // 회원 등록 시
             log.info("회원가입 성공!");
@@ -291,42 +309,42 @@ public class MemberController {
 
 
 	//회원 프로필 이미지 보기
-	@GetMapping("viewProfile/{email}")
+	@GetMapping("/viewProfile/{email}")
 	public void filedownload(@PathVariable String email, HttpServletResponse rs) throws Exception {		
 		
-//		//운영체제에 따라 이미지가 저장될 디렉토리 구조 설정 시작
-//		String os = System.getProperty("os.name").toLowerCase();
-//		String path;
-//		if(os.contains("win"))
-//			path = "c:\\Repository\\profile\\";
-//		else 
-//			path = "/home/tjdwn/Repository/moviedovie/profile";
-//		
-//		//디렉토리가 존재하는지 체크해서 없다면 생성
-//		File p = new File(path);
-//		if(!p.exists()) p.mkdir();
-//		//운영체제에 따라 이미지가 저장될 디렉토리 구조 설정 종료
-//
-//		MemberDTO member = service.memberInfo(email);
-//		
-//		//다운로드할 파일의 경로와 파일명을 매개변수로 입력 받아 byte 데이터타입의 1차원 배열로 저장
-//		File file = new File(path + member.getStoredFilename());
-//		if (!file.exists()) {
-//		    throw new FileNotFoundException("File not found at: " + file.getAbsolutePath());
-//		}
-//
-//		// 파일을 byte[]로 읽기
-//		byte[] fileBytes = Files.readAllBytes(file.toPath());
-//
-//		
-//		//예) HTTP Response Header는 Content-Disposition: attachment; filename="hello.jpg";
-//		//   HTTP Response Body에는 1차원 바이트 타입으로 변환된 배열을 넣음
-//		rs.setContentType("application/octet-stream");
-//		rs.setContentLength(fileBytes.length);
-//		rs.setHeader("Content-Disposition", "attachment; filename=\"" + URLEncoder.encode(member.getOrgFilename(), "UTF-8") + "\";");
-//		rs.getOutputStream().write(fileBytes); //stream을 통해 1차원 byte 타입 배열로 변환된 데이터(추후 파일로 변환)를 Buffer에 씀...
-//		rs.getOutputStream().flush(); //버퍼에 있는 내용을 write
-//		rs.getOutputStream().close(); //스트림 닫기
+		//운영체제에 따라 이미지가 저장될 디렉토리 구조 설정 시작
+		String os = System.getProperty("os.name").toLowerCase();
+		String path;
+		if(os.contains("win"))
+			path = "c:\\Repository\\moviedovie\\profile\\";
+		else 
+			path = "/home/tjdwn/Repository/moviedovie/profile";
+		
+		//디렉토리가 존재하는지 체크해서 없다면 생성
+		File p = new File(path);
+		if(!p.exists()) p.mkdir();
+		//운영체제에 따라 이미지가 저장될 디렉토리 구조 설정 종료
+
+		MemberDTO member = service.memberInfo(email);
+		
+		//다운로드할 파일의 경로와 파일명을 매개변수로 입력 받아 byte 데이터타입의 1차원 배열로 저장
+		File file = new File(path + member.getStoredFilename());
+		if (!file.exists()) {
+		    throw new FileNotFoundException("File not found at: " + file.getAbsolutePath());
+		}
+
+		// 파일을 byte[]로 읽기
+		byte[] fileBytes = Files.readAllBytes(file.toPath());
+
+		
+		//예) HTTP Response Header는 Content-Disposition: attachment; filename="hello.jpg";
+		//   HTTP Response Body에는 1차원 바이트 타입으로 변환된 배열을 넣음
+		rs.setContentType("application/octet-stream");
+		rs.setContentLength(fileBytes.length);
+		rs.setHeader("Content-Disposition", "attachment; filename=\"" + URLEncoder.encode(member.getOrgFilename(), "UTF-8") + "\";");
+		rs.getOutputStream().write(fileBytes); //stream을 통해 1차원 byte 타입 배열로 변환된 데이터(추후 파일로 변환)를 Buffer에 씀...
+		rs.getOutputStream().flush(); //버퍼에 있는 내용을 write
+		rs.getOutputStream().close(); //스트림 닫기
 	}
 	
 	//회원가입 이메일 인증
