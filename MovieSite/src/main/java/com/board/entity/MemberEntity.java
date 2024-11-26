@@ -91,7 +91,9 @@ public class MemberEntity {
 		this.telno = member.getTelno();
 		this.filesize = member.getFilesize();
 		this.point=member.getPoint();
-		this.password = member.getPassword();
+		this.org_filename = member.getOrgFilename();
+		this.stored_filename = member.getStoredFilename();
+		this.grade = member.getGrade();
 		this.lastpwdate = LocalDateTime.now();
 		this.pwcheck = 1L;
 	

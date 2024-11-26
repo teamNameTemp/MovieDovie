@@ -10,7 +10,6 @@
   </head>
   <body>
     <div th:replace="~{/fragments/nav/menubar::menubar}"></div>
-    <div th:replace="~{/fragments/nav/sidebar::sidebar}"></div>
 
     <!-- 대여현황 박스 -->
     <div class="rental-status-box" id="rentalStatusBox">
@@ -50,7 +49,7 @@
       <div class="profile-header">
         <div class="header-content">
           <div class="profile-image">
-            <img src="/images/img/profile.jpg" alt="Profile Image" />
+            <img th:src="@{'/profile/' + ${member.storedFilename}}" alt="Profile Image" />
             <div class="edit-overlay">
               <i class="fas fa-camera"></i>
             </div>
@@ -126,7 +125,10 @@
             "
           >
             <h2>회원 정보</h2>
-            <button class="edit-btn">회원정보 수정</button>
+            <div>
+              <button class="edit-btn">회원정보 수정</button>
+              <button class="pwEdit-btn">비밀번호 수정</button>
+            </div>
           </div>
           <div class="info-card">
             <div class="info-row">
@@ -243,6 +245,11 @@
       const rentalModal = document.getElementById("rentalModal");
       const closeModal = document.getElementById("closeModal");
       const editBtn = document.querySelector(".edit-btn");
+      const pwEditBtn = document.querySelector(".pwEdit-btn");
+
+      pwEditBtn.addEventListener("click", function () {
+        window.location.href = "/member/modifyMemberPassword";
+      });
 
       editBtn.addEventListener("click", function () {
         window.location.href = "/member/modifyMemberInfo";

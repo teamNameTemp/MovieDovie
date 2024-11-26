@@ -18,7 +18,6 @@ import com.board.entity.movie.MovieEntity;
 import com.board.entity.repository.MemberRepository;
 import com.board.entity.repository.RentRepository;
 import com.board.entity.repository.movie.MovieRepository;
-import com.board.util.DataCalculate;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -31,7 +30,6 @@ public class RentServiceImpl implements RentService {
 	private final RentRepository rentRepository;
 	private final MovieRepository movieRepositoty;
 	private final MemberRepository memberRepository;
-	private final DataCalculate calc;
 
 	@Override
 	public void updateRent(String email, Long movieId) {
@@ -86,8 +84,8 @@ public class RentServiceImpl implements RentService {
 		return result;
 
 	}
-
-	@Scheduled(cron = "0 0 0 * * ?") // 매일 자정에 실행
+	//매일 자저
+	@Scheduled(cron = "0 0 0 * * ?")
 	@Transactional
 	public void autoReturnOverdueRentals() {
 		LocalDateTime now = LocalDateTime.now();

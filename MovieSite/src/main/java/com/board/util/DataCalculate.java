@@ -1,7 +1,10 @@
 package com.board.util;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
+import java.time.temporal.WeekFields;
+import java.util.Locale;
 
 import org.springframework.stereotype.Component;
 
@@ -9,7 +12,7 @@ import org.springframework.stereotype.Component;
 public class DataCalculate {
 	
 	//개봉날짜에 따른 대여 비용 계산
-	public int calcRentPrice(LocalDate release) {
+	public static int calcRentPrice(LocalDate release) {
         LocalDate today = LocalDate.now();
         long daysSinceRelease = ChronoUnit.DAYS.between(release, today);
         
@@ -36,7 +39,7 @@ public class DataCalculate {
     }
 
     //등급에 따른 마일리지 추가
-    public int calcMileage(String grade, int price) {
+    public static int calcMileage(String grade, int price) {
         int result = 0;
 
         switch (grade) {
@@ -59,11 +62,50 @@ public class DataCalculate {
         return result;
     }
 
-    //나이 계산
-    public boolean calcAge(String ssn) {
-        int year = Integer.parseInt(ssn.substring(0, 2));
-        int age = 2024 - year;
+    //매출액에 따른 등급 계산
+    public static String calcGrade(int totalSales) {
+        String grade = "BRONZE";
 
-        return age >= 18;
+        switch (totalSales) {
+            case 0:
+                grade = "BRONZE";
+                break;
+        }
+
+        return grade;
+    }   
+
+    //나이 계산
+    public static int calcAge(String ssn) {
+        int year = Integer.parseInt(ssn.substring(0, 2));
+        int age = LocalDate.now().getYear() - year;
+
+        return age;
+    }
+
+    public static boolean calcIsAdult(String certification,int age) {
+        if(certification == null) return true;
+        switch (certification) {    
+            case "19+":
+            case "19":
+            return age>=19?true:false;
+            case "18":
+            return age>=18?true:false;
+            case "15":
+            return age>=15?true:false;
+            case "12":
+            return age>=12?true:false;
+            case "ALL":
+            case "All":
+                return true;
+            default:
+                return true;
+        }
+    }
+
+    //주차 계산
+    public static int getWeekOfMonth(LocalDateTime date) {
+        WeekFields weekFields = WeekFields.of(Locale.KOREA);
+        return date.get(weekFields.weekOfMonth());
     }
 }
