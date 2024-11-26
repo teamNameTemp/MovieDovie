@@ -113,6 +113,7 @@ label {
     color: #888888;
     border-radius: 5px;
     cursor: pointer;
+	box-sizing: border-box;
 }
 
 .imageZone:hover {
@@ -185,6 +186,8 @@ window.onload = () => {
 		   imgZone.innerHTML = '';
 		   const imgFile = files[0];
 
+		   console.log(files.type);
+		console.log(imgFile.type);
 		   if (imgFile.type.indexOf("image") < 0) {
 		       alert("이미지 파일만 올려 주세요.");
 		       return false;
@@ -241,27 +244,6 @@ window.onload = () => {
 	    }
 	});
 
-	
-	// 비밀번호 유효성 검사
-	const isValidPassword = (password) => {
-	       const lengthCheck = password.length >= 8 && password.length <= 20;
-	       const numCheck = /[0-9]/.test(password);
-	       const engCheck = /[a-zA-Z]/.test(password);
-	       const speCheck = /[~!@#$%^&*|\\\'\";:\/?]/.test(password);
-	       return lengthCheck && numCheck && engCheck && speCheck;
-	   };
-
-	   password.addEventListener('input', async () => {
-	       const newPassword = password.value;
-
-	       if (!isValidPassword(newPassword)) {
-	           passwordValidationMessage.textContent = "암호는 8자리 ~ 20자 이내로 입력해 주세요.";
-	           passwordValidationMessage.style.color = "red";
-	           return;
-	       }
-	   });
-
-
 
 	// 전화번호 유효성 검사
 	const isValidTelno = (telno) => {
@@ -286,23 +268,6 @@ window.onload = () => {
 			return false;
 		}		
 		
-		if (!isValidPassword(password.value)) {
-		    alert("현재 비밀번호를 확인해주세요.");
-		    password.focus();
-		    return false;
-		}
-		
-		if (!isValidPassword(password.value)) {
-		    alert("새 비밀번호를 확인해주세요.");
-		    password.focus();
-		    return false;
-		}
-		
-		if (password1.value !== password.value) {
-		    alert("새 비밀번호가 일치하지 않습니다. 다시 확인해주세요.");
-		    password1.focus();
-		    return false;
-		}
 		
 		if(nickname.value == '') {
 			alert("닉네임을 입력하세요");
@@ -348,7 +313,10 @@ window.onload = () => {
 		<h1>회원 정보 수정</h1><br><br>
         <form id="ModifyForm" name="ModifyForm" method="POST" enctype="multipart/form-data">
 				<input type="file" name="fileUpload" id="imageFile" style="display:none;"0/>
-				<div class="imageZone" id="imageZone">프로필 이미지</div><br><br>
+					<div class="imageZone" id="imageZone">
+						<img  class ="imageZone" id="imageZone" th:src="@{'/profile/' + ${member.storedFilename}}" alt="프로필 이미지">
+					</div>
+				<br><br>
 
 				<div>
 					<label>이메일</label>

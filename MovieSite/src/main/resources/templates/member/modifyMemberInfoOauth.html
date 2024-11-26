@@ -120,9 +120,9 @@ window.onload = () => {
 	})
 			
 	const showImage = (files) => {
-		   imgZone.innerHTML = '';
-		   const imgFile = files[0];
-
+		imgZone.innerHTML = '';
+		const imgFile = files[0];
+		
 		   if (imgFile.type.indexOf("image") < 0) {
 		       alert("이미지 파일만 올려 주세요.");
 		       return false;
@@ -390,7 +390,7 @@ window.onload = () => {
 				<div>
 					<input type="button" id="btnModify" class="btn_modify" value="회원 수정"><br><br><br><br>
 					<input type="button" class="btn_cancel" value="취소" onclick="history.back()">
-					<input type="hidden" name="kind" value="U">
+					<input type="hidden" name="kind" value="SU">
 					
 				</div><br>
             </div>
