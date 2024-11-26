@@ -196,6 +196,60 @@ public class MemberController {
 		return data;
 	}
 	
+	@PostMapping("/profileUpload")
+	@ResponseBody
+	public Map<String, String> postProfileUpload(@RequestParam("fileUpload") MultipartFile mpr,HttpSession session) throws Exception {
+			Map<String, String> data = new HashMap<>();
+		String email = (String) session.getAttribute("email");
+		MemberDTO member = service.memberInfo(email);
+			//운영체제에 따라 이미지가 저장될 디렉토리 구조 설정 시작
+		String os = System.getProperty("os.name").toLowerCase();
+		String path;
+		if(os.contains("win"))
+			path = "c:\\Repository\\moviedovie\\profile\\";
+		else 
+			path = "/home/tjdwn/Repository/moviedovie/profile/";
+		
+		//디렉토리가 존재하는지 체크해서 없다면 생성
+		File p = new File(path);
+		if(!p.exists()) p.mkdirs();
+		//운영체제에 따라 이미지가 저장될 디렉토리 구조 설정 종료
+		
+		File targetFile = null;
+		String org_filename = "";
+		String org_fileExtension = "";
+		String stored_filename = "";
+		
+		if(!mpr.isEmpty()) {
+			
+			org_filename = mpr.getOriginalFilename();
+			org_fileExtension = org_filename.substring(org_filename.lastIndexOf("."));			
+			stored_filename = UUID.randomUUID().toString().replaceAll("-", "") + org_fileExtension;
+			
+			log.info(org_filename);
+			log.info(stored_filename);
+			log.info(org_fileExtension);	
+
+			try {
+				targetFile = new File(path + stored_filename);				
+				mpr.transferTo(targetFile);
+				
+				member.setOrgFilename(org_filename);
+				member.setStoredFilename(stored_filename);
+				member.setFilesize(mpr.getSize());				
+				
+			}catch(Exception e) {
+				e.printStackTrace();
+			}
+		}
+
+		service.modifyMemberProfile(member);
+		data.put("message", "good");
+
+
+		return data;
+	}
+
 	@GetMapping("/modifyMemberInfoOauth")
 	public void getMemberInfoModifyOauth(Model model, HttpSession session) {	
 		String email = (String)session.getAttribute("email");

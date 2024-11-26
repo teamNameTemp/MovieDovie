@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.board.dto.MemberDTO;
 import com.board.entity.MemberEntity;
@@ -141,6 +142,17 @@ public class MemberServiceImpl implements MemberService {
 	@Override	
 	public int newMembersInLastSevenDays(@Param("sevenDaysAgo") LocalDateTime sevenDaysAgo) {
 		return memberRepository.newMembersInLastSevenDays(sevenDaysAgo);
+	}
+
+	@Override
+	public void modifyMemberProfile(MemberDTO member){
+		MemberEntity memberEntity = memberRepository.findById(member.getEmail()).get();
+
+		memberEntity.setFilesize(member.getFilesize());
+		memberEntity.setOrg_filename(member.getOrgFilename());
+		memberEntity.setStored_filename(member.getStoredFilename());
+		
+		memberRepository.save(memberEntity);
 	}
 
 }
