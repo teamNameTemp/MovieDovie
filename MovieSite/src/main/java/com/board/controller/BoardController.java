@@ -446,6 +446,8 @@ public class BoardController {
 
 		// 이메일로 회원 정보 가져오기
 		MemberDTO memberDTO = memberService.memberInfo(email);
+		model.addAttribute("member", memberDTO);
+
 		model.addAttribute("nickname", memberDTO.getNickname());
 		model.addAttribute("member", memberDTO);
 
@@ -501,6 +503,7 @@ public class BoardController {
 		
 		// 이메일로 회원 정보 가져오기
 		MemberDTO memberDTO = memberService.memberInfo(email);
+		model.addAttribute("member", memberDTO);
 		model.addAttribute("nickname", memberDTO.getNickname());
 		
 		model.addAttribute("member", memberDTO);
