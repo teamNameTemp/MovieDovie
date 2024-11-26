@@ -1,7 +1,11 @@
 package com.board.service;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import org.springframework.data.domain.Page;
+import org.springframework.data.repository.query.Param;
+
 import com.board.dto.MemberDTO;
 import com.board.entity.repository.MemberRepository;
 
@@ -42,4 +46,7 @@ public interface MemberService {
 	
    //임시 패스워드 저장하기
 	public void makeTempPW(String email, String newPW);
+	
+	//관리자페이지 - 통계 : 최근 7일간 회원가입한 회원 수 확인
+	public int newMembersInLastSevenDays(@Param("sevenDaysAgo") LocalDateTime sevenDaysAgo);
 }

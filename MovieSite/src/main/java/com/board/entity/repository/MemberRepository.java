@@ -1,10 +1,13 @@
 package com.board.entity.repository;
 
 import java.util.Optional;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import com.board.entity.MemberEntity;
 
@@ -38,6 +41,10 @@ public interface MemberRepository extends JpaRepository<MemberEntity, String>{
 	        "  COUNT(CASE WHEN TRUNC(m.regdate) = TRUNC(SYSDATE) THEN 1 END) AS todaySignup, " +
 	        "  COUNT(m.email) AS totalMember FROM member m", nativeQuery = true)
 	public List<Object[]> signupResult();
+	
+	//관리자페이지 - 통계 : 최근 7일간 회원가입한 회원 수 확인
+	@Query("SELECT COUNT(m) FROM member m WHERE m.regdate >= :sevenDaysAgo")
+	public int newMembersInLastSevenDays(@Param("sevenDaysAgo") LocalDateTime sevenDaysAgo);
 	
 	
 }
