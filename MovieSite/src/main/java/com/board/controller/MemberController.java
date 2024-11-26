@@ -100,7 +100,7 @@ public class MemberController {
     // 회원 가입
 	@ResponseBody
 	@PostMapping("/signup")
-	public Map<String,String> postSignup(MemberDTO member, @RequestParam("kind") String kind, 
+	public Map<String,String> postSignup(HttpSession session, MemberDTO member, @RequestParam("kind") String kind, 
 			@RequestParam("fileUpload") MultipartFile mpr) throws Exception {
 		
 		//운영체제에 따라 이미지가 저장될 디렉토리 구조 설정 시작
@@ -168,6 +168,26 @@ public class MemberController {
 			//회원 수정
 			service.modifyMemberInfo(member);
 		}		
+
+		//소셜 회원 첫 수정 시
+		if(kind.equals("SU")) {
+			
+			session.setMaxInactiveInterval(3600 * 24 * 7); // 세션 유지 기간 설정
+			session.setAttribute("email", member.getEmail());
+			session.setAttribute("username", member.getUsername());
+			session.setAttribute("role", member.getRole());
+			session.setAttribute("nickname", member.getNickname());
+
+			//프로필 이미지 변경 시에 기존 프로필 이미지 삭제 
+			if(!mpr.isEmpty()) {
+				MemberDTO m = service.memberInfo(member.getEmail());
+				File file = new File(path + m.getStoredFilename());//수정되기 전의 stored_file
+				file.delete();
+			}		
+			member.setPassword(service.memberInfo(member.getEmail()).getPassword());
+			//회원 수정
+			service.modifyMemberInfo(member);
+		}	
 		
 		Map<String,String> data = new HashMap<>();
 		data.put("message", "good");
