@@ -169,6 +169,25 @@ public class BoardController {
 		//누적 결제 금액
 		Long accumulatedPayment = rent.getMyAccumulatedPayment(email);
 		model.addAttribute("accumulatedPayment",accumulatedPayment);
+		
+
+		/////////////////// 알람 처리 ///////////////////
+		model.addAttribute("email", email);
+		
+		 // 알림 목록 가져오기 (빈 리스트일 경우 처리)
+	    List<NotificationEntity> noti = notificationService.notiForUser(email);
+	    
+	    if (noti == null) {noti = new ArrayList<>();}
+	    
+	    // 알림이 있을 경우 첫 번째 알림의 seqno 가져오기
+	    Long seqno = null;
+	    if (!noti.isEmpty()) {
+	        seqno = noti.get(0).getRequestEntity().getSeqno();
+	    }
+
+	    model.addAttribute("seqno", seqno);
+	    model.addAttribute("noti", noti);  // 알림 목록을 모델에 추가
+	    
 	}
 	
 	// 장르 필터

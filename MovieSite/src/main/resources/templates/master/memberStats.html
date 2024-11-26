@@ -12,19 +12,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css">
 	<style>
-		#wrap {width: 1300px; height: 1000px; font-size: 17px; text-align: center; margin : auto; }
+		#wrap {width: 1450px; height: 1000px; font-size: 17px; text-align: center; margin : auto; }
 	 	
 	 	.side {
 	 		display: flex;
-		 	float: left; width: 750px; height: 950px; text-align: center; 
+		 	float: left; width: 900px; height: 950px; text-align: center; 
 	    	align-items: center; /* 수평 중앙 정렬 */
+	    	justify-content: space-between; /* 양쪽으로 배치 */
 	    }
 	    
 	    .content1 {
 		    display: flex; align-items: center; justify-content: space-between;
 		    align-items: center; /* 수직 중앙 정렬 */
 		    width: 550px;
-		    height: 190px; /* 고정 높이 유지 */
+		    height: 140px; /* 고정 높이 유지 */
 		    text-align: center;
 		    float: left;
 		    margin: auto;
@@ -34,7 +35,7 @@
 		    display: flex; align-items: center; justify-content: space-between;
 		    align-items: center; /* 수직 중앙 정렬 */
 		    width: 550px;
-		    height: 370px; /* 고정 높이 유지 */
+		    height: 340px; /* 고정 높이 유지 */
 		    text-align: center;
 		    float: left;
 		    margin: auto;
@@ -54,7 +55,7 @@
 		    display: flex; align-items: center; justify-content: space-between;
 		    align-items: center; /* 수직 중앙 정렬 */
 		    width: 550px;
-		    height: 260px; /* 고정 높이 유지 */
+		    height: 340px; /* 고정 높이 유지 */
 		    text-align: center;
 		    float: left;
 		    margin: auto;
@@ -69,7 +70,10 @@
             padding: 3%; /* 패딩 10% */
             border: 1.8px solid lightgray;
             box-sizing: border-box; /* 패딩 포함한 크기 계산 */
+            justify-content: space-between; /* 양쪽으로 배치 */
+		    align-items: center; /* 수평 중앙 정렬 */
         }
+        
         
         .horicontent {
             display: flex;  
@@ -77,6 +81,14 @@
             width: 100%; /* 부모 너비에 맞춤 */
             height: 100%; /*부모 너비에 맞춤*/
             text-align: center;
+        }
+        
+        .horicontentforCR {
+            display: flex;  
+   			justify-content: space-between; /* 양쪽으로 배치 */
+            width: 100%; /* 부모 너비에 맞춤 */
+            text-align: center;
+            margin-bottom: 30px;
         }
         
         .horicontentmem {
@@ -91,6 +103,25 @@
 		.left-div, .right-div {
 		    width: 50%; /* 여백을 고려하여 너비 설정 */
 		    box-sizing: border-box;
+		    justify-content: space-between; /* 양쪽으로 배치 */
+		    align-items: center; /* 수평 중앙 정렬 */
+		}
+		
+		.left70-div {
+		    width: 70%; /* 여백을 고려하여 너비 설정 */
+		    box-sizing: border-box;
+		}
+		
+		.right30-div {
+		    width: 30%; /* 여백을 고려하여 너비 설정 */
+		    box-sizing: border-box;
+		    text-align: left;
+		    padding-left: 10px;
+		}
+		
+        #RentStatus {
+		  display: block;
+		  margin: 0 auto;
 		}
         
 	    .positive {
@@ -109,7 +140,7 @@
         
         table {
 		  border-collapse: collapse;
-		  width: 220px;
+		  width: 100%;
 		  margin: 1rem auto;
 		  background-color: white;
 		}
@@ -131,17 +162,22 @@
 		/* 테이블 비율 */
 		th:nth-child(1),
 		td:nth-child(1) {
-		  width: 20%;
+		  width: 10%;
 		}
 		
 		th:nth-child(2),
 		td:nth-child(2) {
-		  width: 50%;
+		  width: 35%;
 		}
 		
 		th:nth-child(3),
 		td:nth-child(3) {
-		  width: 30%;
+		  width: 35%;
+		}
+		
+		th:nth-child(4),
+		td:nth-child(4) {
+		  width: 20%;
 		}
 		
 		tr:nth-child(even) {
@@ -169,8 +205,8 @@
 		}
 		
 		.statusicon {
-		    width: 100px; /* 이미지 크기 설정 */
-		    height: 100px; /* 이미지 크기 설정 */
+		    width: 80px; /* 이미지 크기 설정 */
+		    height: 80px; /* 이미지 크기 설정 */
 		    margin-right: 15px; /* 이미지와 텍스트 간 간격 */
 		}
 		
@@ -201,66 +237,133 @@
 		a.pending:hover{
 			text-decoration : underline;
 		}
+		
+		
+		.progress-bar {
+		    width: 100%;
+		    height: 37px;
+		    background-color: #EFEFEF;
+		    font-weight: 600;
+		    position: relative;
+		}
+		
+		.progress-bar .progress {
+            height: 100%;
+            padding: 0;
+            text-align: center;
+            background-color:#4dbf00;
+            color: white;
+            display: flex;
+		    align-items: center;
+		    justify-content: center;
+		    position: relative;
+        }
+        
+        
+		.progress-text {
+		    position: relative;
+		    right: 5px;
+		    color: white;
+		    transition: all 0.3s ease; /* 애니메이션 추가 */
+		}
+        
+        .canvas-container {
+		    position: relative;
+		    z-index: 10;
+		    width: 100%;
+		    height: auto;
+		    display: flex;
+		    align-items: center;
+		    justify-content: center;
+		}
+				
 	</style>
 
 
 </head>
 <body class="p-3 m-0 border-0 bd-example m-0 border-0">
 <div th:replace="~{/fragments/nav/masterMenubar::masterMenubar}"></div>
-<br><br><br><br><br>
-
+<br><br><br><br>
 
 
 <div id="wrap">
 	<div class="side">
-		<div class="content"><h2>대여 현황</h2><br><br>
-				
-		[최근 일주일 간 대여 현황]<br><br>
-		<div>
-		  <canvas id="weeklyRent"></canvas>
+		<div class="content">
+		<h2>월별 매출 현황</h2><br><br>
+		
+		<div style="display: flex; justify-content: center; align-items: center; width: 100%; height: 350px;">
+		  <canvas id="MonthlySales"></canvas>
 		</div>
 		<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 		<script>
-		  fetch('/master/weeklyRent')
-		  	.then(response => response.json())
-		  	.then(data => {
-		  		 const labels = data.map(item => {
-		  			 const date = new Date(item.date);
-		  			 return (date.getMonth() + 1) + '/' + date.getDate(); // MM/DD 형식으로 변환
-		  		  });
-		  		  const rentData = data.map(item => item.count); //대여수 생성
-		  	
-		  		  const ctx = document.getElementById('weeklyRent');
-				  new Chart(ctx, {
-				    type: 'bar',
-				    data: {
-				      labels: labels,
-				      datasets: [{
-				        label: '대여 수',
-				        data: rentData,
-				        borderWidth: 1,
-				        borderColor: '#4dbf00',
-				        backgroundColor: '#4dbf0090'
-				      }]
-				    },
-				    options: {
-					      scales: {
-					        y: {
-					          beginAtZero: true
-					        }
-					      }
-					    }
-					  });
-			  	})
-			  	.catch(error => console.error('Error fetching data:', error));
-		</script>
+		  Promise.all([
+			  fetch('/master/MonthlySalesCurrentYear').then(response => response.json()),
+			  fetch('/master/MonthlySalesLastYear').then(response => response.json())
+		  ])
+	  	  .then(([currentYearData, lastYearData]) => {
+		      // 각 월의 대여 수를 저장할 배열 초기화
+		      const currentYearSales = Array(12).fill(0);
+		      const lastYearSales = Array(12).fill(0);
 		
+		      // 현재 연도 데이터 처리
+		      currentYearData.forEach(item => {
+		          const date = new Date(item.date);
+		          const month = date.getMonth(); // 0-11 범위
+		          currentYearSales[month] += item.sales; // 해당 월의 대여 수 누적
+		      });
+		
+		      // 작년 데이터 처리
+		      lastYearData.forEach(item => {
+		          const date = new Date(item.date);
+		          const month = date.getMonth(); // 0-11 범위
+		          lastYearSales[month] += item.sales; // 해당 월의 매출 누적
+		      });
+		
+		      // 월별 레이블 생성
+		      const monthLabels = Array.from({ length: 12 }, (_, i) => i + 1); // [1, 2, 3, ..., 12]
+		
+		      const ctxmonthsales = document.getElementById('MonthlySales').getContext('2d');
+		
+		      new Chart(ctxmonthsales, {
+		          type: 'bar',
+		          data: {
+		              labels: monthLabels, // 월별 레이블
+		              datasets: [
+		                  {
+		                      label: '작년 매출',
+		                      data: lastYearSales,
+		                      borderWidth: 1,
+		                      borderColor: '#FFC534',
+		                      backgroundColor: '#FFC53490'
+		                  },
+		                  {
+		                      label: '올해 매출',
+		                      data: currentYearSales,
+		                      borderWidth: 1,
+		                      borderColor: '#4dbf00',
+		                      backgroundColor: '#4dbf0090'
+		                  }
+		              ]
+		          },
+		          options: {
+		              scales: {
+		                  y: {
+		                      beginAtZero: true
+		                  }
+		              }
+		          },
+		          plugins: [legendMargin]
+		      });
+		  })
+		  .catch(error => console.error('Error fetching data:', error));
+		</script>
+				
 		<br><br>
 		<hr style="border-width:1.5px 0 0 0; border-style:dashed; border-color:#4dbf00;">
-		<br><br>	
+		<br><br><br>
 		
-		[월별 대여 현황]<br><br>
-		<div>
+		<h2>월별 대여 현황</h2><br><br>
+		<div style="display: flex; justify-content: center; align-items: center; width: 100%; height: 350px;">
 		  <canvas id="MonthlyRent"></canvas>
 		</div>
 		<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -302,8 +405,8 @@
 		                      label: '작년 대여 수',
 		                      data: lastYearCounts,
 		                      borderWidth: 1,
-		                      borderColor: '#FF6384',
-		                      backgroundColor: '#FF638490'
+		                      borderColor: '#FFC534',
+		                      backgroundColor: '#FFC53490'
 		                  },
 		                  {
 		                      label: '올해 대여 수',
@@ -320,7 +423,8 @@
 		                      beginAtZero: true
 		                  }
 		              }
-		          }
+		          },
+		          plugins: [legendMargin]
 		      });
 		  })
 		  .catch(error => console.error('Error fetching data:', error));
@@ -329,102 +433,169 @@
 		</div>
 	</div>
 	
+	<div class="content4">
+    <div class="content">
+        <h2>영화 개봉 기간별 대여 건수</h2><br>
+        <div class="canvas-container">
+            <canvas id="MonthlyRentByRD"></canvas>
+        </div>
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+        <script>
+	        Promise.all([
+	            fetch('/master/MonthlyRentByReleaseDateCurrentYear').then(response => response.json()),
+	            fetch('/master/MonthlyRentByReleaseDateLastYear').then(response => response.json())
+	        ])
+	        .then(([currentYearData, lastYearData]) => {
+	            // Initialize arrays for each category
+	            const currentYearCounts_10000 = Array(12).fill(0);
+	            const currentYearCounts_6000 = Array(12).fill(0);
+	            const currentYearCounts_5000 = Array(12).fill(0);
+	            const currentYearCounts_4000 = Array(12).fill(0);
+	            const currentYearCounts_1000 = Array(12).fill(0);
+	
+	            const lastYearCounts_10000 = Array(12).fill(0);
+	            const lastYearCounts_6000 = Array(12).fill(0);
+	            const lastYearCounts_5000 = Array(12).fill(0);
+	            const lastYearCounts_4000 = Array(12).fill(0);
+	            const lastYearCounts_1000 = Array(12).fill(0);
+	
+	            // Process current year data
+	            currentYearData.forEach(item => {
+	                const date = new Date(item.date);
+	                const month = date.getMonth(); // 0-11 range
+	                currentYearCounts_10000[month] += item.count_10000;
+	                currentYearCounts_6000[month] += item.count_6000;
+	                currentYearCounts_5000[month] += item.count_5000;
+	                currentYearCounts_4000[month] += item.count_4000;
+	                currentYearCounts_1000[month] += item.count_1000;
+	            });
+	
+	            // Process last year data
+	            lastYearData.forEach(item => {
+	                const date = new Date(item.date);
+	                const month = date.getMonth(); // 0-11 range
+	                lastYearCounts_10000[month] += item.count_10000;
+	                lastYearCounts_6000[month] += item.count_6000;
+	                lastYearCounts_5000[month] += item.count_5000;
+	                lastYearCounts_4000[month] += item.count_4000;
+	                lastYearCounts_1000[month] += item.count_1000;
+	            });
+	
+	            // Create month labels
+	            const monthLabels = Array.from({ length: 12 }, (_, i) => `${i + 1}월`);
+	
+	            const ctxmonthbyrd = document.getElementById('MonthlyRentByRD').getContext('2d');
+	
+	            new Chart(ctxmonthbyrd, {
+	                type: 'bar',
+	                data: {
+	                    labels: monthLabels,
+	                    datasets: [
+	                        { label: '1개월 이내', data: [...lastYearCounts_10000.map((val, i) => val + currentYearCounts_10000[i])], backgroundColor: '#FF6384', stack: 'combined' },
+	                        { label: '1-3개월', data: [...lastYearCounts_6000.map((val, i) => val + currentYearCounts_6000[i])], backgroundColor: '#36A2EB', stack: 'combined' },
+	                        { label: '3-6개월', data: [...lastYearCounts_5000.map((val, i) => val + currentYearCounts_5000[i])], backgroundColor: '#FFCE56', stack: 'combined' },
+	                        { label: '6개월-1년', data: [...lastYearCounts_4000.map((val, i) => val + currentYearCounts_4000[i])], backgroundColor: '#4BC0C0', stack: 'combined' },
+	                        { label: '1년 이상', data: [...lastYearCounts_1000.map((val, i) => val + currentYearCounts_1000[i])], backgroundColor: '#9966FF', stack: 'combined' }
+	                    ]
+	                },
+	                options: {
+	                    responsive: true,
+	                    plugins: {
+	                        legend: {
+	                            display: true, // 범례는 표시
+	                            labels: {
+	                            	color: '#000', // 범례 글자 색상 설정
+	                            	boxWidth: 13,  // 범례 색상 박스 너비
+	                            	padding: 15
+	                            }, 
+	                        },
+	                        tooltip: {
+	                            enabled: true // 툴팁은 유지
+	                        }
+	                    },
+	                    scales: {
+	                        x: {
+	                            stacked: true,
+	                        },
+	                        y: {
+	                            stacked: true,
+	                            title: {
+	                                display: true,
+	                                text: '대여 건수'
+	                            }
+	                        }
+	                    } 
+	                },
+	                plugins: [legendMargin]
+	            });
+	        })
+	        .catch(error => console.error('Error fetching data:', error));
+	        
+	      
+        </script>
+    </div>
+	</div>
+		
 	<div class="content2">
 		<div class="content">
-			<h2>2024 대여 파이프라인</h2>
-			<div class="horicontent">
-				<div class="left-div">
-		        	<br><br>[대여 중 / 대여종료 비율]<br><br>
-					<div>
-					  <canvas id="RentStatus" width="230"></canvas>
-					</div>
-					<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-					<script>
-					  fetch('/master/rentStatus')
-					  	.then(response => response.json())
-					  	.then(data => {
-					  	  const labels = data.map(item => {
-					  		  if(item.status === 'N') {
-					  			  return "대여 종료";
-					  		  } else if (item.status === 'Y'){
-					  			  return "대여 중";
-					  		  }
-					  	  });
-					  	  const counts = data.map(item => item.count);
-					  		
-					  	  // 상태에 따라 색상 설정
-					      const backgroundColors = data.map(item => {
-					        return item.status === 'N' ? '#d2d2d2' : '#4dbf00';
-					      });
-					  	  
-					  	  const ctxz = document.getElementById('RentStatus');
-			
-						  new Chart(ctxz, {
-						    type: 'doughnut',
-						    data: {
-						      labels: labels,
-						      datasets: [{
-						        label: '대여 건수',
-						        data: counts,
-						        backgroundColor: backgroundColors,
-						        hoverOffset: 4,
-								borderRadius : 5,
-								spacing : 3
-						      }]
-						    },
-						    options: {
-						    	responsive: false,
-						    	cutout: 50
-						    }
-						  });
-					  
-					  	})
-					</script>
-				</div>
-				
-	        	<div class="right-div">
-	        		<br><br>[대여 수 Top 10 회원]<br>
-					<div>
-					  <table class="table table-sm">
-						  <thead class="table-light">
-						    <tr>
-						      <th scope="col">순위</th>
-						      <th scope="col">회원</th>
-						      <th scope="col">대여 수</th>
-						    </tr>
-						  </thead>
-						  <tbody id = "topRentersBody"></tbody>
-						</table>
-					  	
-					  	<script>
-					  		fetch('/master/topRenters')
-					  			.then(response => response.json())
-					  			.then(data => {
-					  				const tbody = document.getElementById('topRentersBody');
-					  				if (data.length === 0){
-					  					tbody.innerHTML = '<tr><td colspan="3">올해 대여한 회원이 없습니다.</td></tr>';
-					  				} else {
-					  					data.forEach((item, index) => {
-					  						if(index < 10){
-						  						const row = document.createElement('tr');
-						  						row.innerHTML = `
-						  							<td>${index + 1}</td>
-						  							<td>${item.email}</td>
-						  							<td>${item.rentCount}</td>
-						  						`;
-						  						tbody.appendChild(row);
-					  						}
-					  					});
-					  				}
-					  			}).catch(error => console.error('Error => ', error));
-					  	</script>
-					  
-					</div>
-	        	</div>	
+			<h2>영화 장르별 매출 현황 YTD</h2><br>
+			<div class="canvas-container">
+			  <canvas id="YTDSalesByGenre"></canvas>
 			</div>
+			<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+			<script>
+			  fetch('/master/YTDSalesByGenre')
+			    .then(response => response.json())
+			    .then(data => {
+			      const labels = data.map(item => item.genre);
+			      const sales = data.map(item => item.sales); 
+			
+			      const ctxYTDSalesByGenre = document.getElementById('YTDSalesByGenre');
+			      new Chart(ctxYTDSalesByGenre, {
+			        type: 'bar',
+			        data: {
+			          labels: labels,
+			          datasets: [{
+			            label: '장르',
+			            data: sales,
+			            borderWidth: 1,
+			            borderColor: '#FF6384',
+			            backgroundColor: '#FF638490'
+			          }]
+			        },
+			        options: {
+			          scales: {
+			            y: {
+			              beginAtZero: true,
+			              ticks: {
+			                stepSize: 10000
+			              }
+			            }
+			          },
+			          plugins: {
+	                        legend: {
+	                            display: false, // 범례 표시안함
+	                            labels: {
+	                            	color: '#000', // 범례 글자 색상 설정
+	                            	boxWidth: 13,  // 범례 색상 박스 너비
+	                            	padding: 15
+	                            }, 
+	                        },
+	                        tooltip: {
+	                            enabled: true // 툴팁은 유지
+	                        }
+	                    }
+			        },plugins: [legendMargin]
+			      });
+			    })
+			    .catch(error => console.error('Error fetching data:', error));
+			</script>
+			
+			
 		</div>
 	</div>
 	
+	<!-- 
 	<div class="content4">
 		<div class="statuscontent">
 			<h2>회원 등급 현황</h2><br> 나중에 분기별로 보여줘야 함.
@@ -440,6 +611,8 @@
 			</div>
 		</div>
 	</div>
+	 -->
+	
 	
 	<div class="content3">
 		<div class="content">
@@ -461,12 +634,12 @@
 	
 	<div class="content1">
 		<div class="statuscontent">
-			<h2>회원 요청 사항 현황</h2><br>
+			<h2>회원 요청 사항 현황</h2>
 			<div class="status-container">
 				<img class="statusicon" src="/images/img/RequestStatus.png" alt="">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 				<div class="status-text">
 					<span class="pending-highlight">· <a href="/master/memberRequest" class="pending">처리 필요 : <span id="pendingCount" ></span> 건</a></span>
-					<br><br>
+					<br>
 					<span style="color: gray;">· 처리 완료 : <span id="completedCount"></span> 건</span>
 				</div>
 			</div>
@@ -479,9 +652,71 @@
 
 
 </div>
-    
+
 <script>
 
+
+
+	//회원 구매 전환율 % 텍스트가 progress 색상이 너무 작아지면 (15% 미만이면) 텍스트는 오른쪽으로 나오게끔 하는 스크립트.
+	function adjustProgressText() {
+	    const progress = document.getElementById('progress');
+	    const progressText = progress.querySelector('.progress-text');
+	    if (!progress || !progressText) return;
+	
+	    // CSS에서 실제 너비 가져오기
+	    const progressWidth = parseFloat(getComputedStyle(progress).width);
+	    const progressBarWidth = parseFloat(getComputedStyle(progress.parentElement).width);
+	
+	    const progressPercentage = (progressWidth / progressBarWidth) * 100;
+	
+	    if (progressPercentage < 15) {
+	        progressText.style.color = '#000';
+	        progressText.style.position = 'absolute';
+	        progressText.style.left = 'calc(100% + 10px)';
+	        progressText.style.top = '50%';
+	        progressText.style.transform = 'translateY(-50%)';
+	    } else {
+	        progressText.style.color = '#fff';
+	        progressText.style.position = 'relative';
+	        progressText.style.left = '0';
+	        progressText.style.transform = 'none';
+	    }
+	}
+	
+	document.addEventListener('DOMContentLoaded', () => {
+	    adjustProgressText();
+	    window.addEventListener('resize', adjustProgressText);
+	});
+	
+
+
+	//회원 구매 전환율 % 구하기
+	const updateProgressBar = async() => {
+	    await fetch('/master/conversionRate', { 
+	        method: 'GET',
+	        headers: { "content-type": "application/json" }
+	    })
+	    .then((response) => response.json())
+	    .then((data) => {
+	        // conversionRate 값을 사용하여 progress 바 업데이트
+	        const conversionRate = data.conversionRate; // 서버에서 받은 데이터 구조에 맞게 수정
+	        const progressElement = document.getElementById('progress');
+	       
+	        // width와 텍스트 업데이트
+            progressElement.style.width = conversionRate + '%';
+            progressElement.querySelector('.progress-text').textContent = conversionRate + '%';
+
+            // adjustProgressText 호출 시점 수정
+            adjustProgressText();
+	    })
+	    .catch((error) => {
+	        console.error('============= Error :', error);
+	    });
+	}
+	updateProgressBar(); // 페이지 로드 시 프로그레스 바 업데이트
+
+	
+	
 	//회원 가입 수 증감 색상 표시
 	const signupResult = async() => {
 		await fetch('/master/signupResult', {
@@ -578,7 +813,18 @@
 	}
 	requestStatus();
 	
-    
+	
+	//Chart.js 에서 legend 와 chart 사이의 마진
+	const legendMargin = {
+    	    id: 'legendMargin',
+    	    beforeInit(chart) {
+    	        const originalFit = chart.legend.fit;
+    	        chart.legend.fit = function fit() {
+    	            originalFit.bind(chart.legend)();
+    	            this.height += 15; // Adjust this value to increase/decrease space
+    	        };
+    	    }
+    	};
 </script>
 
 </body>
