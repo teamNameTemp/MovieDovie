@@ -9,6 +9,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Random;
 
 import org.springframework.data.domain.Page;
@@ -36,6 +37,7 @@ import com.board.entity.repository.MemberRepository;
 import com.board.entity.repository.RentRepository;
 import com.board.entity.repository.RequestRepository;
 import com.board.entity.repository.WatchReopository;
+import com.board.entity.repository.movie.MovieRepository;
 
 import lombok.AllArgsConstructor;
 
@@ -51,10 +53,22 @@ public class MasterServiceImpl implements MasterService{
 	private final LikeRepository likeRepository;
 	private final FavGenreRepository favGenreRepository;
 	private final RentRepository rentRepository;
+	private final MovieRepository movieRepository;
 	private static final String[] GENDERS = {"Male", "Female"};
     private final Random random;
     private static final String[] YorN = {"Y", "N"};
     private static final String[] INOUT = {"LOGIN", "LOGOUT"};
+    
+    //구매 전환율 구하기
+  	@Override
+    public double conversionRate() {
+  		
+  		int rentCount = rentRepository.getTotalRent();
+  		int hitnoCount = movieRepository.getTotalHitno();
+  		
+  		double rate = (double)rentCount / hitnoCount * 100;
+  		return Math.round(rate * 10.0) / 10.0;
+  	}
     
 	//요청 게시물 목록 보기
 	@Override
@@ -68,8 +82,9 @@ public class MasterServiceImpl implements MasterService{
 	@Override
 	public RequestDTO view(Long seqno) {
 		//Entity --> DTO, xxxRepository의 리턴값은 Optional type 이기 때문에, List 타입이 아닌 최종 값을 얻기 위해선 뒤에 get()을 붙여줘야 함.
-		return requestRepository.findById(seqno).map(view -> new RequestDTO(view)).get();
-
+		return requestRepository.findById(seqno)
+	            .map(view -> new RequestDTO(view))
+	            .orElseThrow(() -> new NoSuchElementException("요청 ID " + seqno + "에 해당하는 게시물을 찾을 수 없습니다."));
 	}
 
 	//요청 게시물 이전 보기

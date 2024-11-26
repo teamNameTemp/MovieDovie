@@ -26,6 +26,8 @@ body {
   background: #777;
 }
 
+
+
 /* 상태 박스 공통 스타일 */
 .rental-status-box,
 .profile-status-box,
@@ -582,3 +584,5 @@ tr:hover {
   font-size: 14px;
   color: #999;
 }
+
+

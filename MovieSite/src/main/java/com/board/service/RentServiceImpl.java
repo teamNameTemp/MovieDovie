@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.data.repository.query.Param;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -125,11 +126,23 @@ public class RentServiceImpl implements RentService {
 	public List<Object[]> RentCount(LocalDateTime startDate, LocalDateTime endDate) {
 		return rentRepository.RentCount(startDate, endDate);
 	}
+	
+	//관리자페이지 - 통계 : 매출 확인 (startDate에 원하는 날짜, endDate에 원하는 날짜 넣으면 그 사이의 값들이 나옴)
+    @Override
+	public List<Object[]> Sales(LocalDateTime startDate, LocalDateTime endDate){
+		return rentRepository.Sales(startDate, endDate);
+	}
 
 	// 관리자페이지 - 통계 : 월별 대여 수 확인
 	@Override
 	public List<Object[]> RentCountByMonth(int year) {
 		return rentRepository.RentCountByMonth(year);
+	}
+	
+	//관리자페이지 - 통계 : 월별 매출 확인
+	@Override	
+	public List<Object[]> SalesByMonth(int year){
+		return rentRepository.SalesByMonth(year);
 	}
 
 	// 관리자 페이지 - 통계 : 올해 대여 status 수 확인
@@ -140,7 +153,7 @@ public class RentServiceImpl implements RentService {
 
 	// 관리자 페이지 - 통계 : 올해 대여 TOP 회원 확인
 	public List<Object[]> findTopRenters() {
-		return rentRepository.findTopRenters();
+		return rentRepository.findTopRenterNickname();
 	}
 
 	@Override
@@ -190,5 +203,23 @@ public class RentServiceImpl implements RentService {
 	public Long getMyAccumulatedPayment(String email) {
 		return rentRepository.getTotalSalesByEmail(email);
 	}
-
+	
+	//관리자 페이지 - 통계 : 월별 영화발매일 별 대여 건수 확인
+	@Override	
+	public List<Object[]> RentCountByReleaseDateAndMonth(int year){
+		return rentRepository.getRentCountByReleaseDateAndMonth(year);
+	}
+		
+	//관리자 페이지 - 통계 : 최근 일주일 간 영화발매일 별 대여 건수 확인
+	@Override	
+	public List<Object[]> getRentCountByReleaseDateLastSevenDays(@Param("sevenDaysAgo") LocalDateTime sevenDaysAgo){
+		return rentRepository.getRentCountByReleaseDateLastSevenDays(sevenDaysAgo);
+	}
+	
+	//관리자 페이지 - 통계 : 영화 장르별 매출 현황 YTD 
+	@Override	
+	public List<Object[]> getYTDSalesByGenre(){
+		return rentRepository.getYTDSalesByGenre();
+	}
+	
 }

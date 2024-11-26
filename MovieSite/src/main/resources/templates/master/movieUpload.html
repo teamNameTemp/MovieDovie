@@ -370,7 +370,7 @@ function selectMovie(movie) {
 			    <tr>
 			      <th scope="col">영화 제목</th>
 			      <th scope="col">관람 등급</th>
-			      <th scope="col">북마크 수</th>
+			      <th scope="col">클릭 수</th>
 			    </tr>
 			  </thead>
 			  <tbody id = "certIsNull"></tbody>
@@ -385,13 +385,13 @@ function selectMovie(movie) {
 		  				} else {
 		  					 data.forEach(item => {
 		  	                    const movie = item.movie;  // movie는 Map 객체 안에 있는 MovieEntity
-		  	                    const bookmarkCount = item.bookmarkCount;  // bookmarkCount는 Map 객체 안의 북마크 수
+		  	                    const hitno = item.hitno;  // bookmarkCount는 Map 객체 안의 북마크 수
 
 		  	                    const row = document.createElement('tr');
 		  	                    row.innerHTML = `
 		  	                        <td><a href="/board/movieDetail?movieId=${movie.movieId}">${movie.title}</a></td>
 		  	                        <td>${movie.certification}</td>
-		  	                        <td>${bookmarkCount}</td>
+		  	                        <td>${movie.hitno}</td>
 		  	                    `;
 		  	                    tbody.appendChild(row);
 		  	                });
