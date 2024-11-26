@@ -183,6 +183,8 @@ public class BoardController {
 			throws JsonMappingException, JsonProcessingException {
 		String email = (String) session.getAttribute("email");
 		String nickname = (String) session.getAttribute("nickname");
+		MemberDTO member= memberService.memberInfo(email);
+		model.addAttribute("member",member);
 
 		// DB에서 영화 정보 가져오기
 		Map<String, Object> movieDetail = movie.getMovieDetails(movieId);
@@ -611,9 +613,14 @@ public class BoardController {
 	public void searchPage(Model model,
 	@RequestParam(name="keyword",required = false) String keyword,
 	HttpSession session) {
-
+		String email = (String) session.getAttribute("email");
 		String nickname = (String) session.getAttribute("nickname");
+		
+		MemberDTO member = memberService.memberInfo(email);
+		
+		model.addAttribute("member", member);
 		model.addAttribute("nickname", nickname);
+
 		if(keyword != null) {
 			List<Map<String,Object>> list = movie.findByKeywordMovieList(keyword);
 			model.addAttribute("movies",list);
