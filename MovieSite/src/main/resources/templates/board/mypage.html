@@ -74,6 +74,7 @@
       <div class="content-section">
         <h2 style="margin-bottom: 10px">현재 대여 목록</h2>
         <div class="rental-grid">
+          <h2 th:text="${#lists.size(rents) == 0} ? '현재 대여 목록이 없습니다.'"></h2>
           <div class="rental-item" th:each="rent : ${rents}">
             <a
               th:href="@{/board/movieDetail(movieId=${rent.id})}"
