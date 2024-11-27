@@ -46,6 +46,11 @@ public class NotificationEntity {
 	@JoinColumn(name="reqseqno") // RequestEntity의 seqno을 외래 키로 설정 > reqseqno 로 이름 설정
 	private RequestEntity requestEntity;
 	
+	@ManyToOne(fetch = FetchType.LAZY)
+	@OnDelete(action = OnDeleteAction.CASCADE)
+	@JoinColumn(name="rentseqno") // RentEntity의 seqno을 외래 키로 설정 > rentseqno 로 이름 설정
+	private RentEntity rentEntity;
+	
 	@Column(name = "content", length = 1000, nullable = false)
 	private String content;
 	

@@ -13,11 +13,14 @@ public interface NotificationService {
 
 	//관리자가 댓글 등록 혹은 상태변경 시 (type으로 구분), 회원에게 새로운 알람 리스트 보내기
 	public List<NotificationEntity> newNotiForUser(String email, String content, String type, Long seqno);
-			
+	
+	//대여 시 혹은 대여 하루 전날, 회원에게 새로운 알람 리스트 보내기
+	public List<NotificationEntity> newRentNotiForUser(String email, String content, String type, Long seqno);
+	
 	//알람 확인 시 알람 읽음 처리
 	public void updateIsRead(Long seqno);
 	
 	//알람 삭제하기
 	public void deleteNoti(Long seqno);
-	
+
 }
