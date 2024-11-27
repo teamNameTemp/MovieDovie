@@ -97,7 +97,9 @@ public class BoardController {
 				// 인자로 받은 장르이름을 가진 모든 장르엔티티를 가져온다.
 				List<GenreEntity> genres = movie.getGenreList(genreNm);
 				// 해당 장르를 포함하고 있는 영화리스트를 가져온다.
-				List<Map<String,Object>> genreList = movie.findByGenreGetMovieList(genres,DataCalculate.calcAge(memberDTO.getSsn()));
+				
+				System.out.println("생일은" + memberDTO.getBirthdate());
+				List<Map<String,Object>> genreList = movie.findByGenreGetMovieList(genres,DataCalculate.calcAge(memberDTO.getBirthdate()));
 				favGenreList.put(genreNm, genreList);
 			}
 		}	

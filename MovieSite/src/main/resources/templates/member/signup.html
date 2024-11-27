@@ -144,7 +144,7 @@ label {
 }
 
 /* 비밀번호 확인 및 추가 입력 필드 스타일 */
-#password, #password1, #ssn, #nickname, #telno {
+#password, #password1, #nickname, #telno {
     width: 100%;
     padding: 12px;
     margin-bottom: 15px;
@@ -240,8 +240,6 @@ window.onload = () => {
     const passwordValidationMessage = document.getElementById('passwordValidationMessage');
     const password1 = document.getElementById('password1');
     const username = document.getElementById('username');
-    const ssn = document.getElementById('ssn');
-    const ssnValidationMessage = document.getElementById('ssnValidationMessage');
     const nickname = document.getElementById('nickname');
     const nicknameValidationMessage = document.getElementById('nicknameValidationMessage');
     const telno = document.getElementById('telno');
@@ -403,51 +401,55 @@ window.onload = () => {
             passwordValidationMessage.style.color = "red";
         }
     });
-
-	// 주민등록번호 유효성 검사 (6자리만 확인)
-	const isValidSSN = (ssnFront) => /^\d{6}$/.test(ssnFront);
-
-	document.getElementById('ssnFront').addEventListener('input', validateSSN);
-
-	function validateSSN() {
-	    const ssnFront = document.getElementById('ssnFront').value;
-
-	    if (isValidSSN(ssnFront)) {
-	        ssnValidationMessage.textContent = "유효한 주민등록번호입니다.";
-	        ssnValidationMessage.style.color = "green";
-	    } else {
-	        ssnValidationMessage.textContent = "올바른 형식의 주민등록번호를 입력해주세요.";
-	        ssnValidationMessage.style.color = "red";
-	    }
-	}
 	
-	//주민등록번호 앞6자리 생년월일
-	function calculateBirthdate(ssnFront) {
-	    if (ssnFront.length === 6) {
-	        const year = parseInt(ssnFront.substring(0, 2), 10);
-	        const month = ssnFront.substring(2, 4);
-	        const day = ssnFront.substring(4, 6);
-
-	        // 2000년대 이후 출생자를 처리하기 위해 현재 연도 기준 확인
-	        const currentYear = new Date().getFullYear();
-	        const century = year < 30 ? 2000 : 1900; // 30년을 기준으로 세기 구분
-
-	        return `${century + year}-${month}-${day}`;
-	    }
-	    return '';
-	}
-	
-	document.getElementById('ssnFront').addEventListener('input', () => {
-	    const ssnFront = document.getElementById('ssnFront').value;
-	    const birthdate = calculateBirthdate(ssnFront);
-
-	    if (birthdate) {
-	        document.getElementById('birthdate').value = birthdate;
-	    } else {
-	        document.getElementById('birthdate').value = '';
-	    }
-	    validateSSN(); // 기존 유효성 검사 함수 호출
+	//생년월일 유효성 검사
+	// 각 입력 필드에서 변경 이벤트 감지
+	document.querySelectorAll('#birth-year, #birth-month, #birth-day').forEach(field => {
+	    field.addEventListener('input', calculateAge);
 	});
+
+	function calculateAge() {
+	    const year = parseInt(document.getElementById('birth-year').value);
+	    const month = parseInt(document.getElementById('birth-month').value);
+	    const day = parseInt(document.getElementById('birth-day').value);
+	    const ageField = document.getElementById('age');
+
+	    if (year && month && day) {
+	        const today = new Date();
+	        const birthDate = new Date(year, month - 1, day); // 월은 0부터 시작
+	        let age = today.getFullYear() - birthDate.getFullYear();
+	        const monthDiff = today.getMonth() - birthDate.getMonth();
+
+	        // 생일이 아직 지나지 않았다면 나이를 1살 줄임
+	        if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+	            age--;
+	        }
+
+	        ageField.value = age; // 나이를 입력란에 표시
+	    } else {
+	        ageField.value = ''; // 필드가 비어있으면 나이를 초기화
+	    }
+	}
+	
+	// 생년월일 입력 여부 확인 함수
+	function isBirthDateEntered() {
+	    const year = document.getElementById('birth-year').value.trim();
+	    const month = document.getElementById('birth-month').value.trim();
+	    const day = document.getElementById('birth-day').value.trim();
+
+
+       // 연도, 월, 일을 2자리 형식으로 맞추기 (01, 02 등)
+       const formattedMonth = month.padStart(2, '0');
+       const formattedDay = day.padStart(2, '0');
+		const birthdate = `${year}${formattedMonth}${formattedDay}`;
+		
+	    if (!year || !month || !day) {
+	        alert("생년월일을 정확히 입력해주세요.");
+	        return false;
+	    }
+	    return true;
+	}
+
 
     // 전화번호 유효성 검사
     const isValidTelno = (telno) => /^\d{11,12}$/.test(telno);
@@ -465,7 +467,6 @@ window.onload = () => {
 	btnRegister.addEventListener('click', async () => {
 		
 		const genderSelected = document.querySelector('input[name="gender"]:checked');
-		const ssnFront = document.getElementById('ssnFront').value.trim();
 
 	    if (imgCheck === 'N') {
 	        alert("프로필 이미지를 등록하세요.");
@@ -486,9 +487,8 @@ window.onload = () => {
 	        alert("이름을 입력하세요.");
 	        return;
 	    }
-
-		if (!isValidSSN(ssnFront)) {
-		    alert("주민등록번호를 확인해주세요.");
+		
+		if (!isBirthDateEntered()) { // 생년월일 입력 여부 확인
 		    return;
 		}
 		
@@ -512,10 +512,19 @@ window.onload = () => {
 		    return;
 		}
 
+		const year = document.getElementById('birth-year').value.trim();
+	    const month = document.getElementById('birth-month').value.trim();
+	    const day = document.getElementById('birth-day').value.trim();
+
+
+        // 연도, 월, 일을 2자리 형식으로 맞추기 (01, 02 등)
+        const formattedMonth = month.padStart(2, '0');
+        const formattedDay = day.padStart(2, '0');
+		const birthdate = `${year}${formattedMonth}${formattedDay}`;
 		
-		// 추가 유효성 검사를 통과하면 ssnFront만 서버에 전달
+	
 		const formData = new FormData(RegistryForm);
-		formData.append("ssn", ssnFront);
+		formData.append("birthdate", birthdate);
 
 		try {
 			const response = await fetch('/member/signup', { method: 'POST', body: formData });
@@ -577,17 +586,18 @@ window.onload = () => {
 				</div><br>
 
 				<div>
-				    <label>주민등록번호 앞 6자리</label>
-				    <input type="text" id="ssnFront" name="ssnFront" class="input_field" placeholder="앞 6자리" maxlength="6">
-				    <div id="ssnValidationMessage" class="validation-message"></div>
+				    <label for="birth-year">생년월일</label><br>
+				    <input type="number" id="birth-year" name="birth-year" class="input_field" placeholder="연도 (예: 1990)" min="1900" max="2100" style="width: 80px;"> -
+				    <input type="number" id="birth-month" name="birth-month" class="input_field" placeholder="월 (예: 1)" min="1" max="12" style="width: 50px;"> -
+				    <input type="number" id="birth-day" name="birth-day" class="input_field" placeholder="일 (예: 15)" min="1" max="31" style="width: 50px;">
 				</div><br>
-				
+
 				<div>
-				    <label>생년월일</label>
-				    <input type="text" id="birthdate" name="birthdate" class="input_field" placeholder="생년월일" readonly>
+				    <label for="age">나이</label><br>
+				    <input type="text" id="age" name="age" class="input_field" placeholder="자동 계산" readonly>
 				</div><br>
 
-
+				
 				<div>
 					성별 : 
 					<label><input type="radio" name="gender" value="남성">남성</label>	

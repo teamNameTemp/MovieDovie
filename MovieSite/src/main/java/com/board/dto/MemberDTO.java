@@ -22,7 +22,7 @@ public class MemberDTO {
 	private String username;
 	private String nickname;
 	private String gender;
-	private String ssn;
+	private String birthdate;
 	private String telno;
 	private LocalDateTime regdate;
 	private LocalDateTime lastlogindate;
@@ -44,7 +44,7 @@ public class MemberDTO {
 											.username(memberDTO.getUsername())
 											.nickname(memberDTO.getNickname())
 											.gender(memberDTO.getGender())
-											.ssn(memberDTO.getSsn())
+											.birthdate(memberDTO.getBirthdate())
 											.telno(memberDTO.getTelno())
 											.regdate(memberDTO.getRegdate())
 											.lastlogindate(memberDTO.getLastlogindate())
@@ -68,7 +68,7 @@ public class MemberDTO {
 		this.username = memberEntity.getUsername();
 		this.nickname = memberEntity.getNickname();
 		this.gender = memberEntity.getGender();
-		this.ssn = memberEntity.getSsn();
+		this.birthdate = memberEntity.getBirthdate();
 		this.telno = memberEntity.getTelno();
 		this.regdate= memberEntity.getRegdate();
 		this.lastlogindate = memberEntity.getLastlogindate();
