@@ -229,13 +229,15 @@ tr:nth-child(even) {
 
 <script defer>
 window.onload = () => {
+
 	var imgCheck = "N";
 	var posterZone = document.querySelector('#posterZone');
     var posterFile = document.querySelector('#posterFile');
     var backgroundZone = document.querySelector('#backgroundZone');
     var backgroundFile = document.querySelector('#backgroundFile');
     var btnRegister = document.querySelector('#btnRegister');
-	
+
+
 	btnRegister.addEventListener('click', async ()=> {
 		
 		/* //유효성 검사
@@ -411,49 +413,50 @@ function selectMovie(movie) {
 			        
 			        <!-- 영화 포스터 업로드 영역 -->
 			        <input type="file" name="posterUpload" id="posterFile" style="display:none"/>
-			        <div class="imageZone" id="posterZone"><br>영화 포스터<br><br></div><br>
+			        <div class="imageZone" id="posterZone"> <img th:src="${movie != null} ? @{https://image.tmdb.org/t/p/w200{posterPath}(posterPath=${movie.posterPath})} : ''" alt="영화 포스터" style="max-width: 100%; height: auto;"><br>영화 포스터<br><br></div><br>
 		
 					<!-- 영화 제목 (한글) -->
 			        <div class="form-group">
 			            <label for="title">영화 제목(한글):</label>
-			            <input type="text" class="input_field" id="title" name="title" placeholder="영화 제목(한글)">
+			            <input type="text" class="input_field" id="title" name="title" placeholder="영화 제목(한글)" th:value="${movie != null} ? ${movie.title} : ''">
 			        </div>
 			        
 			        <!-- 영화 제목 (원어) -->
 			        <div class="form-group">
 			            <label for="originalTitle">영화 제목(원어):</label>
-			            <input type="text" class="input_field" id="originalTitle" name="originalTitle" placeholder="영화 제목(영어)">
+			            <input type="text" class="input_field" id="originalTitle" name="originalTitle" placeholder="영화 제목(영어)" th:value="${movie != null} ? ${movie.originalTitle} : ''">
 			        </div>
 			        
 			        <!-- 개봉일 -->
 			        <div class="form-group">
 			            <label for="releaseDate">개봉일:</label>
-			            <input type="text" class="input_field" id="releaseDate" name="releaseDate" placeholder="제작 연도">
+			            <input type="text" class="input_field" id="releaseDate" name="releaseDate" placeholder="제작 연도" th:value="${movie != null} ? ${movie.releaseDate} : ''">
 			        </div>
 			        
 			        <!-- 상영 시간 -->
 			        <div class="form-group">
 			            <label for="releaseDate">상영 시간:</label>
-			            <input type="text" class="input_field" id="runtime" name="runtime" placeholder="상영 시간 (분으로 숫자만 입력하세요)">
+			            <input type="text" class="input_field" id="runtime" name="runtime" placeholder="상영 시간 (분으로 숫자만 입력하세요)" th:value="${movie != null} ? ${movie.runtime} : ''">
 			        </div>
 			        
 			        <!-- 줄거리 -->
 			        <div class="form-group">
 			            <label for="overview">줄거리:</label>
-			            <textarea class="input_content" id="overview" cols="100" rows="500" name="overview" placeholder="1000자 이내로 줄거리를 입력하세요"></textarea>
+			            <textarea class="input_content" id="overview" cols="100" rows="500" name="overview" placeholder="1000자 이내로 줄거리를 입력하세요" th:text="${movie != null} ? ${movie.overview} : ''">
+                  </textarea>
 			        </div>
 			        
 			        
 			        <!-- 태그 라인 (한 줄 요약) -->
 			        <div class="form-group">
 			            <label for="tagline">한 줄 요약:</label>
-			            <input type="text" class="input_field" id="tagline" name="tagline" placeholder="한 줄로 영화를 설명해주세요 (예: 운명의 반격이 시작된다!)">
+			            <input type="text" class="input_field" id="tagline" name="tagline" placeholder="한 줄로 영화를 설명해주세요 (예: 운명의 반격이 시작된다!)" th:value="${movie != null} ? ${movie.tagline} : ''">
 			        </div><br>
 			        
 			        <!-- 관람 등급 -->
 			        <div class="form-group">
 			            <label for="certification">관람 등급:</label>
-			            <input type="text" class="certification" id="certification" name=certification placeholder="관람등급">
+			            <input type="text" class="certification" id="certification" name=certification placeholder="관람등급" th:value="${movie != null} ? ${movie.certification} : ''">
 			        </div><br>
 			        
 			        

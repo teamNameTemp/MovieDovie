@@ -75,6 +75,7 @@
           <button
             style="width: 50px; height: auto"
             th:if="${#strings.equals(role, 'MASTER')}"
+            th:onclick="location.href='/master/movieUpload?keyword=' + [[${movie.info.title}]]"
           >
             수정
           </button>
