@@ -140,10 +140,14 @@ class LikeServiceImpl implements LikeService {
 		int idx = topCount;
 		for(Map<String,Object> d : likes) {
 			if(idx == 0)break;
-			//todo : 총회원들의 10퍼가 참여 and 평점이 70퍼 이상인 영화만 추출
-//			int totalCount = (int)d.get("totalCount");
-//			float likePer = (float)d.get("likePercentage");
-//			if(totalCount >= memberRepository.count() * 0.1 && likerPer >= 70) {
+
+			//총회원들의 10퍼가 참여 and 평점이 70퍼 이상인 영화만 추출
+			Number totalNumber = (Number) d.get("totalCount");
+			int totalCount = totalNumber.intValue();
+			Number likePerNumber = (Number) d.get("likePercentage");
+			double likePer = likePerNumber.doubleValue();
+
+			if(totalCount >= memberRepository.count() * 0.1 && likePer >= 70) {
 				Long movieId = (Long)d.get("movieId");
 				
 				MovieEntity movie = movieRepository.findById(movieId).get();
@@ -156,7 +160,7 @@ class LikeServiceImpl implements LikeService {
 				map.put("dislikePer", d.get("dislikePercentage"));
 				data.add(map);
 				idx--;
-//			}
+			}
 
 		}
 		
