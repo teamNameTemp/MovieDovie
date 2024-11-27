@@ -232,6 +232,42 @@
     }
   </style>
   <body>
+<!-- 대여현황 박스 -->
+<div class="rental-status-box" id="rentalStatusBox">
+  <h3>대여 현황</h3>
+  <p
+    th:text="${#lists.size(rentStatus) == 0 ? '현재 대여 중인 영화가 없습니다.' : '현재 대여 중 : ' + #lists.size(rentStatus)}"
+  ></p>
+</div>
+
+<div id="rentalModal" class="modal">
+  <div class="modal-content">
+    <span class="close-btn" id="closeModal">&times;</span>
+    <h2>대여 리스트</h2>
+
+    <!-- 대여 목록 표 -->
+    <table>
+      <thead>
+        <tr>
+          <th>영화 이름</th>
+          <th>대여 만료 날짜</th>
+        </tr>
+      </thead>
+      <tbody style="overflow-y: auto">
+        <tr th:each="rent : ${rentStatus}"
+            th:onclick="|location.href='@{/board/movieDetail(movieId=${rent.id})}'|"
+            style="cursor: pointer"
+          >
+          <td th:text="${rent.title}"></td>
+          <td
+            th:text="${#temporals.format(rent.returndate,'yyyy-MM-dd hh:mm')}"
+          ></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
     <!--replace 특정 템플릿 조각(프래그먼트)을 다른 위치에 삽입할 때 사용 -->
     <th:block th:if="${#strings.equals(role, 'USER')}">
       <div th:replace="~{/fragments/nav/menubar::menubar}"></div>
@@ -545,12 +581,6 @@
                 alt=""
               />
             </a>
-            <p class="movie-list-item-desc">
-                  <a
-                    th:href="@{/board/movieDetail(movieId=${movie.info.movieId})}"
-                    th:text="${movie.info.overview}"
-                  ></a>
-            </p>
           </div>
           
         </div> 

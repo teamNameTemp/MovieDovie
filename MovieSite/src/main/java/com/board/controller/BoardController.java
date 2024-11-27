@@ -86,8 +86,11 @@ public class BoardController {
 		model.addAttribute("nickname", nickname);
 		model.addAttribute("nickname", session.getAttribute("nickname"));
 		model.addAttribute("role", memberDTO.getRole());
-
 		
+		//대여 현황
+		List<Map<String,Object>> rents = rent.getAllMyRent(email, "Y");
+		model.addAttribute("rentStatus",rents);
+				
 		//주간 트렌드 영화
 		List<Map<String, Object>> weeklyTrend = movie.getWeeklyTrend();
 		model.addAttribute("weeklyTrend", weeklyTrend);
