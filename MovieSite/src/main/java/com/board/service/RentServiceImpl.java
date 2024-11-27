@@ -1,6 +1,7 @@
 package com.board.service;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -16,6 +17,7 @@ import com.board.entity.MemberEntity;
 import com.board.entity.RentEntity;
 import com.board.entity.movie.MovieEntity;
 import com.board.entity.repository.MemberRepository;
+import com.board.entity.repository.NotificationRepository;
 import com.board.entity.repository.RentRepository;
 import com.board.entity.repository.movie.MovieRepository;
 
@@ -30,6 +32,8 @@ public class RentServiceImpl implements RentService {
 	private final RentRepository rentRepository;
 	private final MovieRepository movieRepositoty;
 	private final MemberRepository memberRepository;
+	private final NotificationRepository notificationRepository;
+	private final NotificationService notificationService;
 
 	@Override
 	public void updateRent(String email, Long movieId) {
@@ -84,7 +88,7 @@ public class RentServiceImpl implements RentService {
 		return result;
 
 	}
-	//매일 자저
+	//매일 자정
 	@Scheduled(cron = "0 0 0 * * ?")
 	@Transactional
 	public void autoReturnOverdueRentals() {
@@ -102,6 +106,33 @@ public class RentServiceImpl implements RentService {
 		log.info("자동 반환 처리 완료: {} 건의 대여가 반환 처리되었습니다.", updatedCount);
 	}
 
+	
+	//매일 자정 확인하여 대여가 하루 남은 사람에게 알림 보내기
+	@Scheduled(cron = "0 0 0 * * ?")
+	@Transactional
+	@Override
+	public void autoNotiBeforeReturn() {
+
+		LocalDateTime now = LocalDateTime.now();
+	    LocalDateTime tomorrow = now.plusDays(1);
+
+	    List<RentEntity> rentalsToNotify = rentRepository.findAllByStatusAndReturndateBetween("Y", now, tomorrow);
+
+		for (RentEntity rent : rentalsToNotify) {
+			
+			String receiverEmail = rent.getEmail().getEmail();
+
+			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/dd HH:mm");
+			String formattedDateTime = rent.getReturndate().format(formatter);
+			
+			String content = "'" + rent.getMovieId().getTitle() + "'가 곧 반납됩니다! (반납일: " + formattedDateTime +")";
+			
+			notificationService.newRentNotiForUser(receiverEmail, content, "rent", rent.getSeqno());
+			
+			log.info(receiverEmail + " : " + content);
+		}
+	}
+	
 	public Map<String, Object> getMyRentInfo(String email, Long movieId) {
 		Map<String, Object> data = new HashMap<>();
 

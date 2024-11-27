@@ -32,11 +32,21 @@
 						                <th:block th:if="${#strings.equals(noti.notitype, 'reply')}">
 						                    <img class="noti-icon" src="/images/img/noti_reply.png" alt="">
 						                </th:block>
+						                <th:block th:if="${#strings.equals(noti.notitype, 'rent')}">
+						                    <img class="noti-icon" src="/images/img/noti_rent.png" alt="">
+						                </th:block>
 						                <div class="noti-text">
-						                    <a th:href="@{'/board/requestView?seqno=' + ${noti.requestEntity.getSeqno()} + '&page=1'}">
-						                        <b><span class="noti-content" th:text="${noti.content}"></span></b>
-						                        <span class="noti-date" th:text="${#temporals.format(noti.created_at, 'yyyy-MM-dd HH:mm:ss')}"></span>
-						                    </a>
+						                	<th:block th:if="${#strings.equals(noti.notitype, 'reply') or #strings.equals(noti.notitype, 'completed')}">
+							                    <a th:href="@{'/board/requestView?seqno=' + ${noti.requestEntity.getSeqno()} + '&page=1'}">
+							                        <b><span class="noti-content" th:text="${noti.content}"></span></b>
+							                        <span class="noti-date" th:text="${#temporals.format(noti.created_at, 'yyyy-MM-dd HH:mm:ss')}"></span>
+							                    </a>
+							                </th:block>
+							                <th:block th:if="${#strings.equals(noti.notitype, 'rent')}">
+							                	<a href="/board/mypage">
+							                        <b><span class="noti-content" th:text="${noti.content}"></span></b>
+							                    </a>
+							                </th:block>
 						                    <!-- 삭제 아이콘 추가 -->
 						                    <img class="deleteicon" src="/images/img/noti_delete.png" alt="삭제 아이콘" 
 						                         th:attr="data-seqno=${noti.seqno}" />
@@ -50,11 +60,21 @@
 						                <th:block th:if="${#strings.equals(noti.notitype, 'reply')}">
 						                    <img class="noti-icon" src="/images/img/noti_reply_read.png" alt="">
 						                </th:block>
+						                <th:block th:if="${#strings.equals(noti.notitype, 'rent')}">
+						                    <img class="noti-icon" src="/images/img/noti_rent_read.png" alt="">
+						                </th:block>
 						                <div class="noti-text">
-						                    <a th:href="@{'/board/requestView?seqno=' + ${noti.requestEntity.getSeqno()} + '&page=1'}">
-						                        <b><span class="noti-content-read" th:text="${noti.content}"></span></b>
-						                        <span class="noti-date-read" th:text="${#temporals.format(noti.created_at, 'yyyy-MM-dd HH:mm:ss')}"></span>
-						                    </a>
+						                	<th:block th:if="${#strings.equals(noti.notitype, 'reply') or #strings.equals(noti.notitype, 'completed')}">
+							                    <a th:href="@{'/board/requestView?seqno=' + ${noti.requestEntity.getSeqno()} + '&page=1'}">
+							                        <b><span class="noti-content-read" th:text="${noti.content}"></span></b>
+							                        <span class="noti-date-read" th:text="${#temporals.format(noti.created_at, 'yyyy-MM-dd HH:mm')}"></span>
+							                    </a>
+							                </th:block>
+							                <th:block th:if="${#strings.equals(noti.notitype, 'rent')}">
+							                	<a href="/board/mypage">
+							                        <b><span class="noti-content-read" th:text="${noti.content}"></span></b>
+							                    </a>
+							                </th:block>
 						                    <!-- 삭제 아이콘 추가 -->
 						                    <img class="deleteicon" src="/images/img/noti_delete.png" alt="삭제 아이콘" 
 						                         th:attr="data-seqno=${noti.seqno}" />

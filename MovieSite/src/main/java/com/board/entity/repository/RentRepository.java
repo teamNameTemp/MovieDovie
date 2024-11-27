@@ -3,6 +3,7 @@ package com.board.entity.repository;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -15,6 +16,7 @@ import com.board.entity.movie.MovieEntity;
 public interface RentRepository extends JpaRepository<RentEntity, Long>{
 
 	public List<RentEntity> findAllByEmailAndStatus(MemberEntity member, String status);
+	public Optional<RentEntity> findById(Long seqno);
 	public RentEntity findByEmailAndMovieId(MemberEntity member, MovieEntity movie);
 	public RentEntity findByEmailAndMovieIdAndStatus(MemberEntity member, MovieEntity movie,String status);
 	//모든 회원 자동 반납 확인
@@ -47,7 +49,7 @@ public interface RentRepository extends JpaRepository<RentEntity, Long>{
             "GROUP BY TRUNC(r.rentdate)" +
             "ORDER BY TRUNC(r.rentdate)", nativeQuery = true)
 	public List<Object[]> Sales(@Param("startDate") LocalDateTime startDate, @Param("endDate") LocalDateTime endDate);
-
+	
 
 	//관리자 페이지 - 통계 : 월별 대여 수 확인
 	@Query(value = "SELECT TO_CHAR(r.rentdate, 'YYYY-MM') AS month, "
@@ -143,6 +145,9 @@ public interface RentRepository extends JpaRepository<RentEntity, Long>{
     	       "ORDER BY SUM(r.sales) DESC",
     	       nativeQuery = true)
     public List<Object[]> getYTDSalesByGenre();
+	
+    //반납일이 현재 시간과 24시간 후 사이인 대여 항목
+    public List<RentEntity> findAllByStatusAndReturndateBetween(String string, LocalDateTime now, LocalDateTime tomorrow);
      
      
 }
