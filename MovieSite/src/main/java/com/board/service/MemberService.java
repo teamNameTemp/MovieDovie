@@ -1,11 +1,12 @@
 package com.board.service;
 
+import java.time.LocalDateTime;
 import java.util.List;
-import org.springframework.data.domain.Page;
-import com.board.dto.MemberDTO;
-import com.board.entity.repository.MemberRepository;
 
-import jakarta.mail.internet.MimeMessage;
+import org.springframework.data.repository.query.Param;
+import org.springframework.web.multipart.MultipartFile;
+
+import com.board.dto.MemberDTO;
 
 public interface MemberService {
 	
@@ -21,6 +22,9 @@ public interface MemberService {
 	//패스워드 수정
 	public void modifyMemberPassword(MemberDTO member);
 	
+	//프로필 업로드
+	public void modifyMemberProfile(MemberDTO email);
+
 	//이메일 중복 확인
 	public int emailCheck(String email);
 	
@@ -42,4 +46,8 @@ public interface MemberService {
 	
    //임시 패스워드 저장하기
 	public void makeTempPW(String email, String newPW);
+	
+	//관리자페이지 - 통계 : 최근 7일간 회원가입한 회원 수 확인
+	public int newMembersInLastSevenDays(@Param("sevenDaysAgo") LocalDateTime sevenDaysAgo);
+
 }

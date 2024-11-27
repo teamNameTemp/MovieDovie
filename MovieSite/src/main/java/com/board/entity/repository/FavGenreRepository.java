@@ -28,17 +28,17 @@ public interface FavGenreRepository extends JpaRepository<FavGenreEntity, Long>{
             "SELECT fg.genre1 AS genre " +
             "FROM fav_genre fg " +
             "JOIN member m ON fg.email = m.email " +
-            "WHERE m.gender = '여성,여성' " +  // 여성만 선택
+            "WHERE m.gender = '여성' " +  // 여성만 선택
             "UNION ALL " +
             "SELECT fg.genre2 " +
             "FROM fav_genre fg " +
             "JOIN member m ON fg.email = m.email " +
-            "WHERE m.gender = '여성,여성' " +
+            "WHERE m.gender = '여성' " +
             "UNION ALL " +
             "SELECT fg.genre3 " +
             "FROM fav_genre fg " +
             "JOIN member m ON fg.email = m.email " +
-            "WHERE m.gender = '여성,여성' " +
+            "WHERE m.gender = '여성' " +
             ") genres " +
             "GROUP BY genre " +
             "ORDER BY count DESC", nativeQuery = true)
@@ -49,17 +49,17 @@ public interface FavGenreRepository extends JpaRepository<FavGenreEntity, Long>{
             "SELECT fg.genre1 AS genre " +
             "FROM fav_genre fg " +
             "JOIN member m ON fg.email = m.email " +
-            "WHERE m.gender = '남성,남성' " +  // 남성만 선택
+            "WHERE m.gender = '남성' " +  // 남성만 선택
             "UNION ALL " +
             "SELECT fg.genre2 " +
             "FROM fav_genre fg " +
             "JOIN member m ON fg.email = m.email " +
-            "WHERE m.gender = '남성,남성' " +
+            "WHERE m.gender = '남성' " +
             "UNION ALL " +
             "SELECT fg.genre3 " +
             "FROM fav_genre fg " +
             "JOIN member m ON fg.email = m.email " +
-            "WHERE m.gender = '남성,남성' " +
+            "WHERE m.gender = '남성' " +
             ") genres " +
             "GROUP BY genre " +
             "ORDER BY count DESC", nativeQuery = true)

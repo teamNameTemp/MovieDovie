@@ -34,13 +34,15 @@ public interface MovieRepository extends JpaRepository<MovieEntity, Long>{
                                      @Param("endDate") LocalDateTime endDate);
 	
 	//관리자페이지 : 영화 수정 - Certification 이 null 인 영화 리스트 뽑아내기 (북마크 높은 순으로)
-	@Query("SELECT m, COUNT(b) "
-		     + "FROM MovieEntity m "
-		     + "LEFT JOIN bookmark b ON m.movieId = b.movieId.movieId "
-		     + "WHERE m.certification IS NULL "
-		     + "GROUP BY m "
-		     + "ORDER BY COUNT(b) DESC")
+	@Query("SELECT m " +
+		       "FROM MovieEntity m " +
+		       "WHERE m.certification IS NULL " +
+		       "ORDER BY m.hitno DESC")
 	public List<Object[]> findByCert();
 
 
+	//관리자 페이지 - 통계 : 전체 회원의 hitno 수 확인
+	@Query(value = "SELECT COUNT(m.hitno) FROM MovieEntity m")
+	public int getTotalHitno();
+	
 }
