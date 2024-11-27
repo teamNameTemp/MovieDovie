@@ -60,9 +60,8 @@
               >회원 가입일: [[${#temporals.format(member.regdate, 'yyyy년 MM월
               dd일')}]]</span
             >
-            <span class="membership-date"
-              >등급 변경일 추가할 칸?????</span
-            >
+            <span class="membership-date">등급 변경일까지 [[${daysUntilFirstOfMonth}]]일 남았습니다.<br>· 다음 등급 변경일 : [[${nextMonth}]]</span>
+            
           </div>
         </div>
       </div>
@@ -108,7 +107,7 @@
             </div>
             <div class="info-row">
               <span class="label">나의 포인트</span>
-              <span class="value" th:text="${member.point} + 'P'"</span>
+              <span class="value" th:text="${member.point != null ? member.point : 0} + ' P'"></span>
             </div>
           </div>
         </div>
