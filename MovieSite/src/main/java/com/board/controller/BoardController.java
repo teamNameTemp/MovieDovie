@@ -199,12 +199,16 @@ public class BoardController {
 	// 영화상세
 	@GetMapping("/movieDetail")
 	public void getView(Model model, @RequestParam("movieId") Long movieId, HttpSession session)
-			throws JsonMappingException, JsonProcessingException {
+	throws JsonMappingException, JsonProcessingException {
+		
 		String email = (String) session.getAttribute("email");
 		String nickname = (String) session.getAttribute("nickname");
 		MemberDTO member= memberService.memberInfo(email);
 		model.addAttribute("member",member);
 
+		//영화 반납일 확인
+		rent.updateRent(email, movieId);
+		
 		// DB에서 영화 정보 가져오기
 		Map<String, Object> movieDetail = movie.getMovieDetails(movieId);
 		model.addAttribute("movie", movieDetail);
@@ -244,7 +248,6 @@ public class BoardController {
 		Map<String,Object> myRent = rent.getMyRentInfo(email, movieId);
 		if(myRent != null) {
 			model.addAttribute("rent",myRent);
-			rent.updateRent(email, movieId);
 		}
 		
 		List<Map<String,Object>>replies = reply.getList(movieId);
