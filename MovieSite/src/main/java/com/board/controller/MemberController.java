@@ -50,6 +50,7 @@ public class MemberController {
 	private final FavGenreServiceImpl favGenre;
 	private final MailService mailService;
 
+		
 	//로그인 화면 보기
 	@GetMapping("/login")
 	public void getLogin() { }
@@ -195,60 +196,6 @@ public class MemberController {
 		return data;
 	}
 	
-	@PostMapping("/profileUpload")
-	@ResponseBody
-	public Map<String, String> postProfileUpload(@RequestParam("fileUpload") MultipartFile mpr,HttpSession session) throws Exception {
-			Map<String, String> data = new HashMap<>();
-		String email = (String) session.getAttribute("email");
-		MemberDTO member = service.memberInfo(email);
-			//운영체제에 따라 이미지가 저장될 디렉토리 구조 설정 시작
-		String os = System.getProperty("os.name").toLowerCase();
-		String path;
-		if(os.contains("win"))
-			path = "c:\\Repository\\moviedovie\\profile\\";
-		else 
-			path = "/home/tjdwn/Repository/moviedovie/profile/";
-		
-		//디렉토리가 존재하는지 체크해서 없다면 생성
-		File p = new File(path);
-		if(!p.exists()) p.mkdirs();
-		//운영체제에 따라 이미지가 저장될 디렉토리 구조 설정 종료
-		
-		File targetFile = null;
-		String org_filename = "";
-		String org_fileExtension = "";
-		String stored_filename = "";
-		
-		if(!mpr.isEmpty()) {
-			
-			org_filename = mpr.getOriginalFilename();
-			org_fileExtension = org_filename.substring(org_filename.lastIndexOf("."));			
-			stored_filename = UUID.randomUUID().toString().replaceAll("-", "") + org_fileExtension;
-			
-			log.info(org_filename);
-			log.info(stored_filename);
-			log.info(org_fileExtension);	
-
-			try {
-				targetFile = new File(path + stored_filename);				
-				mpr.transferTo(targetFile);
-				
-				member.setOrgFilename(org_filename);
-				member.setStoredFilename(stored_filename);
-				member.setFilesize(mpr.getSize());				
-				
-			}catch(Exception e) {
-				e.printStackTrace();
-			}
-		}
-
-		service.modifyMemberProfile(member);
-		data.put("message", "good");
-
-
-		return data;
-	}
-
 	@GetMapping("/modifyMemberInfoOauth")
 	public void getMemberInfoModifyOauth(Model model, HttpSession session) {	
 		String email = (String)session.getAttribute("email");
@@ -567,24 +514,26 @@ public class MemberController {
     //신규 비밀번호 변경
     @ResponseBody
     @PostMapping("/modifyMemberPassword")		   
-    public Map<String, Object> postModifyMemberPassword(HttpSession session ,
-            @RequestParam("old_password") String old_password, 
-            @RequestParam("new_password") String new_password) {
+    public Map<String,Object> postModifyMemberPassword(@RequestParam("email") String email, @RequestParam("old_password") String old_password, @RequestParam("new_password") String new_password) throws MessagingException, UnsupportedEncodingException  {
+       
+    	Map<String,Object> data = new HashMap<>();
+    
+    	if (pwdEncoder.matches(old_password, service.memberInfo(email).getPassword())) {
+    	    // 기존 패스워드와 입력한 old_password 비교 성공
+    	    service.makeTempPW(email, pwdEncoder.encode(new_password));
 
-        Map<String, Object> data = new HashMap<>();
-        String email = (String)session.getAttribute("email");
-        
-        // 회원 정보 가져오기
-        MemberDTO member = service.memberInfo(email);
-
-        // 기존 비밀번호 확인
-        if (pwdEncoder.matches(old_password, member.getPassword())) {
-            service.makeTempPW(email, pwdEncoder.encode(new_password));
             data.put("message", "good");
-        } else {
-            data.put("message", "PASSWORD_NOT_FOUND");
-        }
-
+            
+    	}
+        //아이디 존재 여부 확인
+    	else if(service.emailCheck(email) == 0) {
+    		data.put("message", "EMAIL_NOT_FOUND");
+    	}
+    	//기존 패스워드 확인
+    	else {
+    		data.put("message", "PASSWORD_NOT_FOUND");
+    	}
+    	
         return data;
     }
 	
