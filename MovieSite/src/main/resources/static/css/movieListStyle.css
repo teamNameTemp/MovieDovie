@@ -412,7 +412,7 @@ a {
 }
 
 .noti-content{
-    font-size: 12px;         /* 알림 내용 폰트 크기 */
+    font-size: 13px;         /* 알림 내용 폰트 크기 */
     margin-bottom: 5px;      /* 내용과 날짜 사이 간격 */
     color: black;             /* 글자 색 */
 }

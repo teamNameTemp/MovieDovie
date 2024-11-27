@@ -75,10 +75,10 @@ public interface LikeRepository extends JpaRepository<LikeEntity, Long>{
 	        + "count(*) as totalCount, "
 	        + "count(CASE WHEN ld.likecheck = 'Y' THEN 1 END) as likeCount, "
 	        + "count(CASE WHEN ld.dislikecheck = 'Y' THEN 1 END) as dislikeCount, "
-	        + "round(count(case when ld.likecheck = 'Y' THEN 1 END) * 100.0 / count(*), 0) as likePercentage, "
-	        + "round(count(case when ld.dislikecheck = 'Y' THEN 1 END) * 100.0 / count(*), 0) as dislikePercentage "
+	        + "round(count(case when ld.likecheck = 'Y' THEN 1 END) * 100.0 / count(*), 1) as likePercentage, "
+	        + "round(count(case when ld.dislikecheck = 'Y' THEN 1 END) * 100.0 / count(*), 1) as dislikePercentage "
 	        + "from likedislike ld "
-	        + "group by ld.movie_id ",nativeQuery=true)
+	        + "group by ld.movie_id order by likePercentage DESC",nativeQuery=true)
 	//매개변수에 topCount(int) 들어가야함
 	List<Map<String,Object>> findAllByTotal();
 	
