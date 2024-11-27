@@ -1,7 +1,5 @@
 package com.board.controller;
 
-import java.time.LocalDate;
-import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -77,14 +75,22 @@ public class BoardController {
 	
 	@GetMapping("/list")
 	public void getList(Model model, HttpSession session) throws JsonMappingException, JsonProcessingException {
+		
+		//세션정보
 		String email = (String) session.getAttribute("email");
-		MemberDTO memberDTO = memberService.memberInfo(email);
-		model.addAttribute("member", memberDTO);
-		
 		String nickname = (String) session.getAttribute("nickname");
-		model.addAttribute("nickname", nickname);
-
 		
+		MemberDTO memberDTO = memberService.memberInfo(email);
+		
+		model.addAttribute("member", memberDTO);
+		model.addAttribute("nickname", nickname);
+		model.addAttribute("nickname", session.getAttribute("nickname"));
+		model.addAttribute("role", memberDTO.getRole());
+		
+		//대여 현황
+		List<Map<String,Object>> rents = rent.getAllMyRent(email, "Y");
+		model.addAttribute("rentStatus",rents);
+				
 		//주간 트렌드 영화
 		List<Map<String, Object>> weeklyTrend = movie.getWeeklyTrend();
 		model.addAttribute("weeklyTrend", weeklyTrend);
@@ -103,6 +109,8 @@ public class BoardController {
 				favGenreList.put(genreNm, genreList);
 			}
 		}	
+		model.addAttribute("favGenre", genre.get());
+		model.addAttribute("favGenreList", favGenreList);
 		
 		//만장일치! 다들 이 영화 좋아해요
 		List<Map<String,Object>> topLikeList = like.getTopList(20);
@@ -120,14 +128,6 @@ public class BoardController {
 		List<Map<String,Object>> directList = movie.getDirectUploadList(6);
 		model.addAttribute("directUploadList",directList);
 		
-		model.addAttribute("nickname", session.getAttribute("nickname"));
-		model.addAttribute("favGenre", genre.get());
-		model.addAttribute("favGenreList", favGenreList);
-
-
-		model.addAttribute("role", memberDTO.getRole());
-
-		
 		/////////////////// 알람 처리 ///////////////////
 		model.addAttribute("email", email);
 		
@@ -136,15 +136,28 @@ public class BoardController {
 	    
 	    if (noti == null) {noti = new ArrayList<>();}
 	    
+	    // 알림이 있을 경우 첫 번째 알림의 seqno 가져오기
+	    Long seqno = null;
+	    if (!noti.isEmpty()) {
+	        seqno = noti.get(0).getRequestEntity().getSeqno();
+	    }
+
+	    model.addAttribute("seqno", seqno);
 	    model.addAttribute("noti", noti);  // 알림 목록을 모델에 추가
 	    
 	}
 	
 	@GetMapping("/mypage")
 	public void getMyPage(Model model, HttpSession session) {
+
+		//세션정보
 		String email = (String) session.getAttribute("email");
-		MemberDTO memberInfo = memberService.memberInfo(email);
 		String nickname = (String) session.getAttribute("nickname");
+
+		MemberDTO memberInfo = memberService.memberInfo(email);
+		model.addAttribute("nickname",nickname);
+		model.addAttribute("member",memberInfo);
+		
 		//대여
 		List<Map<String,Object>> rents = rent.getAllMyRent(email, "Y");
 		model.addAttribute("rents",rents);
@@ -158,19 +171,11 @@ public class BoardController {
 		List<Map<String,Object>> likes = like.getAllLikeByEmail(email);
 		model.addAttribute("likes",likes);
 
-		model.addAttribute("nickname",nickname);
-		model.addAttribute("member",memberInfo);
 
 		//누적 결제 금액
 		Long accumulatedPayment = rent.getMyAccumulatedPayment(email);
 		model.addAttribute("accumulatedPayment",accumulatedPayment);
 		
-		// 등급 변경일까지 얼마 남았는지?
-        LocalDate today = LocalDate.now();
-        LocalDate nextMonth = today.plusMonths(1).withDayOfMonth(1); // 다음 달의 1일 계산
-        long daysUntilFirstOfMonth = ChronoUnit.DAYS.between(today, nextMonth); // 현재 날짜와 다음 달 1일 사이의 일수 계산
-		model.addAttribute("daysUntilFirstOfMonth", daysUntilFirstOfMonth);
-		model.addAttribute("nextMonth", nextMonth);
 
 		/////////////////// 알람 처리 ///////////////////
 		model.addAttribute("email", email);
@@ -180,6 +185,13 @@ public class BoardController {
 	    
 	    if (noti == null) {noti = new ArrayList<>();}
 	    
+	    // 알림이 있을 경우 첫 번째 알림의 seqno 가져오기
+	    Long seqno = null;
+	    if (!noti.isEmpty()) {
+	        seqno = noti.get(0).getRequestEntity().getSeqno();
+	    }
+
+	    model.addAttribute("seqno", seqno);
 	    model.addAttribute("noti", noti);  // 알림 목록을 모델에 추가
 	    
 	}
@@ -263,6 +275,13 @@ public class BoardController {
 	    
 	    if (noti == null) {noti = new ArrayList<>();}
 	    
+	    // 알림이 있을 경우 첫 번째 알림의 seqno 가져오기
+	    Long seqno = null;
+	    if (!noti.isEmpty()) {
+	        seqno = noti.get(0).getRequestEntity().getSeqno();
+	    }
+
+	    model.addAttribute("seqno", seqno);
 	    model.addAttribute("noti", noti);  // 알림 목록을 모델에 추가
 	    
 		// 추천 영화 리스트
@@ -362,7 +381,7 @@ public class BoardController {
 		try {
 			bookmark.saveOrUpdate(action, movieId, email);
 			response.put("message", "good");
-			// 모든 like 정보
+			// 모든 bookmarks 정보
 			Map<String, Object> bookmarks = bookmark.getAllBookmarkInfo(movieId);
 			response.put("count", bookmarks.get("count"));
 		} catch (Exception e) {
@@ -388,14 +407,8 @@ public class BoardController {
 			String status = rent.rentMovie(email,movieId);
 			response.put("message", "good");
 			response.put("status", status);
-			
-			// 모든 like 정보
-//				Map<String, Object> bookmarks = bookmark.getAllBookmarkInfo(movieId);
-//				response.put("count", bookmarks.get("count"));
 		} catch (Exception e) {
 			log.error("rent 오류 : ", e);
-//				response.put("message", "error");
-//				response.put("error", e.getMessage());
 		}
 
 		return response;
@@ -433,6 +446,8 @@ public class BoardController {
 
 		// 이메일로 회원 정보 가져오기
 		MemberDTO memberDTO = memberService.memberInfo(email);
+		model.addAttribute("member", memberDTO);
+
 		model.addAttribute("nickname", memberDTO.getNickname());
 		model.addAttribute("member", memberDTO);
 
@@ -446,6 +461,13 @@ public class BoardController {
 	    
 	    if (noti == null) {noti = new ArrayList<>();}
 	    
+	    // 알림이 있을 경우 첫 번째 알림의 seqno 가져오기
+	    Long seqno = null;
+	    if (!noti.isEmpty()) {
+	        seqno = noti.get(0).getRequestEntity().getSeqno();
+	    }
+
+	    model.addAttribute("seqno", seqno);
 	    model.addAttribute("noti", noti);  // 알림 목록을 모델에 추가
 		
 	}
@@ -481,6 +503,7 @@ public class BoardController {
 		
 		// 이메일로 회원 정보 가져오기
 		MemberDTO memberDTO = memberService.memberInfo(email);
+		model.addAttribute("member", memberDTO);
 		model.addAttribute("nickname", memberDTO.getNickname());
 		
 		model.addAttribute("member", memberDTO);
@@ -507,6 +530,13 @@ public class BoardController {
 	    
 	    if (noti == null) {noti = new ArrayList<>();}
 	    
+	    // 알림이 있을 경우 첫 번째 알림의 seqno 가져오기
+	    Long seqno = null;
+	    if (!noti.isEmpty()) {
+	        seqno = noti.get(0).getRequestEntity().getSeqno();
+	    }
+
+	    model.addAttribute("seqno", seqno);
 	    model.addAttribute("noti", noti);  // 알림 목록을 모델에 추가
 	
 	}
@@ -541,6 +571,13 @@ public class BoardController {
 		
 		if (noti == null) {noti = new ArrayList<>();}
 		
+		// 알림이 있을 경우 첫 번째 알림의 seqno 가져오기
+		Long seqnonoti = null;
+		if (!noti.isEmpty()) {
+		  seqnonoti = noti.get(0).getRequestEntity().getSeqno();
+		}
+		
+		model.addAttribute("seqno", seqnonoti);
 		model.addAttribute("noti", noti);  // 알림 목록을 모델에 추가
 
 	}
@@ -591,12 +628,7 @@ public class BoardController {
 
 		return result;
 	}
-
-//	private Map<String, Object> getMovieInfo(String movieCd) throws JsonProcessingException {
-//		String movieInfoResult = kobis.getMovieInfo(movieCd);
-//		return convertToMapper.getMovieInfo(movieInfoResult);
-//	}
-
+	
 //---------검색trying-------------------------
 	@GetMapping("/search")
 	public void searchPage(Model model,
