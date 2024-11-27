@@ -1,5 +1,7 @@
 package com.board.controller;
 
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -163,6 +165,12 @@ public class BoardController {
 		Long accumulatedPayment = rent.getMyAccumulatedPayment(email);
 		model.addAttribute("accumulatedPayment",accumulatedPayment);
 		
+		// 등급 변경일까지 얼마 남았는지?
+        LocalDate today = LocalDate.now();
+        LocalDate nextMonth = today.plusMonths(1).withDayOfMonth(1); // 다음 달의 1일 계산
+        long daysUntilFirstOfMonth = ChronoUnit.DAYS.between(today, nextMonth); // 현재 날짜와 다음 달 1일 사이의 일수 계산
+		model.addAttribute("daysUntilFirstOfMonth", daysUntilFirstOfMonth);
+		model.addAttribute("nextMonth", nextMonth);
 
 		/////////////////// 알람 처리 ///////////////////
 		model.addAttribute("email", email);
