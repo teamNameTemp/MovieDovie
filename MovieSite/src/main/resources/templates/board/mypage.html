@@ -33,7 +33,10 @@
             </tr>
           </thead>
           <tbody style="overflow-y: auto">
-            <tr th:each="rent : ${rents}">
+            <tr th:each="rent : ${rents}"
+                th:onclick="|location.href='@{/board/movieDetail(movieId=${rent.id})}'|"
+                style="cursor: pointer"
+              >
               <td th:text="${rent.title}"></td>
               <td
                 th:text="${#temporals.format(rent.returndate,'yyyy-MM-dd hh:mm')}"

@@ -84,7 +84,7 @@ public class RentServiceImpl implements RentService {
 		return result;
 
 	}
-	//매일 자저
+	//매일 자정에 대여 만료 처리
 	@Scheduled(cron = "0 0 0 * * ?")
 	@Transactional
 	public void autoReturnOverdueRentals() {
@@ -174,6 +174,9 @@ public class RentServiceImpl implements RentService {
 			map.put("backdrop", rent.getMovieId().getBackdropPath());
 			data.add(map);
 		}
+
+		//returndate 오름차순
+		data.sort((a,b)->((LocalDateTime)a.get("returndate")).compareTo((LocalDateTime)b.get("returndate")));
 		return data;
 	}
 
