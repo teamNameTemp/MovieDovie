@@ -1,10 +1,10 @@
 package com.board.service;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.data.repository.query.Param;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import com.board.dto.MemberDTO;
@@ -12,17 +12,37 @@ import com.board.entity.MemberEntity;
 import com.board.entity.MemberLogEntity;
 import com.board.entity.repository.MemberLogRepository;
 import com.board.entity.repository.MemberRepository;
+import com.board.entity.repository.RentRepository;
 import com.board.util.DataCalculate;
 
 import lombok.AllArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 
 @Service
 @AllArgsConstructor
+@Log4j2
 public class MemberServiceImpl implements MemberService {
 	
 	private final MemberRepository memberRepository;
 	private final MemberLogRepository memberLogRepository;
+	private final RentRepository rentRepository;
 
+	//매달 1일 0시 0분 0초에 실행
+	@Scheduled(cron = "0 0 0 1 * *")
+	public void updateGrade() {
+
+		List<MemberEntity> members = memberRepository.findAll();
+		int idx = 0;
+		for (MemberEntity member : members) {
+			int totalSales = rentRepository.getMonthlySalesByEmail(member.getEmail());
+			String grade = DataCalculate.calcGrade(totalSales);
+			member.setGrade(grade);
+			memberRepository.save(member);
+			idx++;
+		}
+
+		log.info("회원 등급 업데이트 완료: {} 건의 회원 등급이 업데이트되었습니다.", idx);
+	}
 
 	//회원 가입
 	@Override
@@ -32,6 +52,7 @@ public class MemberServiceImpl implements MemberService {
 		member.setPwcheck(1L);
 		member.setRole("USER");
 		member.setGrade(DataCalculate.calcGrade(0));	
+		member.setPoint(0L);
 		
 		memberRepository.save(member.dtoToEntity(member));	
 	}
@@ -141,6 +162,17 @@ public class MemberServiceImpl implements MemberService {
 	@Override	
 	public int newMembersInLastSevenDays(@Param("sevenDaysAgo") LocalDateTime sevenDaysAgo) {
 		return memberRepository.newMembersInLastSevenDays(sevenDaysAgo);
+	}
+
+	@Override
+	public void modifyMemberProfile(MemberDTO member){
+		MemberEntity memberEntity = memberRepository.findById(member.getEmail()).get();
+
+		memberEntity.setFilesize(member.getFilesize());
+		memberEntity.setOrg_filename(member.getOrgFilename());
+		memberEntity.setStored_filename(member.getStoredFilename());
+
+		memberRepository.save(memberEntity);
 	}
 
 }
