@@ -297,6 +297,11 @@ body {
   outline: none;
 }
 
+.search-btn::disabled{
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
 .search-box input::placeholder {
   color: #c0c0c0;
 }

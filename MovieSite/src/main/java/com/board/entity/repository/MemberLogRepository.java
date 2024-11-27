@@ -1,9 +1,11 @@
 package com.board.entity.repository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import com.board.entity.MemberLogEntity;
 
@@ -24,6 +26,14 @@ public interface MemberLogRepository extends JpaRepository<MemberLogEntity, Long
 		    WHERE m.visit_date IN (TRUNC(SYSDATE), TRUNC(SYSDATE) - 1)
 			""", nativeQuery = true)
 	public List<Object[]> visitResult();
+	
+	//관리자페이지 - 통계 : 최근 7일간 방문자 수 확인
+	@Query("SELECT COUNT(DISTINCT CONCAT(ml.email, FUNCTION('TO_CHAR', ml.inouttime, 'YYYY-MM-DD'))) " +
+		       "FROM member_log ml " +
+		       "WHERE ml.status = 'login' " +
+		       "AND ml.inouttime >= :sevenDaysAgo " +
+		       "AND ml.inouttime < :now")
+	public int visitorsInLastSevenDays(@Param("sevenDaysAgo") LocalDateTime sevenDaysAgo, @Param("now") LocalDateTime now);
 	
 }
  

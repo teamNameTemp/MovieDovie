@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.data.domain.Page;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
@@ -27,6 +28,7 @@ import com.board.dto.movie.MovieDTO;
 import com.board.entity.RequestEntity;
 import com.board.entity.RequestReplyEntity;
 import com.board.entity.movie.MovieEntity;
+import com.board.entity.repository.RentRepository;
 import com.board.entity.repository.movie.MovieRepository;
 import com.board.service.FavGenreService;
 import com.board.service.LikeService;
@@ -59,6 +61,7 @@ public class MasterController {
 	private final RequestReplyService requestReplyService;
 	private final MovieRepository movieRepository;
 	private final NotificationService notificationService;
+	private final RentRepository rentRepository;
 
 	// 회원의 요청 목록 보기
 	@GetMapping("/memberRequest")
@@ -219,7 +222,53 @@ public class MasterController {
 	}
 
 	@GetMapping("/memberStats")
-	public void getMemberStats() {
+	public void getMemberStats(Model model) {
+		
+		model.addAttribute("RentCount", rentRepository.getTotalRent());
+		model.addAttribute("HitnoCount", movieRepository.getTotalHitno());
+		
+	}
+	
+	@GetMapping("/dashboard")
+	public void getDashboard(Model model) {
+		
+		model.addAttribute("RentCount", rentRepository.getTotalRent());
+		model.addAttribute("HitnoCount", movieRepository.getTotalHitno());
+		
+		LocalDateTime sevenDaysAgo = LocalDateTime.now().minusDays(7);
+		int signup7days = memberService.newMembersInLastSevenDays(sevenDaysAgo); //최근 7일간 회원가입한 수
+		model.addAttribute("signup7days", signup7days);
+		
+		LocalDateTime now = LocalDateTime.now();
+		int visit7days = memberLogService.visitorsInLastSevenDays(sevenDaysAgo, now);
+		model.addAttribute("visit7days", visit7days);
+		
+		model.addAttribute("sevenDaysAgo", sevenDaysAgo);
+		model.addAttribute("now", now);
+		
+		
+		List<Object[]> results = rentService.RentCount(sevenDaysAgo, now);
+		int totalRentCount = 0;
+
+		for (Object[] result : results) {
+			int count = ((Number) result[1]).intValue(); // 대여 수
+			totalRentCount += count;
+		}
+		model.addAttribute("totalRentCount", totalRentCount);
+
+		
+		List<Object[]> salesresults = rentService.Sales(sevenDaysAgo, now);
+		int totalSales = 0;
+		
+		for (Object[] result : salesresults) {
+			int sales = ((Number) result[1]).intValue(); // 매출
+			totalSales += sales;
+		}
+		model.addAttribute("totalSales", totalSales);
+		
+		
+		int currentYear = LocalDate.now().getYear();
+		model.addAttribute("currentYear", currentYear);
 	}
 
 	// 관리자 페이지 - 통계 : 최근 일주일 간 대여 수 확인
@@ -241,7 +290,92 @@ public class MasterController {
 
 		return response; // JSON 형태로 반환
 	}
+	
+	// 관리자 페이지 - 통계 : 최근 일주일 간 대여 수 확인
+	@GetMapping("/weeklySales")
+	@ResponseBody
+	public List<Map<String, Object>> getWeeklySales() {
+		LocalDateTime now = LocalDateTime.now();
+		LocalDateTime sevenDaysAgo = now.minusDays(7);
 
+		List<Object[]> results = rentService.Sales(sevenDaysAgo, now);
+		List<Map<String, Object>> response = new ArrayList<>();
+
+		for (Object[] result : results) {
+			Map<String, Object> map = new HashMap<>();
+			map.put("date", result[0]); // 대여 날짜
+			map.put("sales", result[1]); // 매출
+			response.add(map);
+		}
+
+		return response; // JSON 형태로 반환
+	}
+
+	//관리자 페이지 - 통계 : 영화 장르별 매출 현황 YTD 
+	@GetMapping("YTDSalesByGenre")
+	@ResponseBody
+	public List<Map<String, Object>> getYTDSalesByGenre() {
+		
+		List<Object[]> results = rentService.getYTDSalesByGenre();
+		List<Map<String, Object>> response = new ArrayList<>();
+
+		for (Object[] result : results) {
+			Map<String, Object> map = new HashMap<>();
+			map.put("genre", result[0]);
+			map.put("sales", result[1]);
+			response.add(map);
+		}
+		return response; // JSON 형태로 반환
+	}
+	
+
+	// 관리자 페이지 - 통계 : 작년 월별 매출 확인
+	@GetMapping("/MonthlySalesLastYear")
+	@ResponseBody
+	public List<Map<String, Object>> getMonthlySalesLastYear() {
+		// 현재 연도를 가져와서 작년 연도를 계산
+		int lastYear = LocalDate.now().getYear() - 1; // 작년 연도 계산
+
+		// 작년 연도에 대한 월별 대여 수 조회
+		List<Object[]> resultsLastYear = rentService.SalesByMonth(lastYear);
+
+		List<Map<String, Object>> response = new ArrayList<>();
+
+		for (Object[] result : resultsLastYear) {
+            Map<String, Object> map = new HashMap<>();
+            map.put("date", result[0]);
+            map.put("sales", result[1] != null ? result[1] : 0);
+            response.add(map);
+	    }
+	    
+
+		return response; // JSON 형태로 반환
+	}
+
+	// 관리자 페이지 - 통계 : 올해 월별 매출 확인
+	@GetMapping("/MonthlySalesCurrentYear")
+	@ResponseBody
+	public List<Map<String, Object>> getMonthlySalesCurrentYear() {
+
+		int currentYear = LocalDate.now().getYear(); // 올해 연도 계산
+
+		// 올해 연도에 대한 월별 대여 수 조회
+		List<Object[]> resultsCurrentYear = rentService.SalesByMonth(currentYear);
+
+		List<Map<String, Object>> response = new ArrayList<>();
+
+		for (Object[] result : resultsCurrentYear) {
+			Map<String, Object> map = new HashMap<>();
+			map.put("date", result[0]); // 대여 날짜
+			map.put("sales", result[1] != null ? result[1] : 0); // Sales (null 처리)
+			response.add(map);
+		}
+
+		return response; // JSON 형태로 반환
+	}
+	
+	
+	
 	// 관리자 페이지 - 통계 : 작년 월별 대여 수 확인
 	@GetMapping("/MonthlyRentLastYear")
 	@ResponseBody
@@ -307,18 +441,33 @@ public class MasterController {
 	@GetMapping("/topRenters")
 	@ResponseBody
 	public List<Map<String, Object>> getTopRenters() {
-		List<Object[]> list = rentService.findTopRenters();
+		List<Object[]> list = rentRepository.findTopRenterNickname();
 
 		List<Map<String, Object>> response = new ArrayList<>();
 		for (Object[] item : list) {
 			Map<String, Object> map = new HashMap<>();
-			map.put("email", item[0]);
+			map.put("nickname", item[0]);
 			map.put("rentCount", item[1]);
+			map.put("sales", item[2]);
 			response.add(map);
 		}
 		return response; // JSON 형태로 반환
 	}
 
+	
+	//관리자 페이지 - 통계 : 구매 전환율 확인
+	@GetMapping("/conversionRate")
+	@ResponseBody
+	public Map<String, Object> getConversionRate(Model model) {
+		
+		Map<String, Object> map = new HashMap<>();
+
+		model.addAttribute("conversionRate", service.conversionRate());
+
+		map.put("conversionRate", service.conversionRate());		
+		return map;
+	}
+	
 	// 관리자 페이지 - 통계 : 회원 가입한 날 확인
 	@GetMapping("/signupResult")
 	@ResponseBody
@@ -472,6 +621,84 @@ public class MasterController {
 		return response;
 	}
 	
+	
+	//관리자 페이지 - 통계 : 최근 일주일 간 영화발매일 별 대여 건수 확인
+	@GetMapping("/RentByReleaseDateLast7days")
+	@ResponseBody
+	public List<Map<String, Object>> getRentByReleaseDateLast7days(){
+		
+		LocalDateTime sevenDaysAgo = LocalDateTime.now().minusDays(7);
+		List<Object[]> resultLastSevenDays = rentService.getRentCountByReleaseDateLastSevenDays(sevenDaysAgo);
+		
+		List<Map<String, Object>> response = new ArrayList<>();
+		
+		for (Object[] result : resultLastSevenDays) {
+			Map<String, Object> map = new HashMap<>();
+			map.put("count_10000", result[0] != null ? result[0] : 0); // 발매일 1개월 이내 (null 처리)
+			map.put("count_6000", result[1] != null ? result[1] : 0); // 발매된지 1-3개월 (null 처리)
+			map.put("count_5000", result[2] != null ? result[2] : 0); // 발매된지 3-6개월 (null 처리)
+			map.put("count_4000", result[3] != null ? result[3] : 0); // 발매된지 6개월-1년 (null 처리)
+			map.put("count_1000", result[4] != null ? result[4] : 0); // 발매된지 1년 이상 (null 처리)
+			response.add(map);
+		}
+
+		return response; // JSON 형태로 반환
+	}
+	
+	
+	// 관리자 페이지 - 통계 : 올해 월별 영화발매일 별 매출 확인
+	@GetMapping("/MonthlyRentByReleaseDateCurrentYear")
+	@ResponseBody
+	public List<Map<String, Object>> getMonthlySalesByReleaseDateCurrentYear() {
+
+		int currentYear = LocalDate.now().getYear(); // 올해 연도 계산
+
+		// 올해 연도에 대한 월별 대여 수 조회
+		List<Object[]> resultsCurrentYear = rentService.RentCountByReleaseDateAndMonth(currentYear);
+
+		List<Map<String, Object>> response = new ArrayList<>();
+
+		for (Object[] result : resultsCurrentYear) {
+			Map<String, Object> map = new HashMap<>();
+			map.put("date", result[0]); // 매출 날짜 (예 : 2023-11)
+			map.put("count_10000", result[1] != null ? result[1] : 0); // 발매일 1개월 이내 (null 처리)
+			map.put("count_6000", result[2] != null ? result[2] : 0); // 발매된지 1-3개월 (null 처리)
+			map.put("count_5000", result[3] != null ? result[3] : 0); // 발매된지 3-6개월 (null 처리)
+			map.put("count_4000", result[4] != null ? result[4] : 0); // 발매된지 6개월-1년 (null 처리)
+			map.put("count_1000", result[5] != null ? result[5] : 0); // 발매된지 1년 이상 (null 처리)
+			response.add(map);
+		}
+
+		return response; // JSON 형태로 반환
+	}
+	
+	// 관리자 페이지 - 통계 : 작년 월별 영화발매일 별 매출 확인
+	@GetMapping("/MonthlyRentByReleaseDateLastYear")
+	@ResponseBody
+	public List<Map<String, Object>> getMonthlySalesByReleaseDateLastYear() {
+
+		// 현재 연도를 가져와서 작년 연도를 계산
+		int lastYear = LocalDate.now().getYear() - 1; // 작년 연도 계산
+
+		// 작년 연도에 대한 월별 대여 수 조회
+		List<Object[]> resultsLastYear = rentService.RentCountByReleaseDateAndMonth(lastYear);
+
+		List<Map<String, Object>> response = new ArrayList<>();
+
+		for (Object[] result : resultsLastYear) {
+			Map<String, Object> map = new HashMap<>();
+			map.put("date", result[0]); // 매출 날짜 (예 : 2024-11)
+			map.put("count_10000", result[1] != null ? result[1] : 0); // 발매일 1개월 이내 (null 처리)
+			map.put("count_6000", result[2] != null ? result[2] : 0); // 발매된지 1-3개월 (null 처리)
+			map.put("count_5000", result[3] != null ? result[3] : 0); // 발매된지 3-6개월 (null 처리)
+			map.put("count_4000", result[4] != null ? result[4] : 0); // 발매된지 6개월-1년 (null 처리)
+			map.put("count_1000", result[5] != null ? result[5] : 0); // 발매된지 1년 이상 (null 처리)
+			response.add(map);
+		}
+
+		return response; // JSON 형태로 반환
+	}
+	
 
 	// 관리자 페이지 - 통계 : 좋아요 % 높은 영화 순위 보여주기
 	@GetMapping("/topLikeMovie")
@@ -607,10 +834,8 @@ public class MasterController {
 			Map<String, Object> map = new HashMap<>();
 			
 		    MovieEntity movie = (MovieEntity) result[0];  // 첫 번째 요소: MovieEntity 객체
-		    Long bookmarkCount = (Long) result[1];  // 두 번째 요소: 북마크 수
 		    
-			map.put("movie", movie); // 첫 번째 요소: MovieEntity 객체
-			map.put("bookmarkCount", bookmarkCount);
+			map.put("movie", movie); // MovieEntity 객체
 			
 			response.add(map);			
 		}

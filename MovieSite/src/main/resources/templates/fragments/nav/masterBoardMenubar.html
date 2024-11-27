@@ -5,20 +5,15 @@
                 <h1 class="logo"><a href="/board/list">MovieDovie</a></h1>
             </div>
             <div class="menu-list">
-                <ul class="menu-list">
-                    <li class="menu-list-item" style="position:relative; margin-top:18.5px;"><a href="#">추천 영화</a></li>
-                    <li class="menu-list-item" style="position:relative; margin-top:18.5px;"><a href="#">장르</a></li>
-                    <li class="menu-list-item" style="position:relative; margin-top:18.5px;"><a href="#">인기 영화</a></li>         
-                </ul>
-	            <div class="search-box" style="position:relative; margin-top:27px;">
-	  				<form action="/board/list" method="">
-	    				<input class="search-txt" type="text" placeholder="  작품, 배우, 게시글, 태그를 검색해보세요" >
-	    				<button class="search-btn" type="submit">
-					  		<i class="fas fa-search"></i>
-				  		</button>
-				  	</form>    
-	        	</div>	  
-			</div>
+                <div class="search-box" style="position:relative; margin-top:27px;">
+                    <form action="/board/search" method="get">
+                        <input class="search-txt" name="keyword" type="text" placeholder="  작품, 배우, 게시글, 태그를 검색해보세요">
+                        <button class="search-btn" type="submit" onclick="searchMovies()">
+                            <i class="fas fa-search"></i>
+                        </button>
+                    </form>
+                </div>
+            </div>
           
             
           	<div class="profile-container">
@@ -26,9 +21,9 @@
             	<div class="dropdown">
 					<img class="profile-picture" src="/images/img/masterprofile.png" alt="">
 					<div class="dropdown-content">관리자
-		    			<a href="#">프로필 정보</a>
 						<a href="/member/logout">로그 아웃</a>
-						<a href="/master/memberStats">회원 활동 통계</a>
+						<a href="/master/dashboard">대시보드</a>
+						<a href="/master/memberStats">매출/회원 통계</a>
 	      				<a href="/master/memberRequest">회원 요청사항 관리</a>
 	      				<a href="/master/movieStats">영화 통계</a>
 	      				<a href="/master/movieUpload">영화 수정</a>
@@ -39,3 +34,19 @@
         </div>
     </div>
 </div>
+
+<script>
+	const searchInput = document.querySelector('.search-txt');
+	const searchButton = document.querySelector('.search-btn');
+	
+	// 페이지 로드 시 초기 버튼 상태 설정
+	document.addEventListener('DOMContentLoaded', () => {
+	    searchButton.disabled = searchInput.value.trim() === '';
+	});
+	
+	// 입력 필드 내용 변경 이벤트 리스너 추가
+	searchInput.addEventListener('input', () => {
+	    // 입력 필드에 값이 있으면 버튼 활성화, 없으면 비활성화
+	    searchButton.disabled = searchInput.value.trim() === '';
+	});
+</script>

@@ -319,7 +319,59 @@ function redirectToUrl(event, url) {
 </script>
 
 <body>
-<div class="main" align="center">
+<style>
+ #expandable-text {
+  font-family: Arial, sans-serif;
+  font-size: 24px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.letter {
+  display: inline-block;
+  margin-left: 10px;
+  transition: all 1s ease;
+}
+
+</style>
+<span style="color:red; font-size:24px; font-weight:bold;">MOVIE</span>
+<div id="expandable-text">
+    <span class="letter">D</span>
+    <span class="letter">O</span>
+    <span class="letter">V</span>
+    <span class="letter">I</span>
+    <span class="letter">E</span>
+</div>
+<script>
+ const shortText = 'DOVIE';
+const longText = ['Digital', 'Online', 'Vault of', 'Immersive', 'Entertainment'];
+const element = document.getElementById('expandable-text');
+
+
+element.addEventListener('mouseenter', expand);
+element.addEventListener('mouseleave', shrink);
+
+function expand() {
+  document.querySelectorAll('.letter').forEach((span,index) => {
+    if(index == 4)
+      span.style.marginLeft = '0px';
+    else
+      span.style.marginLeft = '10px';
+
+     span.dataset.long = longText[index] || '';
+    span.style.width = span.dataset.long.length + 'ch';
+    span.textContent = span.dataset.long || span.textContent;
+  });
+}
+
+function shrink() {
+  document.querySelectorAll('.letter').forEach(span => {
+    span.style.width = '1ch';
+    span.textContent = span.textContent[0];
+  });
+}
+</script>
+<div class="main" align="center" style="display:none">
     <div class="WriteForm">
         <h1>로그인</h1><br><br>
     <form name="loginForm" id="loginForm" method="POST">
