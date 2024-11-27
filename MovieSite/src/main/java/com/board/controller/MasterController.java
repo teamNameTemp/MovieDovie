@@ -10,7 +10,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.data.domain.Page;
-import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
@@ -782,7 +781,11 @@ public class MasterController {
 	}
 
 	@GetMapping("/movieUpload")
-	public void getMovieUpload() {
+	public void getMovieUpload(Model model, @RequestParam(name="keyword", required = false) String keyword) {
+		List<MovieEntity> list = movieRepository.findByTitleContainingIgnoreCase(keyword);
+		if (!list.isEmpty()) {
+			model.addAttribute("movie", list.get(0));
+		}
 	}
 	
 	//todo : movieUpload로 되어있는 곳 update로 다 변경

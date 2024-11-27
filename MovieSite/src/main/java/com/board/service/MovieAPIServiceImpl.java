@@ -72,20 +72,30 @@ public class MovieAPIServiceImpl implements MovieAPIService {
 		saveWeeklyTrend(trend);
 	}
 
+	@Transactional
 	public void saveWeeklyTrend(List<MovieDTO> list) {
 		LocalDateTime now = LocalDateTime.now();
 		saveTheDataBases(list);
 		
 		for(MovieDTO dto : list) {
 			MovieEntity movie = movieRepository.findById(dto.getId()).get();
-			WeeklyTrendEntity weekly = WeeklyTrendEntity.builder()
+			WeeklyTrendEntity weekly = 
+			weeklyTrendRepository.findByYearAndMonthAndMonthOfWeekAndMovieId(
+				now.getYear(), 
+				now.getMonthValue(), 
+				DataCalculate.getWeekOfMonth(now), 
+				movie);
+			
+			if(weekly == null) {
+				weekly = WeeklyTrendEntity.builder()
 				.year(now.getYear())
 				.month(now.getMonthValue())
 				.monthOfWeek(DataCalculate.getWeekOfMonth(now))
 				.movieId(movie)
 				.build();
 			
-			weeklyTrendRepository.save(weekly);
+				weeklyTrendRepository.save(weekly);
+			}
 		}
 	}
 
