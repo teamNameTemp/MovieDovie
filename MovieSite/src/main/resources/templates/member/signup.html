@@ -404,50 +404,34 @@ window.onload = () => {
         }
     });
 
-	// 주민등록번호 유효성 검사 (6자리만 확인)
-	const isValidSSN = (ssnFront) => /^\d{6}$/.test(ssnFront);
+	// 주민등록번호 유효성 검사
+	const isValidSSN = (ssnFront, ssnBack) => {
+	    return /^\d{6}$/.test(ssnFront) && /^\d{7}$/.test(ssnBack);
+	};
 
 	document.getElementById('ssnFront').addEventListener('input', validateSSN);
+	document.getElementById('ssnBack').addEventListener('input', validateSSN);
 
 	function validateSSN() {
 	    const ssnFront = document.getElementById('ssnFront').value;
+	    const ssnBack = document.getElementById('ssnBack').value;
 
-	    if (isValidSSN(ssnFront)) {
+	    if (isValidSSN(ssnFront, ssnBack)) {
 	        ssnValidationMessage.textContent = "유효한 주민등록번호입니다.";
 	        ssnValidationMessage.style.color = "green";
+
+	        // 뒷자리 첫 번째 숫자로 성별 자동 체크
+	        const genderCode = parseInt(ssnBack[0], 10);
+	        if (genderCode === 1 || genderCode === 3) {
+	            document.querySelector('input[name="gender"][value="남성"]').checked = true;
+	        } else if (genderCode === 2 || genderCode === 4) {
+	            document.querySelector('input[name="gender"][value="여성"]').checked = true;
+	        }
 	    } else {
 	        ssnValidationMessage.textContent = "올바른 형식의 주민등록번호를 입력해주세요.";
 	        ssnValidationMessage.style.color = "red";
 	    }
 	}
-	
-	//주민등록번호 앞6자리 생년월일
-	function calculateBirthdate(ssnFront) {
-	    if (ssnFront.length === 6) {
-	        const year = parseInt(ssnFront.substring(0, 2), 10);
-	        const month = ssnFront.substring(2, 4);
-	        const day = ssnFront.substring(4, 6);
-
-	        // 2000년대 이후 출생자를 처리하기 위해 현재 연도 기준 확인
-	        const currentYear = new Date().getFullYear();
-	        const century = year < 30 ? 2000 : 1900; // 30년을 기준으로 세기 구분
-
-	        return `${century + year}-${month}-${day}`;
-	    }
-	    return '';
-	}
-	
-	document.getElementById('ssnFront').addEventListener('input', () => {
-	    const ssnFront = document.getElementById('ssnFront').value;
-	    const birthdate = calculateBirthdate(ssnFront);
-
-	    if (birthdate) {
-	        document.getElementById('birthdate').value = birthdate;
-	    } else {
-	        document.getElementById('birthdate').value = '';
-	    }
-	    validateSSN(); // 기존 유효성 검사 함수 호출
-	});
 
     // 전화번호 유효성 검사
     const isValidTelno = (telno) => /^\d{11,12}$/.test(telno);
@@ -466,6 +450,7 @@ window.onload = () => {
 		
 		const genderSelected = document.querySelector('input[name="gender"]:checked');
 		const ssnFront = document.getElementById('ssnFront').value.trim();
+		const ssnBack = document.getElementById('ssnBack').value.trim();
 
 	    if (imgCheck === 'N') {
 	        alert("프로필 이미지를 등록하세요.");
@@ -487,7 +472,7 @@ window.onload = () => {
 	        return;
 	    }
 
-		if (!isValidSSN(ssnFront)) {
+		if (!isValidSSN(ssnFront, ssnBack)) {
 		    alert("주민등록번호를 확인해주세요.");
 		    return;
 		}
@@ -513,23 +498,24 @@ window.onload = () => {
 		}
 
 		
-		// 추가 유효성 검사를 통과하면 ssnFront만 서버에 전달
-		const formData = new FormData(RegistryForm);
-		formData.append("ssn", ssnFront);
-
-		try {
-			const response = await fetch('/member/signup', { method: 'POST', body: formData });
-		    const data = await response.json();
-		    if (data.message === 'good') {
-		   		alert(decodeURIComponent(data.username) + '님, 회원 가입을 축하 드립니다.');
-		        document.location.href = '/member/login';
-		    } else {
-		        alert(data.message);
-		    }
-		} catch (error) {
-			console.error(error);
-			alert("서버와의 통신에 문제가 발생했습니다.");
-		}
+	    // 모든 조건을 만족한 후 회원가입 처리
+	    const formData = new FormData(RegistryForm);
+		const ssn = ssnFront + "-" + ssnBack;
+		console.log(ssn);
+		formData.append("ssn", ssn);
+	    try {
+	        const response = await fetch('/member/signup', { method: 'POST', body: formData });
+	        const data = await response.json();
+	        if (data.message === 'good') {
+	            alert(decodeURIComponent(data.username) + '님, 회원 가입을 축하 드립니다.');
+	            document.location.href = '/member/login';
+	        } else {
+	            alert(data.message);
+	        }
+	    } catch (error) {
+	        console.error(error);
+	        alert("서버와의 통신에 문제가 발생했습니다.");
+	    }
 	});
 
 };
@@ -577,14 +563,12 @@ window.onload = () => {
 				</div><br>
 
 				<div>
-				    <label>주민등록번호 앞 6자리</label>
-				    <input type="text" id="ssnFront" name="ssnFront" class="input_field" placeholder="앞 6자리" maxlength="6">
+				    <label>주민등록번호</label>
+				    <div style="display: flex; gap: 10px;">
+				        <input type="text" id="ssnFront" name="ssnFront" class="input_field" placeholder="앞 6자리" maxlength="6">
+				        <input type="text" id="ssnBack" name="ssnBack" class="input_field" placeholder="뒤 7자리" maxlength="7">
+				    </div>
 				    <div id="ssnValidationMessage" class="validation-message"></div>
-				</div><br>
-				
-				<div>
-				    <label>생년월일</label>
-				    <input type="text" id="birthdate" name="birthdate" class="input_field" placeholder="생년월일" readonly>
 				</div><br>
 
 

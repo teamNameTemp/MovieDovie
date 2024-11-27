@@ -84,19 +84,3 @@ document.addEventListener("DOMContentLoaded", function() {
 
 });
 
- // 대여 현황 박스를 클릭하면 모달 열기
- rentalStatusBox.addEventListener("click", function () {
-	rentalModal.style.display = "block";
-  });
-
-  // 모달 닫기 버튼 클릭하면 모달 닫기
-  closeModal.addEventListener("click", function () {
-	rentalModal.style.display = "none";
-  });
-
-  // 모달 밖을 클릭하면 모달 닫기
-  window.addEventListener("click", function (event) {
-	if (event.target === rentalModal) {
-	  rentalModal.style.display = "none";
-	}
-  });
