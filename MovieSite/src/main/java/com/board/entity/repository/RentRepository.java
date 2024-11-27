@@ -84,11 +84,20 @@ public interface RentRepository extends JpaRepository<RentEntity, Long>{
 	public List<Object[]> findTopRenterNickname();
 	
 	
+	//총 누적 대여 금액
 	@Query("SELECT COALESCE(SUM(r.sales), 0) " +
 			"FROM rent r " +
 			"WHERE r.email.email = :email")
     Long getTotalSalesByEmail(@Param("email") String email);
 	
+	//월 누적 대여 금액
+	@Query("SELECT COALESCE(SUM(r.sales), 0) " +
+	"FROM rent r " +
+	"WHERE r.email.email = :email " +
+	"AND EXTRACT(YEAR FROM r.rentdate) = EXTRACT(YEAR FROM SYSDATE) " +
+	"AND EXTRACT(MONTH FROM r.rentdate) = EXTRACT(MONTH FROM SYSDATE)")
+	int getMonthlySalesByEmail(@Param("email") String email);
+
 	//관리자 페이지 - 통계 : 전체 회원의 대여 수 확인
 	@Query(value = "SELECT COUNT(r.seqno) FROM rent r")
 	public int getTotalRent();

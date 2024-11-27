@@ -33,7 +33,10 @@
             </tr>
           </thead>
           <tbody style="overflow-y: auto">
-            <tr th:each="rent : ${rents}">
+            <tr th:each="rent : ${rents}"
+                th:onclick="|location.href='@{/board/movieDetail(movieId=${rent.id})}'|"
+                style="cursor: pointer"
+              >
               <td th:text="${rent.title}"></td>
               <td
                 th:text="${#temporals.format(rent.returndate,'yyyy-MM-dd hh:mm')}"
@@ -49,10 +52,14 @@
       <div class="profile-header">
         <div class="header-content">
           <div class="profile-image">
-            <img th:src="@{'/profile/' + ${member.storedFilename}}" alt="Profile Image" />
+            
+            <input type="file" name="fileUpload" id="imageFile" style="display:none;"0/>
+					<div class="imageZone" id="imageZone">
+						<img  class ="imageZone" id="imageZone" th:src="@{'/profile/' + ${member.storedFilename}}" alt="프로필 이미지">
             <div class="edit-overlay">
               <i class="fas fa-camera"></i>
             </div>
+					</div>
           </div>
           <div class="profile-info">
             <h1>[[${member.username}]]<span th:text="' (' + ${member.grade} + ')'" style="font-size:25px; color: #999;" ></span></h1><br>
@@ -66,6 +73,7 @@
       <div class="content-section">
         <h2 style="margin-bottom: 10px">현재 대여 목록</h2>
         <div class="rental-grid">
+          <h2 th:text="${#lists.size(rents) == 0} ? '현재 대여 목록이 없습니다.'"></h2>
           <div class="rental-item" th:each="rent : ${rents}">
             <a
               th:href="@{/board/movieDetail(movieId=${rent.id})}"
@@ -236,6 +244,64 @@
     </div>
 
     <script>
+window.onload = () => {
+			
+      var imgCheck = "N";
+      var imgZone = document.querySelector('#imageZone');
+      var fileEvent = document.querySelector('#imageFile');
+          
+      //imageZone 영역 클릭 시 파일이벤트 처리. 자바스크립트에선 이벤트 발생 시 이벤트 정보를 담고 있는 event(e)라는 객체를 자동 생성.
+      imgZone.addEventListener('click', (e)=> {
+        fileEvent.click(e); //사용자가 만든 UI를 통해 <input type="file">을 클릭하는 것과 같은 효과를 내게 됨.
+      });
+          
+      fileEvent.addEventListener('change', (e)=> {
+        const files = e.target.files;//선택한 파일 정보가 e.target.files(배열)에 저장
+        showImage(files); 
+      })
+          
+      const showImage = (files) => {
+           imgZone.innerHTML = '';
+           const imgFile = files[0];
+    
+           console.log(files.type);
+        console.log(imgFile.type);
+           if (imgFile.type.indexOf("image") < 0) {
+               alert("이미지 파일만 올려 주세요.");
+               return false;
+           }
+    
+           const reader = new FileReader();
+           reader.onload = function(event) {
+               const imgElement = document.createElement('img');
+               imgElement.src = event.target.result;
+               imgElement.style.width = "100%";  // 이미지 영역에 맞게 조정
+               imgElement.style.height = "auto";
+               imgElement.style.objectFit = "contain";  // 여백 없이 맞춤
+               imgZone.appendChild(imgElement);
+           };
+    
+           reader.readAsDataURL(imgFile);
+           imgCheck = "Y";
+
+           
+
+           const formData = new FormData();
+           formData.append('fileUpload', imgFile);
+
+           //선택한 후 저장
+           fetch('/member/profileUpload', {
+            method: 'POST',
+            body: formData
+           }).then(response => response.json())
+           .then(data => {
+            console.log(data);
+            location.reload();
+           })
+           .catch(error => console.error('Error:', error));
+      };
+    }
+
       // HTML 요소들 선택
       const rentalStatusBox = document.getElementById("rentalStatusBox");
       const rentalModal = document.getElementById("rentalModal");
