@@ -134,13 +134,6 @@ public class BoardController {
 	    
 	    if (noti == null) {noti = new ArrayList<>();}
 	    
-	    // 알림이 있을 경우 첫 번째 알림의 seqno 가져오기
-	    Long seqno = null;
-	    if (!noti.isEmpty()) {
-	        seqno = noti.get(0).getRequestEntity().getSeqno();
-	    }
-
-	    model.addAttribute("seqno", seqno);
 	    model.addAttribute("noti", noti);  // 알림 목록을 모델에 추가
 	    
 	}
@@ -179,13 +172,6 @@ public class BoardController {
 	    
 	    if (noti == null) {noti = new ArrayList<>();}
 	    
-	    // 알림이 있을 경우 첫 번째 알림의 seqno 가져오기
-	    Long seqno = null;
-	    if (!noti.isEmpty()) {
-	        seqno = noti.get(0).getRequestEntity().getSeqno();
-	    }
-
-	    model.addAttribute("seqno", seqno);
 	    model.addAttribute("noti", noti);  // 알림 목록을 모델에 추가
 	    
 	}
@@ -269,13 +255,6 @@ public class BoardController {
 	    
 	    if (noti == null) {noti = new ArrayList<>();}
 	    
-	    // 알림이 있을 경우 첫 번째 알림의 seqno 가져오기
-	    Long seqno = null;
-	    if (!noti.isEmpty()) {
-	        seqno = noti.get(0).getRequestEntity().getSeqno();
-	    }
-
-	    model.addAttribute("seqno", seqno);
 	    model.addAttribute("noti", noti);  // 알림 목록을 모델에 추가
 	    
 		// 추천 영화 리스트
@@ -388,31 +367,31 @@ public class BoardController {
 	}
 	
 	// 대여 관련 처리
-		@PostMapping("/movieDetail/rent")
-		@ResponseBody
-		public Map<String, Object> postMovieDetailRent(@RequestParam("movieId") Long movieId,
-				HttpSession session) {
-			Map<String, Object> response = new HashMap<>();
+	@PostMapping("/movieDetail/rent")
+	@ResponseBody
+	public Map<String, Object> postMovieDetailRent(@RequestParam("movieId") Long movieId,
+			HttpSession session) {
+		Map<String, Object> response = new HashMap<>();
 
-			String email = (String) session.getAttribute("email");
+		String email = (String) session.getAttribute("email");
 
-			// 대여 등록 및 삭제 
-			try {
-				String status = rent.rentMovie(email,movieId);
-				response.put("message", "good");
-				response.put("status", status);
-				
-				// 모든 like 정보
+		// 대여 등록 및 삭제 
+		try {
+			String status = rent.rentMovie(email,movieId);
+			response.put("message", "good");
+			response.put("status", status);
+			
+			// 모든 like 정보
 //				Map<String, Object> bookmarks = bookmark.getAllBookmarkInfo(movieId);
 //				response.put("count", bookmarks.get("count"));
-			} catch (Exception e) {
-				log.error("rent 오류 : ", e);
+		} catch (Exception e) {
+			log.error("rent 오류 : ", e);
 //				response.put("message", "error");
 //				response.put("error", e.getMessage());
-			}
-
-			return response;
 		}
+
+		return response;
+	}
 
 	// 댓글 처리
 	@ResponseBody
@@ -459,13 +438,6 @@ public class BoardController {
 	    
 	    if (noti == null) {noti = new ArrayList<>();}
 	    
-	    // 알림이 있을 경우 첫 번째 알림의 seqno 가져오기
-	    Long seqno = null;
-	    if (!noti.isEmpty()) {
-	        seqno = noti.get(0).getRequestEntity().getSeqno();
-	    }
-
-	    model.addAttribute("seqno", seqno);
 	    model.addAttribute("noti", noti);  // 알림 목록을 모델에 추가
 		
 	}
@@ -527,13 +499,6 @@ public class BoardController {
 	    
 	    if (noti == null) {noti = new ArrayList<>();}
 	    
-	    // 알림이 있을 경우 첫 번째 알림의 seqno 가져오기
-	    Long seqno = null;
-	    if (!noti.isEmpty()) {
-	        seqno = noti.get(0).getRequestEntity().getSeqno();
-	    }
-
-	    model.addAttribute("seqno", seqno);
 	    model.addAttribute("noti", noti);  // 알림 목록을 모델에 추가
 	
 	}
@@ -568,13 +533,6 @@ public class BoardController {
 		
 		if (noti == null) {noti = new ArrayList<>();}
 		
-		// 알림이 있을 경우 첫 번째 알림의 seqno 가져오기
-		Long seqnonoti = null;
-		if (!noti.isEmpty()) {
-		  seqnonoti = noti.get(0).getRequestEntity().getSeqno();
-		}
-		
-		model.addAttribute("seqno", seqnonoti);
 		model.addAttribute("noti", noti);  // 알림 목록을 모델에 추가
 
 	}

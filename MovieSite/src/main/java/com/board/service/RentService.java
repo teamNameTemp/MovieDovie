@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.data.repository.query.Param;
+import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.transaction.annotation.Transactional;
 
 public interface RentService {
 
@@ -45,4 +47,7 @@ public interface RentService {
 	
 	//관리자 페이지 - 통계 : 영화 장르별 매출 현황 YTD 
 	public List<Object[]> getYTDSalesByGenre();
+	
+	//매일 자정 확인하여 대여가 하루 남은 사람에게 알림 보내기
+	public void autoNotiBeforeReturn();
 }
