@@ -55,12 +55,9 @@
             </div>
           </div>
           <div class="profile-info">
-            <h1>[[${member.username}]]<span th:text="'(' + ${member.grade} + ')'" style="font-size:20px; color: #999;" ></span></h1>
-            <span class="membership-date"
-              >회원 가입일: [[${#temporals.format(member.regdate, 'yyyy년 MM월
-              dd일')}]]</span
-            >
-            <span class="membership-date">등급 변경일까지 [[${daysUntilFirstOfMonth}]]일 남았습니다.<br>· 다음 등급 변경일 : [[${nextMonth}]]</span>
+            <h1>[[${member.username}]]<span th:text="' (' + ${member.grade} + ')'" style="font-size:25px; color: #999;" ></span></h1><br>
+            <span class="membership-date">· 회원 가입일 : [[${#temporals.format(member.regdate, 'yyyy년 MM월 dd일')}]]</span>
+            <span class="membership-date">· 등급 변경일 : [[${nextMonth}]] (다음 등급 변경일까지 [[${daysUntilFirstOfMonth}]]일 남았습니다!)</span>
             
           </div>
         </div>
