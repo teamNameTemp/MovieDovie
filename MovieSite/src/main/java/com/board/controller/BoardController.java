@@ -1,5 +1,7 @@
 package com.board.controller;
 
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -136,13 +138,6 @@ public class BoardController {
 	    
 	    if (noti == null) {noti = new ArrayList<>();}
 	    
-	    // 알림이 있을 경우 첫 번째 알림의 seqno 가져오기
-	    Long seqno = null;
-	    if (!noti.isEmpty()) {
-	        seqno = noti.get(0).getRequestEntity().getSeqno();
-	    }
-
-	    model.addAttribute("seqno", seqno);
 	    model.addAttribute("noti", noti);  // 알림 목록을 모델에 추가
 	    
 	}
@@ -176,6 +171,12 @@ public class BoardController {
 		Long accumulatedPayment = rent.getMyAccumulatedPayment(email);
 		model.addAttribute("accumulatedPayment",accumulatedPayment);
 		
+		// 등급 변경일까지 얼마 남았는지?
+        LocalDate today = LocalDate.now();
+        LocalDate nextMonth = today.plusMonths(1).withDayOfMonth(1); // 다음 달의 1일 계산
+        long daysUntilFirstOfMonth = ChronoUnit.DAYS.between(today, nextMonth); // 현재 날짜와 다음 달 1일 사이의 일수 계산
+		model.addAttribute("daysUntilFirstOfMonth", daysUntilFirstOfMonth);
+		model.addAttribute("nextMonth", nextMonth);
 
 		/////////////////// 알람 처리 ///////////////////
 		model.addAttribute("email", email);
@@ -185,13 +186,6 @@ public class BoardController {
 	    
 	    if (noti == null) {noti = new ArrayList<>();}
 	    
-	    // 알림이 있을 경우 첫 번째 알림의 seqno 가져오기
-	    Long seqno = null;
-	    if (!noti.isEmpty()) {
-	        seqno = noti.get(0).getRequestEntity().getSeqno();
-	    }
-
-	    model.addAttribute("seqno", seqno);
 	    model.addAttribute("noti", noti);  // 알림 목록을 모델에 추가
 	    
 	}
@@ -275,13 +269,6 @@ public class BoardController {
 	    
 	    if (noti == null) {noti = new ArrayList<>();}
 	    
-	    // 알림이 있을 경우 첫 번째 알림의 seqno 가져오기
-	    Long seqno = null;
-	    if (!noti.isEmpty()) {
-	        seqno = noti.get(0).getRequestEntity().getSeqno();
-	    }
-
-	    model.addAttribute("seqno", seqno);
 	    model.addAttribute("noti", noti);  // 알림 목록을 모델에 추가
 	    
 		// 추천 영화 리스트
@@ -461,13 +448,6 @@ public class BoardController {
 	    
 	    if (noti == null) {noti = new ArrayList<>();}
 	    
-	    // 알림이 있을 경우 첫 번째 알림의 seqno 가져오기
-	    Long seqno = null;
-	    if (!noti.isEmpty()) {
-	        seqno = noti.get(0).getRequestEntity().getSeqno();
-	    }
-
-	    model.addAttribute("seqno", seqno);
 	    model.addAttribute("noti", noti);  // 알림 목록을 모델에 추가
 		
 	}
@@ -530,13 +510,6 @@ public class BoardController {
 	    
 	    if (noti == null) {noti = new ArrayList<>();}
 	    
-	    // 알림이 있을 경우 첫 번째 알림의 seqno 가져오기
-	    Long seqno = null;
-	    if (!noti.isEmpty()) {
-	        seqno = noti.get(0).getRequestEntity().getSeqno();
-	    }
-
-	    model.addAttribute("seqno", seqno);
 	    model.addAttribute("noti", noti);  // 알림 목록을 모델에 추가
 	
 	}
@@ -571,13 +544,6 @@ public class BoardController {
 		
 		if (noti == null) {noti = new ArrayList<>();}
 		
-		// 알림이 있을 경우 첫 번째 알림의 seqno 가져오기
-		Long seqnonoti = null;
-		if (!noti.isEmpty()) {
-		  seqnonoti = noti.get(0).getRequestEntity().getSeqno();
-		}
-		
-		model.addAttribute("seqno", seqnonoti);
 		model.addAttribute("noti", noti);  // 알림 목록을 모델에 추가
 
 	}
