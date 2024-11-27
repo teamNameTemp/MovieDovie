@@ -447,6 +447,7 @@ public class BoardController {
 		// 이메일로 회원 정보 가져오기
 		MemberDTO memberDTO = memberService.memberInfo(email);
 		model.addAttribute("nickname", memberDTO.getNickname());
+		model.addAttribute("member", memberDTO);
 
 		model.addAttribute("maxSeqno", (masterService.getMaxSeqno(email) != null ? masterService.getMaxSeqno(email) : 0) + 1);
 
@@ -501,6 +502,7 @@ public class BoardController {
 		// 이메일로 회원 정보 가져오기
 		MemberDTO memberDTO = memberService.memberInfo(email);
 		model.addAttribute("nickname", memberDTO.getNickname());
+		model.addAttribute("member", memberDTO);
 
 		PageUtil page = new PageUtil();
 
@@ -548,6 +550,7 @@ public class BoardController {
 		// 이메일로 회원 정보 가져오기
 		MemberDTO memberDTO = memberService.memberInfo(email);
 		model.addAttribute("nickname", memberDTO.getNickname());
+		model.addAttribute("member", memberDTO);
 
 		model.addAttribute("view", masterService.view(seqno));
 		model.addAttribute("status", masterService.statusCheck(seqno));
