@@ -39,7 +39,7 @@
               >
               <td th:text="${rent.title}"></td>
               <td
-                th:text="${#temporals.format(rent.returndate,'yyyy-MM-dd hh:mm')}"
+                th:text="${#temporals.format(rent.returndate,'yyyy-MM-dd HH:mm a')}"
               ></td>
             </tr>
           </tbody>
@@ -86,7 +86,7 @@
               />
               <div class="rental-info">
                 <p
-                  th:text="'반환 날짜 : ' + ${#temporals.format(rent.returndate,'yyyy-MM-dd hh:mm')}"
+                  th:text="'반환 날짜 : ' + ${#temporals.format(rent.returndate,'yyyy-MM-dd HH:mm')}"
                 ></p>
               </div>
             </a>

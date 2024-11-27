@@ -44,10 +44,10 @@ public class DataCalculate {
 
         switch (grade) {
             case "DIAMOND":
-                result = (int)(price * 0.05);
+                result = (int)(price * 0.1);
             break;
             case "PLATINUM":
-                result = (int)(price * 0.04);
+                result = (int)(price * 0.05);
             break;  
             case "GOLD":                    
                 result = (int)(price * 0.03);
@@ -67,23 +67,18 @@ public class DataCalculate {
     public static String calcGrade(int totalSales) {
         String grade = "BRONZE";
 
-        switch (totalSales) {
-            case 0:
-                grade = "BRONZE";
-            break;
-            case 2:
-                grade = "SILVER";
-            break;
-            case 3:
-                grade = "GOLD";
-            break;
-            case 4:
-                grade = "PLATINUM";
-            break;
-            default:
-                grade = "DIAMOND";
-            break;
-    }
+        //등급 계산
+        if(totalSales >= 50000) {
+            grade = "DIAMOND";
+        } else if(totalSales >= 30000) {
+            grade = "PLATINUM";
+        } else if(totalSales >= 10000) {
+            grade = "GOLD";
+        } else if(totalSales >= 5000) {
+            grade = "SILVER";
+        }   else{
+            grade = "BRONZE";
+        }
 
         return grade;
     }   
