@@ -10,7 +10,6 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.data.domain.Page;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
@@ -20,7 +19,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.server.ResponseStatusException;
 
 import com.board.dto.MemberDTO;
 import com.board.dto.ReplyInterface;
@@ -614,21 +612,14 @@ public class BoardController {
 		model.addAttribute("nickname", nickname);
 
 		if(keyword != null) {
-			List<Map<String,Object>> list = movie.findByKeywordMovieList(keyword);
-			model.addAttribute("movies",list);
-		}
-	}
-	
-	@PostMapping("/search/movies")
-	@ResponseBody
-	public List<Map<String,Object>> searchMovies(@RequestParam ("keyword") String keyword) {
-
-		try {
 			List<Map<String,Object>> movies = movie.findByKeywordMovieList(keyword);
-			return movies;
-		} catch (Exception e) {
-			log.error("Error fetching movies: ", e);
-			throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "영화 검색 중 오류 발생");
+			model.addAttribute("movies",movies);
+			List<Map<String,Object>> crews = movie.findByKeywordCrewList(keyword);
+			model.addAttribute("crews",crews);
+			List<Map<String,Object>> casts = movie.findByKeywordCastList(keyword);
+			model.addAttribute("casts",casts);
+			List<Map<String,Object>> companies = movie.findByKeywordProductionCompanyList(keyword);
+			model.addAttribute("companies",companies);
 		}
 	}
 }

@@ -13,12 +13,10 @@
     </title>
     <link rel="stylesheet" href="/css/searchResultStyle.css" />
     <div th:replace="~{/fragments/header::header}"></div>
-    <script src="/js/searchResult.js"></script>
     <script defer>
       const search = () => {
         const keyword = document.querySelector("#keyword");
-        document.location.href =
-          "/board/search?page=1&keyword=" + keyword.value;
+        document.location.href = "/board/search?keyword=" + keyword.value;
       };
 
       const press = () => {
@@ -46,6 +44,36 @@
               <img
                 th:src="@{${movie.posterPath} != null ? 'https://image.tmdb.org/t/p/original' + ${movie.posterPath} : '/images/blankPoster.jpg'}"
                 alt="${movie.title}"
+              />
+            </div>
+          </a>
+        </div>
+        <div th:each="crew : ${crews}">
+          <a th:href="@{/board/movieDetail(movieId=${crew.movie.movieId})}">
+            <div class="movie-card">
+              <img
+                th:src="@{${crew.profilePath} != null ? 'https://image.tmdb.org/t/p/original' + ${crew.profilePath} : '/images/blankPoster.jpg'}"
+                alt="${crew.name}"
+              />
+            </div>
+          </a>
+        </div>
+        <div th:each="cast : ${casts}">
+          <a th:href="@{/board/movieDetail(movieId=${cast.movie.movieId})}">
+            <div class="movie-card">
+              <img
+                th:src="@{${cast.profilePath} != null ? 'https://image.tmdb.org/t/p/original' + ${cast.profilePath} : '/images/blankPoster.jpg'}"
+                alt="${cast.name}"
+              />
+            </div>
+          </a>
+        </div>
+        <div th:each="company : ${companies}">
+          <a th:href="@{/board/movieDetail(movieId=${company.movie.movieId})}">
+            <div class="movie-card">
+              <img
+                th:src="@{${company.logoPath} != null ? 'https://image.tmdb.org/t/p/original' + ${company.logoPath} : '/images/blankPoster.jpg'}"
+                alt="${company.name}"
               />
             </div>
           </a>
