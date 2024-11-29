@@ -169,7 +169,11 @@
           </div>
           <div class="stat-card" data-type="bookmarks">
             <div class="stat-value">[[${#lists.size(bookmarks)}]]</div>
-            <div class="stat-label">찜한 콘텐츠</div>
+            <div class="stat-label">찜한 영화</div>
+          </div>
+          <div class="stat-card" data-type="pastRents">
+            <div class="stat-value">[[${#lists.size(pastRents)}]]</div>
+            <div class="stat-label">과거 대여했던 영화</div>
           </div>
         </div>
       </div>
@@ -236,6 +240,25 @@
                 style="cursor: pointer"
               >
                 <td th:text="${bookmark.title}"></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+         <!-- 과거 대여 콘텐츠 목록 -->
+         <div class="activity-list" id="pastRentsList">
+          <table>
+            <thead>
+              <tr>
+                <th>영화 제목</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr
+                th:each="pastRent : ${pastRents}"
+                th:onclick="|location.href='@{/board/movieDetail(movieId=${pastRent.id})}'|"
+                style="cursor: pointer"
+              >
+                <td th:text="${pastRent.title}"></td>
               </tr>
             </tbody>
           </table>
@@ -347,7 +370,8 @@ window.onload = () => {
           const titles = {
             watches: "시청한 영화",
             likes: "좋아요한 영화",
-            bookmarks: "찜한 콘텐츠",
+            bookmarks: "찜한 영화",
+            pastRents: "과거 대여했던 영화",
           };
 
           modalTitle.textContent = titles[type];
