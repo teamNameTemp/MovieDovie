@@ -9,4 +9,6 @@ import com.board.entity.movie.MovieEntity;
 
 public interface CrewRepository extends JpaRepository<CrewEntity, Long> {
 	public List<CrewEntity> findByMovieId(MovieEntity entity);
+
+    public List<CrewEntity> findByCrewNmContainingIgnoreCase(String keyword);
 }

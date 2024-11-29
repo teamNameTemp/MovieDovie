@@ -22,6 +22,15 @@ public interface MovieAPIService {
 	//키워드로 DB에 저장되어 있는 영화가져오기
 	public List<Map<String,Object>> findByKeywordMovieList(String keyword);
 	
+	//키워드로 DB에 저장되어 있는 크루가져오기
+	public List<Map<String,Object>> findByKeywordCrewList(String keyword);
+
+	//키워드로 DB에 저장되어 있는 캐스트가져오기
+	public List<Map<String,Object>> findByKeywordCastList(String keyword);
+
+	//키워드로 DB에 저장되어 있는 제작사가져오기
+	public List<Map<String,Object>> findByKeywordProductionCompanyList(String keyword);
+	
 	public int clickToMovie(Long movieId);
 	
 	//저장 및 업데이트

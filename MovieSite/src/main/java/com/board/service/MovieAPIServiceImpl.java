@@ -337,5 +337,64 @@ public class MovieAPIServiceImpl implements MovieAPIService {
 
 		this.mapperListSave(movie);
 	}
+
+	@Override
+	public List<Map<String, Object>> findByKeywordCrewList(String keyword) {
+		List<Map<String,Object>> data = new ArrayList<>();
+		
+		List<CrewEntity> entityList = crewRepository.findByCrewNmContainingIgnoreCase(keyword);
+		if(entityList == null) return data;
+		
+		for(CrewEntity entity : entityList) {
+			Map<String,Object> crew = new HashMap<>();
+			crew.put("id", entity.getCrewId());
+			crew.put("name",entity.getCrewNm());
+			crew.put("profilePath", entity.getProfilePath());
+			crew.put("movie",entity.getMovieId());
+			data.add(crew);
+		}
+		
+		return data;	
+	}
+
+	@Override
+	public List<Map<String, Object>> findByKeywordProductionCompanyList(String keyword) {
+		List<Map<String,Object>> data = new ArrayList<>();
+		
+		List<CompanyEntity> entityList = companyRepository.findByCompanyNmContainingIgnoreCase(keyword);
+		if(entityList == null) return data;
+		
+		for(CompanyEntity entity : entityList) {
+			Map<String,Object> company = new HashMap<>();
+			company.put("id", entity.getCompanyId());
+			company.put("name", entity.getCompanyNm());
+			company.put("logoPath", entity.getLogoPath());
+			company.put("originCountry", entity.getOriginCountry());
+			company.put("movie",entity.getMovieId());
+			data.add(company);
+		}
+		
+		return data;	
+	}
+
+	@Override
+	public List<Map<String, Object>> findByKeywordCastList(String keyword) {
+		List<Map<String,Object>> data = new ArrayList<>();
+		
+		List<CastEntity> entityList = castRepository.findByCastNmContainingIgnoreCase(keyword);
+		if(entityList == null) return data;
+		
+		for(CastEntity entity : entityList) {
+			Map<String,Object> cast = new HashMap<>();
+			cast.put("id", entity.getCastId());
+			cast.put("name", entity.getCastNm());
+			cast.put("character", entity.getCharacterNm());
+			cast.put("profilePath", entity.getProfilePath());
+			cast.put("movie",entity.getMovieId());
+			data.add(cast);
+		}
+		
+		return data;	
+	}
 	
 }

@@ -9,4 +9,6 @@ import com.board.entity.movie.MovieEntity;
 
 public interface CastRepository extends JpaRepository<CastEntity, Long> {
 	public List<CastEntity> findByMovieId(MovieEntity entity);
+
+    public List<CastEntity> findByCastNmContainingIgnoreCase(String keyword);
 }
