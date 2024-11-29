@@ -165,7 +165,9 @@ public class BoardController {
 		//좋아요
 		List<Map<String,Object>> likes = like.getAllLikeByEmail(email);
 		model.addAttribute("likes",likes);
-
+		//과거 대여
+		List<Map<String,Object>> pastRents = rent.getAllMyRent(email, "N");
+		model.addAttribute("pastRents",pastRents);
 
 		//누적 결제 금액
 		Long accumulatedPayment = rent.getMyAccumulatedPayment(email);
