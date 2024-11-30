@@ -194,7 +194,7 @@ public class RentServiceImpl implements RentService {
 		MemberEntity memE = memberRepository.findById(email)
 				.orElseThrow(() -> new RuntimeException("Member not found " + email));
 	
-		List<RentEntity> list = rentRepository.findAllByEmailAndStatus(memE, "Y");
+		List<RentEntity> list = rentRepository.findAllByEmailAndStatus(memE, status);
 		for(RentEntity rent : list) {
 			Map<String,Object> map = new HashMap<>();
 			

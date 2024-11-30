@@ -165,6 +165,7 @@ public class BoardController {
 		model.addAttribute("likes",likes);
 		//과거 대여
 		List<Map<String,Object>> pastRents = rent.getAllMyRent(email, "N");
+		log.info("pastRents : {}",pastRents);
 		model.addAttribute("pastRents",pastRents);
 
 		//누적 결제 금액
