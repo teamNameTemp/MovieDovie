@@ -50,4 +50,7 @@ public interface RentService {
 	
 	//매일 자정 확인하여 대여가 하루 남은 사람에게 알림 보내기
 	public void autoNotiBeforeReturn();
+	
+	//다음달 회원 등급 확인 위한 이번달 합계
+	public int getThisMonthSales(String email);
 }

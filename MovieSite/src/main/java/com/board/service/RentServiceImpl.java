@@ -257,4 +257,9 @@ public class RentServiceImpl implements RentService {
 		return rentRepository.getYTDSalesByGenre();
 	}
 	
+	//다음달 회원 등급 확인 위한 이번달 합계
+	@Override
+	public int getThisMonthSales(String email) {
+		return rentRepository.getThisMonthSales(email);
+	}
 }
