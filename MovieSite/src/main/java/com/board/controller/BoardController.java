@@ -73,6 +73,7 @@ public class BoardController {
    private final BookmarkService bookmark;
    private final RentService rent;
    private final NotificationService notificationService;
+   private final MileageService mileageService;
 
    @GetMapping("/test")
    public void getTest() {}
@@ -162,29 +163,33 @@ public class BoardController {
    @GetMapping("/mypage")
    public void getMyPage(Model model, HttpSession session) {
 
-      //세션정보
-      String email = (String) session.getAttribute("email");
-      String nickname = (String) session.getAttribute("nickname");
+		//세션정보
+		String email = (String) session.getAttribute("email");
+		String nickname = (String) session.getAttribute("nickname");
 
-      MemberDTO memberInfo = memberService.memberInfo(email);
-      model.addAttribute("nickname",nickname);
-      model.addAttribute("member",memberInfo);
-      
-      //대여
-      List<Map<String,Object>> rents = rent.getAllMyRent(email, "Y");
-      model.addAttribute("rents",rents);
-      //북마크
-      List<Map<String,Object>> bookmarks = bookmark.getAllBookmarkByEmail(email);
-      model.addAttribute("bookmarks",bookmarks);
-      //시청
-      List<Map<String,Object>> watches = watch.getAllWatchedByEmail(email);
-      model.addAttribute("watches",watches);
-      //좋아요
-      List<Map<String,Object>> likes = like.getAllLikeByEmail(email);
-      model.addAttribute("likes",likes);
-
-	   // 숫자 포맷터 설정 (쉼표 추가)
-      NumberFormat numberFormat = NumberFormat.getInstance(Locale.US);
+		MemberDTO memberInfo = memberService.memberInfo(email);
+		model.addAttribute("nickname",nickname);
+		model.addAttribute("member",memberInfo);
+		
+		//대여
+		List<Map<String,Object>> rents = rent.getAllMyRent(email, "Y");
+		model.addAttribute("rents",rents);
+		//북마크
+		List<Map<String,Object>> bookmarks = bookmark.getAllBookmarkByEmail(email);
+		model.addAttribute("bookmarks",bookmarks);
+		//시청
+		List<Map<String,Object>> watches = watch.getAllWatchedByEmail(email);
+		model.addAttribute("watches",watches);
+		//좋아요
+		List<Map<String,Object>> likes = like.getAllLikeByEmail(email);
+		model.addAttribute("likes",likes);
+		//과거 대여
+		List<Map<String,Object>> pastRents = rent.getAllMyRent(email, "N");
+		log.info("pastRents : {}",pastRents);
+		model.addAttribute("pastRents",pastRents);
+		
+		// 숫자 포맷터 설정 (쉼표 추가)
+		NumberFormat numberFormat = NumberFormat.getInstance(Locale.US);
 
       
       //누적 결제 금액

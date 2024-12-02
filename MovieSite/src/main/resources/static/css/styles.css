@@ -627,6 +627,15 @@ tr:hover {
   margin-top: 5px;
 }
 
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-thumb {
+  background-color: gray;
+  border-radius: 10px;
+}
+
 @media (max-width: 740px) {
   .footer-links {
     grid-template-columns: repeat(2, 1fr);
