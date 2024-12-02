@@ -50,6 +50,11 @@ public class MemberController {
 	private final FavGenreServiceImpl favGenre;
 	private final MailService mailService;
 
+@GetMapping("/loginTitle")
+public void getTitle(){
+
+}
+
 	//로그인 화면 보기
 	@GetMapping("/login")
 	public void getLogin() { }
