@@ -35,6 +35,9 @@
 						                <th:block th:if="${#strings.equals(noti.notitype, 'rent')}">
 						                    <img class="noti-icon" src="/images/img/noti_rent.png" alt="">
 						                </th:block>
+						                <th:block th:if="${#strings.equals(noti.notitype, 'grade')}">
+						                    <img class="noti-icon" src="/images/img/noti_grade.png" alt="">
+						                </th:block>
 						                <div class="noti-text">
 						                	<th:block th:if="${#strings.equals(noti.notitype, 'reply') or #strings.equals(noti.notitype, 'completed')}">
 							                    <a th:href="@{'/board/requestView?seqno=' + ${noti.requestEntity.getSeqno()} + '&page=1'}">
@@ -42,7 +45,7 @@
 							                        <span class="noti-date" th:text="${#temporals.format(noti.created_at, 'yyyy-MM-dd HH:mm:ss')}"></span>
 							                    </a>
 							                </th:block>
-							                <th:block th:if="${#strings.equals(noti.notitype, 'rent')}">
+							                <th:block th:if="${#strings.equals(noti.notitype, 'rent') or #strings.equals(noti.notitype, 'grade')}">
 							                	<a href="/board/mypage">
 							                        <b><span class="noti-content" th:text="${noti.content}"></span></b>
 							                    </a>
@@ -63,6 +66,9 @@
 						                <th:block th:if="${#strings.equals(noti.notitype, 'rent')}">
 						                    <img class="noti-icon" src="/images/img/noti_rent_read.png" alt="">
 						                </th:block>
+						                <th:block th:if="${#strings.equals(noti.notitype, 'grade')}">
+						                    <img class="noti-icon" src="/images/img/noti_grade_read.png" alt="">
+						                </th:block>
 						                <div class="noti-text">
 						                	<th:block th:if="${#strings.equals(noti.notitype, 'reply') or #strings.equals(noti.notitype, 'completed')}">
 							                    <a th:href="@{'/board/requestView?seqno=' + ${noti.requestEntity.getSeqno()} + '&page=1'}">
@@ -70,7 +76,7 @@
 							                        <span class="noti-date-read" th:text="${#temporals.format(noti.created_at, 'yyyy-MM-dd HH:mm')}"></span>
 							                    </a>
 							                </th:block>
-							                <th:block th:if="${#strings.equals(noti.notitype, 'rent')}">
+							                <th:block th:if="${#strings.equals(noti.notitype, 'rent') or #strings.equals(noti.notitype, 'grade')}">
 							                	<a href="/board/mypage">
 							                        <b><span class="noti-content-read" th:text="${noti.content}"></span></b>
 							                    </a>
