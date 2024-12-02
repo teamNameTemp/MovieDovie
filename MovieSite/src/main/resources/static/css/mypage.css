@@ -62,6 +62,11 @@ body {
   object-fit: cover;
 }
 
+.grade-icon {
+    height: 47.2px;
+    vertical-align: middle; /* 텍스트와 수직 정렬 */
+}
+
 .edit-overlay {
   position: absolute;
   top: 0;

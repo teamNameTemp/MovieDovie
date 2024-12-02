@@ -158,5 +158,11 @@ public interface RentRepository extends JpaRepository<RentEntity, Long>{
     //반납일이 현재 시간과 24시간 후 사이인 대여 항목
     public List<RentEntity> findAllByStatusAndReturndateBetween(String string, LocalDateTime now, LocalDateTime tomorrow);
      
+    
+    //다음달 회원 등급 확인 위한 이번달 합계
+    @Query("SELECT COALESCE(SUM(r.sales), 0) FROM rent r WHERE r.email.email = :email " +
+    	       "AND EXTRACT(YEAR FROM r.rentdate) = EXTRACT(YEAR FROM CURRENT_DATE) " +
+    	       "AND EXTRACT(MONTH FROM r.rentdate) = EXTRACT(MONTH FROM CURRENT_DATE)")
+    public int getThisMonthSales(@Param("email") String email);
      
 }

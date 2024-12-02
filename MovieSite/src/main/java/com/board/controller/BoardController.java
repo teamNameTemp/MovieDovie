@@ -1,10 +1,12 @@
 package com.board.controller;
 
+import java.text.NumberFormat;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -166,18 +168,57 @@ public class BoardController {
       List<Map<String,Object>> likes = like.getAllLikeByEmail(email);
       model.addAttribute("likes",likes);
 
+	   // 숫자 포맷터 설정 (쉼표 추가)
+      NumberFormat numberFormat = NumberFormat.getInstance(Locale.US);
 
+      
       //누적 결제 금액
       Long accumulatedPayment = rent.getMyAccumulatedPayment(email);
-      model.addAttribute("accumulatedPayment",accumulatedPayment);
+      model.addAttribute("accumulatedPayment", numberFormat.format(accumulatedPayment));
+      
       
       // 등급 변경일까지 얼마 남았는지?
-        LocalDate today = LocalDate.now();
-        LocalDate nextMonth = today.plusMonths(1).withDayOfMonth(1); // 다음 달의 1일 계산
-        long daysUntilFirstOfMonth = ChronoUnit.DAYS.between(today, nextMonth); // 현재 날짜와 다음 달 1일 사이의 일수 계산
+      LocalDate today = LocalDate.now();
+      LocalDate nextMonth = today.plusMonths(1).withDayOfMonth(1); // 다음 달의 1일 계산
+      long daysUntilFirstOfMonth = ChronoUnit.DAYS.between(today, nextMonth); // 현재 날짜와 다음 달 1일 사이의 일수 계산
       model.addAttribute("daysUntilFirstOfMonth", daysUntilFirstOfMonth);
       model.addAttribute("nextMonth", nextMonth);
 
+      // 등급 배열 (순서 중요)
+      String[] TIERS = {"BRONZE", "SILVER", "GOLD", "PLATINUM", "DIAMOND"};
+      int[] SALES_THRESHOLDS = {0, 5000, 10000, 30000, 50000};
+      
+	  int thisMonthSales = rent.getThisMonthSales(email);
+      
+       // 등급 및 업그레이드 조건 정의
+	   String nextTier = TIERS[0]; // 기본 등급: BRONZE
+	   int additionalAmount = 0;
+	   String upgradeMessage = "";
+	
+	   
+	   // 현재 매출에 따른 등급 계산
+	   for (int i = SALES_THRESHOLDS.length - 1; i >= 0; i--) {
+	       if (thisMonthSales >= SALES_THRESHOLDS[i]) {
+	           nextTier = TIERS[i];
+	           if (i < TIERS.length - 1) { // 한 단계 더 높은 등급 확인
+	               int nextTierThreshold = SALES_THRESHOLDS[i + 1];
+	               additionalAmount = nextTierThreshold - thisMonthSales;
+	               upgradeMessage = String.format(
+	                   "%s원 결제 시, %s 등급이 됩니다!",
+	                   numberFormat.format(additionalAmount), TIERS[i + 1]
+	               );
+	           }
+	           break;
+	       }
+	   }
+
+
+      model.addAttribute("currentSales", numberFormat.format(thisMonthSales));
+      model.addAttribute("nextTier", nextTier);
+      model.addAttribute("additionalAmount", numberFormat.format(additionalAmount));
+      model.addAttribute("upgradeMessage", upgradeMessage);
+
+      
       /////////////////// 알람 처리 ///////////////////
       model.addAttribute("email", email);
       
@@ -629,4 +670,6 @@ public class BoardController {
          throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "영화 검색 중 오류 발생");
       }
    }
+   
+  
 }
