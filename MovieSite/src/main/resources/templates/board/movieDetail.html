@@ -93,6 +93,7 @@
           <br />
           <button
             class="rent-btn"
+            th:data-price="${movie.info.price}"
             th:text="${rent != null and 'Y' == rent['status']} ? '대여 중' : '대여하기 (' + ${movie.info.price} + '원)'"
             th:disabled="${rent != null and 'Y' == rent['status']}"
             th:classappend="${rent != null and 'Y' == rent['status']} ? 'disabled' : ''"

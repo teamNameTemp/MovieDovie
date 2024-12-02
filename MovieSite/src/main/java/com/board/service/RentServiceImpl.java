@@ -14,12 +14,15 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.board.entity.MemberEntity;
+import com.board.entity.MileageLogEntity;
 import com.board.entity.RentEntity;
 import com.board.entity.movie.MovieEntity;
 import com.board.entity.repository.MemberRepository;
+import com.board.entity.repository.MileageLogRepository;
 import com.board.entity.repository.NotificationRepository;
 import com.board.entity.repository.RentRepository;
 import com.board.entity.repository.movie.MovieRepository;
+import com.board.util.DataCalculate;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -34,7 +37,7 @@ public class RentServiceImpl implements RentService {
 	private final MemberRepository memberRepository;
 	private final NotificationRepository notificationRepository;
 	private final NotificationService notificationService;
-
+	private final MileageLogRepository mileageLogRepository;
 	@Override
 	public void updateRent(String email, Long movieId) {
 		MemberEntity memE = memberRepository.findById(email)
@@ -57,7 +60,7 @@ public class RentServiceImpl implements RentService {
 	// 영화 대여 시작
 	@Transactional
 	@Override
-	public String rentMovie(String email, Long movieId) {
+	public String rentMovie(String email, Long movieId, String paymentMethod) {
 		String result = "rent";
 		MemberEntity memE = memberRepository.findById(email)
 				.orElseThrow(() -> new RuntimeException("Member not found " + email));
@@ -65,21 +68,43 @@ public class RentServiceImpl implements RentService {
 				.orElseThrow(() -> new RuntimeException("Movie not found " + movieId));
 
 		RentEntity rent = rentRepository.findByEmailAndMovieIdAndStatus(memE, movieE, "Y");
-
 		// 대여 할 시
 		if (rent == null) {
 
-			//rent.payment에따라 포인트/결제 처리
-			//등급에 따른 마일리지 추가
-			//1.포인트계산
-			// int mileage = calc.calcMileage(memE.getGrade(), movieE.getPrice());
-			// memE.setPoint(memE.getPoint() - movieE.getPrice());
-			// memE.setMileage(memE.getMileage() + mileage);
-			//2.결제 처리
+			if(paymentMethod.equals("mileage")) {
+				memE.setPoint(memE.getPoint() - movieE.getPrice());
+
+				MileageLogEntity mileageLog = MileageLogEntity.builder()
+												.email(memE.getEmail())
+												.title("마일리지 사용 : " + movieE.getTitle())
+												.paymentType("mileage")
+												.amount(movieE.getPrice())
+												.createdAt(LocalDateTime.now())
+												.build();
+				mileageLogRepository.save(mileageLog);
+
+			}else if(paymentMethod.equals("cash")) {
+				int mileage = DataCalculate.calcMileage(memE.getGrade(), movieE.getPrice());
+				memE.setPoint(memE.getPoint() + mileage);
+
+				MileageLogEntity mileageLog = MileageLogEntity.builder()
+												.email(memE.getEmail())
+												.title("마일리지 적립 : " + movieE.getTitle())	
+												.paymentType("cash")
+												.amount(mileage)
+												.createdAt(LocalDateTime.now())
+												.build();
+				mileageLogRepository.save(mileageLog);
+			}
 			
-			rent = RentEntity.builder().rentdate(LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES))
+			rent = RentEntity.builder()
+			.rentdate(LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES))
 					.returndate(LocalDateTime.now().plus(3, ChronoUnit.DAYS).truncatedTo(ChronoUnit.MINUTES))
-					.status("Y").sales(movieE.getPrice()).email(memE).movieId(movieE).build();
+					.status("Y")
+					.sales(movieE.getPrice())
+					.email(memE)
+					.movieId(movieE)
+					.build();
 			rentRepository.save(rent);
 		} else {
 			// 이미 대여 중

@@ -12,7 +12,7 @@ public interface RentService {
 	public List<Map<String,Object>> getAllMyRent(String email, String status);
 	public void updateRent(String email, Long movieId);
 	//영화 대여 시작
-	public String rentMovie(String email, Long movieId);
+	public String rentMovie(String email, Long movieId, String paymentMethod);
 	
 	//나의 대여 정보
 	public Map<String,Object> getMyRentInfo(String email, Long movieId);
