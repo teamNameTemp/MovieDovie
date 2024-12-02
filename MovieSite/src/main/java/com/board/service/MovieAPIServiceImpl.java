@@ -13,6 +13,7 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
+import com.board.dto.MemberDTO;
 import com.board.dto.movie.MovieDTO;
 import com.board.entity.movie.CastEntity;
 import com.board.entity.movie.CompanyEntity;
@@ -55,8 +56,8 @@ public class MovieAPIServiceImpl implements MovieAPIService {
 	private final LanguageRepository languageRepository;
 	private final VideoRepository videoRepository;
 	private final ImageRepository imageRepository;
-	private final MovieMapper mapper;
 	private final WeeklyTrendRepository weeklyTrendRepository;
+	private final MovieMapper mapper;
 	
 	//매주 월요일 0시 0분 0초에 트렌드 영화 업데이트 및 저장
 	@Scheduled(cron = "0 0 0 * * MON")
@@ -101,7 +102,7 @@ public class MovieAPIServiceImpl implements MovieAPIService {
 		}
 	}
 
-	public List<Map<String, Object>> getWeeklyTrend() {
+	public List<Map<String, Object>> getWeeklyTrend(MemberDTO memberDTO) {
 		LocalDateTime now = LocalDateTime.now();
 		List<WeeklyTrendEntity> list = 
 		weeklyTrendRepository.findByYearAndMonthAndMonthOfWeek(now.getYear(), now.getMonthValue(), DataCalculate.getWeekOfMonth(now));
@@ -109,12 +110,14 @@ public class MovieAPIServiceImpl implements MovieAPIService {
 		List<Map<String, Object>> data = new ArrayList<>();
 		for(WeeklyTrendEntity w : list) {
 			Map<String, Object> map = mapper.getMovieSimpleInfo(w.getMovieId());
-			data.add(map);
+			int age = DataCalculate.calcAge(memberDTO.getBirthdate());
+			if(DataCalculate.calcIsAdult((String)map.get("certification"), age)) {
+				data.add(map);
+			}
 		}
-		
 		return data;
-
 	}
+
 	//매일 대여 가격 업데이트
 	@Scheduled(cron = "0 0 0 * * ?")
 	@Transactional
@@ -136,8 +139,9 @@ public class MovieAPIServiceImpl implements MovieAPIService {
 	
 	//DB에 저장되있는거 가져오기
 	@Override
-	public Map<String, Object> getMovieDetails(Long id) {
+	public Map<String, Object> getMovieDetails(Long id,MemberDTO memberDTO) {
 		return movieRepository.findById(id)
+			.filter(movie -> DataCalculate.calcIsAdult(movie.getCertification(), DataCalculate.calcAge(memberDTO.getBirthdate())))
 			.map(movie -> {
 				Map<String, Object> data = new HashMap<>();
 				data.put("info", movie);
@@ -154,6 +158,7 @@ public class MovieAPIServiceImpl implements MovieAPIService {
 			})
 			.orElseThrow(() -> new RuntimeException("Movie not found with id: " + id));
 	}
+
 	@Override
 	public List<GenreEntity> getGenreList(String genre){
 		List<GenreEntity> genres = genreRepository.findByGenreNm(genre).stream().limit(20).toList();
@@ -164,7 +169,7 @@ public class MovieAPIServiceImpl implements MovieAPIService {
 	
 	//같은 장르의 영화리스트 가져오기
 	@Override
-	public List<Map<String,Object>> findByGenreGetMovieList(List<GenreEntity> genres,int age){
+	public List<Map<String,Object>> findByGenreGetMovieList(List<GenreEntity> genres,int age,MemberDTO memberDTO){
 		List<Map<String,Object>> data = new ArrayList<>();
 		
 		for(GenreEntity genre : genres) {
@@ -182,7 +187,7 @@ public class MovieAPIServiceImpl implements MovieAPIService {
 	}
 	
 	@Override
-	public List<Map<String,Object>> getDirectUploadList(int minusDay){
+	public List<Map<String,Object>> getDirectUploadList(int minusDay,MemberDTO memberDTO){
 		List<Map<String,Object>> data = new ArrayList<>();
 		
 		//7일전까지의 업로드 리스트 가져오기
@@ -192,9 +197,12 @@ public class MovieAPIServiceImpl implements MovieAPIService {
 		List<MovieEntity> list = movieRepository.findAllByDirectUpload(start, end);
 		
 		for(MovieEntity m : list) {
-			Map<String,Object> map = new HashMap<>();
-			map.put("info", mapper.getMovieSimpleInfo(m));
-			data.add(map);
+			Map<String,Object> map = mapper.getMovieSimpleInfo(m);
+			int age = DataCalculate.calcAge(memberDTO.getBirthdate());
+			if(DataCalculate.calcIsAdult((String)map.get("certification"), age)) {
+				map.put("info", map);
+				data.add(map);
+			}
 		}
 		
 		
@@ -326,7 +334,7 @@ public class MovieAPIServiceImpl implements MovieAPIService {
 	}
 
 	@Override
-	public List<Map<String, Object>> findByKeywordMovieList(String keyword) {
+	public List<Map<String, Object>> findByKeywordMovieList(String keyword,MemberDTO memberDTO) {
 		List<Map<String,Object>> data = new ArrayList<>();
 		
 		List<MovieEntity> entityList = movieRepository.findByTitleContainingIgnoreCase(keyword);
@@ -334,8 +342,11 @@ public class MovieAPIServiceImpl implements MovieAPIService {
 		
 		for(MovieEntity entity : entityList) {
 			Map<String,Object> movie = mapper.getMovieSimpleInfo(entity);
-			movie.put("genre", genreRepository.findByMovieId(entity));
-			data.add(movie);
+			int age = DataCalculate.calcAge(memberDTO.getBirthdate());
+			if(DataCalculate.calcIsAdult((String)movie.get("certification"), age)) {
+				movie.put("genre", genreRepository.findByMovieId(entity));
+				data.add(movie);
+			}
 		}
 		
 		return data;
@@ -370,7 +381,7 @@ public class MovieAPIServiceImpl implements MovieAPIService {
 	}
 
 	@Override
-	public List<Map<String, Object>> findByKeywordCrewList(String keyword) {
+	public List<Map<String, Object>> findByKeywordCrewList(String keyword,MemberDTO memberDTO) {
 		List<Map<String,Object>> data = new ArrayList<>();
 		
 		List<CrewEntity> entityList = crewRepository.findByCrewNmContainingIgnoreCase(keyword);
@@ -383,11 +394,11 @@ public class MovieAPIServiceImpl implements MovieAPIService {
 			crew.put("profilePath", entity.getProfilePath());
 			crew.put("movie",entity.getMovieId());
 			return crew;
-		});
+		}, memberDTO);
 	}
 
 	@Override
-	public List<Map<String, Object>> findByKeywordProductionCompanyList(String keyword) {
+	public List<Map<String, Object>> findByKeywordProductionCompanyList(String keyword,MemberDTO memberDTO) {
 		List<Map<String,Object>> data = new ArrayList<>();
 		
 		List<CompanyEntity> entityList = companyRepository.findByCompanyNmContainingIgnoreCase(keyword);
@@ -401,22 +412,24 @@ public class MovieAPIServiceImpl implements MovieAPIService {
 			company.put("originCountry", entity.getOriginCountry());
 			company.put("movie",entity.getMovieId());
 			return company;
-		});
+		}, memberDTO);
 	}
 
 	private <T> List<Map<String, Object>> searchEntities(
 		List<T> entities, 
-		Function<T, Map<String, Object>> mapper) {
+		Function<T, Map<String, Object>> mapper,
+		MemberDTO memberDTO) {
 		
 		if (entities == null) return new ArrayList<>();
 		
 		return entities.stream()
 			.map(mapper)
+			.filter(map -> DataCalculate.calcIsAdult((String)map.get("certification"), DataCalculate.calcAge(memberDTO.getBirthdate())))
 			.collect(Collectors.toList());
 	}
 
 	@Override
-	public List<Map<String, Object>> findByKeywordCastList(String keyword) {
+	public List<Map<String, Object>> findByKeywordCastList(String keyword,MemberDTO memberDTO) {
 		List<CastEntity> entityList = castRepository.findByCastNmContainingIgnoreCase(keyword);
 		return searchEntities(entityList, entity -> {
 			Map<String, Object> cast = new HashMap<>();
@@ -426,7 +439,7 @@ public class MovieAPIServiceImpl implements MovieAPIService {
 			cast.put("profilePath", entity.getProfilePath());
 			cast.put("movie", entity.getMovieId());
 			return cast;
-		});
+		}, memberDTO);
 	}
 	
 }

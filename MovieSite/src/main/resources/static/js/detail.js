@@ -217,12 +217,12 @@ document.addEventListener("DOMContentLoaded", () => {
         
         if (rentData.message === "good") {
           const successMessage = paymentMethod === "mileage"
-            ? `영화가 성공적으로 대여되었습니다!\n차감된 마일리지: ${price}P\n남은 마일리지: ${mileageData.mileage - price}P`
+            ? `영화가 성공적으로 대여되었습니다!<br><br>· 사용한 포인트: ${price}P<br>· 남은 포인트: ${mileageData.mileage - price}P`
             : "영화가 성공적으로 대여되었습니다!";
             
           await Swal.fire({
             title: "결제 완료",
-            text: successMessage,
+            html: successMessage,
             icon: "success"
           });
           

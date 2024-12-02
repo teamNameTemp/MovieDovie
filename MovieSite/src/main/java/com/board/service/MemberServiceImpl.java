@@ -72,6 +72,7 @@ public class MemberServiceImpl implements MemberService {
 	//회원 기본 정보 수정
 	public void modifyMemberInfo(MemberDTO member) {
 		MemberEntity memberEntity = memberRepository.findById(member.getEmail()).get();
+		
 		memberEntity.updateMemberInfo(member);
 		memberRepository.save(memberEntity);
 	}
