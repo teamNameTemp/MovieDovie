@@ -199,7 +199,7 @@ public class MovieAPIServiceImpl implements MovieAPIService {
 		for(MovieEntity m : list) {
 			Map<String,Object> map = mapper.getMovieSimpleInfo(m);
 			int age = DataCalculate.calcAge(memberDTO.getBirthdate());
-			if(DataCalculate.calcIsAdult(map.get("certification").toString(), age)) {
+			if(DataCalculate.calcIsAdult((String)map.get("certification"), age)) {
 				map.put("info", map);
 				data.add(map);
 			}
