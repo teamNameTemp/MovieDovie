@@ -35,39 +35,7 @@
 </style>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.2/rollups/aes.js"></script>
-<script defer>
-// 로그인 창 타이틀
-const shortText = 'DOVIE';
-const longText = ['Digital', 'Online', 'Vault of', 'Immersive', 'Entertainment'];
-const element = document.getElementById('expandable-text');
-const main = document.getElementById('main');
 
-function expand() {
-  document.querySelectorAll('.letter').forEach((span, index) => {
-    if (index == 4)
-      span.style.marginLeft = '0px';
-    else
-      span.style.marginLeft = '10px';
-
-    span.dataset.long = longText[index] || '';
-    span.style.width = span.dataset.long.length + 'ch';
-    span.textContent = span.dataset.long || span.textContent;
-  });
-}
-
-function shrink() {
-  document.querySelectorAll('.letter').forEach((span, index) => {
-    span.style.width = '1ch';
-    span.style.marginLeft = '0px';
-    span.textContent = shortText[index];
-  });
-}
-
-element.addEventListener('mouseenter', expand);
-element.addEventListener('mouseleave', shrink);
-
-
-</script>
 
 <body>
 <!-- 로그인 창 타이틀 -->
@@ -80,4 +48,37 @@ element.addEventListener('mouseleave', shrink);
         <span class="letter">E</span>
     </a>   
 </div>
+<script defer>
+  // 로그인 창 타이틀
+  const shortText = 'DOVIE';
+  const longText = ['Digital', 'Online', 'Vault of', 'Immersive', 'Entertainment'];
+  const element = document.getElementById('expandable-text');
+  const main = document.getElementById('main');
+  
+  function expand() {
+    document.querySelectorAll('.letter').forEach((span, index) => {
+      if (index == 4)
+        span.style.marginLeft = '0px';
+      else
+        span.style.marginLeft = '10px';
+  
+      span.dataset.long = longText[index] || '';
+      span.style.width = span.dataset.long.length + 'ch';
+      span.textContent = span.dataset.long || span.textContent;
+    });
+  }
+  
+  function shrink() {
+    document.querySelectorAll('.letter').forEach((span, index) => {
+      span.style.width = '1ch';
+      span.style.marginLeft = '0px';
+      span.textContent = shortText[index];
+    });
+  }
+  
+  element.addEventListener('mouseenter', expand);
+  element.addEventListener('mouseleave', shrink);
+  
+  
+  </script>
 </html>
