@@ -62,10 +62,36 @@
 					</div>
           </div>
           <div class="profile-info">
-            <h1>[[${member.username}]]<span th:text="' (' + ${member.grade} + ')'" style="font-size:25px; color: #999;" ></span></h1><br>
-            <span class="membership-date">· 회원 가입일 : [[${#temporals.format(member.regdate, 'yyyy년 MM월 dd일')}]]</span>
-            <span class="membership-date">· 등급 변경일 : [[${nextMonth}]] (다음 등급 변경일까지 [[${daysUntilFirstOfMonth}]]일 남았습니다!)</span>
             
+            
+            <h1 style="display: flex; align-items: center;">
+	            <th:block th:if="${#strings.equals(member.grade, 'BRONZE')}">
+	                <img class="grade-icon" src="/images/img/bronze.png" alt="">
+	            </th:block>
+	            <th:block th:if="${#strings.equals(member.grade, 'SILVER')}">
+	                <img class="grade-icon" src="/images/img/silver.png" alt="">
+	            </th:block>
+	            <th:block th:if="${#strings.equals(member.grade, 'GOLD')}">
+	                <img class="grade-icon" src="/images/img/gold.png" alt="">
+	            </th:block>
+	            <th:block th:if="${#strings.equals(member.grade, 'PLATINUM')}">
+	                <img class="grade-icon" src="/images/img/platinum.png" alt="">
+	            </th:block>
+	            <th:block th:if="${#strings.equals(member.grade, 'DIAMOND')}">
+	                <img class="grade-icon" src="/images/img/diamond.png" alt="">
+	            </th:block>
+	            <span th:text="${member.nickname}" style="font-size: 35px; margin: 0; display: inline-block;"></span>&nbsp;
+	            <span th:text="'(' + ${member.grade} + ' 등급)'" style="font-size:25px; color: #999; display: inline-block;" ></span>
+            </h1>
+            
+            <br>
+            <span class="membership-date">· 회원 가입일 : [[${#temporals.format(member.regdate, 'yyyy년 MM월 dd일')}]]</span>
+            <th:block th:if="${#strings.equals(nextTier, 'DIAMOND')}">
+            	<span class="membership-date">· 다음 달 예정 등급 : [[${nextTier}]] (최고 등급입니다!)</span>
+            </th:block>
+            <th:block th:else>
+            	<span class="membership-date">· 다음 달 예정 등급 : [[${nextTier}]] <br>&nbsp;&nbsp;([[${daysUntilFirstOfMonth}]]일 동안 [[${upgradeMessage}]])</span>
+            </th:block>
           </div>
         </div>
       </div>
@@ -86,7 +112,7 @@
               />
               <div class="rental-info">
                 <p
-                  th:text="'반환 날짜 : ' + ${#temporals.format(rent.returndate,'yyyy-MM-dd HH:mm')}"
+                  th:text="'반납일 : ' + ${#temporals.format(rent.returndate,'yyyy-MM-dd HH:mm')}"
                 ></p>
               </div>
             </a>
@@ -109,6 +135,10 @@
             <div class="info-row">
               <span class="label">누적 결제 금액</span>
               <span class="value" th:text="${accumulatedPayment} + '원'"></span>
+            </div>
+            <div class="info-row">
+              <span class="label">이번 달 결제 금액</span>
+              <span class="value" th:text="${currentSales} + '원'"></span>
             </div>
             <div class="info-row">
               <span class="label">나의 포인트</span>

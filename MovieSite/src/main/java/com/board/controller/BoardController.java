@@ -1,10 +1,12 @@
 package com.board.controller;
 
+import java.text.NumberFormat;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -58,24 +60,23 @@ import lombok.extern.log4j.Log4j2;
 @Log4j2
 @RequestMapping("/board")
 public class BoardController {
-	private final MovieAPIServiceImpl movie;
-	private final BoardService service;
-	private final MemberService memberService;
-	private final MasterService masterService;
-	private final RequestService requestService;
-	private final RequestReplyService requestReplyService;
-	private final FavGenreService favGenre;
-	private final LikeService like;
-	private final ReplyService reply;
-	private final WatchedService watch;
-	private final BookmarkService bookmark;
-	private final RentService rent;
-	private final NotificationService notificationService;
-	private final MileageService mileageService;
+   private final MovieAPIServiceImpl movie;
+   private final BoardService service;
+   private final MemberService memberService;
+   private final MasterService masterService;
+   private final RequestService requestService;
+   private final RequestReplyService requestReplyService;
+   private final FavGenreService favGenre;
+   private final LikeService like;
+   private final ReplyService reply;
+   private final WatchedService watch;
+   private final BookmarkService bookmark;
+   private final RentService rent;
+   private final NotificationService notificationService;
 
-	@GetMapping("/test")
-	public void getTest() {}
-	
+   @GetMapping("/test")
+   public void getTest() {}
+   
 	@GetMapping("/mileagePage")
 	public void getMileagePage(Model model, HttpSession session) {
 		String email = (String) session.getAttribute("email");
@@ -89,10 +90,10 @@ public class BoardController {
 		model.addAttribute("mileageLogs", mileageLogs);
 	}
 
-	@GetMapping("/list")
-	public void getList(Model model, HttpSession session) throws JsonMappingException, JsonProcessingException {
-		
-		//세션정보
+   @GetMapping("/list")
+   public void getList(Model model, HttpSession session) throws JsonMappingException, JsonProcessingException {
+      
+     //세션정보
 		String email = (String) session.getAttribute("email");
 		String nickname = (String) session.getAttribute("nickname");
 		
@@ -156,64 +157,100 @@ public class BoardController {
 	    
 	    model.addAttribute("noti", noti);  // 알림 목록을 모델에 추가
 	    
-	}
+   }
+   
+   @GetMapping("/mypage")
+   public void getMyPage(Model model, HttpSession session) {
+
+      //세션정보
+      String email = (String) session.getAttribute("email");
+      String nickname = (String) session.getAttribute("nickname");
+
+      MemberDTO memberInfo = memberService.memberInfo(email);
+      model.addAttribute("nickname",nickname);
+      model.addAttribute("member",memberInfo);
+      
+      //대여
+      List<Map<String,Object>> rents = rent.getAllMyRent(email, "Y");
+      model.addAttribute("rents",rents);
+      //북마크
+      List<Map<String,Object>> bookmarks = bookmark.getAllBookmarkByEmail(email);
+      model.addAttribute("bookmarks",bookmarks);
+      //시청
+      List<Map<String,Object>> watches = watch.getAllWatchedByEmail(email);
+      model.addAttribute("watches",watches);
+      //좋아요
+      List<Map<String,Object>> likes = like.getAllLikeByEmail(email);
+      model.addAttribute("likes",likes);
+
+	   // 숫자 포맷터 설정 (쉼표 추가)
+      NumberFormat numberFormat = NumberFormat.getInstance(Locale.US);
+
+      
+      //누적 결제 금액
+      Long accumulatedPayment = rent.getMyAccumulatedPayment(email);
+      model.addAttribute("accumulatedPayment", numberFormat.format(accumulatedPayment));
+      
+      
+      // 등급 변경일까지 얼마 남았는지?
+      LocalDate today = LocalDate.now();
+      LocalDate nextMonth = today.plusMonths(1).withDayOfMonth(1); // 다음 달의 1일 계산
+      long daysUntilFirstOfMonth = ChronoUnit.DAYS.between(today, nextMonth); // 현재 날짜와 다음 달 1일 사이의 일수 계산
+      model.addAttribute("daysUntilFirstOfMonth", daysUntilFirstOfMonth);
+      model.addAttribute("nextMonth", nextMonth);
+
+      // 등급 배열 (순서 중요)
+      String[] TIERS = {"BRONZE", "SILVER", "GOLD", "PLATINUM", "DIAMOND"};
+      int[] SALES_THRESHOLDS = {0, 5000, 10000, 30000, 50000};
+      
+	  int thisMonthSales = rent.getThisMonthSales(email);
+      
+       // 등급 및 업그레이드 조건 정의
+	   String nextTier = TIERS[0]; // 기본 등급: BRONZE
+	   int additionalAmount = 0;
+	   String upgradeMessage = "";
 	
-	@GetMapping("/mypage")
-	public void getMyPage(Model model, HttpSession session) {
+	   
+	   // 현재 매출에 따른 등급 계산
+	   for (int i = SALES_THRESHOLDS.length - 1; i >= 0; i--) {
+	       if (thisMonthSales >= SALES_THRESHOLDS[i]) {
+	           nextTier = TIERS[i];
+	           if (i < TIERS.length - 1) { // 한 단계 더 높은 등급 확인
+	               int nextTierThreshold = SALES_THRESHOLDS[i + 1];
+	               additionalAmount = nextTierThreshold - thisMonthSales;
+	               upgradeMessage = String.format(
+	                   "%s원 결제 시, %s 등급이 됩니다!",
+	                   numberFormat.format(additionalAmount), TIERS[i + 1]
+	               );
+	           }
+	           break;
+	       }
+	   }
 
-		//세션정보
-		String email = (String) session.getAttribute("email");
-		String nickname = (String) session.getAttribute("nickname");
 
-		MemberDTO memberInfo = memberService.memberInfo(email);
-		model.addAttribute("nickname",nickname);
-		model.addAttribute("member",memberInfo);
-		
-		//대여
-		List<Map<String,Object>> rents = rent.getAllMyRent(email, "Y");
-		model.addAttribute("rents",rents);
-		//북마크
-		List<Map<String,Object>> bookmarks = bookmark.getAllBookmarkByEmail(email);
-		model.addAttribute("bookmarks",bookmarks);
-		//시청
-		List<Map<String,Object>> watches = watch.getAllWatchedByEmail(email);
-		model.addAttribute("watches",watches);
-		//좋아요
-		List<Map<String,Object>> likes = like.getAllLikeByEmail(email);
-		model.addAttribute("likes",likes);
-		//과거 대여
-		List<Map<String,Object>> pastRents = rent.getAllMyRent(email, "N");
-		log.info("pastRents : {}",pastRents);
-		model.addAttribute("pastRents",pastRents);
+      model.addAttribute("currentSales", numberFormat.format(thisMonthSales));
+      model.addAttribute("nextTier", nextTier);
+      model.addAttribute("additionalAmount", numberFormat.format(additionalAmount));
+      model.addAttribute("upgradeMessage", upgradeMessage);
 
-		//누적 결제 금액
-		Long accumulatedPayment = rent.getMyAccumulatedPayment(email);
-		model.addAttribute("accumulatedPayment",accumulatedPayment);
-		
-		// 등급 변경일까지 얼마 남았는지?
-        LocalDate today = LocalDate.now();
-        LocalDate nextMonth = today.plusMonths(1).withDayOfMonth(1); // 다음 달의 1일 계산
-        long daysUntilFirstOfMonth = ChronoUnit.DAYS.between(today, nextMonth); // 현재 날짜와 다음 달 1일 사이의 일수 계산
-		model.addAttribute("daysUntilFirstOfMonth", daysUntilFirstOfMonth);
-		model.addAttribute("nextMonth", nextMonth);
-
-		/////////////////// 알람 처리 ///////////////////
-		model.addAttribute("email", email);
-		
-		 // 알림 목록 가져오기 (빈 리스트일 경우 처리)
-	    List<NotificationEntity> noti = notificationService.notiForUser(email);
-	    
-	    if (noti == null) {noti = new ArrayList<>();}
-	    
-	    model.addAttribute("noti", noti);  // 알림 목록을 모델에 추가
-	    
-	}
-	
-	// 장르 필터
-	@PostMapping("/genreCheck")
-	public String postGenreCheck() {
-		return null;
-	}
+      
+      /////////////////// 알람 처리 ///////////////////
+      model.addAttribute("email", email);
+      
+       // 알림 목록 가져오기 (빈 리스트일 경우 처리)
+       List<NotificationEntity> noti = notificationService.notiForUser(email);
+       
+       if (noti == null) {noti = new ArrayList<>();}
+       
+       model.addAttribute("noti", noti);  // 알림 목록을 모델에 추가
+       
+   }
+   
+   // 장르 필터
+   @PostMapping("/genreCheck")
+   public String postGenreCheck() {
+      return null;
+   }
 
 	// 영화상세
 	@GetMapping("/movieDetail")
@@ -277,34 +314,34 @@ public class BoardController {
 		Map<String,Object> watches = watch.getAllWatchedInfo(movieId);
 		Map<String,Object> bookmarks = bookmark.getAllBookmarkInfo(movieId);
 
-		model.addAttribute("likes", likes);
-		model.addAttribute("watches",watches);
-		model.addAttribute("bookmarks",bookmarks);
+      model.addAttribute("likes", likes);
+      model.addAttribute("watches",watches);
+      model.addAttribute("bookmarks",bookmarks);
 
-		
+      
 
-		/////////////////// 알람 처리 ///////////////////
-		model.addAttribute("email", email);
-		
-		 // 알림 목록 가져오기 (빈 리스트일 경우 처리)
-	    List<NotificationEntity> noti = notificationService.notiForUser(email);
-	    
-	    if (noti == null) {noti = new ArrayList<>();}
-	    
-	    model.addAttribute("noti", noti);  // 알림 목록을 모델에 추가
-	    
-		// 추천 영화 리스트
-	    List<Map<String,Object>> genres = (List)movieDetail.get("genre");
-	    List<MovieEntity> recommandList = new ArrayList<>();
-	    for(Map<String,Object> genre :genres) {
-	    	String genreNm = (String)genre.get("name");
-	    	List<GenreEntity> list = movie.getGenreList(genreNm);
-	    	List<MovieEntity> movies = list.stream().map(s->s.getMovieId()).collect(Collectors.toList());
-	    	recommandList.addAll(movies);
-	    	break;
-	    }
-	    model.addAttribute("recommandList",recommandList);
-	}
+      /////////////////// 알람 처리 ///////////////////
+      model.addAttribute("email", email);
+      
+       // 알림 목록 가져오기 (빈 리스트일 경우 처리)
+       List<NotificationEntity> noti = notificationService.notiForUser(email);
+       
+       if (noti == null) {noti = new ArrayList<>();}
+       
+       model.addAttribute("noti", noti);  // 알림 목록을 모델에 추가
+       
+      // 추천 영화 리스트
+       List<Map<String,Object>> genres = (List)movieDetail.get("genre");
+       List<MovieEntity> recommandList = new ArrayList<>();
+       for(Map<String,Object> genre :genres) {
+          String genreNm = (String)genre.get("name");
+          List<GenreEntity> list = movie.getGenreList(genreNm);
+          List<MovieEntity> movies = list.stream().map(s->s.getMovieId()).collect(Collectors.toList());
+          recommandList.addAll(movies);
+          break;
+       }
+       model.addAttribute("recommandList",recommandList);
+   }
 
 	@RequestMapping("/movieDetail/getMileage")
 	@ResponseBody
@@ -319,98 +356,98 @@ public class BoardController {
 		return Map.of("mileage", member.getPoint());
 	}
 
-	@PostMapping("/movieDetail/reviews")
-	@ResponseBody
-	public Map<String, Object> postMovieDetailReview(@RequestParam("movieId") Long movieId,
-			@RequestParam("content") String content, HttpSession session) {
+   @PostMapping("/movieDetail/reviews")
+   @ResponseBody
+   public Map<String, Object> postMovieDetailReview(@RequestParam("movieId") Long movieId,
+         @RequestParam("content") String content, HttpSession session) {
 
-		String email = (String) session.getAttribute("email");
+      String email = (String) session.getAttribute("email");
 
-		Map<String, Object> response = new HashMap<>();
+      Map<String, Object> response = new HashMap<>();
 
-		// 리뷰 업데이트 및 저장
-		String result = reply.saveOrUpdate(content, email, movieId);
+      // 리뷰 업데이트 및 저장
+      String result = reply.saveOrUpdate(content, email, movieId);
 
-		response.put("message", "good");
-		response.put("action", result);
-		return response;
-	}
+      response.put("message", "good");
+      response.put("action", result);
+      return response;
+   }
 
-	// 좋아요 싫어요 처리
-	@PostMapping("/movieDetail/likes")
-	@ResponseBody
-	public Map<String, Object> postMovieDetailLike(@RequestParam("movieId") Long movieId,
-			@RequestParam("isLike") String isLike, @RequestParam("action") String action, HttpSession session) {
-		Map<String, Object> response = new HashMap<>();
+   // 좋아요 싫어요 처리
+   @PostMapping("/movieDetail/likes")
+   @ResponseBody
+   public Map<String, Object> postMovieDetailLike(@RequestParam("movieId") Long movieId,
+         @RequestParam("isLike") String isLike, @RequestParam("action") String action, HttpSession session) {
+      Map<String, Object> response = new HashMap<>();
 
-		String rating = "Y".equals(isLike) ? "like" : "dislike";
-		String email = (String) session.getAttribute("email");
+      String rating = "Y".equals(isLike) ? "like" : "dislike";
+      String email = (String) session.getAttribute("email");
 
-		boolean isAdd = "add".equals(action);
-		// 좋아요 싫어요 업데이트 및 저장
-		try {
-			like.saveOrUpdate(rating, movieId, email, isAdd);
-			response.put("message", "good");
-			// 모든 like 정보
-			Map<String, Object> likes = like.getAllLikeInfo(movieId);
-			response.put("likeCount", likes.get("likeCount"));
-			response.put("dislikeCount", likes.get("dislikeCount"));
-			response.put("userLike", isLike);
-		} catch (Exception e) {
-			log.error("likedislike 오류 : ", e);
-			response.put("message", "error");
-			response.put("error", e.getMessage());
-		}
+      boolean isAdd = "add".equals(action);
+      // 좋아요 싫어요 업데이트 및 저장
+      try {
+         like.saveOrUpdate(rating, movieId, email, isAdd);
+         response.put("message", "good");
+         // 모든 like 정보
+         Map<String, Object> likes = like.getAllLikeInfo(movieId);
+         response.put("likeCount", likes.get("likeCount"));
+         response.put("dislikeCount", likes.get("dislikeCount"));
+         response.put("userLike", isLike);
+      } catch (Exception e) {
+         log.error("likedislike 오류 : ", e);
+         response.put("message", "error");
+         response.put("error", e.getMessage());
+      }
 
-		return response;
-	}
+      return response;
+   }
 
-	// 시청 여부 처리
-	@PostMapping("/movieDetail/watched")
-	@ResponseBody
-	public Map<String, Object> postMovieDetailWatched(@RequestParam("movieId") Long movieId,
-			@RequestParam("action") String action, HttpSession session) {
-		Map<String, Object> response = new HashMap<>();
+   // 시청 여부 처리
+   @PostMapping("/movieDetail/watched")
+   @ResponseBody
+   public Map<String, Object> postMovieDetailWatched(@RequestParam("movieId") Long movieId,
+         @RequestParam("action") String action, HttpSession session) {
+      Map<String, Object> response = new HashMap<>();
 
-		String email = (String) session.getAttribute("email");
+      String email = (String) session.getAttribute("email");
 
-		// 시청여부 업데이트 및 저장
-		try {
-			watch.saveOrUpdate(action, movieId, email);
-			response.put("message", "good");
-			// 모든 like 정보
-			Map<String, Object> watches = watch.getAllWatchedInfo(movieId);
-			response.put("count", watches.get("count"));
-		} catch (Exception e) {
-			log.error("wathed 오류 : ", e);
-			response.put("message", "error");
-			response.put("error", e.getMessage());
-		}
+      // 시청여부 업데이트 및 저장
+      try {
+         watch.saveOrUpdate(action, movieId, email);
+         response.put("message", "good");
+         // 모든 like 정보
+         Map<String, Object> watches = watch.getAllWatchedInfo(movieId);
+         response.put("count", watches.get("count"));
+      } catch (Exception e) {
+         log.error("wathed 오류 : ", e);
+         response.put("message", "error");
+         response.put("error", e.getMessage());
+      }
 
-		return response;
-	}
+      return response;
+   }
 
-	// 북마크 관련 처리
-	@PostMapping("/movieDetail/bookmark")
-	@ResponseBody
-	public Map<String, Object> postMovieDetailBookmark(@RequestParam("movieId") Long movieId,
-			@RequestParam("action") String action, HttpSession session) {
-		Map<String, Object> response = new HashMap<>();
+   // 북마크 관련 처리
+   @PostMapping("/movieDetail/bookmark")
+   @ResponseBody
+   public Map<String, Object> postMovieDetailBookmark(@RequestParam("movieId") Long movieId,
+         @RequestParam("action") String action, HttpSession session) {
+      Map<String, Object> response = new HashMap<>();
 
-		String email = (String) session.getAttribute("email");
+      String email = (String) session.getAttribute("email");
 
-		// 북마크 업데이트 및 저장
-		try {
-			bookmark.saveOrUpdate(action, movieId, email);
-			response.put("message", "good");
-			// 모든 bookmarks 정보
-			Map<String, Object> bookmarks = bookmark.getAllBookmarkInfo(movieId);
-			response.put("count", bookmarks.get("count"));
-		} catch (Exception e) {
-			log.error("bookmark 오류 : ", e);
-			response.put("message", "error");
-			response.put("error", e.getMessage());
-		}
+      // 북마크 업데이트 및 저장
+      try {
+         bookmark.saveOrUpdate(action, movieId, email);
+         response.put("message", "good");
+         // 모든 bookmarks 정보
+         Map<String, Object> bookmarks = bookmark.getAllBookmarkInfo(movieId);
+         response.put("count", bookmarks.get("count"));
+      } catch (Exception e) {
+         log.error("bookmark 오류 : ", e);
+         response.put("message", "error");
+         response.put("error", e.getMessage());
+      }
 
 		return response;
 	}
@@ -422,7 +459,7 @@ public class BoardController {
 			@RequestParam("paymentMethod") String paymentMethod, HttpSession session) {
 		Map<String, Object> response = new HashMap<>();
 
-		String email = (String) session.getAttribute("email");
+      String email = (String) session.getAttribute("email");
 
 		// 대여 등록 및 삭제 
 		try {
@@ -433,215 +470,215 @@ public class BoardController {
 			log.error("rent 오류 : ", e);
 		}
 
-		return response;
-	}
+      return response;
+   }
 
-	// 댓글 처리
-	@ResponseBody
-	@PostMapping("/reply")
-	public List<ReplyInterface> postReply(ReplyInterface reply, @RequestParam("option") String option)
-			throws Exception {
+   // 댓글 처리
+   @ResponseBody
+   @PostMapping("/reply")
+   public List<ReplyInterface> postReply(ReplyInterface reply, @RequestParam("option") String option)
+         throws Exception {
 
-		switch (option) {
+      switch (option) {
 
-		case "I":
-			service.replyRegistry(reply); // 댓글 등록
-			break;
-		case "U":
-			service.replyUpdate(reply); // 댓글 수정
-			break;
-		case "D":
-			service.replyDelete(reply); // 댓글 삭제
-			break;
-		}
+      case "I":
+         service.replyRegistry(reply); // 댓글 등록
+         break;
+      case "U":
+         service.replyUpdate(reply); // 댓글 수정
+         break;
+      case "D":
+         service.replyDelete(reply); // 댓글 삭제
+         break;
+      }
 
-		return service.replyView(reply);
-	}
+      return service.replyView(reply);
+   }
 
-	// 요청사항 작성하기
-	@GetMapping("/requestWrite")
-	public void getRequest(Model model, HttpSession session) {
+   // 요청사항 작성하기
+   @GetMapping("/requestWrite")
+   public void getRequest(Model model, HttpSession session) {
 
-		// 세션 이메일 값 가져오기
-		String email = (String) session.getAttribute("email"); // 현재 로그인 중인 사람의 이메일
-		model.addAttribute("email", email);
+      // 세션 이메일 값 가져오기
+      String email = (String) session.getAttribute("email"); // 현재 로그인 중인 사람의 이메일
+      model.addAttribute("email", email);
 
-		// 이메일로 회원 정보 가져오기
-		MemberDTO memberDTO = memberService.memberInfo(email);
-		model.addAttribute("member", memberDTO);
+      // 이메일로 회원 정보 가져오기
+      MemberDTO memberDTO = memberService.memberInfo(email);
+      model.addAttribute("member", memberDTO);
 
-		model.addAttribute("nickname", memberDTO.getNickname());
-		model.addAttribute("member", memberDTO);
+      model.addAttribute("nickname", memberDTO.getNickname());
+      model.addAttribute("member", memberDTO);
 
-		model.addAttribute("maxSeqno", (masterService.getMaxSeqno(email) != null ? masterService.getMaxSeqno(email)+1 : "FIRST_REQ"));
+      model.addAttribute("maxSeqno", (masterService.getMaxSeqno(email) != null ? masterService.getMaxSeqno(email)+1 : "FIRST_REQ"));
 
 
-		/////////////////// 알람 처리 ///////////////////
-		
-		 // 알림 목록 가져오기 (빈 리스트일 경우 처리)
-	    List<NotificationEntity> noti = notificationService.notiForUser(email);
-	    
-	    if (noti == null) {noti = new ArrayList<>();}
-	    
-	    model.addAttribute("noti", noti);  // 알림 목록을 모델에 추가
-		
-	}
+      /////////////////// 알람 처리 ///////////////////
+      
+       // 알림 목록 가져오기 (빈 리스트일 경우 처리)
+       List<NotificationEntity> noti = notificationService.notiForUser(email);
+       
+       if (noti == null) {noti = new ArrayList<>();}
+       
+       model.addAttribute("noti", noti);  // 알림 목록을 모델에 추가
+      
+   }
 
-	// 요청사항 DB 업로드
-	@ResponseBody
-	@PostMapping("/requestWritePost")
-	public Map<String, String> postRequest(@RequestBody RequestDTO dto, HttpSession session) throws Exception {
+   // 요청사항 DB 업로드
+   @ResponseBody
+   @PostMapping("/requestWritePost")
+   public Map<String, String> postRequest(@RequestBody RequestDTO dto, HttpSession session) throws Exception {
 
-		Map<String, String> response = new HashMap<>();
+      Map<String, String> response = new HashMap<>();
 
-		try {
-			requestService.registerRequest(dto);
-			response.put("message", "good");
-		} catch (Exception e) {
-			response.put("message", "bad");
-			e.printStackTrace();
-		}
-		return response;
-	}
+      try {
+         requestService.registerRequest(dto);
+         response.put("message", "good");
+      } catch (Exception e) {
+         response.put("message", "bad");
+         e.printStackTrace();
+      }
+      return response;
+   }
 
-	// 회원이 자신의 요청 목록 보기
-	@GetMapping("/requestList")
-	public void getMemberRequest(Model model, @RequestParam(name = "page", defaultValue = "1") int pageNum,
-			@RequestParam(name = "keyword", defaultValue = "", required = false) String keyword, HttpSession session)
-			throws Exception {
+   // 회원이 자신의 요청 목록 보기
+   @GetMapping("/requestList")
+   public void getMemberRequest(Model model, @RequestParam(name = "page", defaultValue = "1") int pageNum,
+         @RequestParam(name = "keyword", defaultValue = "", required = false) String keyword, HttpSession session)
+         throws Exception {
 
-		int postNum = 10; // 한 화면에 보여지는 게시물 행의 갯수
-		int pageListCount = 10; // 화면 하단에 보여지는 페이지리스트의 페이지 갯수
+      int postNum = 10; // 한 화면에 보여지는 게시물 행의 갯수
+      int pageListCount = 10; // 화면 하단에 보여지는 페이지리스트의 페이지 갯수
 
-		String email = (String) session.getAttribute("email"); // 현재 로그인 중인 사람의 이메일
-		model.addAttribute("email", email);
-		
-		// 이메일로 회원 정보 가져오기
-		MemberDTO memberDTO = memberService.memberInfo(email);
-		model.addAttribute("member", memberDTO);
-		model.addAttribute("nickname", memberDTO.getNickname());
-		
-		model.addAttribute("member", memberDTO);
-		
-		PageUtil page = new PageUtil();
+      String email = (String) session.getAttribute("email"); // 현재 로그인 중인 사람의 이메일
+      model.addAttribute("email", email);
+      
+      // 이메일로 회원 정보 가져오기
+      MemberDTO memberDTO = memberService.memberInfo(email);
+      model.addAttribute("member", memberDTO);
+      model.addAttribute("nickname", memberDTO.getNickname());
+      
+      model.addAttribute("member", memberDTO);
+      
+      PageUtil page = new PageUtil();
 
-		Page<RequestEntity> list = requestService.mylist(pageNum, postNum, keyword, email);
-		int totalCount = (int) list.getTotalElements();
-		model.addAttribute("list", list);
-		model.addAttribute("listIsEmpty", list.hasContent() ? "N" : "Y");
-		model.addAttribute("totalElement", totalCount);
-		model.addAttribute("postNum", postNum);
-		model.addAttribute("page", pageNum);
-		model.addAttribute("keyword", keyword);
-		model.addAttribute("pageList",
-				page.getBoardRequestPageList(pageNum, postNum, pageListCount, totalCount, keyword));
-	
-	
+      Page<RequestEntity> list = requestService.mylist(pageNum, postNum, keyword, email);
+      int totalCount = (int) list.getTotalElements();
+      model.addAttribute("list", list);
+      model.addAttribute("listIsEmpty", list.hasContent() ? "N" : "Y");
+      model.addAttribute("totalElement", totalCount);
+      model.addAttribute("postNum", postNum);
+      model.addAttribute("page", pageNum);
+      model.addAttribute("keyword", keyword);
+      model.addAttribute("pageList",
+            page.getBoardRequestPageList(pageNum, postNum, pageListCount, totalCount, keyword));
+   
+   
 
-		/////////////////// 알람 처리 ///////////////////
-		
-		 // 알림 목록 가져오기 (빈 리스트일 경우 처리)
-	    List<NotificationEntity> noti = notificationService.notiForUser(email);
-	    
-	    if (noti == null) {noti = new ArrayList<>();}
-	    
-	    model.addAttribute("noti", noti);  // 알림 목록을 모델에 추가
-	
-	}
+      /////////////////// 알람 처리 ///////////////////
+      
+       // 알림 목록 가져오기 (빈 리스트일 경우 처리)
+       List<NotificationEntity> noti = notificationService.notiForUser(email);
+       
+       if (noti == null) {noti = new ArrayList<>();}
+       
+       model.addAttribute("noti", noti);  // 알림 목록을 모델에 추가
+   
+   }
 
-	// 회원이 자신의 요청사항 상세보기
-	@GetMapping("/requestView")
-	public void getRequestView(Model model, @RequestParam(name = "seqno", required = false) Long seqno,
-			@RequestParam("page") int pageNum,
-			@RequestParam(name = "keyword", defaultValue = "", required = false) String keyword, HttpSession session) {
+   // 회원이 자신의 요청사항 상세보기
+   @GetMapping("/requestView")
+   public void getRequestView(Model model, @RequestParam(name = "seqno", required = false) Long seqno,
+         @RequestParam("page") int pageNum,
+         @RequestParam(name = "keyword", defaultValue = "", required = false) String keyword, HttpSession session) {
 
-		// 세션 이메일 값 가져오기
-		String email = (String) session.getAttribute("email"); // 현재 로그인 중인 사람의 이메일
-		model.addAttribute("email", email);
+      // 세션 이메일 값 가져오기
+      String email = (String) session.getAttribute("email"); // 현재 로그인 중인 사람의 이메일
+      model.addAttribute("email", email);
 
-		// 이메일로 회원 정보 가져오기
-		MemberDTO memberDTO = memberService.memberInfo(email);
-		model.addAttribute("nickname", memberDTO.getNickname());
-		model.addAttribute("member", memberDTO);
+      // 이메일로 회원 정보 가져오기
+      MemberDTO memberDTO = memberService.memberInfo(email);
+      model.addAttribute("nickname", memberDTO.getNickname());
+      model.addAttribute("member", memberDTO);
 
-		model.addAttribute("view", masterService.view(seqno));
-		model.addAttribute("status", masterService.statusCheck(seqno));
-		model.addAttribute("page", pageNum);
-		model.addAttribute("keyword", keyword);
-		model.addAttribute("pre_seqno", requestService.my_pre_seqno(seqno, email, keyword));
-		model.addAttribute("next_seqno", requestService.my_next_seqno(seqno, email, keyword));
-	
-		
-		/////////////////// 알람 처리 ///////////////////
-				
-		// 알림 목록 가져오기 (빈 리스트일 경우 처리)
-		List<NotificationEntity> noti = notificationService.notiForUser(email);
-		
-		if (noti == null) {noti = new ArrayList<>();}
-		
-		model.addAttribute("noti", noti);  // 알림 목록을 모델에 추가
+      model.addAttribute("view", masterService.view(seqno));
+      model.addAttribute("status", masterService.statusCheck(seqno));
+      model.addAttribute("page", pageNum);
+      model.addAttribute("keyword", keyword);
+      model.addAttribute("pre_seqno", requestService.my_pre_seqno(seqno, email, keyword));
+      model.addAttribute("next_seqno", requestService.my_next_seqno(seqno, email, keyword));
+   
+      
+      /////////////////// 알람 처리 ///////////////////
+            
+      // 알림 목록 가져오기 (빈 리스트일 경우 처리)
+      List<NotificationEntity> noti = notificationService.notiForUser(email);
+      
+      if (noti == null) {noti = new ArrayList<>();}
+      
+      model.addAttribute("noti", noti);  // 알림 목록을 모델에 추가
 
-	}
+   }
 
-	// 회원이 자신의 요청 게시물 삭제
-	@Transactional
-	@GetMapping("/requestDelete")
-	public String getDelete(@RequestParam("seqno") Long seqno) throws Exception {
+   // 회원이 자신의 요청 게시물 삭제
+   @Transactional
+   @GetMapping("/requestDelete")
+   public String getDelete(@RequestParam("seqno") Long seqno) throws Exception {
 
-		// tbl_request에서 게시물을 삭제
-		masterService.delete(seqno);
-		return "redirect:/board/requestList"; // 삭제 후 목록 페이지로 리다이렉션
-	}
+      // tbl_request에서 게시물을 삭제
+      masterService.delete(seqno);
+      return "redirect:/board/requestList"; // 삭제 후 목록 페이지로 리다이렉션
+   }
 
-	// 댓글 처리
-	@ResponseBody
-	@PostMapping("/requestReply")
-	public List<Map<String, Object>> postReply(@RequestBody RequestReplyDTO dto, @RequestParam("kind") String kind)
-			throws Exception {
+   // 댓글 처리
+   @ResponseBody
+   @PostMapping("/requestReply")
+   public List<Map<String, Object>> postReply(@RequestBody RequestReplyDTO dto, @RequestParam("kind") String kind)
+         throws Exception {
 
-		List<RequestReplyEntity> replyDataList;
+      List<RequestReplyEntity> replyDataList;
 
-		switch (kind) {
-		case "L":
-			replyDataList = requestReplyService.replyList(dto.getReqseqno()); // 댓글 목록 보기
-			break;
-		case "I":
-			requestReplyService.replyRegister(dto); // 댓글 등록
-			replyDataList = requestReplyService.replyList(dto.getReqseqno()); // 등록 후 댓글 목록 반환
-			break;
-		default:
-			throw new IllegalArgumentException("Invalid kind value: " + kind); // 잘못된 kind 값 처리
-		}
+      switch (kind) {
+      case "L":
+         replyDataList = requestReplyService.replyList(dto.getReqseqno()); // 댓글 목록 보기
+         break;
+      case "I":
+         requestReplyService.replyRegister(dto); // 댓글 등록
+         replyDataList = requestReplyService.replyList(dto.getReqseqno()); // 등록 후 댓글 목록 반환
+         break;
+      default:
+         throw new IllegalArgumentException("Invalid kind value: " + kind); // 잘못된 kind 값 처리
+      }
 
-		// RequestReplyEntity 리스트를 Map<String, Object> 리스트로 변환
-		List<Map<String, Object>> result = new ArrayList<>();
-		for (RequestReplyEntity replyData : replyDataList) {
-			Map<String, Object> map = new HashMap<>();
-			map.put("seqno", replyData.getSeqno()); // 댓글 seqno
-			map.put("email", replyData.getEmail()); // 댓글 email
-			map.put("reqseqno", replyData.getReqseqno()); // Request Seqno
-			map.put("replywriter", replyData.getReplywriter());
-			map.put("replycontent", replyData.getReplycontent());
-			map.put("replyregdate", replyData.getReplyregdate());
+      // RequestReplyEntity 리스트를 Map<String, Object> 리스트로 변환
+      List<Map<String, Object>> result = new ArrayList<>();
+      for (RequestReplyEntity replyData : replyDataList) {
+         Map<String, Object> map = new HashMap<>();
+         map.put("seqno", replyData.getSeqno()); // 댓글 seqno
+         map.put("email", replyData.getEmail()); // 댓글 email
+         map.put("reqseqno", replyData.getReqseqno()); // Request Seqno
+         map.put("replywriter", replyData.getReplywriter());
+         map.put("replycontent", replyData.getReplycontent());
+         map.put("replyregdate", replyData.getReplyregdate());
 
-			result.add(map);
-		}
+         result.add(map);
+      }
 
-		return result;
-	}
-	
+      return result;
+   }
+   
 //---------검색trying-------------------------
-	@GetMapping("/search")
-	public void searchPage(Model model,
-	@RequestParam(name="keyword",required = false) String keyword,
-	HttpSession session) {
-		String email = (String) session.getAttribute("email");
-		String nickname = (String) session.getAttribute("nickname");
-		
-		MemberDTO member = memberService.memberInfo(email);
-		
-		model.addAttribute("member", member);
-		model.addAttribute("nickname", nickname);
+   @GetMapping("/search")
+   public void searchPage(Model model,
+   @RequestParam(name="keyword",required = false) String keyword,
+   HttpSession session) {
+      String email = (String) session.getAttribute("email");
+      String nickname = (String) session.getAttribute("nickname");
+      
+      MemberDTO member = memberService.memberInfo(email);
+      
+      model.addAttribute("member", member);
+      model.addAttribute("nickname", nickname);
 
 		if(keyword != null) {
 			List<Map<String,Object>> movies = movie.findByKeywordMovieList(keyword);
