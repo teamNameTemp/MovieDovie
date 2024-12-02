@@ -1,11 +1,13 @@
 package com.board.service;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import org.springframework.data.repository.query.Param;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.board.dto.MemberDTO;
 import com.board.entity.MemberEntity;
@@ -26,6 +28,7 @@ public class MemberServiceImpl implements MemberService {
 	private final MemberRepository memberRepository;
 	private final MemberLogRepository memberLogRepository;
 	private final RentRepository rentRepository;
+	private final NotificationService notificationService;
 
 	//매달 1일 0시 0분 0초에 실행
 	@Scheduled(cron = "0 0 0 1 * *")
@@ -38,10 +41,13 @@ public class MemberServiceImpl implements MemberService {
 			String grade = DataCalculate.calcGrade(totalSales);
 			member.setGrade(grade);
 			memberRepository.save(member);
+			
+			String content = "이번 달 등급은 " + grade + "입니다. 마이페이지에서 확인해보세요!";
+			notificationService.newGradeNotiForUser(member.getEmail(), content, "grade");
+			
 			idx++;
 		}
 
-		log.info("회원 등급 업데이트 완료: {} 건의 회원 등급이 업데이트되었습니다.", idx);
 	}
 
 	//회원 가입
@@ -174,5 +180,6 @@ public class MemberServiceImpl implements MemberService {
 
 		memberRepository.save(memberEntity);
 	}
+	
 
 }

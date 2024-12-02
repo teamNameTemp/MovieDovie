@@ -75,6 +75,18 @@
 		  background-color: #4dbf0010;
 		}
 		
+		.pending-highlight {
+		    color: #FF6384; /* 빨간색으로 강조 */
+		    opacity: 1;
+  			animation: animate 1s infinite;
+		}
+		
+		@keyframes animate {
+		  0% {opacity: 1;}
+		  50% {opacity: 0.8;}
+		  100% {opacity: 1;}
+		}
+		
 	</style>
 	<script>
 		const search = () => {
@@ -126,7 +138,12 @@
 	                </td>
 	                <td th:text="${list.email}"></td>
 	                <td th:text="${#temporals.format(list.reqdate,'yyyy-MM-dd HH:mm:ss')}"></td>	                	
-	                <td th:text="${list.status}"></td>
+	                <th:block th:if="${#strings.equals(list.status, 'PENDING')}">     
+	                	<td class="pending-highlight" th:text="${list.status}"></td>
+	                </th:block>
+	                <th:block th:if="${#strings.equals(list.status, 'COMPLETED')}">   
+	                   <td th:text="${list.status}"></td>
+	                </th:block>
 	            </tr>
 			</th:block>
 			<th:block th:if="${#strings.equals(listIsEmpty, 'Y')}">

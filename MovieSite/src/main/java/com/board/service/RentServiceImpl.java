@@ -113,6 +113,7 @@ public class RentServiceImpl implements RentService {
 		return result;
 
 	}
+	//매일 자정
 	//매일 자정에 대여 만료 처리
 	@Scheduled(cron = "0 0 0 * * ?")
 	@Transactional
@@ -157,6 +158,8 @@ public class RentServiceImpl implements RentService {
 			log.info(receiverEmail + " : " + content);
 		}
 	}
+	
+	
 	
 	public Map<String, Object> getMyRentInfo(String email, Long movieId) {
 		Map<String, Object> data = new HashMap<>();
@@ -281,4 +284,9 @@ public class RentServiceImpl implements RentService {
 		return rentRepository.getYTDSalesByGenre();
 	}
 	
+	//다음달 회원 등급 확인 위한 이번달 합계
+	@Override
+	public int getThisMonthSales(String email) {
+		return rentRepository.getThisMonthSales(email);
+	}
 }

@@ -98,6 +98,31 @@ public class NotificationServiceImpl implements NotificationService {
 	}
 
 	
+	//매달 1일 등급 관련 알람 보내기
+	@Override	
+	public List<NotificationEntity> newGradeNotiForUser(String email, String content, String type){
+		
+		MemberEntity memberEntity = memberRepository.findByEmail(email)
+				 .orElseThrow(() -> {
+				        System.out.println("회원이 존재하지 않음: " + email);  // 디버깅용 출력
+				        return new IllegalArgumentException("해당 이메일을 가진 회원이 존재하지 않습니다.");
+				    });
+		
+		NotificationEntity notificationEntity = NotificationEntity.builder()
+																.memberEntity(memberEntity)
+																.rentEntity(null)
+																.requestEntity(null)
+																.content(content)
+																.is_read("N")
+																.created_at(LocalDateTime.now())
+																.notitype(type)
+																.build();
+		notificationRepository.save(notificationEntity);
+		
+		return notificationRepository.notiForUser(email);
+	}
+	
+	
 	//알람 확인 시 알람 읽음 처리
 	@Override
 	public void updateIsRead(Long seqno) {
