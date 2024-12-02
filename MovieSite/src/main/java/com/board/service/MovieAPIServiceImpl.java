@@ -6,6 +6,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -135,25 +137,22 @@ public class MovieAPIServiceImpl implements MovieAPIService {
 	//DB에 저장되있는거 가져오기
 	@Override
 	public Map<String, Object> getMovieDetails(Long id) {
-		Map<String, Object> data = new HashMap<>();
-		Optional<MovieEntity> entity = movieRepository.findById(id);
-		
-		if (entity.isPresent()) {
-			data.put("info", entity.get());
-			
-			//아래 엔티티들 리스트로 뽑을 수 있게 리포지토리 쿼리문 변경
-			data.put("company", mapper.getCompanyList(companyRepository.findByMovieId(entity.get())));
-			data.put("country", mapper.getCountryList(countryRepository.findByMovieId(entity.get())));
-			data.put("cast", mapper.getCastList(castRepository.findByMovieId(entity.get())));
-			data.put("crew", mapper.getCrewList(crewRepository.findByMovieId(entity.get())));
-			data.put("genre", mapper.getGenreList(genreRepository.findByMovieId(entity.get())));
-			data.put("video", mapper.getVideoList(videoRepository.findByMovieId(entity.get())));
-			data.put("language", mapper.getLanguageList(languageRepository.findByMovieId(entity.get())));
-			data.put("backdrops", mapper.getBackdropList(imageRepository.findByMovieId(entity.get())));
-			data.put("posters", mapper.getPosterList(imageRepository.findByMovieId(entity.get())));
-			
-		}
-		return data;
+		return movieRepository.findById(id)
+			.map(movie -> {
+				Map<String, Object> data = new HashMap<>();
+				data.put("info", movie);
+				data.put("company", mapper.getCompanyList(companyRepository.findByMovieId(movie)));
+				data.put("country", mapper.getCountryList(countryRepository.findByMovieId(movie)));
+				data.put("cast", mapper.getCastList(castRepository.findByMovieId(movie)));
+				data.put("crew", mapper.getCrewList(crewRepository.findByMovieId(movie)));
+				data.put("genre", mapper.getGenreList(genreRepository.findByMovieId(movie)));
+				data.put("video", mapper.getVideoList(videoRepository.findByMovieId(movie)));
+				data.put("language", mapper.getLanguageList(languageRepository.findByMovieId(movie)));
+				data.put("backdrops", mapper.getBackdropList(imageRepository.findByMovieId(movie)));
+				data.put("posters", mapper.getPosterList(imageRepository.findByMovieId(movie)));
+				return data;
+			})
+			.orElseThrow(() -> new RuntimeException("Movie not found with id: " + id));
 	}
 	@Override
 	public List<GenreEntity> getGenreList(String genre){
@@ -203,25 +202,31 @@ public class MovieAPIServiceImpl implements MovieAPIService {
 	}
 	
 	@Override
+	@Transactional
 	public void saveTheDataBases(List<MovieDTO> list) {
-	    for (MovieDTO dto : list) {
-	    	if(movieRepository.findById(dto.getId()).isEmpty()) {
-	    		log.info(dto.getTitle() + "가 저장되었습니다.");
-	    		saveTheDataBase(dto);
-	    	}
-	    	else { // 있으면(업데이트)
-	    		MovieEntity entity = movieRepository.findById(dto.getId()).get();	    		
-	    		entity.setOverview(dto.getOverview());
-	    		entity.setIsAdult(dto.isAdult());
-	    		movieRepository.save(entity);
-	    		dto.setEntity(entity);
-	    	}
-	    	mapperListSave(dto);
-	    	
-	    }
+		list.forEach(dto -> {
+			try {
+				Optional<MovieEntity> existingMovie = movieRepository.findById(dto.getId());
+				
+				if (existingMovie.isEmpty()) {
+					log.info("새로운 영화 저장: {}", dto.getTitle());
+					saveTheDataBase(dto);
+				} else {
+					MovieEntity entity = existingMovie.get();
+					entity.setOverview(dto.getOverview());
+					entity.setIsAdult(dto.isAdult());
+					movieRepository.save(entity);
+					dto.setEntity(entity);
+				}
+				mapperListSave(dto);
+			} catch (Exception e) {
+				log.error("영화 저장 중 오류 발생: {} - {}", dto.getTitle(), e.getMessage());
+			}
+		});
 	}
 
 	@Override
+	@Transactional
 	public void saveTheDataBase(MovieDTO movie) {
 		MovieEntity movieEntity = mapper.toEntity(movie);
 		movie.setEntity(movieEntity);
@@ -229,70 +234,95 @@ public class MovieAPIServiceImpl implements MovieAPIService {
 	}
 
 	//저장 및 업데이트
+	@Transactional
 	private void mapperListSave(MovieDTO dto) {
+		MovieEntity movie = movieRepository.findById(dto.getId())
+			.orElseThrow(() -> new RuntimeException("영화를 찾을 수 없습니다: " + dto.getId()));
 
-		//있는지 확인
-		MovieEntity movie = movieRepository.findById(dto.getId()).get();
-		if(movie == null) return;
-		
-		//제작사 유무
+		// 각 엔티티 저장 로직을 별도 메소드로 분리
+		saveCompanies(dto, movie);
+		saveCountries(dto, movie);
+		saveGenres(dto, movie);
+		saveCrew(dto, movie);
+		saveCast(dto, movie);
+		saveLanguages(dto, movie);
+		saveVideos(dto, movie);
+		saveImages(dto, movie, "poster");
+		saveImages(dto, movie, "backdrop");
+	}
+
+	private void saveCompanies(MovieDTO dto, MovieEntity movie) {
 		List<CompanyEntity> companies = companyRepository.findByMovieId(movie);
-		if(companies.isEmpty()) {
+		if (companies.isEmpty()) {
 			companies = mapper.mapProductionCompanies(dto);
+			companies.forEach(company -> company.setMovieId(movie));
+			companyRepository.saveAll(companies);
 		}
-		companyRepository.saveAll(companies);
-		
-		//나라 유무
+	}
+
+	private void saveCountries(MovieDTO dto, MovieEntity movie) {
 		List<CountryEntity> countries = countryRepository.findByMovieId(movie);
-		if(countries.isEmpty()) {
+		if (countries.isEmpty()) {
 			countries = mapper.mapProductionCountries(dto);
+			countries.forEach(country -> country.setMovieId(movie));
+			countryRepository.saveAll(countries);
 		}
-		countryRepository.saveAll(countries);
-		
-		//장르 유무
+	}
+
+	private void saveGenres(MovieDTO dto, MovieEntity movie) {
 		List<GenreEntity> genres = genreRepository.findByMovieId(movie);
-		if(genres.isEmpty()) {
+		if (genres.isEmpty()) {
 			genres = mapper.mapGenres(dto);
+			genres.forEach(genre->genre.setMovieId(movie));
+			genreRepository.saveAll(genres);
 		}
-		genreRepository.saveAll(genres);
-		
-		//크레딧 유무
-		if(dto.getCredits() != null) {
-			//제작진 유무
-			List<CrewEntity> crews = crewRepository.findByMovieId(movie);
-			if(crews.isEmpty()) {
-				crews = mapper.mapCrews(dto);
-			}
+	}	
+	
+	private void saveCrew(MovieDTO dto, MovieEntity movie) {
+		List<CrewEntity> crews = crewRepository.findByMovieId(movie);
+		if (crews.isEmpty()) {
+			crews = mapper.mapCrews(dto);
+			crews.forEach(crew -> crew.setMovieId(movie));
 			crewRepository.saveAll(crews);
-			//출연진 유무
-			List<CastEntity> casts = castRepository.findByMovieId(movie);
-			if(casts.isEmpty()) {
-				casts = mapper.mapCasts(dto);
-			}
+		}
+	}	
+
+	private void saveCast(MovieDTO dto, MovieEntity movie) {
+		List<CastEntity> casts = castRepository.findByMovieId(movie);
+		if (casts.isEmpty()) {
+			casts = mapper.mapCasts(dto);
+			casts.forEach(cast -> cast.setMovieId(movie));
 			castRepository.saveAll(casts);
 		}
-		
-		//언어 유무
+	}		
+	
+	private void saveLanguages(MovieDTO dto, MovieEntity movie) {
 		List<LanguageEntity> languages = languageRepository.findByMovieId(movie);
-		if(languages.isEmpty()) {
+		if (languages.isEmpty()) {
 			languages = mapper.mapSpokenLanguages(dto);
+			languages.forEach(language -> language.setMovieId(movie));
+			languageRepository.saveAll(languages);
 		}
-		languageRepository.saveAll(languages);
-		
-		//비디오 유무
+	}	
+	
+	private void saveVideos(MovieDTO dto, MovieEntity movie) {
 		List<VideoEntity> videos = videoRepository.findByMovieId(movie);
-		if(videos.isEmpty() || videos == null) {
+		if (videos.isEmpty()) {
 			videos = mapper.mapVideos(dto);
+			videos.forEach(video -> video.setMovieId(movie));
+			videoRepository.saveAll(videos);
 		}
-		if(videos != null)videoRepository.saveAll(videos);
+	}	
 
-		//이미지 유무
-		List<ImageEntity> images = imageRepository.findByMovieId(movie);
-		if(images.isEmpty()) {
-			images.addAll(mapper.mapBackdropImage(dto));
-			images.addAll(mapper.mapPosterImage(dto));
+	private void saveImages(MovieDTO dto, MovieEntity movie, String type) {
+		List<ImageEntity> images = imageRepository.findByMovieIdAndImgType(movie, type);
+		if (images.isEmpty()) {
+			images = type.equals("poster") ? 
+				mapper.mapPosterImage(dto) : 
+				mapper.mapBackdropImage(dto);
+				images.forEach(image -> image.setMovieId(movie));
+			imageRepository.saveAll(images);
 		}
-		imageRepository.saveAll(images);
 	}
 
 	@Override
@@ -378,24 +408,29 @@ public class MovieAPIServiceImpl implements MovieAPIService {
 		return data;	
 	}
 
+	private <T> List<Map<String, Object>> searchEntities(
+		List<T> entities, 
+		Function<T, Map<String, Object>> mapper) {
+		
+		if (entities == null) return new ArrayList<>();
+		
+		return entities.stream()
+			.map(mapper)
+			.collect(Collectors.toList());
+	}
+
 	@Override
 	public List<Map<String, Object>> findByKeywordCastList(String keyword) {
-		List<Map<String,Object>> data = new ArrayList<>();
-		
 		List<CastEntity> entityList = castRepository.findByCastNmContainingIgnoreCase(keyword);
-		if(entityList == null) return data;
-		
-		for(CastEntity entity : entityList) {
-			Map<String,Object> cast = new HashMap<>();
+		return searchEntities(entityList, entity -> {
+			Map<String, Object> cast = new HashMap<>();
 			cast.put("id", entity.getCastId());
 			cast.put("name", entity.getCastNm());
 			cast.put("character", entity.getCharacterNm());
 			cast.put("profilePath", entity.getProfilePath());
-			cast.put("movie",entity.getMovieId());
-			data.add(cast);
-		}
-		
-		return data;	
+			cast.put("movie", entity.getMovieId());
+			return cast;
+		});
 	}
 	
 }

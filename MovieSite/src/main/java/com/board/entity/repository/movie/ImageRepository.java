@@ -9,4 +9,6 @@ import com.board.entity.movie.MovieEntity;
 
 public interface ImageRepository extends JpaRepository<ImageEntity, Long>{
 	public List<ImageEntity> findByMovieId(MovieEntity entity);
+
+    public List<ImageEntity> findByMovieIdAndImgType(MovieEntity movie, String type);
 }
