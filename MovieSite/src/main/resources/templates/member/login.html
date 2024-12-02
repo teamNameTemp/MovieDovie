@@ -173,7 +173,7 @@ window.onload = async () => {
 	
 	const session_email = '[[${session.email}]]';
 	if(getCookie('remember-me') !== '' && session_email !== '')
-		document.location.href='/board/list?page=1';
+		document.location.href='/board/list';
 	
 	let email = getCookie('email');
 	let password = getCookie('password');
