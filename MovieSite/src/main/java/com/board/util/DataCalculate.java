@@ -65,27 +65,12 @@ public class DataCalculate {
     //매출액에 따른 등급 계산
     //금액 필터링
     public static String calcGrade(int totalSales) {
-        String grade = "BRONZE";
-
-        switch (totalSales) {
-            case 0:
-                grade = "BRONZE";
-            break;
-            case 2:
-                grade = "SILVER";
-            break;
-            case 3:
-                grade = "GOLD";
-            break;
-            case 4:
-                grade = "PLATINUM";
-            break;
-            default:
-                grade = "DIAMOND";
-            break;
-    }
-
-        return grade;
+    	 if (totalSales >= 50000) return "DIAMOND";
+    	 if (totalSales >= 30000) return "PLATINUM";
+    	 if (totalSales >= 10000) return "GOLD";
+    	 if (totalSales >= 5000) return "SILVER";
+    	 return "BRONZE";
+    
     }   
 
     //나이 계산

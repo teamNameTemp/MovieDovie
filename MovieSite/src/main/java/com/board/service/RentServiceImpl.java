@@ -4,9 +4,11 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import org.springframework.data.repository.query.Param;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -20,6 +22,7 @@ import com.board.entity.repository.MemberRepository;
 import com.board.entity.repository.NotificationRepository;
 import com.board.entity.repository.RentRepository;
 import com.board.entity.repository.movie.MovieRepository;
+import com.board.util.DataCalculate;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -133,6 +136,7 @@ public class RentServiceImpl implements RentService {
 			log.info(receiverEmail + " : " + content);
 		}
 	}
+	
 	
 	
 	
@@ -264,4 +268,41 @@ public class RentServiceImpl implements RentService {
 	public int getThisMonthSales(String email) {
 		return rentRepository.getThisMonthSales(email);
 	}
+	
+	//관리자 페이지 - 통계 : 다음달에 승급/강등될 회원 확인
+	public Map<String, Integer> calculateGradeChanges() {
+		
+		List<MemberEntity> members = memberRepository.findAll();
+		int upgrade = 0, downgrade = 0, maintain = 0;
+
+        for (MemberEntity member : members) {
+            int currentMonthSales = rentRepository.getThisMonthSales(member.getEmail());
+            String currentGrade = member.getGrade();
+	        String nextGrade = DataCalculate.calcGrade(currentMonthSales);
+
+	        if (currentGrade.equals(nextGrade)) {
+	            maintain++;
+	        } else if (isUpgrade(currentGrade, nextGrade)) {
+	            upgrade++;
+	        } else {
+	            downgrade++;
+	        }
+	    }
+
+	    Map<String, Integer> gradeChanges = new HashMap<>();
+	    gradeChanges.put("upgrade", upgrade);
+	    gradeChanges.put("downgrade", downgrade);
+	    gradeChanges.put("maintain", maintain);
+
+	    return gradeChanges;
+	}
+	
+	private boolean isUpgrade(String currentGrade, String nextGrade) {
+	    List<String> grades = Arrays.asList("BRONZE", "SILVER", "GOLD", "PLATINUM", "DIAMOND");
+	    return grades.indexOf(nextGrade) > grades.indexOf(currentGrade);
+	}
+	
+	
+	
+	
 }

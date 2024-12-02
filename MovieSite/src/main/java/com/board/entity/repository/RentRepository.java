@@ -165,4 +165,5 @@ public interface RentRepository extends JpaRepository<RentEntity, Long>{
     	       "AND EXTRACT(MONTH FROM r.rentdate) = EXTRACT(MONTH FROM CURRENT_DATE)")
     public int getThisMonthSales(@Param("email") String email);
      
+    
 }

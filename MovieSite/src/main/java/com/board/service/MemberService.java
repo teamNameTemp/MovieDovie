@@ -50,4 +50,6 @@ public interface MemberService {
 	//관리자페이지 - 통계 : 최근 7일간 회원가입한 회원 수 확인
 	public int newMembersInLastSevenDays(@Param("sevenDaysAgo") LocalDateTime sevenDaysAgo);
 
+	//관리자페이지 - 통계 : 각 등급 별 회원 수 확인
+	public List<Object[]> gradeMemberCounts();
 }

@@ -181,5 +181,11 @@ public class MemberServiceImpl implements MemberService {
 		memberRepository.save(memberEntity);
 	}
 	
+	//관리자페이지 - 통계 : 각 등급 별 회원 수 확인
+	@Override
+	public List<Object[]> gradeMemberCounts(){
+		return memberRepository.gradeMemberCounts();
+	}
+	
 
 }
