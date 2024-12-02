@@ -53,4 +53,7 @@ public interface RentService {
 	
 	//다음달 회원 등급 확인 위한 이번달 합계
 	public int getThisMonthSales(String email);
+	
+	//관리자 페이지 - 통계 : 다음달에 승급/강등될 회원 확인
+	public Map<String, Integer> calculateGradeChanges();
 }

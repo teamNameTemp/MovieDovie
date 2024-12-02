@@ -86,12 +86,12 @@
             
             <br>
             <span class="membership-date">· 회원 가입일 : [[${#temporals.format(member.regdate, 'yyyy년 MM월 dd일')}]]</span>
-            <th:block th:if="${#strings.equals(nextTier, 'DIAMOND')}">
-            	<span class="membership-date">· 다음 달 예정 등급 : [[${nextTier}]] (최고 등급입니다!)</span>
-            </th:block>
-            <th:block th:else>
-            	<span class="membership-date">· 다음 달 예정 등급 : [[${nextTier}]] <br>&nbsp;&nbsp;([[${daysUntilFirstOfMonth}]]일 동안 [[${upgradeMessage}]])</span>
-            </th:block>
+            <div th:if="${#strings.equals(nextTier, 'DIAMOND')}">
+			    <span class="membership-date">· 다음 달 예정 등급 : [[${nextTier}]] (최고 등급입니다!)</span>
+			</div>
+			<div th:if="${!#strings.equals(nextTier, 'DIAMOND')}">
+			    <span class="membership-date">· 다음 달 예정 등급 : [[${nextTier}]] <br>&nbsp;&nbsp;([[${daysUntilFirstOfMonth}]]일 동안 [[${upgradeMessage}]])</span>
+			</div>
           </div>
         </div>
       </div>
