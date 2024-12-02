@@ -76,7 +76,7 @@ public class RentServiceImpl implements RentService {
 
 				MileageLogEntity mileageLog = MileageLogEntity.builder()
 												.email(memE.getEmail())
-												.title("마일리지 사용 : " + movieE.getTitle())
+												.title("포인트 사용 : " + movieE.getTitle())
 												.paymentType("mileage")
 												.amount(movieE.getPrice())
 												.createdAt(LocalDateTime.now())
@@ -89,7 +89,7 @@ public class RentServiceImpl implements RentService {
 
 				MileageLogEntity mileageLog = MileageLogEntity.builder()
 												.email(memE.getEmail())
-												.title("마일리지 적립 : " + movieE.getTitle())	
+												.title("포인트 적립 : " + movieE.getTitle())	
 												.paymentType("cash")
 												.amount(mileage)
 												.createdAt(LocalDateTime.now())

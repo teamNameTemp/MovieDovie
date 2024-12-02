@@ -221,12 +221,7 @@ public class MasterController {
 	}
 
 	@GetMapping("/memberStats")
-	public void getMemberStats(Model model) {
-		
-		model.addAttribute("RentCount", rentRepository.getTotalRent());
-		model.addAttribute("HitnoCount", movieRepository.getTotalHitno());
-		
-	}
+	public void getMemberStats() {}
 	
 	@GetMapping("/dashboard")
 	public void getDashboard(Model model) {
