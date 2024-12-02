@@ -2,6 +2,8 @@ package com.board.util;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.Period;
+import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.WeekFields;
 import java.util.Locale;
@@ -84,12 +86,26 @@ public class DataCalculate {
     }   
 
     //나이 계산
-    public static int calcAge(String ssn) {
-        int year = Integer.parseInt(ssn.substring(0, 2));
-        int age = LocalDate.now().getYear() - year;
+    public static int calcAge(String birthdate) {
+        int year = Integer.parseInt(birthdate.substring(0, 4)); // 4자리 연도 추출
+        int month = Integer.parseInt(birthdate.substring(4, 6)); // 월 추출
+        int day = Integer.parseInt(birthdate.substring(6, 8)); // 일 추출
+
+        // 나이 계산
+        LocalDate birthDate = LocalDate.of(year, month, day);
+        int age = LocalDate.now().getYear() - birthDate.getYear();
+
+        // 생일이 아직 지나지 않았다면 나이를 1살 줄임
+        if (LocalDate.now().getMonthValue() < month ||
+            (LocalDate.now().getMonthValue() == month && LocalDate.now().getDayOfMonth() < day)) {
+            age--;
+        }
 
         return age;
     }
+  
+
+
 
     public static boolean calcIsAdult(String certification,int age) {
         if(certification == null) return true;

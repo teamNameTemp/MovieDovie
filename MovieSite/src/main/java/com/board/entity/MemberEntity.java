@@ -40,8 +40,8 @@ public class MemberEntity {
 	@Column(name="gender", length=20, nullable=true)
 	private String gender;
 	
-	@Column(name="ssn", nullable=true)
-	private String ssn;
+	@Column(name="birthdate", nullable=false)
+	private String birthdate;
 	
 	@Column(name="telno", length=50, nullable=false)
 	private String telno;
@@ -87,7 +87,7 @@ public class MemberEntity {
 		this.username = member.getUsername();
 		this.nickname = member.getNickname();
 		this.gender = member.getGender();
-		this.ssn = member.getSsn();
+		this.birthdate = member.getBirthdate();
 		this.telno = member.getTelno();
 		this.filesize = member.getFilesize();
 		this.point=member.getPoint();
