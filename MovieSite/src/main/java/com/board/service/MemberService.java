@@ -44,7 +44,7 @@ public interface MemberService {
 	//관리자페이지 - 통계 : 회원 가입한 날 확인
 	public List<Object[]> signupResult();
 	
-   //임시 패스워드 저장하기
+    //임시 패스워드 저장하기
 	public void makeTempPW(String email, String newPW);
 	
 	//관리자페이지 - 통계 : 최근 7일간 회원가입한 회원 수 확인

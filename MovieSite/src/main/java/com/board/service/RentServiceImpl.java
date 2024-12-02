@@ -134,6 +134,8 @@ public class RentServiceImpl implements RentService {
 		}
 	}
 	
+	
+	
 	public Map<String, Object> getMyRentInfo(String email, Long movieId) {
 		Map<String, Object> data = new HashMap<>();
 
