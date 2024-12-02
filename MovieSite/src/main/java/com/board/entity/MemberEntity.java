@@ -40,7 +40,7 @@ public class MemberEntity {
 	@Column(name="gender", length=20, nullable=true)
 	private String gender;
 	
-	@Column(name="birthdate", nullable=false)
+	@Column(name="birthdate", nullable=true)
 	private String birthdate;
 	
 	@Column(name="telno", length=50, nullable=false)
@@ -90,7 +90,6 @@ public class MemberEntity {
 		this.birthdate = member.getBirthdate();
 		this.telno = member.getTelno();
 		this.filesize = member.getFilesize();
-		this.point=member.getPoint();
 		this.org_filename = member.getOrgFilename();
 		this.stored_filename = member.getStoredFilename();
 		this.grade = member.getGrade();
