@@ -376,16 +376,14 @@ public class MovieAPIServiceImpl implements MovieAPIService {
 		List<CrewEntity> entityList = crewRepository.findByCrewNmContainingIgnoreCase(keyword);
 		if(entityList == null) return data;
 		
-		for(CrewEntity entity : entityList) {
+		return searchEntities(entityList, entity -> {
 			Map<String,Object> crew = new HashMap<>();
 			crew.put("id", entity.getCrewId());
 			crew.put("name",entity.getCrewNm());
 			crew.put("profilePath", entity.getProfilePath());
 			crew.put("movie",entity.getMovieId());
-			data.add(crew);
-		}
-		
-		return data;	
+			return crew;
+		});
 	}
 
 	@Override
@@ -395,17 +393,15 @@ public class MovieAPIServiceImpl implements MovieAPIService {
 		List<CompanyEntity> entityList = companyRepository.findByCompanyNmContainingIgnoreCase(keyword);
 		if(entityList == null) return data;
 		
-		for(CompanyEntity entity : entityList) {
+		return searchEntities(entityList, entity -> {
 			Map<String,Object> company = new HashMap<>();
 			company.put("id", entity.getCompanyId());
 			company.put("name", entity.getCompanyNm());
 			company.put("logoPath", entity.getLogoPath());
 			company.put("originCountry", entity.getOriginCountry());
 			company.put("movie",entity.getMovieId());
-			data.add(company);
-		}
-		
-		return data;	
+			return company;
+		});
 	}
 
 	private <T> List<Map<String, Object>> searchEntities(
