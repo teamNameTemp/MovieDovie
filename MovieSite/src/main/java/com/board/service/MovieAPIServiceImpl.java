@@ -216,14 +216,15 @@ public class MovieAPIServiceImpl implements MovieAPIService {
 	    		movieRepository.save(entity);
 	    		dto.setEntity(entity);
 	    	}
-	    	
 	    	mapperListSave(dto);
+	    	
 	    }
 	}
 
 	@Override
 	public void saveTheDataBase(MovieDTO movie) {
 		MovieEntity movieEntity = mapper.toEntity(movie);
+		movie.setEntity(movieEntity);
 		movieRepository.save(movieEntity);
 	}
 
