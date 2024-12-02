@@ -20,7 +20,11 @@ document.addEventListener("DOMContentLoaded", function() {
 
 });
 
-
+ // 대여 현황 박스를 클릭하면 모달 열기
+ rentalStatusBox.addEventListener("click", function () {
+	rentalModal.style.display = "block";
+  });
+  
 // 공통 변수 설정
 const movieLists = document.querySelectorAll(".movie-list");  // 모든 .movie-list 요소 선택
 const arrowsLeft = document.querySelectorAll(".fa-chevron-left.arrow");  // 왼쪽 화살표
