@@ -52,7 +52,7 @@
           <a th:href="@{/board/movieDetail(movieId=${crew.movie.movieId})}">
             <div class="movie-card">
               <img
-                th:src="@{${crew.profilePath} != null ? 'https://image.tmdb.org/t/p/original' + ${crew.profilePath} : '/images/blankPoster.jpg'}"
+                th:src="@{${crew.profilePath} != null ? 'https://image.tmdb.org/t/p/original' + ${crew.movie.posterPath} : '/images/blankPoster.jpg'}"
                 alt="${crew.name}"
               />
             </div>
@@ -62,7 +62,7 @@
           <a th:href="@{/board/movieDetail(movieId=${cast.movie.movieId})}">
             <div class="movie-card">
               <img
-                th:src="@{${cast.profilePath} != null ? 'https://image.tmdb.org/t/p/original' + ${cast.profilePath} : '/images/blankPoster.jpg'}"
+                th:src="@{${cast.profilePath} != null ? 'https://image.tmdb.org/t/p/original' + ${cast.movie.posterPath} : '/images/blankPoster.jpg'}"
                 alt="${cast.name}"
               />
             </div>
@@ -72,7 +72,7 @@
           <a th:href="@{/board/movieDetail(movieId=${company.movie.movieId})}">
             <div class="movie-card">
               <img
-                th:src="@{${company.logoPath} != null ? 'https://image.tmdb.org/t/p/original' + ${company.logoPath} : '/images/blankPoster.jpg'}"
+                th:src="@{${company.logoPath} != null ? 'https://image.tmdb.org/t/p/original' + ${company.movie.posterPath} : '/images/blankPoster.jpg'}"
                 alt="${company.name}"
               />
             </div>
