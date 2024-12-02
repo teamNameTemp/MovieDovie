@@ -229,10 +229,9 @@ public class MovieMapper {
                 .uploadCheck("N")
                 .uploadDate(LocalDateTime.now())
                 .certification(getCertification(dto.getReleaseDates()))
-                .price(calc.calcRentPrice(dto.getReleaseDate()))
+                .price(DataCalculate.calcRentPrice(dto.getReleaseDate()))
                 .build();
         
-        dto.setEntity(entity);
         return entity;
     }
     
