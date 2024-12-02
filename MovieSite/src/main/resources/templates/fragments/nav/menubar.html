@@ -104,6 +104,10 @@
         				<a href="/board/mypage">내 대여 현황</a>
                	 	</div>
              	</div>
+                <div class="mypoint-container">
+                    <p class="mypoint-btn">내 포인트 :</p>
+                    <p class="mypoint-btn" th:text="${member.point == 0} ? '0P' : ${member.point} + 'P'"></p>
+                </div>
             </div>    
         </div>
     </div>
@@ -111,6 +115,13 @@
 	<script>
     const searchInput = document.querySelector('.search-txt');
     const searchButton = document.querySelector('.search-btn');
+    const mypointBtns = document.querySelectorAll('.mypoint-btn');
+
+    mypointBtns.forEach(function(mypointBtn) {
+        mypointBtn.addEventListener('click', function() {
+            window.location.href = '/board/mileagePage';
+        });
+    });
 
     // 페이지 로드 시 초기 버튼 상태 설정
     document.addEventListener('DOMContentLoaded', () => {

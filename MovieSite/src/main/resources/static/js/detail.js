@@ -3,6 +3,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const queryString = window.location.search;
   const urlParams = new URLSearchParams(queryString);
   const movieId = urlParams.get("movieId");
+  const price = document.querySelector(".rent-btn").getAttribute("data-price");
 
   // 모든 액션 버튼에 대한 이벤트 리스너 설정
   const buttons = document.querySelectorAll(".action-btn");
@@ -139,54 +140,114 @@ document.addEventListener("DOMContentLoaded", () => {
 
   //대여 관련
   const rentBtn = document.querySelector(".rent-btn");
-  rentBtn.addEventListener("click", () => {
-    Swal.fire({
-      title: "영화 대여",
-      text: "이 영화를 대여하시겠습니까?",
-      icon: "question",
-      showCancelButton: true,
-      confirmButtonText: "대여하기",
-      cancelButtonText: "취소",
-      reverseButtons: false,
-    }).then((result) => {
-      if (result.isConfirmed) {
-        let formData = new FormData();
-        formData.append("movieId", movieId);
+  rentBtn.addEventListener("click", async () => {
+    try {
+      // 마일리지 정보 조회
+      const response = await fetch("/board/movieDetail/getMileage");
+      const mileageData = await response.json();
+      if (!response.ok) {
+        throw new Error("마일리지 정보를 불러오는데 실패했습니다.");
+      }
 
-        fetch("/board/movieDetail/rent", {
+      const result = await Swal.fire({
+        title: "영화 대여",
+        html: `
+          결제 방식을 선택해주세요<br>
+          <small style="color: #666;">보유 마일리지: <span id="mileage">${mileageData.mileage}</span>P</small>
+        `,
+        icon: "question",
+        showCancelButton: true,
+        showDenyButton: true,
+        confirmButtonText: "현금결제",
+        denyButtonText: "마일리지",
+        cancelButtonText: "취소",
+        reverseButtons: false
+      });
+
+      if (!result.isConfirmed && !result.isDenied) return;
+
+      const paymentMethod = result.isConfirmed ? "cash" : "mileage";
+      
+      // 마일리지 결제 시 잔액 검증
+      if (paymentMethod === "mileage") {
+        if (!mileageData.mileage || !price) {
+          throw new Error("결제 정보가 올바르지 않습니다.");
+        }
+        if (parseInt(mileageData.mileage) < parseInt(price)) {
+          await Swal.fire({
+            title: "마일리지 부족",
+            text: `마일리지가 부족합니다. (필요: ${price}P, 보유: ${mileageData.mileage}P)`,
+            icon: "error"
+          });
+          return;
+        }
+      }
+
+      // 결제 진행
+      const loadingAlert = Swal.fire({
+        title: "결제 진행 중",
+        text: "잠시만 기다려주세요...",
+        allowOutsideClick: false,
+        didOpen: () => Swal.showLoading()
+      });
+
+      try {
+        const formData = new FormData();
+        formData.append("movieId", movieId);
+        formData.append("paymentMethod", paymentMethod);
+
+        // 타임아웃 설정
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 10000); // 10초 타임아웃
+
+        const rentResponse = await fetch("/board/movieDetail/rent", {
           method: "POST",
           body: formData,
-        })
-          .then((response) => response.json())
-          .then((data) => {
-            if (data.message === "good") {
-              Swal.fire({
-                title: "대여 성공",
-                text: "영화가 성공적으로 대여되었습니다!",
-                icon: "success",
-              }).then((result) => {
-                if (result.isConfirmed) {
-                  location.reload();
-                }
-              });
-            } else {
-              Swal.fire({
-                title: "대여 실패",
-                text: "영화 대여 중 오류가 발생했습니다.",
-                icon: "error",
-              });
-            }
-          })
-          .catch((e) => {
-            Swal.fire({
-              title: "오류 발생",
-              text: "요청 처리 중 오류가 발생했습니다.",
-              icon: "error",
-            });
-            console.error("error : " + e);
+          signal: controller.signal
+        });
+
+        clearTimeout(timeoutId);
+
+        if (!rentResponse.ok) {
+          throw new Error('서버 응답 오류: ' + rentResponse.status);
+        }
+
+        const rentData = await rentResponse.json();
+        await loadingAlert.close();
+        
+        if (rentData.message === "good") {
+          const successMessage = paymentMethod === "mileage"
+            ? `영화가 성공적으로 대여되었습니다!\n차감된 마일리지: ${price}P\n남은 마일리지: ${mileageData.mileage - price}P`
+            : "영화가 성공적으로 대여되었습니다!";
+            
+          await Swal.fire({
+            title: "결제 완료",
+            text: successMessage,
+            icon: "success"
           });
+          
+          location.reload();
+        } else {
+          throw new Error(rentData.error || "결제 처리 중 오류가 발생했습니다.");
+        }
+        
+      } catch (error) {
+        await loadingAlert.close();
+        await Swal.fire({
+          title: "결제 오류",
+          text: error.message || "결제 처리 중 오류가 발생했습니다.",
+          icon: "error"
+        });
       }
-    });
+      
+    } catch (error) {
+      console.error("결제 오류:", error);
+      await Swal.fire({
+        title: "결제 오류",
+        text: error.message || "결제 처리 중 오류가 발생했습니다.",
+        icon: "error"
+      });
+    }
   });
 
   //리뷰 관련

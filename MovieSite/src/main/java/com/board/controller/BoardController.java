@@ -24,6 +24,7 @@ import com.board.dto.MemberDTO;
 import com.board.dto.ReplyInterface;
 import com.board.dto.RequestDTO;
 import com.board.dto.RequestReplyDTO;
+import com.board.entity.MileageLogEntity;
 import com.board.entity.NotificationEntity;
 import com.board.entity.RequestEntity;
 import com.board.entity.RequestReplyEntity;
@@ -35,6 +36,7 @@ import com.board.service.FavGenreService;
 import com.board.service.LikeService;
 import com.board.service.MasterService;
 import com.board.service.MemberService;
+import com.board.service.MileageService;
 import com.board.service.MovieAPIServiceImpl;
 import com.board.service.NotificationService;
 import com.board.service.RentService;
@@ -69,10 +71,24 @@ public class BoardController {
 	private final BookmarkService bookmark;
 	private final RentService rent;
 	private final NotificationService notificationService;
+	private final MileageService mileageService;
 
 	@GetMapping("/test")
 	public void getTest() {}
 	
+	@GetMapping("/mileagePage")
+	public void getMileagePage(Model model, HttpSession session) {
+		String email = (String) session.getAttribute("email");
+		String nickname = (String) session.getAttribute("nickname");
+		MemberDTO member = memberService.memberInfo(email);
+
+		List<MileageLogEntity> mileageLogs = mileageService.getMileageLogs(email);
+
+		model.addAttribute("nickname", nickname);
+		model.addAttribute("member", member);
+		model.addAttribute("mileageLogs", mileageLogs);
+	}
+
 	@GetMapping("/list")
 	public void getList(Model model, HttpSession session) throws JsonMappingException, JsonProcessingException {
 		
@@ -288,6 +304,19 @@ public class BoardController {
 	    model.addAttribute("recommandList",recommandList);
 	}
 
+	@RequestMapping("/movieDetail/getMileage")
+	@ResponseBody
+	public Map<String, Object> postMovieDetailGetMileage(HttpSession session) {
+		// 세션에서 이메일이 없는 경우 처리 추가
+		String email = Optional.ofNullable(session.getAttribute("email"))
+			.map(Object::toString)
+			.orElseThrow(() -> new IllegalStateException("로그인이 필요합니다"));
+		
+		MemberDTO member = memberService.memberInfo(email);
+		
+		return Map.of("mileage", member.getPoint());
+	}
+
 	@PostMapping("/movieDetail/reviews")
 	@ResponseBody
 	public Map<String, Object> postMovieDetailReview(@RequestParam("movieId") Long movieId,
@@ -388,14 +417,14 @@ public class BoardController {
 	@PostMapping("/movieDetail/rent")
 	@ResponseBody
 	public Map<String, Object> postMovieDetailRent(@RequestParam("movieId") Long movieId,
-			HttpSession session) {
+			@RequestParam("paymentMethod") String paymentMethod, HttpSession session) {
 		Map<String, Object> response = new HashMap<>();
 
 		String email = (String) session.getAttribute("email");
 
 		// 대여 등록 및 삭제 
 		try {
-			String status = rent.rentMovie(email,movieId);
+			String status = rent.rentMovie(email,movieId,paymentMethod);
 			response.put("message", "good");
 			response.put("status", status);
 		} catch (Exception e) {
