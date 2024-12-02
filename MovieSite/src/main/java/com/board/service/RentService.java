@@ -13,6 +13,7 @@ public interface RentService {
 	public Long getMyAccumulatedPayment(String email);
 	public List<Map<String,Object>> getAllMyRent(String email, String status);
 	public void updateRent(String email, Long movieId);
+	
 	//영화 대여 시작
 	public String rentMovie(String email, Long movieId);
 	
