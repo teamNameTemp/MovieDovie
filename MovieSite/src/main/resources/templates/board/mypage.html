@@ -89,7 +89,7 @@
             <th:block th:if="${#strings.equals(nextTier, 'DIAMOND')}">
             	<span class="membership-date">· 다음 달 예정 등급 : [[${nextTier}]] (최고 등급입니다!)</span>
             </th:block>
-            <th:block th:else>
+            <th:block th:if="${!#strings.equals(nextTier, 'DIAMOND')}">
             	<span class="membership-date">· 다음 달 예정 등급 : [[${nextTier}]] <br>&nbsp;&nbsp;([[${daysUntilFirstOfMonth}]]일 동안 [[${upgradeMessage}]])</span>
             </th:block>
           </div>
@@ -134,15 +134,15 @@
           <div class="info-card">
             <div class="info-row">
               <span class="label">누적 결제 금액</span>
-              <span class="value" th:text="${accumulatedPayment} + '원'"></span>
+              <span class="value" th:text="${accumulatedPayment} + ' 원'"></span>
             </div>
             <div class="info-row">
               <span class="label">이번 달 결제 금액</span>
-              <span class="value" th:text="${currentSales} + '원'"></span>
+              <span class="value" th:text="${currentSales} + ' 원'"></span>
             </div>
             <div class="info-row">
               <span class="label">나의 포인트</span>
-              <span class="value" th:text="${member.point != null ? member.point : 0} + ' P'"></span>
+              <span class="value" th:text="${point != null ? point : 0} + ' P'"></span>
             </div>
           </div>
         </div>
@@ -203,7 +203,7 @@
           </div>
           <div class="stat-card" data-type="pastRents">
             <div class="stat-value">[[${#lists.size(pastRents)}]]</div>
-            <div class="stat-label">과거 대여했던 영화</div>
+            <div class="stat-label">나의 대여 기록</div>
           </div>
         </div>
       </div>

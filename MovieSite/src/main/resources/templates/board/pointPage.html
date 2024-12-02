@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-  <title>마일리지 적립 내역</title>
+  <title>포인트 적립 내역</title>
   <div th:replace="~{/fragments/header :: header}"></div>
 </head>
 <style>
@@ -12,6 +12,7 @@ body {
 }
 
 .mileage-container {
+  text-align: center;
   max-width: 800px;
   margin: 40px auto;
   padding: 20px;
@@ -67,17 +68,19 @@ body {
 }
 
 .green-bg {
-  background-color: #46d369;
+  background-color: #87CEEB;
 }
 
 .red-bg {
-  background-color: #ff0000;
+  background-color: #F08080;
 } 
 </style>
 <body>
   <div th:replace="~{/fragments/nav/menubar::menubar}"></div>
 <div class="mileage-container">
-  <h2 class="title">마일리지 적립 내역</h2>
+  <br>
+  <h2 class="title">포인트 적립/사용 내역</h2>
+  <h4 style="color: white">[ 잔여 포인트 : [[${point}]] P ]</h4> <br><br>
   <div class="mileage-list">
     <div th:if="${not #lists.isEmpty(mileageLogs)}">
       <div class="mileage-item" th:each="mileageLog : ${mileageLogs}"

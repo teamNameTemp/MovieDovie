@@ -112,7 +112,7 @@
              	</div>
                 <div class="mypoint-container">
                     <p class="mypoint-btn">내 포인트 :</p>
-                    <p class="mypoint-btn" th:text="${member.point == 0} ? '0P' : ${member.point} + 'P'"></p>
+                    <p class="mypoint-btn" th:text="${point == 0} ? '0P' : ${point} + ' P'"></p>
                 </div>
             </div>    
         </div>
@@ -125,7 +125,7 @@
 
     mypointBtns.forEach(function(mypointBtn) {
         mypointBtn.addEventListener('click', function() {
-            window.location.href = '/board/mileagePage';
+            window.location.href = '/board/pointPage';
         });
     });
 

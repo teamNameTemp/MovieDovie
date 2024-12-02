@@ -133,14 +133,14 @@ body {
 }
 
 .mypoint-container {
-  margin-left: 20px;
+  margin-left: 14px;
   display: flex;
   flex-direction: row;
 }
 
 .mypoint-container p {
   cursor: pointer;
-  margin-left: 10px;
+  margin-left: 3px;
   text-align: center;
 }
 

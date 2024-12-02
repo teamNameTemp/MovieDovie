@@ -42,7 +42,7 @@ public interface MovieRepository extends JpaRepository<MovieEntity, Long>{
 
 
 	//관리자 페이지 - 통계 : 전체 회원의 hitno 수 확인
-	@Query(value = "SELECT COUNT(m.hitno) FROM MovieEntity m")
+	@Query(value = "SELECT SUM(m.hitno) FROM MovieEntity m")
 	public int getTotalHitno();
 	
 }
