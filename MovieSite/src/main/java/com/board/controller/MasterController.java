@@ -4,7 +4,11 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -283,6 +287,51 @@ public class MasterController {
 		}
 
 		return response; // JSON 형태로 반환
+	}
+	
+	
+	// 관리자 페이지 - 통계 : 최근 일주일 간 cash 혹은 포인트 결제 금액 및 비율 확인
+	@GetMapping("/weeklyPaymentType")
+	@ResponseBody
+	public Map<String, Double> getWeeklyPaymentType(){
+		
+		Calendar cal = Calendar.getInstance();
+		Date endDate = cal.getTime();
+		LocalDateTime endDateTime = endDate.toInstant()
+		    .atZone(ZoneId.systemDefault())
+		    .toLocalDateTime();
+
+		cal.add(Calendar.DAY_OF_MONTH, -7);
+		Date startDate = cal.getTime();
+		LocalDateTime startDateTime = startDate.toInstant()
+		    .atZone(ZoneId.systemDefault())
+		    .toLocalDateTime();
+
+		List<Object[]> result = rentService.getSalesDataForLastSevenDays(startDateTime, endDateTime);
+		
+	    if (result.isEmpty() || result.get(0) == null) {
+	        return Collections.emptyMap();
+	    }
+
+	    Object[] data = result.get(0);
+	    double cashOrNullSales = ((Number) data[0]).doubleValue();
+	    double mileageSales = ((Number) data[1]).doubleValue();
+	    double totalSales = ((Number) data[2]).doubleValue();
+
+	    Map<String, Double> ratios = new HashMap<>();
+	    if (totalSales > 0) {
+	        ratios.put("cashSalesRatio", (cashOrNullSales / totalSales) * 100);
+	        ratios.put("pointSalesRatio", (mileageSales / totalSales) * 100);
+	        ratios.put("cashSales", cashOrNullSales);
+	        ratios.put("pointSales", mileageSales);
+	    } else {
+	        ratios.put("cashSalesRatio", 0.0);
+	        ratios.put("pointSalesRatio", 0.0);
+	        ratios.put("cashSales", cashOrNullSales);
+	        ratios.put("pointSales", mileageSales);
+	    }
+		    return ratios;
+		
 	}
 	
 	// 관리자 페이지 - 통계 : 최근 일주일 간 대여 수 확인

@@ -1,6 +1,7 @@
 package com.board.service;
 
 import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -22,6 +23,9 @@ public interface RentService {
 
 	//관리자페이지 - 통계 : 매출 확인 (startDate에 원하는 날짜, endDate에 원하는 날짜 넣으면 그 사이의 값들이 나옴)
     public List<Object[]> Sales(LocalDateTime startDate, LocalDateTime endDate);
+    
+    //관리자페이지 - 통계 : cash로 결제했는지 point로 결제했는지 금액 및 비율 확인 (startDate에 원하는 날짜, endDate에 원하는 날짜 넣으면 그 사이의 값들이 나옴)
+    public List<Object[]> getSalesDataForLastSevenDays(LocalDateTime startDate, LocalDateTime endDate);
     
 	//관리자페이지 - 통계 : 월별 대여 수 확인
 	public List<Object[]> RentCountByMonth(int year);

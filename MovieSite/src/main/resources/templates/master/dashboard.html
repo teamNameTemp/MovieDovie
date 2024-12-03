@@ -227,6 +227,13 @@
 		    padding-left: 10px;
 		}
 		
+		.right30-divvv {
+		    width: 30%; /* 여백을 고려하여 너비 설정 */
+		    box-sizing: border-box;
+		    text-align: center;
+		    font-size: 16px;
+		}
+		
         #RentStatus {
 		  display: block;
 		  margin: 0 auto;
@@ -491,42 +498,80 @@
 		
 		<div class="side1-content3">
 			<div class="content">
-				<h2>관람 등급 설정 필요</h2>
-				<table class="table table-sm" id="cert">
-				  <thead class="table-light">
-				    <tr>
-				      <th scope="col">영화 제목</th>
-				      <th scope="col">관람 등급</th>
-				      <th scope="col">클릭 수</th>
-				    </tr>
-				  </thead>
-				  <tbody id = "certIsNull"></tbody>
-				</table>
-				<script>
-			  		fetch('/master/certIsNull')
-			  			.then(response => response.json())
-			  			.then(data => {
-			  				const tbody = document.getElementById('certIsNull');
-			  				if (data.length === 0){
-			  					tbody.innerHTML = '<tr><td colspan="3"><br>현재 모든 영화에 관람 등급 값이 있습니다.<br><br></td></tr>';
-			  				} else {
-			  					 data.forEach((item, index) => {
-			  						if(index < 5){
-				  	                    const movie = item.movie;  // movie는 Map 객체 안에 있는 MovieEntity
-				  	                    const hitno = item.hitno;  // bookmarkCount는 Map 객체 안의 북마크 수
-		
-				  	                    const row = document.createElement('tr');
-				  	                    row.innerHTML = `
-				  	                        <td><a href="/master/movieUpload">${movie.title}</a></td>
-				  	                        <td>${movie.certification}</td>
-				  	                        <td>${movie.hitno}</td>
-				  	                    `;
-				  	                    tbody.appendChild(row);
-			  						}
-			  	                });
-			  				}
-			  			}).catch(error => console.error('Error => ', error));
-			  	</script>
+				<h2>최근 일주일 결제 유형 통계</h2><br>
+				<div class="horicontent">
+				<div class="left70-div">
+					<div style="width: 85%; align-items: center;">
+					    <canvas id="paymentTypeChart"></canvas>
+					</div>
+					<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+					<script>
+					    const paymentTypeChartctx = document.getElementById('paymentTypeChart');
+					    let paymentTypeChart;
+					
+					    fetch('/master/weeklyPaymentType')
+					        .then(response => response.json())
+					        .then(data => {
+					            if (paymentTypeChart) {
+					                paymentTypeChart.destroy();
+					            }
+					            paymentTypeChart = new Chart(paymentTypeChartctx, {
+					                type: 'bar',
+					                data: {
+					                    labels: ['현금 결제', '포인트 결제'],
+					                    datasets: [{
+					                        data: [data.cashSales, data.pointSales],
+					                        barThickness: 20, // 바의 두께를 설정 (픽셀 단위),
+					                    }]
+					                },
+					                options: {
+					                	indexAxis: 'y',
+					                    responsive: true,
+					                    elements: {
+					                        bar: {
+					                          borderwidth: 0.2,
+					                        }
+					                    },
+					                    plugins: {
+					                        legend: {
+					                          display: false,
+					                          position: 'right',
+					                        },
+					                        title: {
+					                          display: false
+					                        }
+					                    },
+					                    scales: {
+					    		            x: {
+					    		              beginAtZero: true,
+					    		              ticks: {
+					    		                stepSize: 150000
+					    		              },
+					    		              categoryPercentage: 0.5 // 이 값을 조정해 보세
+					    		            }
+					    		          }
+					                }
+					            });
+					        })
+					        .catch(error => console.error('Error fetching data:', error));
+					</script>
+					</div>
+					<div class="right30-divvv">
+						<br><h4>[비율]</h4><br>
+						현금 : 포인트 <br>
+						<span id="cashRatio"></span>% : <span id="pointRatio"></span>%
+						<script>
+						    fetch('/master/weeklyPaymentType')
+						        .then(response => response.json())
+						        .then(data => {
+						            document.getElementById('cashRatio').textContent = data.cashSalesRatio.toFixed(1);
+						            document.getElementById('pointRatio').textContent = data.pointSalesRatio.toFixed(1);
+						        })
+						        .catch(error => console.error('데이터 가져오기 오류:', error));
+						</script>
+					</div>
+					
+				</div>
 			</div>
 		</div>
 		
@@ -976,6 +1021,17 @@
    	        };
    	    }
    	};
+	
+	const legendMarginhori = {
+	   	    id: 'legendMarginhori',
+	   	    beforeInit(chart) {
+	   	        const originalFit = chart.legend.fit;
+	   	        chart.legend.fit = function fit() {
+	   	            originalFit.bind(chart.legend)();
+	   	            this.width += 35; // Adjust this value to increase/decrease space
+	   	        };
+	   	    }
+	   	};
 	
 </script>
 
