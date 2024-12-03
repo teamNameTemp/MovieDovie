@@ -5,8 +5,6 @@ import java.util.List;
 import com.board.dto.RequestReplyDTO;
 import com.board.entity.RequestReplyEntity;
 
-import jakarta.persistence.EntityNotFoundException;
-
 public interface RequestReplyService {
 
 	//시작할 때 댓글 목록 가져오기

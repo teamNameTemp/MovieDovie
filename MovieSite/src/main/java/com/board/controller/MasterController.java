@@ -31,7 +31,6 @@ import com.board.dto.movie.MovieDTO;
 import com.board.entity.RequestEntity;
 import com.board.entity.RequestReplyEntity;
 import com.board.entity.movie.MovieEntity;
-import com.board.entity.repository.MemberRepository;
 import com.board.entity.repository.RentRepository;
 import com.board.entity.repository.movie.MovieRepository;
 import com.board.service.FavGenreService;
