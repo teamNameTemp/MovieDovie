@@ -392,9 +392,10 @@ public class MovieAPIServiceImpl implements MovieAPIService {
 			crew.put("id", entity.getCrewId());
 			crew.put("name",entity.getCrewNm());
 			crew.put("profilePath", entity.getProfilePath());
+			crew.put("certification", entity.getMovieId().getCertification());
 			crew.put("movie",entity.getMovieId());
 			return crew;
-		}, memberDTO);
+		}, DataCalculate.calcAge(memberDTO.getBirthdate()));
 	}
 
 	@Override
@@ -410,21 +411,22 @@ public class MovieAPIServiceImpl implements MovieAPIService {
 			company.put("name", entity.getCompanyNm());
 			company.put("logoPath", entity.getLogoPath());
 			company.put("originCountry", entity.getOriginCountry());
+			company.put("certification", entity.getMovieId().getCertification());
 			company.put("movie",entity.getMovieId());
 			return company;
-		}, memberDTO);
+		}, DataCalculate.calcAge(memberDTO.getBirthdate()));
 	}
 
 	private <T> List<Map<String, Object>> searchEntities(
 		List<T> entities, 
 		Function<T, Map<String, Object>> mapper,
-		MemberDTO memberDTO) {
+		int age) {
 		
 		if (entities == null) return new ArrayList<>();
 		
 		return entities.stream()
 			.map(mapper)
-			.filter(map -> DataCalculate.calcIsAdult((String)map.get("certification"), DataCalculate.calcAge(memberDTO.getBirthdate())))
+			.filter(map -> DataCalculate.calcIsAdult((String)map.get("certification"), age))
 			.collect(Collectors.toList());
 	}
 
@@ -437,9 +439,10 @@ public class MovieAPIServiceImpl implements MovieAPIService {
 			cast.put("name", entity.getCastNm());
 			cast.put("character", entity.getCharacterNm());
 			cast.put("profilePath", entity.getProfilePath());
+			cast.put("certification", entity.getMovieId().getCertification());
 			cast.put("movie", entity.getMovieId());
 			return cast;
-		}, memberDTO);
+		}, DataCalculate.calcAge(memberDTO.getBirthdate()));
 	}
 	
 }
