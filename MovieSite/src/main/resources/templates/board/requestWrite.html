@@ -153,6 +153,8 @@
 				  if(data.message === 'good'){
 					  alert("요청사항 등록이 완료되었습니다.");
 					  document.location.href='/board/requestList'; 
+				  } else {
+					  alert('서버 장애로 요청사항 등록에 실패했습니다.');
 				  }
 			  }).catch((error) => {
 				  console.log("error=" + error);
