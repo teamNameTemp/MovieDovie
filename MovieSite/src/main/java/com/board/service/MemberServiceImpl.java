@@ -1,13 +1,11 @@
 package com.board.service;
 
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import org.springframework.data.repository.query.Param;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import com.board.dto.MemberDTO;
 import com.board.entity.MemberEntity;
@@ -46,6 +44,7 @@ public class MemberServiceImpl implements MemberService {
 			notificationService.newGradeNotiForUser(member.getEmail(), content, "grade");
 			
 			idx++;
+			log.info("등급 업데이트 완료 : " + idx + "명");
 		}
 
 	}

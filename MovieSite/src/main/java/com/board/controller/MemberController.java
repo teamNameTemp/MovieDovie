@@ -85,17 +85,8 @@ public void getTitle(){
 	
 	//로그아웃
 	@PostMapping("/logout")
-	public void getLogout(HttpSession session,Model model) {	
-		String email = (String) session.getAttribute("email");
-
-		// 이메일이 세션에 존재하는지 확인
-		if (email != null) {
-			service.lastdateUpdate(email, "logout");
-			service.memberLogRegistry(email, "logout");
-		}
-		
-		// 세션 무효화
-		session.invalidate();	
+	public void postLogout() {
+		// Spring Security가 처리하므로 빈 메서드로 둠
 	}
 	
 	//회원 등록 화면 보기
@@ -111,7 +102,7 @@ public void getTitle(){
 			@RequestParam("birth-month") String birthMonth,
 			@RequestParam("birth-day") String birthDay) throws Exception {
 
-		Optional<Map<String, Object>> genre = favGenre.getFavGenre();
+		Optional<Map<String, Object>> genre = favGenre.getFavGenre(member.getEmail());
 		//운영체제에 따라 이미지가 저장될 디렉토리 구조 설정 시작
 		String os = System.getProperty("os.name").toLowerCase();
 		String path;
@@ -183,7 +174,6 @@ public void getTitle(){
 		//소셜 회원 첫 수정 시
 		if(kind.equals("SU")) {
 			
-			session.setMaxInactiveInterval(3600 * 24 * 7); // 세션 유지 기간 설정
 			session.setAttribute("email", member.getEmail());
 			session.setAttribute("username", member.getUsername());
 			session.setAttribute("role", member.getRole());
@@ -308,7 +298,7 @@ public void getTitle(){
     public Map<String, String> postMemberInfoModify(MemberDTO member, @RequestParam("kind") String kind, 
             @RequestParam("fileUpload") MultipartFile mpr) throws Exception {
 
-        // 운영체제에 따라 이미지가 저장될 디렉토리 구조 설정 시작
+        // 운영체제에 따라 이미��가 저장될 디렉토리 구조 설정 시작
         String os = System.getProperty("os.name").toLowerCase();
         String path;
         if (os.contains("win")) {
@@ -348,7 +338,7 @@ public void getTitle(){
 			}
 		}
 
-        if (kind.equals("I")) { // 회원 등록 시
+        if (kind.equals("I")) { // 회��� 등록 시
             log.info("회원가입 성공!");
             member.setPassword(pwdEncoder.encode(member.getPassword()));
             service.signup(member);
@@ -446,7 +436,7 @@ public void getTitle(){
 		
 		model.addAttribute("nickname", nickname);
 		
-		Optional<Map<String, Object>> genre = favGenre.getFavGenre();
+		Optional<Map<String, Object>> genre = favGenre.getFavGenre(email);
 		model.addAttribute("favGenre", genre.orElse(null));
 	}
 	
@@ -608,17 +598,4 @@ public void getTitle(){
 
         return data;
     }
-	
-	//카카오
-	 @GetMapping("/auth/kakao")
-	 public String kakaoLogin() {
-	    return "redirect:/member/selectGenre"; 
-	 }
-	 
-//	@GetMapping("/member/auth/kakao/callback")
-//	public String kakaoCallback() {
-//		return "redirect:/board/selectGenre";
-//	}
-	
-
 }

@@ -4,12 +4,10 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 import org.springframework.data.repository.query.Param;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -22,7 +20,6 @@ import com.board.entity.RentEntity;
 import com.board.entity.movie.MovieEntity;
 import com.board.entity.repository.MemberRepository;
 import com.board.entity.repository.MileageLogRepository;
-import com.board.entity.repository.NotificationRepository;
 import com.board.entity.repository.RentRepository;
 import com.board.entity.repository.movie.MovieRepository;
 import com.board.util.DataCalculate;
@@ -38,7 +35,6 @@ public class RentServiceImpl implements RentService {
 	private final RentRepository rentRepository;
 	private final MovieRepository movieRepositoty;
 	private final MemberRepository memberRepository;
-	private final NotificationRepository notificationRepository;
 	private final NotificationService notificationService;
 	private final MileageLogRepository mileageLogRepository;
 	@Override

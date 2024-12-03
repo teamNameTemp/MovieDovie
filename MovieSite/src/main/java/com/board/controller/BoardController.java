@@ -75,9 +75,6 @@ public class BoardController {
    private final NotificationService notificationService;
    private final MileageService mileageService;
 
-   @GetMapping("/test")
-   public void getTest() {}
-   
 	@GetMapping("/pointPage")
 	public void getMileagePage(Model model, HttpSession session) {
 		String email = (String) session.getAttribute("email");
@@ -131,7 +128,7 @@ public class BoardController {
 	
 		//선호 장르별 영화 리스트
 		Map<String, Object> favGenreList = new HashMap<>();
-		Optional<Map<String, Object>> genre = favGenre.getFavGenre();
+		Optional<Map<String, Object>> genre = favGenre.getFavGenre(email);
 		if (genre.isPresent()) {
 			for (int i = 0; i < genre.get().size(); i++) {
 				// 장르 컬럼 이름
