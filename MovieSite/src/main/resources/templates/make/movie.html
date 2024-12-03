@@ -191,7 +191,7 @@
             }).then(response => response.json())
             .then(result =>{
             	document.getElementById('loading').style.display = 'none';
-                if(result.message == "good"){
+                if(result.message === "good"){
                     alert("데이터가 저장되었습니다.");
                 }
                 else{

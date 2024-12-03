@@ -3,7 +3,6 @@ package com.board.controller;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.UnsupportedEncodingException;
-import java.lang.StackWalker.Option;
 import java.net.URLEncoder;
 import java.nio.file.Files;
 import java.util.HashMap;
@@ -32,11 +31,11 @@ import com.board.service.FavGenreService;
 import com.board.service.MailService;
 import com.board.service.MemberService;
 import com.board.service.TmdbAPIServiceImpl;
+import com.board.util.DataCalculate;
 import com.board.util.PasswordMaker;
 
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 
@@ -197,6 +196,7 @@ public void getTitle(){
 				file.delete();
 			}		
 			member.setPassword(service.memberInfo(member.getEmail()).getPassword());
+			member.setGrade(DataCalculate.calcGrade(0));
 			//회원 수정
 			service.modifyMemberInfo(member);
 		}	
