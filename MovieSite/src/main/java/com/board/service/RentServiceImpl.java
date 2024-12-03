@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -77,7 +78,7 @@ public class RentServiceImpl implements RentService {
 				MileageLogEntity mileageLog = MileageLogEntity.builder()
 												.email(memE.getEmail())
 												.title("포인트 사용 : " + movieE.getTitle())
-												.paymentType("mileage")
+												.paymentType(paymentMethod)
 												.amount(movieE.getPrice())
 												.createdAt(LocalDateTime.now())
 												.build();
@@ -90,7 +91,7 @@ public class RentServiceImpl implements RentService {
 				MileageLogEntity mileageLog = MileageLogEntity.builder()
 												.email(memE.getEmail())
 												.title("포인트 적립 : " + movieE.getTitle())	
-												.paymentType("cash")
+												.paymentType(paymentMethod)
 												.amount(mileage)
 												.createdAt(LocalDateTime.now())
 												.build();
@@ -103,6 +104,7 @@ public class RentServiceImpl implements RentService {
 					.status("Y")
 					.sales(movieE.getPrice())
 					.email(memE)
+					.paymentType(paymentMethod)
 					.movieId(movieE)
 					.build();
 			rentRepository.save(rent);
@@ -191,6 +193,12 @@ public class RentServiceImpl implements RentService {
 	public List<Object[]> Sales(LocalDateTime startDate, LocalDateTime endDate){
 		return rentRepository.Sales(startDate, endDate);
 	}
+	
+	//관리자페이지 - 통계 : cash로 결제했는지 point로 결제했는지 금액 및 비율 확인 (startDate에 원하는 날짜, endDate에 원하는 날짜 넣으면 그 사이의 값들이 나옴)
+	@Override
+    public List<Object[]> getSalesDataForLastSevenDays(LocalDateTime startDate, LocalDateTime endDate){
+    	return rentRepository.getSalesDataForLastSevenDays(startDate, endDate);
+    }
 
 	// 관리자페이지 - 통계 : 월별 대여 수 확인
 	@Override
