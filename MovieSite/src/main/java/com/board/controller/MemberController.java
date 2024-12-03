@@ -197,6 +197,7 @@ public void getTitle(){
 			}		
 			member.setPassword(service.memberInfo(member.getEmail()).getPassword());
 			member.setGrade(DataCalculate.calcGrade(0));
+			member.setPoint(0L);
 			//회원 수정
 			service.modifyMemberInfo(member);
 		}	
