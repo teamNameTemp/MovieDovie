@@ -10,6 +10,7 @@ import org.springframework.security.web.SecurityFilterChain;
 
 import com.board.service.UserDetailsServiceImpl;
 
+import jakarta.servlet.http.HttpSession;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 
@@ -73,19 +74,27 @@ public class WebSecurityConfig {
       http
          .sessionManagement(management -> management
             .sessionFixation().changeSessionId()
-            .maximumSessions(1) //하나의 아이디에 대한 다중 로그인 허용 개수
-            .maxSessionsPreventsLogin(false) //다중 로그인 개수를 초과하였을 경우 처리 방법
-            .expiredUrl("/member/login"));            
+            .maximumSessions(1)//하나의 아이디에 대한 다중 로그인 허용 개수
+            .maxSessionsPreventsLogin(false)//다중 로그인 개수를 초과하였을 경우 처리 방법
+            .expiredUrl("/member/login")//세션이 만료된 경우 이동할 경로   
+            .and()
+            .invalidSessionUrl("/member/login"));//세션이 유효하지 않은 경우 이동할 경로
       
       //스프링 시큐리티의 로그 아웃
       http
          .logout(logout -> logout
-               .logoutUrl("/member/logout")
-               .logoutSuccessUrl("/member/login")
-               .invalidateHttpSession(true)
-               .clearAuthentication(true)
-               .deleteCookies("JSESSIONID", "remember-me")
-               .permitAll());
+               .logoutUrl("/member/logout")//로그아웃 요청 URL    
+               .logoutSuccessUrl("/member/login")//로그아웃 성공 후 이동할 URL
+               .invalidateHttpSession(true)//세션 무효화
+               .clearAuthentication(true)//인증 정보 초기화
+               .deleteCookies("JSESSIONID", "remember-me", "OAUTH2_AUTHORIZATION")//쿠키 삭제
+               .addLogoutHandler((request, response, authentication) -> {
+                   HttpSession session = request.getSession(false);
+                   if (session != null) {
+                       log.info("------------------------ 로그아웃 성공 ------------------------");
+                       session.invalidate();
+                   }
+               }));
       
       //OAuth2 설정 
       http
