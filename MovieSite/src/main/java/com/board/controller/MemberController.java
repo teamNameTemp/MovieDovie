@@ -186,7 +186,7 @@ public void getTitle(){
 			session.setAttribute("username", member.getUsername());
 			session.setAttribute("role", member.getRole());
 			session.setAttribute("nickname", member.getNickname());
-
+			session.setAttribute("birthdate", member.getBirthdate());
 			//프로필 이미지 변경 시에 기존 프로필 이미지 삭제 
 			if(!mpr.isEmpty()) {
 				MemberDTO m = service.memberInfo(member.getEmail());
