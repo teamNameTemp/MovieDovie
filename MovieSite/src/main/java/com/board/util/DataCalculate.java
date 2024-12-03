@@ -106,7 +106,9 @@ public class DataCalculate {
 
 
     public static boolean calcIsAdult(String certification,int age) {
-        if(certification == null) return false;
+        if(certification == null) {
+        	return age<19? false:true;
+        }
         switch (certification) {    
             case "19+":
             case "19":
