@@ -437,8 +437,12 @@ public void getTitle(){
 		Map<String,Integer> map = tmdb.getGenreList().block();
 		
 		model.addAttribute("genres",map);
+		String email = (String) session.getAttribute("email");
+		String nickname = (String) session.getAttribute("nickname");
 		
-		String nickname = (String)session.getAttribute("nickname");
+		MemberDTO memberDTO = service.memberInfo(email);
+		model.addAttribute("member", memberDTO);
+		
 		model.addAttribute("nickname", nickname);
 		
 		Optional<Map<String, Object>> genre = favGenre.getFavGenre();
