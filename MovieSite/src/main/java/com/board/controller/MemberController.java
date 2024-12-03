@@ -105,7 +105,10 @@ public void getTitle(){
 	@ResponseBody
 	@PostMapping("/signup")
 	public Map<String,String> postSignup(HttpSession session, MemberDTO member, @RequestParam("kind") String kind, 
-			@RequestParam("fileUpload") MultipartFile mpr) throws Exception {
+			@RequestParam("fileUpload") MultipartFile mpr,
+			@RequestParam("birth-year") String birthYear,
+			@RequestParam("birth-month") String birthMonth,
+			@RequestParam("birth-day") String birthDay) throws Exception {
 		
 		//운영체제에 따라 이미지가 저장될 디렉토리 구조 설정 시작
 		String os = System.getProperty("os.name").toLowerCase();
@@ -168,7 +171,9 @@ public void getTitle(){
 				File file = new File(path + m.getStoredFilename());//수정되기 전의 stored_file
 				file.delete();
 			}		
-			member.setPassword(service.memberInfo(member.getEmail()).getPassword());
+			//member.setPassword(service.memberInfo(member.getEmail()).getPassword());
+			//String birthdate = birthYear + birthMonth + birthDay;
+		    //member.setBirthdate(birthdate);
 			//회원 수정
 			service.modifyMemberInfo(member);
 		}		
@@ -181,7 +186,7 @@ public void getTitle(){
 			session.setAttribute("username", member.getUsername());
 			session.setAttribute("role", member.getRole());
 			session.setAttribute("nickname", member.getNickname());
-
+			session.setAttribute("birthdate", member.getBirthdate());
 			//프로필 이미지 변경 시에 기존 프로필 이미지 삭제 
 			if(!mpr.isEmpty()) {
 				MemberDTO m = service.memberInfo(member.getEmail());
@@ -194,6 +199,8 @@ public void getTitle(){
 		}	
 		
 		Map<String,String> data = new HashMap<>();
+	    //String birthdate = birthYear + birthMonth + birthDay;
+	    //member.setBirthdate(birthdate);
 		data.put("message", "good");
 		data.put("username", URLEncoder.encode(member.getUsername(),"UTF-8"));
 		

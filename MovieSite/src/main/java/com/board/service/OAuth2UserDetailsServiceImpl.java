@@ -1,7 +1,9 @@
 package com.board.service;
 
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.List;
+import java.util.Map;
+
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
@@ -9,24 +11,14 @@ import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
+
 import com.board.dto.MemberOAuth2DTO;
 import com.board.entity.MemberEntity;
 import com.board.entity.repository.MemberRepository;
+
 import jakarta.servlet.http.HttpSession;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import lombok.AllArgsConstructor;
-import lombok.extern.log4j.Log4j2;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
-import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
-import org.springframework.security.oauth2.core.user.OAuth2User;
-import org.springframework.stereotype.Service;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
 
 @Service
 @AllArgsConstructor
@@ -60,15 +52,6 @@ public class OAuth2UserDetailsServiceImpl extends DefaultOAuth2UserService {
                 birthdate = (String) naverResponse.get("birthyear") + "-" + (String) naverResponse.get("birthday");
                 break;
 
-            case "kakao":
-                Map<String, Object> kakaoAccount = oAuth2User.getAttribute("kakao_account");
-                providerId = Long.toString((Long) oAuth2User.getAttribute("id"));
-                email = (String) kakaoAccount.get("email");
-                phoneNumber = (String) kakaoAccount.get("phone_number");
-                gender = (String) kakaoAccount.get("gender");
-                birthdate = (String) kakaoAccount.get("birthday");
-                break;
-
             default: // 기본은 구글
                 providerId = oAuth2User.getAttribute("sub");
                 email = oAuth2User.getAttribute("email");
@@ -82,12 +65,13 @@ public class OAuth2UserDetailsServiceImpl extends DefaultOAuth2UserService {
         log.info("=========================================== OAuth2 로그인 단계: Email 정보 ({})", email);
         log.info("=========================================== OAuth2 로그인 단계: phoneNum 정보 ({})", phoneNumber);
         log.info("=========================================== OAuth2 로그인 단계: gender 정보 ({})", gender);
-
+        log.info("=========================================== OAuth2 로그인 단계: birthdate 정보 ({})", birthdate);
 
         // 세션에 사용자 정보 저장
         session.setAttribute("email", email);
         session.setAttribute("phoneNumber", phoneNumber);
         session.setAttribute("gender", gender);
+        session.setAttribute("birthdate", birthdate);
 
         // 회원 정보 저장 또는 업데이트
         MemberEntity member = saveOrUpdateMember(email, provider, gender, phoneNumber, birthdate);
@@ -109,7 +93,6 @@ public class OAuth2UserDetailsServiceImpl extends DefaultOAuth2UserService {
 
         return memberOAuth2DTO;
     }
-    //todo : 주민등록번호 
     private MemberEntity saveOrUpdateMember(String email, String provider, String gender, String phoneNumber, String birthdate) {
         return memberRepository.findById(email).orElseGet(() -> {
             MemberEntity member = MemberEntity.builder()
@@ -119,8 +102,10 @@ public class OAuth2UserDetailsServiceImpl extends DefaultOAuth2UserService {
                     .role("USER")
                     .regdate(LocalDateTime.now())
                     .nickname("oauth")
-                    .gender(gender != null ? gender : "여성") // 사용자가 지정한 값 또는 기본값 설정
-                    .telno(phoneNumber != null ? phoneNumber : "123") // 사용자가 지정한 값 또는 기본값 설정
+                    .point(0L)
+                    .gender(gender != null ? gender : "") // 사용자가 지정한 값 또는 기본값 설정
+                    .telno(phoneNumber != null ? phoneNumber : "01012341234") // 사용자가 지정한 값 또는 기본값 설정
+                    .birthdate(birthdate != null ? birthdate : "")
                     .build();
             
             return memberRepository.save(member);

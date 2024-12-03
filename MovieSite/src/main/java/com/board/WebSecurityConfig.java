@@ -90,7 +90,7 @@ public class WebSecurityConfig {
       //OAuth2 설정 
       http
          .oauth2Login((login) -> login
-         .loginPage("/member/selectGenre")//소셜 로그인 페이지
+         .loginPage("/member/login")//소셜 로그인 페이지
          .successHandler(oAuth2SuccessHandler)
          .failureHandler(oAuth2FailureHandler));
       

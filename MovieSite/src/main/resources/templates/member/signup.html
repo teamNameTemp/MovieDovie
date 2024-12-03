@@ -194,6 +194,8 @@ button:hover {
 	function checkEmail() {
 	    if (!emailAvailable) {
 	        alert("사용 가능한 이메일을 입력해주세요.");
+
+
 	        return;
 	    }
 	    const email = document.getElementById('email').value;
@@ -217,14 +219,16 @@ button:hover {
 	        } else {
 	            alert("메일 발송 실패");
 	        }
-	    })
-	    .catch(error => {
-	        console.error(error);
-	        alert("서버와의 통신에 문제가 발생했습니다.");
-	    });
+		})
+		.catch(error => {
+			console.error(error);
+			alert("서버와의 통신에 문제가 발생했습니다.");
+		});
 	}
-
 	
+		// 이메일 유효성 검사
+		const isValidEmail = (email) => /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(email);
+
 window.onload = () => {
     let imgCheck = "N";
     let emailCodeMatch = false; //이메일 인증 성공 여부
@@ -264,7 +268,7 @@ window.onload = () => {
 		});
 		
 	
-	
+	//이메일 인증 번호 확인
 	document.getElementById('confirmCodeButton').addEventListener('click', () => {
 		const userCode = document.getElementById('codeConfirm').value.trim();
 		console.log("컨퍼메이코드" + confirmationCode);
@@ -321,7 +325,7 @@ window.onload = () => {
         imgCheck = "Y";
     };
 
-	// 이메일 유효성 검사
+	// 이메일 유효성 검사 및 인증번호 발송 버튼 상태 제어
 	const isValidEmail = (email) => /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(email);
 	email.addEventListener('input', async () => {
 	    const sendCodeButton = document.querySelector('.btn'); // 인증번호 발송 버튼
@@ -462,6 +466,8 @@ window.onload = () => {
             telnoValidationMessage.style.color = "red";
         }
     });
+	
+
 
     // 회원가입 버튼 클릭
 	btnRegister.addEventListener('click', async () => {
@@ -543,7 +549,6 @@ window.onload = () => {
 
 };
 </script>
-
 </head>
 <body>
 <div class="main" align="center">
@@ -555,20 +560,20 @@ window.onload = () => {
 
 				<div>
 					<label>이메일</label>
-					<input type="email" id="email" name="email" class="input_field" placeholder="이메일">
-					<div id="emailValidationMessage" class="validation-message"></div>
-					<button class="btn" type="button" onclick="checkEmail()">인증번호 발송</button>
+						<input type="email" id="email" name="email" class="input_field" placeholder="이메일">
+						<div id="emailValidationMessage" class="validation-message"></div>
+						<button class="btn" type="button" onclick="checkEmail()">인증번호 발송</button>
 				</div><br>
-				
+								
 				<div>
 					<label for="codeConfirm">인증번호 입력</label>
-					<input type="text" class="input_field" id="codeConfirm" placeholder="인증번호 입력">
-					<button type="button" id="confirmCodeButton" class="btn">인증번호 확인</button>	
+						<input type="text" class="input_field" id="codeConfirm" placeholder="인증번호 입력">
+						<button type="button" id="confirmCodeButton" class="btn">인증번호 확인</button>	
 						<div class="invalid-feedback" id="checkMessage">
 							<small class="text-danger"></small>
 						</div>
 				</div><br>
-
+				
 				<div>
 					<label>비밀번호</label>
 					<input type="password" id="password" name="password" class="input_field" placeholder="암호는 8자리 ~ 20자 이내로 입력해 주세요.">
@@ -587,14 +592,14 @@ window.onload = () => {
 
 				<div>
 				    <label for="birth-year">생년월일</label><br>
-				    <input type="number" id="birth-year" name="birth-year" class="input_field" placeholder="연도 (예: 1990)" min="1900" max="2100" style="width: 80px;"> -
+				    <input type="number" id="birth-year" name="birth-year" class="input_field" placeholder="연도 (예: 1990)" min="1900" max="2024" style="width: 80px;"> -
 				    <input type="number" id="birth-month" name="birth-month" class="input_field" placeholder="월 (예: 1)" min="1" max="12" style="width: 50px;"> -
 				    <input type="number" id="birth-day" name="birth-day" class="input_field" placeholder="일 (예: 15)" min="1" max="31" style="width: 50px;">
 				</div><br>
 
 				<div>
-				    <label for="age">나이</label><br>
-				    <input type="text" id="age" name="age" class="input_field" placeholder="자동 계산" readonly>
+				    <label for="age"></label><br>
+				    <input type="hidden" id="age" name="age" class="input_field" placeholder="자동 계산" readonly>
 				</div><br>
 
 				
@@ -638,7 +643,5 @@ window.onload = () => {
 				
     </div>
 </div>
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-
 </body>  
 </html>
