@@ -402,7 +402,7 @@
 			<th:block th:if="${status == 'PENDING'}">
 				<!-- 댓글 등록 폼 -->
 				<div class="replyRegister">
-				    <textarea id="replyContent" placeholder="댓글을 작성하세요"></textarea>
+				    <textarea id="replyContent" maxlength="500" placeholder="500자 이내로 댓글을 작성해주세요"></textarea>
 				    <button id="registerReplyBtn">등록</button>
 				</div>
 			</th:block>
@@ -412,6 +412,7 @@
 		    // 페이지 로드 시 댓글 목록 가져오기
 		    document.addEventListener("DOMContentLoaded", function() {
 		        loadReplies();
+		        
 		    });
 		
 		 	// 로그인한 사용자의 이메일
@@ -496,12 +497,19 @@
 		    // 댓글 등록 함수
 		    document.getElementById('registerReplyBtn').addEventListener('click', function() {
 		        const content = document.getElementById('replyContent').value;
-		
+		        const maxLength = 500;
+		        
+		        
 		        if (!content) {
 		            alert("댓글 내용을 입력하세요.");
 		            return;
 		        }
 		
+		        if (content.length > maxLength) {
+		            alert('댓글은 500자를 초과할 수 없습니다.');
+		            return;
+		        }
+		        
 		        fetch('/master/requestReply?kind=I', {
 		            method: 'POST',
 		            headers: {
