@@ -106,15 +106,6 @@
         color: #ffffff;
     }
 
-    .oauth-btn.kakao {
-        background-color: #fee500; /* 카카오 노란색 */
-        color: #3c1e1e; /* 텍스트 색상 */
-    }
-
-    .oauth-btn.kakao:hover {
-        background-color: #ffde00;
-    }
-
     .oauth-btn.naver {
         background-color: #03c75a; /* 네이버 초록색 */
     }
@@ -334,7 +325,6 @@ function redirectToUrl(event, url) {
         <input type="button" id="btn_login" class="btn_login" value="로그인" onclick="loginCheck()"><br><br><br><br>
     
         <div class="oauth-buttons">
-            <button class="oauth-btn kakao" onclick="redirectToUrl(event, '/oauth2/authorization/kakao')">카카오로 시작하기</button>
             <button class="oauth-btn naver" onclick="redirectToUrl(event, '/oauth2/authorization/naver')">네이버로 시작하기</button>
             <button class="oauth-btn google" onclick="redirectToUrl(event, '/oauth2/authorization/google')">Google로 시작하기</button>
         </div>
