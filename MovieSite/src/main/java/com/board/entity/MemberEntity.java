@@ -90,6 +90,7 @@ public class MemberEntity {
 		this.birthdate = member.getBirthdate();
 		this.telno = member.getTelno();
 		this.filesize = member.getFilesize();
+		this.point = 0L;
 		this.org_filename = member.getOrgFilename();
 		this.stored_filename = member.getStoredFilename();
 		this.grade = member.getGrade();

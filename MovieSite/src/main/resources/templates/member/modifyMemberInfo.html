@@ -198,7 +198,7 @@ button:hover {
 <script>   
 window.onload = () => {
          
-   var imgCheck = "Y";
+   var imgCheck = "N";
    var imgZone = document.querySelector('#imageZone');
    var fileEvent = document.querySelector('#imageFile');
          
@@ -220,7 +220,6 @@ window.onload = () => {
       console.log(imgFile.type);
          if (imgFile.type.indexOf("image") < 0) {
              alert("이미지 파일만 올려 주세요.");
-             imgCheck = "N";
              return false;
          }
 
