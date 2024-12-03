@@ -103,6 +103,7 @@ public class OAuth2UserDetailsServiceImpl extends DefaultOAuth2UserService {
                     .regdate(LocalDateTime.now())
                     .nickname("oauth")
                     .point(0L)
+                    .grade("BRONZE")
                     .gender(gender != null ? gender : "") // 사용자가 지정한 값 또는 기본값 설정
                     .telno(phoneNumber != null ? phoneNumber : "01012341234") // 사용자가 지정한 값 또는 기본값 설정
                     .birthdate(birthdate != null ? birthdate : "")
