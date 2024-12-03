@@ -126,7 +126,7 @@ public class BoardController {
 		model.addAttribute("rentStatus",rents);
 				
 		//주간 트렌드 영화
-		List<Map<String, Object>> weeklyTrend = movie.getWeeklyTrend();
+		List<Map<String, Object>> weeklyTrend = movie.getWeeklyTrend(memberDTO);
 		model.addAttribute("weeklyTrend", weeklyTrend);
 	
 		//선호 장르별 영화 리스트
@@ -141,7 +141,7 @@ public class BoardController {
 				// 해당 장르를 포함하고 있는 영화리스트를 가져온다.
 				
 				System.out.println("생일은" + memberDTO.getBirthdate());
-				List<Map<String,Object>> genreList = movie.findByGenreGetMovieList(genres,DataCalculate.calcAge(memberDTO.getBirthdate()));
+				List<Map<String,Object>> genreList = movie.findByGenreGetMovieList(genres,DataCalculate.calcAge(memberDTO.getBirthdate()),memberDTO);
 				favGenreList.put(genreNm, genreList);
 			}
 		}	
@@ -161,7 +161,7 @@ public class BoardController {
 		List<Map<String,Object>> topRentList = rent.getTopList(20);
 		model.addAttribute("rents",topRentList);
 		//무비두비에 새로 올라온 영화
-		List<Map<String,Object>> directList = movie.getDirectUploadList(6);
+		List<Map<String,Object>> directList = movie.getDirectUploadList(6,memberDTO);
 		model.addAttribute("directUploadList",directList);
 		
 		
@@ -176,10 +176,10 @@ public class BoardController {
 	    model.addAttribute("noti", noti);  // 알림 목록을 모델에 추가
 	    
 	    
-
-		// 숫자 포맷터 설정 (쉼표 추가) 및 메뉴바에 들어갈 포인트 쉼표 추가
-		NumberFormat numberFormat = NumberFormat.getInstance(Locale.US);
-		model.addAttribute("point", numberFormat.format(memberDTO.getPoint()));
+	   // 숫자 포맷터 설정 (쉼표 추가) 및 메뉴바에 들어갈 포인트 쉼표 추가
+	   NumberFormat numberFormat = NumberFormat.getNumberInstance(Locale.US);
+	   String formattedPoint = numberFormat.format(memberDTO.getPoint());
+	   model.addAttribute("point", formattedPoint);
 
    }
    
@@ -295,7 +295,7 @@ public class BoardController {
 		rent.updateRent(email, movieId);
 		
 		// DB에서 영화 정보 가져오기
-		Map<String, Object> movieDetail = movie.getMovieDetails(movieId);
+		Map<String, Object> movieDetail = movie.getMovieDetails(movieId,member);
 		model.addAttribute("movie", movieDetail);
 		movie.clickToMovie(movieId);
 		
@@ -727,13 +727,13 @@ public class BoardController {
       model.addAttribute("nickname", nickname);
 
 		if(keyword != null) {
-			List<Map<String,Object>> movies = movie.findByKeywordMovieList(keyword);
+			List<Map<String,Object>> movies = movie.findByKeywordMovieList(keyword,member);
 			model.addAttribute("movies",movies);
-			List<Map<String,Object>> crews = movie.findByKeywordCrewList(keyword);
+			List<Map<String,Object>> crews = movie.findByKeywordCrewList(keyword,member);
 			model.addAttribute("crews",crews);
-			List<Map<String,Object>> casts = movie.findByKeywordCastList(keyword);
+			List<Map<String,Object>> casts = movie.findByKeywordCastList(keyword,member);
 			model.addAttribute("casts",casts);
-			List<Map<String,Object>> companies = movie.findByKeywordProductionCompanyList(keyword);
+			List<Map<String,Object>> companies = movie.findByKeywordProductionCompanyList(keyword,member);
 			model.addAttribute("companies",companies);
 		}
 	
