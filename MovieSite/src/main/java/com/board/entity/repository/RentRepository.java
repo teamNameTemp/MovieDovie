@@ -1,8 +1,6 @@
 package com.board.entity.repository;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -17,10 +15,7 @@ import com.board.entity.movie.MovieEntity;
 
 public interface RentRepository extends JpaRepository<RentEntity, Long>{
 
-	@Query("SELECT DISTINCT r FROM RentEntity r " +
-       "JOIN FETCH r.movie " +
-       "WHERE r.member.email = :email AND r.status = :status")
-	List<RentEntity> findAllWithMovieByEmailAndStatus(@Param("email") String email, @Param("status") String status);
+	public List<RentEntity> findAllByEmailAndStatus(MemberEntity member, String status);
 	public Optional<RentEntity> findById(Long seqno);
 	public RentEntity findByEmailAndMovieId(MemberEntity member, MovieEntity movie);
 	public RentEntity findByEmailAndMovieIdAndStatus(MemberEntity member, MovieEntity movie,String status);
