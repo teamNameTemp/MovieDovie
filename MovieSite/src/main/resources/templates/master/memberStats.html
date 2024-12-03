@@ -25,7 +25,7 @@
 		    display: flex; align-items: center; justify-content: space-between;
 		    align-items: center; /* 수직 중앙 정렬 */
 		    width: 550px;
-		    height: 140px; /* 고정 높이 유지 */
+		    height: 180px; /* 고정 높이 유지 */
 		    text-align: center;
 		    float: left;
 		    margin: auto;
@@ -35,7 +35,7 @@
 		    display: flex; align-items: center; justify-content: space-between;
 		    align-items: center; /* 수직 중앙 정렬 */
 		    width: 550px;
-		    height: 340px; /* 고정 높이 유지 */
+		    height: 320px; /* 고정 높이 유지 */
 		    text-align: center;
 		    float: left;
 		    margin: auto;
@@ -45,7 +45,7 @@
 		    display: flex; align-items: center; justify-content: space-between;
 		    align-items: center; /* 수직 중앙 정렬 */
 		    width: 550px;
-		    height: 130px; /* 고정 높이 유지 */
+		    height: 110px; /* 고정 높이 유지 */
 		    text-align: center;
 		    float: left;
 		    margin: auto;
@@ -118,6 +118,8 @@
 		    text-align: left;
 		    padding-left: 10px;
 		}
+		
+		
 		
         #RentStatus {
 		  display: block;
@@ -595,23 +597,77 @@
 		</div>
 	</div>
 	
-	<!-- 
-	<div class="content4">
-		<div class="statuscontent">
-			<h2>회원 등급 현황</h2><br> 나중에 분기별로 보여줘야 함.
-			<div class="status-container">
-				<img class="statusicon" src="/images/img/membership.png" alt="">&nbsp;&nbsp;&nbsp;
-				<div class="status-text">
-					<p>Silver : 6 명</p>
-					<p>Gold : 9 명</p>
-					<p>Platinum : 104 명</p>
-					<p>Diamond : 54 명</p>
-					
+	
+	<div class="content1">
+		<div class="content">
+			<h2>이번달 회원 등급 현황</h2>
+			<div class="horicontentmem">
+				<div class="left-div">
+					<div style="display: flex; justify-content: center;">
+			  			<canvas id="gradeCounts" width = "212"></canvas>
+					</div>
+					<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+					<script>
+					  fetch('/master/gradeCounts')
+					  	.then(response => response.json())
+					  	.then(data => {
+					  	  const labels = data.map(item => item.grade);
+					  	  const counts = data.map(item => item.count);
+					  	  
+					  	  // 등급에 따라 색상 설정
+					      const backgroundColors = data.map(item => {
+					    	  switch (item.grade) {
+					    	    case 'BRONZE':
+					    	      return '#B69364';  // 청동색
+					    	    case 'SILVER':
+					    	      return '#D4D4D4';  // 은색
+					    	    case 'GOLD':
+					    	      return '#FFD700';  // 금색
+					    	    case 'PLATINUM':
+					    	      return '#C2DDEB';  // 백금색
+					    	    case 'DIAMOND':
+					    	      return '#ECCCF2';  // 다이아몬드색
+					    	  }
+					      });
+					  	  
+					  	  const ctxGradeCounts = document.getElementById('gradeCounts');
+			
+						  new Chart(ctxGradeCounts, {
+						    type: 'pie',
+						    data: {
+						      labels: labels,
+						      datasets: [{
+						        label: '등급',
+						        data: counts,
+						        hoverOffset: 4,
+						        backgroundColor: backgroundColors,
+						      }]
+						    },
+						    options: {
+				                responsive: false,
+				                  plugins: {
+				                    legend: {
+				                      position: 'left',  // 레전드 위치 (top, left, right, bottom)
+				                      labels: {
+				                        boxWidth: 10  // 레전드의 색상 박스 너비
+				                      }
+				                    }
+				                  }
+						    },
+						    plugins: [legendMarginhori]
+					  	  })
+					  	});
+					</script>
+				</div>
+				<div class="right-div">
+					<h4>다음 달 회원 변화</h4><br>
+					<p>· 승급 예정 : [[${upgradeCount}]]명</p>
+					<p>· 등급 유지 : [[${maintainCount}]]명</p>
+					<p>· 강등 예정 : [[${downgradeCount}]]명</p>
 				</div>
 			</div>
 		</div>
 	</div>
-	 -->
 	
 	
 	<div class="content3">
@@ -631,31 +687,9 @@
 		</div>
 	</div>
 	
-	
-	<div class="content1">
-		<div class="statuscontent">
-			<h2>회원 요청 사항 현황</h2>
-			<div class="status-container">
-				<img class="statusicon" src="/images/img/RequestStatus.png" alt="">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-				<div class="status-text">
-					<span class="pending-highlight">· <a href="/master/memberRequest" class="pending">처리 필요 : <span id="pendingCount" ></span> 건</a></span>
-					<br>
-					<span style="color: gray;">· 처리 완료 : <span id="completedCount"></span> 건</span>
-				</div>
-			</div>
-		</div>
-	</div>
-	
-	
-	
-
-
-
 </div>
 
 <script>
-
-
 
 	//회원 구매 전환율 % 텍스트가 progress 색상이 너무 작아지면 (15% 미만이면) 텍스트는 오른쪽으로 나오게끔 하는 스크립트.
 	function adjustProgressText() {
@@ -822,6 +856,19 @@
     	        chart.legend.fit = function fit() {
     	            originalFit.bind(chart.legend)();
     	            this.height += 15; // Adjust this value to increase/decrease space
+    	        };
+    	    }
+    	};
+	
+
+	//Chart.js 에서 legend 와 chart 사이의 마진 (legend 와 chart 가 수평으로 배치되어 있을 때)
+	const legendMarginhori = {
+    	    id: 'legendMarginhori',
+    	    beforeInit(chart) {
+    	        const originalFit = chart.legend.fit;
+    	        chart.legend.fit = function fit() {
+    	            originalFit.bind(chart.legend)();
+    	            this.width += 15; // Adjust this value to increase/decrease space
     	        };
     	    }
     	};
