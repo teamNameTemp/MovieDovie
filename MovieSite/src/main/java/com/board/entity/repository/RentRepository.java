@@ -1,6 +1,8 @@
 package com.board.entity.repository;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -46,6 +48,7 @@ public interface RentRepository extends JpaRepository<RentEntity, Long>{
 	@Query(value = "SELECT TRUNC(r.rentdate) AS rent_date, SUM(r.sales)" +
             "FROM rent r " +
             "WHERE r.rentdate BETWEEN :startDate AND :endDate " +
+            "AND (r.payment_type IS NULL OR r.payment_type = 'cash') " +
             "GROUP BY TRUNC(r.rentdate)" +
             "ORDER BY TRUNC(r.rentdate)", nativeQuery = true)
 	public List<Object[]> Sales(@Param("startDate") LocalDateTime startDate, @Param("endDate") LocalDateTime endDate);
@@ -65,6 +68,7 @@ public interface RentRepository extends JpaRepository<RentEntity, Long>{
 			+ "SUM(r.sales) "
 			+ "FROM rent r "
 			+ "WHERE EXTRACT(YEAR FROM r.rentdate) = :year "
+			+ "AND (r.payment_type IS NULL OR r.payment_type = 'cash') "
 			+ "GROUP BY TO_CHAR(r.rentdate, 'YYYY-MM')", nativeQuery = true)
 	public List<Object[]> SalesByMonth(@Param("year") int year);
 
@@ -79,6 +83,7 @@ public interface RentRepository extends JpaRepository<RentEntity, Long>{
 		       "FROM rent r " +
 		       "JOIN r.email m " +
 		       "WHERE EXTRACT(YEAR FROM r.rentdate) = EXTRACT(YEAR FROM CURRENT_DATE) " +
+		       "AND (r.paymentType IS NULL OR r.paymentType = 'cash') " +
 		       "GROUP BY m.nickname " +
 		       "ORDER BY sales DESC")
 	public List<Object[]> findTopRenterNickname();
@@ -87,13 +92,15 @@ public interface RentRepository extends JpaRepository<RentEntity, Long>{
 	//총 누적 대여 금액
 	@Query("SELECT COALESCE(SUM(r.sales), 0) " +
 			"FROM rent r " +
-			"WHERE r.email.email = :email")
+			"WHERE r.email.email = :email " +
+			"AND (r.paymentType IS NULL OR r.paymentType = 'cash')")
     Long getTotalSalesByEmail(@Param("email") String email);
 	
 	//월 누적 대여 금액
 	@Query("SELECT COALESCE(SUM(r.sales), 0) " +
 	"FROM rent r " +
 	"WHERE r.email.email = :email " +
+	"AND (r.paymentType IS NULL OR r.paymentType = 'cash') " +
 	"AND EXTRACT(YEAR FROM r.rentdate) = EXTRACT(YEAR FROM SYSDATE) " +
 	"AND EXTRACT(MONTH FROM r.rentdate) = EXTRACT(MONTH FROM SYSDATE)")
 	int getMonthlySalesByEmail(@Param("email") String email);
@@ -150,6 +157,7 @@ public interface RentRepository extends JpaRepository<RentEntity, Long>{
     	       "      GROUP BY g.movie_id) g " +
     	       "ON r.movie_id = g.movie_id " +
     	       "WHERE EXTRACT(YEAR FROM r.rentdate) = EXTRACT(YEAR FROM SYSDATE) " +
+    	       "AND (r.payment_type IS NULL OR r.payment_type = 'cash') " +
     	       "GROUP BY g.genre_name " +
     	       "ORDER BY SUM(r.sales) DESC",
     	       nativeQuery = true)
@@ -161,8 +169,19 @@ public interface RentRepository extends JpaRepository<RentEntity, Long>{
     
     //다음달 회원 등급 확인 위한 이번달 합계
     @Query("SELECT COALESCE(SUM(r.sales), 0) FROM rent r WHERE r.email.email = :email " +
+    		   "AND (r.paymentType IS NULL OR r.paymentType = 'cash') " +
     	       "AND EXTRACT(YEAR FROM r.rentdate) = EXTRACT(YEAR FROM CURRENT_DATE) " +
     	       "AND EXTRACT(MONTH FROM r.rentdate) = EXTRACT(MONTH FROM CURRENT_DATE)")
     public int getThisMonthSales(@Param("email") String email);
+    
+    
+    //cash로 결제했는지 point로 결제했는지 금액 및 비율 확인
+    @Query("SELECT " +
+    	       "SUM(CASE WHEN r.paymentType IS NULL OR r.paymentType = 'cash' THEN r.sales ELSE 0 END) AS cashSales, " +
+    	       "SUM(CASE WHEN r.paymentType = 'mileage' THEN r.sales ELSE 0 END) AS pointSales, " +
+    	       "SUM(r.sales) AS totalSales " +
+    	       "FROM rent r " +
+    	       "WHERE r.rentdate BETWEEN :startDate AND :endDate")
+    public List<Object[]> getSalesDataForLastSevenDays(@Param("startDate") LocalDateTime startDate, @Param("endDate") LocalDateTime endDate);
      
 }
