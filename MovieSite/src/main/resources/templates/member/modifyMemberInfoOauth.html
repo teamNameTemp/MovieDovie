@@ -341,7 +341,7 @@ window.onload = () => {
    });
 
    btnModify.addEventListener('click', async ()=> {
-          
+    const genderSelected = document.querySelector('input[name="gender"]:checked');
 	  
 	  if (!isBirthDateEntered()) { // 생년월일 입력 여부 확인
 	      return;
@@ -360,6 +360,12 @@ window.onload = () => {
           telno.focus();
           return false;
       }
+
+      if (!genderSelected) {
+		    alert("성별을 선택해주세요.");
+		    return;
+		}
+
 
       const beforeTelno = telno.value;
       const afterTelno = beforeTelno.replace(/\-/ig,"").replace(/\ /ig,"").trim();
@@ -389,7 +395,12 @@ window.onload = () => {
             .then((data)=> {
                if(data.message === 'good'){
                   alert("회원 가입이 완료되었습니다.");
-                  document.location.href='/board/mypage';
+                  if(data.favGenre === "N"){
+                     document.location.href='/member/selectGenre';
+                  }
+                  else{
+                     document.location.href='/board/list';
+                  }
                } else {
                   alert("서버 장애로 회원 가입에 실패했습니다.");
                }

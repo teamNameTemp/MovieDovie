@@ -145,7 +145,7 @@ public class BoardController {
 				favGenreList.put(genreNm, genreList);
 			}
 		}	
-		model.addAttribute("favGenre", genre.get());
+		model.addAttribute("favGenre", genre.isPresent() ? genre.get() : null);
 		model.addAttribute("favGenreList", favGenreList);
 		
 		//만장일치! 다들 이 영화 좋아해요
