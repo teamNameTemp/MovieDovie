@@ -8,7 +8,6 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.board.entity.MemberEntity;
 import com.board.entity.NotificationEntity;
 
 public interface NotificationRepository extends JpaRepository<NotificationEntity, Long>{
