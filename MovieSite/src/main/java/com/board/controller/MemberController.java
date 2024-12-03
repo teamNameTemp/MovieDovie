@@ -3,6 +3,7 @@ package com.board.controller;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.UnsupportedEncodingException;
+import java.lang.StackWalker.Option;
 import java.net.URLEncoder;
 import java.nio.file.Files;
 import java.util.HashMap;
@@ -27,7 +28,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.board.dto.FavGenreDTO;
 import com.board.dto.MailCheckDTO;
 import com.board.dto.MemberDTO;
-import com.board.service.FavGenreServiceImpl;
+import com.board.service.FavGenreService;
 import com.board.service.MailService;
 import com.board.service.MemberService;
 import com.board.service.TmdbAPIServiceImpl;
@@ -36,18 +37,19 @@ import com.board.util.PasswordMaker;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 
-@AllArgsConstructor
 @Log4j2
 @Controller
+@RequiredArgsConstructor
 @RequestMapping("/member")
 public class MemberController {
 
 	private final MemberService service;
 	private final BCryptPasswordEncoder pwdEncoder;
 	private final TmdbAPIServiceImpl tmdb;
-	private final FavGenreServiceImpl favGenre;
+	private final FavGenreService favGenre;
 	private final MailService mailService;
 
 @GetMapping("/loginTitle")
@@ -109,7 +111,8 @@ public void getTitle(){
 			@RequestParam("birth-year") String birthYear,
 			@RequestParam("birth-month") String birthMonth,
 			@RequestParam("birth-day") String birthDay) throws Exception {
-		
+
+		Optional<Map<String, Object>> genre = favGenre.getFavGenre();
 		//운영체제에 따라 이미지가 저장될 디렉토리 구조 설정 시작
 		String os = System.getProperty("os.name").toLowerCase();
 		String path;
@@ -203,7 +206,8 @@ public void getTitle(){
 	    //member.setBirthdate(birthdate);
 		data.put("message", "good");
 		data.put("username", URLEncoder.encode(member.getUsername(),"UTF-8"));
-		
+		data.put("favGenre", genre.isPresent() ? "Y" : "N");
+
 		return data;
 	}
 	
