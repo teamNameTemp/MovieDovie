@@ -31,6 +31,7 @@ import com.board.dto.movie.MovieDTO;
 import com.board.entity.RequestEntity;
 import com.board.entity.RequestReplyEntity;
 import com.board.entity.movie.MovieEntity;
+import com.board.entity.repository.MemberRepository;
 import com.board.entity.repository.RentRepository;
 import com.board.entity.repository.movie.MovieRepository;
 import com.board.service.FavGenreService;
@@ -225,7 +226,17 @@ public class MasterController {
 	}
 
 	@GetMapping("/memberStats")
-	public void getMemberStats() {}
+	public void getMemberStats(Model model) {
+		
+		model.addAttribute("RentCount", rentRepository.getTotalRent());
+		model.addAttribute("HitnoCount", movieRepository.getTotalHitno());
+		
+		Map<String, Integer> stats = rentService.calculateGradeChanges();
+	    model.addAttribute("upgradeCount", stats.get("upgrade"));
+	    model.addAttribute("downgradeCount", stats.get("downgrade"));
+	    model.addAttribute("maintainCount", stats.get("maintain"));
+	    
+	}
 	
 	@GetMapping("/dashboard")
 	public void getDashboard(Model model) {
@@ -497,6 +508,7 @@ public class MasterController {
 		return response; // JSON 형태로 반환
 	}
 
+
 	
 	//관리자 페이지 - 통계 : 구매 전환율 확인
 	@GetMapping("/conversionRate")
@@ -552,6 +564,8 @@ public class MasterController {
 		}
 		return response;
 	}
+	
+	
 
 	// 관리자 페이지 - 통계 : 회원 요청사항 처리 상태 확인하기
 	@GetMapping("/requestStatus")
@@ -576,7 +590,36 @@ public class MasterController {
 		}
 		return response;
 	}
+	
 
+	//관리자페이지 - 통계 : 각 등급 별 회원 수 확인
+	@GetMapping("/gradeCounts")
+	@ResponseBody
+	public List<Map<String, Object>> getGradeCounts(){
+		
+		List<Object[]> list = memberService.gradeMemberCounts();
+		
+		List<Map<String, Object>> response = new ArrayList<>();
+		for (Object[] item : list) {
+			Map<String, Object> map = new HashMap<>();
+			map.put("grade", item[0]);
+			map.put("count", item[1]);
+			response.add(map);
+		}
+		return response;
+	}
+	
+	
+	//관리자 페이지 - 통계 : 다음달에 승급/강등될 회원 확인
+	@GetMapping("/grade-changes")
+	public String showGradeChanges(Model model) {
+	    Map<String, Integer> stats = rentService.calculateGradeChanges();
+	    model.addAttribute("upgradeCount", stats.get("upgrade"));
+	    model.addAttribute("downgradeCount", stats.get("downgrade"));
+	    model.addAttribute("maintainCount", stats.get("maintain"));
+	    return "grade-changes";
+	}
+	
 	// 관리자 페이지 - 통계 : 회원들이 가장 좋아하는 장르 인기 순으로 보여주기
 	@GetMapping("/topFavGenre")
 	@ResponseBody

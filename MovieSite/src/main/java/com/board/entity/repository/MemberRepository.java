@@ -25,7 +25,7 @@ public interface MemberRepository extends JpaRepository<MemberEntity, String>{
     boolean existsByNickname(String nickname);
     
 
-    
+    public List<MemberEntity> findAll();
 	
 	public Optional<MemberEntity> findByUsernameAndTelno(String username, String telno);
 	public Optional<MemberEntity> findByEmailAndUsername(String email, String username);
@@ -46,5 +46,8 @@ public interface MemberRepository extends JpaRepository<MemberEntity, String>{
 	@Query("SELECT COUNT(m) FROM member m WHERE m.regdate >= :sevenDaysAgo")
 	public int newMembersInLastSevenDays(@Param("sevenDaysAgo") LocalDateTime sevenDaysAgo);
 	
+	//관리자페이지 - 통계 : 각 등급 별 회원 수 확인
+	@Query("SELECT m.grade as grade, COUNT(grade) FROM member m GROUP BY m.grade")
+	public List<Object[]> gradeMemberCounts();
 	
 }

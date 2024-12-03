@@ -184,4 +184,5 @@ public interface RentRepository extends JpaRepository<RentEntity, Long>{
     	       "WHERE r.rentdate BETWEEN :startDate AND :endDate")
     public List<Object[]> getSalesDataForLastSevenDays(@Param("startDate") LocalDateTime startDate, @Param("endDate") LocalDateTime endDate);
      
+    
 }
