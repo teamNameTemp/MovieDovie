@@ -275,7 +275,7 @@ window.onload = () => {
 
 
 
-   // 닉네임 유효성 검사 및 중복 확인
+   //닉네임 유효성 검사 및 중복 확인
    nickname.addEventListener('input', async () => {
        // 닉네임이 비어있지 않으면
        if (nickname.value !== '') {
@@ -304,13 +304,18 @@ window.onload = () => {
           if (isValidTelno(telno.value)) {
               telnoValidationMessage.textContent = "유효한 전화번호입니다.";
               telnoValidationMessage.style.color = "green";
-          } else {
+          }else {
               telnoValidationMessage.textContent = "숫자 11~12자리 입력해주세요.";
               telnoValidationMessage.style.color = "red";
           }
    });
 
    btnModify.addEventListener('click', async ()=> {
+      
+      if(imgCheck == 'N') {
+         alert("프로필 이미지를 등록하세요");
+         return false;
+      }      
       
       
       if(nickname.value == '') {

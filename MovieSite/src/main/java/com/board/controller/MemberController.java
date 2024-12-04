@@ -603,12 +603,7 @@ public void getTitle(){
 
         return data;
     }
-	
-	//카카오
-	 @GetMapping("/auth/kakao")
-	 public String kakaoLogin() {
-	    return "redirect:/member/selectGenre"; 
-	 }
+		
 	 
 //	@GetMapping("/member/auth/kakao/callback")
 //	public String kakaoCallback() {

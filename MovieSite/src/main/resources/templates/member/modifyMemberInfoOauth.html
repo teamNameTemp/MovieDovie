@@ -346,7 +346,11 @@ window.onload = () => {
 	  if (!isBirthDateEntered()) { // 생년월일 입력 여부 확인
 	      return;
 	  }
-      
+	  
+	  if (!genderSelected) {
+	      alert("성별을 선택해주세요.");
+	      return;
+	  }
       
       if(nickname.value == '') {
          alert("닉네임을 입력하세요");
@@ -355,16 +359,10 @@ window.onload = () => {
       }
       
    
-      if (!isValidTelno(telno.value)) {
-          alert("전화번호를 확인해주세요.");
-          telno.focus();
-          return false;
-      }
-
-      if (!genderSelected) {
-		    alert("성별을 선택해주세요.");
-		    return;
-		}
+	  if (!isValidTelno(telno.value)) {
+	      alert("전화번호를 확인해주세요.");
+	      return;
+	  }
 
 
       const beforeTelno = telno.value;
