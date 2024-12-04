@@ -272,24 +272,23 @@ const checkRememberMe = () => {
 
 //쿠키 관리
 const cookieManage = (email,password) => {
-	
-	//email가 체크되었을 경우
-	if(rememberEmail.checked) {
-		document.cookie = 'email=' + email + '; path=/; expires=Tue, 31, Dec 2024 23:59:59 GMT';
-	}else {
-		document.cookie = 'email=' + email + '; path=/; max-age=0';
-	}
-	
-	//password가 체크되었을 경우
-	if(rememberPassword.checked) {
-		//Base64(양방향 복호화 알고리즘)로 패스워드 인코딩
-		const key = CryptoJS.enc.Utf8.parse(password);
-		const base64 = CryptoJS.enc.Base64.stringify(key);
-		password = base64;
-		document.cookie = 'password=' + password + '; path=/; expires=Tue, 31, Dec 2024 23:59:59 GMT';
-	}else {
-		document.cookie = 'password=' + password + '; path=/; max-age=0';
-	}		
+    // 자동 로그인이 체크되어 있지 않을 때만 이메일/비밀번호 쿠키 관리
+    if(!document.querySelector('#rememberMe').checked) {
+        if(rememberEmail.checked) {
+            document.cookie = 'email=' + email + '; path=/; expires=Tue, 31, Dec 2024 23:59:59 GMT';
+        } else {
+            document.cookie = 'email=' + email + '; path=/; max-age=0';
+        }
+        
+        if(rememberPassword.checked) {
+            const key = CryptoJS.enc.Utf8.parse(password);
+            const base64 = CryptoJS.enc.Base64.stringify(key);
+            password = base64;
+            document.cookie = 'password=' + password + '; path=/; expires=Tue, 31, Dec 2024 23:59:59 GMT';
+        } else {
+            document.cookie = 'password=' + password + '; path=/; max-age=0';
+        }
+    }
 }
 
 const press = (event) => {

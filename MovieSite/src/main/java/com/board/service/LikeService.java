@@ -3,8 +3,6 @@ package com.board.service;
 import java.util.List;
 import java.util.Map;
 
-import com.board.dto.LikeDTO;
-
 public interface LikeService {
 
 	//좋아요 % 높은 영화 추출

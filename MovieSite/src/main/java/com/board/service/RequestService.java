@@ -3,8 +3,6 @@ package com.board.service;
 import java.util.List;
 
 import org.springframework.data.domain.Page;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
 
 import com.board.dto.RequestDTO;
 import com.board.entity.RequestEntity;

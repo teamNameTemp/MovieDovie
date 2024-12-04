@@ -6,12 +6,8 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 
 import com.board.dto.RequestReplyDTO;
-import com.board.entity.MemberEntity;
-import com.board.entity.RequestEntity;
 import com.board.entity.RequestReplyEntity;
-import com.board.entity.repository.MemberRepository;
 import com.board.entity.repository.RequestReplyRepository;
-import com.board.entity.repository.RequestRepository;
 
 import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
@@ -21,9 +17,6 @@ import lombok.AllArgsConstructor;
 public class RequestReplyServiceImpl implements RequestReplyService{
 
 	private final RequestReplyRepository requestReplyRepository;
-	private final MemberRepository memberRepository;
-	private final RequestRepository requestRepository;
-	
 	
 	//시작할 때 댓글 목록 가져오기
 	@Override	

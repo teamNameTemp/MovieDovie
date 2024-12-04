@@ -1,13 +1,11 @@
 package com.board.service;
 
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import org.springframework.data.repository.query.Param;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import com.board.dto.MemberDTO;
 import com.board.entity.MemberEntity;
@@ -46,13 +44,14 @@ public class MemberServiceImpl implements MemberService {
 			notificationService.newGradeNotiForUser(member.getEmail(), content, "grade");
 			
 			idx++;
+			log.info("등급 업데이트 완료 : " + idx + "명");
 		}
 
 	}
 
 	//회원 가입
 	@Override
-	public void signup(MemberDTO member) {
+	public MemberDTO signup(MemberDTO member) {
 		member.setRegdate(LocalDateTime.now());
 		member.setLastpwdate(LocalDateTime.now());
 		member.setPwcheck(1L);
@@ -61,12 +60,13 @@ public class MemberServiceImpl implements MemberService {
 		member.setPoint(0L);
 		
 		memberRepository.save(member.dtoToEntity(member));	
+		return member;
 	}
 	
 	//회원 정보 가져 오기
 	@Override
 	public MemberDTO memberInfo(String email) {
-		return memberRepository.findById(email).map((member) -> new MemberDTO(member)).get();
+		return memberRepository.findById(email).map((member) -> new MemberDTO(member)).orElse(null);
 	}
 	
 	//회원 기본 정보 수정

@@ -4,14 +4,13 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.data.repository.query.Param;
-import org.springframework.web.multipart.MultipartFile;
 
 import com.board.dto.MemberDTO;
 
 public interface MemberService {
 	
 	//회원가입
-	public void signup(MemberDTO member);
+	public MemberDTO signup(MemberDTO member);
 	
 	//회원 정보 가져오기
 	public MemberDTO memberInfo(String email);
