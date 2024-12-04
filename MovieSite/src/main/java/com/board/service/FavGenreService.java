@@ -20,5 +20,5 @@ public interface FavGenreService {
 	
 	public void saveTheFavGenre(FavGenreDTO favGenre);
 	
-	public Optional<Map<String,Object>> getFavGenre();
+	public Optional<Map<String,Object>> getFavGenre(String email);
 }

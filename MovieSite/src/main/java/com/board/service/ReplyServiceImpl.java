@@ -8,14 +8,12 @@ import java.util.Map;
 
 import org.springframework.stereotype.Service;
 
-import com.board.dto.ReplyInterface;
 import com.board.entity.MemberEntity;
 import com.board.entity.ReplyEntity;
 import com.board.entity.movie.MovieEntity;
 import com.board.entity.repository.MemberRepository;
 import com.board.entity.repository.ReplyRepository;
 import com.board.entity.repository.movie.MovieRepository;
-import com.board.util.MovieMapper;
 
 import lombok.RequiredArgsConstructor;
 
@@ -25,7 +23,6 @@ public class ReplyServiceImpl implements ReplyService {
 	private final ReplyRepository replyRepository;
 	private final MovieRepository movieRepository;
 	private final MemberRepository memberRepository;
-	private final MovieMapper mapper;
 	
 	@Override
 	public List<Map<String,Object>> getList(Long movieId) {

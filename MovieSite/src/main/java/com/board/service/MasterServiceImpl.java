@@ -1,16 +1,6 @@
 package com.board.service;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.Random;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -20,23 +10,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.board.dto.RequestDTO;
-import com.board.dto.movie.MovieDTO;
-import com.board.entity.BookmarkEntity;
-import com.board.entity.FavGenreEntity;
-import com.board.entity.LikeEntity;
-import com.board.entity.MemberEntity;
-import com.board.entity.MemberLogEntity;
-import com.board.entity.RentEntity;
 import com.board.entity.RequestEntity;
-import com.board.entity.WatchEntity;
-import com.board.entity.repository.BookmarkRepository;
-import com.board.entity.repository.FavGenreRepository;
-import com.board.entity.repository.LikeRepository;
-import com.board.entity.repository.MemberLogRepository;
-import com.board.entity.repository.MemberRepository;
 import com.board.entity.repository.RentRepository;
 import com.board.entity.repository.RequestRepository;
-import com.board.entity.repository.WatchReopository;
 import com.board.entity.repository.movie.MovieRepository;
 
 import lombok.AllArgsConstructor;
@@ -46,19 +22,8 @@ import lombok.AllArgsConstructor;
 public class MasterServiceImpl implements MasterService{
 
 	private final RequestRepository requestRepository;
-	private final BookmarkRepository bookmarkRepository;
-	private final WatchReopository watchRepository;
-	private final MemberLogRepository memberLogRepository;
-	private final MemberRepository memberRepository;
-	private final LikeRepository likeRepository;
-	private final FavGenreRepository favGenreRepository;
 	private final RentRepository rentRepository;
 	private final MovieRepository movieRepository;
-	private static final String[] GENDERS = {"Male", "Female"};
-    private final Random random;
-    private static final String[] YorN = {"Y", "N"};
-    private static final String[] INOUT = {"LOGIN", "LOGOUT"};
-    
     //구매 전환율 구하기
   	@Override
     public double conversionRate() {

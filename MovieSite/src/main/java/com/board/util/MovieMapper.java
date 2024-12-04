@@ -25,8 +25,6 @@ import lombok.RequiredArgsConstructor;
 @Component
 @RequiredArgsConstructor
 public class MovieMapper {
-	private final DataCalculate calc;
-	
 	
 	public Map<String,Object> getMovieSimpleInfo(MovieEntity movie){
 		Map<String,Object> data= new HashMap<>();

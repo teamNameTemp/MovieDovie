@@ -10,9 +10,7 @@ import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 
 import com.board.dto.RequestDTO;
-import com.board.dto.RequestReplyDTO;
 import com.board.entity.RequestEntity;
-import com.board.entity.RequestReplyEntity;
 import com.board.entity.repository.RequestRepository;
 
 import lombok.AllArgsConstructor;

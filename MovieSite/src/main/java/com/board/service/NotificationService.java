@@ -2,8 +2,6 @@ package com.board.service;
 
 import java.util.List;
 
-import org.springframework.transaction.annotation.Transactional;
-
 import com.board.entity.NotificationEntity;
 
 public interface NotificationService {
