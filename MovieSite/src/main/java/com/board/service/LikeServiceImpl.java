@@ -7,12 +7,14 @@ import java.util.Map;
 
 import org.springframework.stereotype.Service;
 
+import com.board.dto.MemberDTO;
 import com.board.entity.LikeEntity;
 import com.board.entity.MemberEntity;
 import com.board.entity.movie.MovieEntity;
 import com.board.entity.repository.LikeRepository;
 import com.board.entity.repository.MemberRepository;
 import com.board.entity.repository.movie.MovieRepository;
+import com.board.util.DataCalculate;
 import com.board.util.MovieMapper;
 
 import lombok.AllArgsConstructor;
@@ -134,9 +136,11 @@ class LikeServiceImpl implements LikeService {
 	}
 
 	@Override
-	public List<Map<String, Object>> getTopList(int topCount) {
+	public List<Map<String, Object>> getTopList(int topCount,MemberDTO memberDTO) {
 		List<Map<String,Object>> data = new ArrayList<>();
 		List<Map<String,Object>> likes = likeRepository.findAllByTotal();
+
+		int age = DataCalculate.calcAge(memberDTO.getBirthdate());
 		int idx = topCount;
 		for(Map<String,Object> d : likes) {
 			if(idx == 0)break;
@@ -151,15 +155,17 @@ class LikeServiceImpl implements LikeService {
 				Long movieId = (Long)d.get("movieId");
 				
 				MovieEntity movie = movieRepository.findById(movieId).get();
-				Map<String,Object> map = new HashMap<>();
-				map.put("info", movie);
-				map.put("totalCount", d.get("totalCount"));
-				map.put("likeCount", d.get("likeCount"));
-				map.put("dislikeCount", d.get("dislikeCount"));
-				map.put("likePer", d.get("likePercentage"));
-				map.put("dislikePer", d.get("dislikePercentage"));
-				data.add(map);
-				idx--;
+				if(DataCalculate.calcIsAdult(movie.getCertification(), age)) {
+					Map<String,Object> map = new HashMap<>();
+					map.put("info", movie);
+					map.put("totalCount", d.get("totalCount"));
+					map.put("likeCount", d.get("likeCount"));
+					map.put("dislikeCount", d.get("dislikeCount"));
+					map.put("likePer", d.get("likePercentage"));
+					map.put("dislikePer", d.get("dislikePercentage"));
+					data.add(map);
+					idx--;
+				}
 			}
 
 		}

@@ -141,32 +141,31 @@ public class BoardController {
 				// 인자로 받은 장르이름을 가진 모든 장르엔티티를 가져온다.
 				List<GenreEntity> genres = movie.getGenreList(genreNm);
 				// 해당 장르를 포함하고 있는 영화리스트를 가져온다.
-
-				System.out.println("생일은" + memberDTO.getBirthdate());
-				List<Map<String, Object>> genreList = movie.findByGenreGetMovieList(genres,
-						DataCalculate.calcAge(memberDTO.getBirthdate()), memberDTO);
+				
+				List<Map<String,Object>> genreList = movie.findByGenreGetMovieList(genres,DataCalculate.calcAge(memberDTO.getBirthdate()),memberDTO);
 				favGenreList.put(genreNm, genreList);
 			}
 		}
 		model.addAttribute("favGenre", genre.isPresent() ? genre.get() : null);
 		model.addAttribute("favGenreList", favGenreList);
-
-		// 만장일치! 다들 이 영화 좋아해요
-		List<Map<String, Object>> topLikeList = like.getTopList(20);
-		model.addAttribute("likes", topLikeList);
-		// 요즘 인기 폭팔! 댓글 많은 영화
-		List<Map<String, Object>> topReplyList = reply.getTopList(20);
-		model.addAttribute("replies", topReplyList);
-		// 이건 꼭 봐야해! 회원들이 가장 많이 본 영화
-		List<Map<String, Object>> topWatchList = watch.getTopList(20);
-		model.addAttribute("watches", topWatchList);
-		// 오늘 대여 TOP 영화
-		List<Map<String, Object>> topRentList = rent.getTopList(20);
-		model.addAttribute("rents", topRentList);
-		// 무비두비에 새로 올라온 영화
-		List<Map<String, Object>> directList = movie.getDirectUploadList(6, memberDTO);
-		model.addAttribute("directUploadList", directList);
-
+		
+		//만장일치! 다들 이 영화 좋아해요
+		List<Map<String,Object>> topLikeList = like.getTopList(20,memberDTO);
+		model.addAttribute("likes",topLikeList);
+		//요즘 인기 폭팔! 댓글 많은 영화
+		List<Map<String,Object>> topReplyList = reply.getTopList(20,memberDTO);
+		model.addAttribute("replies",topReplyList);
+		//이건 꼭 봐야해! 회원들이 가장 많이 본 영화
+		List<Map<String,Object>> topWatchList = watch.getTopList(20,memberDTO);
+		model.addAttribute("watches",topWatchList);
+		//오늘 대여 TOP 영화
+		List<Map<String,Object>> topRentList = rent.getTopList(20,memberDTO);
+		model.addAttribute("rents",topRentList);
+		//무비두비에 새로 올라온 영화
+		List<Map<String,Object>> directList = movie.getDirectUploadList(6,memberDTO);
+		model.addAttribute("directUploadList",directList);
+		
+		
 		/////////////////// 알람 처리 ///////////////////
 		model.addAttribute("email", email);
 
@@ -194,26 +193,25 @@ public class BoardController {
 		String nickname = (String) session.getAttribute("nickname");
 
 		MemberDTO memberInfo = memberService.memberInfo(email);
-		model.addAttribute("nickname", nickname);
-		model.addAttribute("member", memberInfo);
-
-		// 대여
-		List<Map<String, Object>> rents = rent.getAllMyRent(email, "Y");
-		model.addAttribute("rents", rents);
-		// 북마크
-		List<Map<String, Object>> bookmarks = bookmark.getAllBookmarkByEmail(email);
-		model.addAttribute("bookmarks", bookmarks);
-		// 시청
-		List<Map<String, Object>> watches = watch.getAllWatchedByEmail(email);
-		model.addAttribute("watches", watches);
-		// 좋아요
-		List<Map<String, Object>> likes = like.getAllLikeByEmail(email);
-		model.addAttribute("likes", likes);
-		// 과거 대여
-		List<Map<String, Object>> pastRents = rent.getAllMyRent(email, "N");
-		log.info("pastRents : {}", pastRents);
-		model.addAttribute("pastRents", pastRents);
-
+		model.addAttribute("nickname",nickname);
+		model.addAttribute("member",memberInfo);
+		
+		//대여
+		List<Map<String,Object>> rents = rent.getAllMyRent(email, "Y");
+		model.addAttribute("rents",rents);
+		//북마크
+		List<Map<String,Object>> bookmarks = bookmark.getAllBookmarkByEmail(email);
+		model.addAttribute("bookmarks",bookmarks);
+		//시청
+		List<Map<String,Object>> watches = watch.getAllWatchedByEmail(email);
+		model.addAttribute("watches",watches);
+		//좋아요
+		List<Map<String,Object>> likes = like.getAllLikeByEmail(email);
+		model.addAttribute("likes",likes);
+		//과거 대여
+		List<Map<String,Object>> pastRents = rent.getAllMyRent(email, "N");
+		model.addAttribute("pastRents",pastRents);
+		
 		// 숫자 포맷터 설정 (쉼표 추가)
 		NumberFormat numberFormat = NumberFormat.getInstance(Locale.US);
 
@@ -351,28 +349,26 @@ public class BoardController {
 		// 알림 목록 가져오기 (빈 리스트일 경우 처리)
 		List<NotificationEntity> noti = notificationService.notiForUser(email);
 
-		if (noti == null) {
-			noti = new ArrayList<>();
-		}
-
-		model.addAttribute("noti", noti); // 알림 목록을 모델에 추가
-
-		// 숫자 포맷터 설정 (쉼표 추가) 및 메뉴바에 들어갈 포인트 쉼표 추가
-		NumberFormat numberFormat = NumberFormat.getInstance(Locale.US);
-		model.addAttribute("point", numberFormat.format(member.getPoint()));
-
-		// 추천 영화 리스트
-		List<Map<String, Object>> genres = (List) movieDetail.get("genre");
-		List<MovieEntity> recommandList = new ArrayList<>();
-		for (Map<String, Object> genre : genres) {
-			String genreNm = (String) genre.get("name");
-			List<GenreEntity> list = movie.getGenreList(genreNm);
-			List<MovieEntity> movies = list.stream().map(s -> s.getMovieId()).collect(Collectors.toList());
-			recommandList.addAll(movies);
-			break;
-		}
-		model.addAttribute("recommandList", recommandList);
-	}
+       // 숫자 포맷터 설정 (쉼표 추가) 및 메뉴바에 들어갈 포인트 쉼표 추가
+       NumberFormat numberFormat = NumberFormat.getInstance(Locale.US);
+       model.addAttribute("point", numberFormat.format(member.getPoint()));
+       
+       
+      // 추천 영화 리스트
+       List<Map<String,Object>> genres = (List)movieDetail.get("genre");
+       List<MovieEntity> recommandList = new ArrayList<>();
+       for(Map<String,Object> genre :genres) {
+          String genreNm = (String)genre.get("name");
+          List<GenreEntity> list = movie.getGenreList(genreNm);
+          int age = DataCalculate.calcAge(member.getBirthdate());
+          List<MovieEntity> movies = list.stream()
+          .filter(s->DataCalculate.calcIsAdult(s.getMovieId().getCertification(), age))
+          .map(s->s.getMovieId()).collect(Collectors.toList());
+          recommandList.addAll(movies);
+          break;
+       }
+       model.addAttribute("recommandList",recommandList);
+   }
 
 	@RequestMapping("/movieDetail/getMileage")
 	@ResponseBody
