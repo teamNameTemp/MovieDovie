@@ -9,18 +9,18 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="/css/movieDetailStyle.css" />
-    <th:block th:replace="~{/fragments/header::header}"></th:block>
+    <th:block th:replace="~{fragments/header}"></th:block>
     <script src="/js/detail.js" defer></script>
     <title th:text="${movie.info.title}">영화 상세</title>
   </head>
   <body>
     <!--replace 특정 템플릿 조각(프래그먼트)을 다른 위치에 삽입할 때 사용 -->
     <th:block th:if="${#strings.equals(role, 'USER')}">
-      <div th:replace="~{/fragments/nav/menubar::menubar}"></div>
+      <div th:replace="~{fragments/nav/menubar}"></div>
     </th:block>
     <th:block th:if="${#strings.equals(role, 'MASTER')}">
       <div
-        th:replace="~{/fragments/nav/masterBoardMenubar::masterBoardMenubar}"
+        th:replace="~{fragments/nav/masterBoardMenubar}"
       ></div>
     </th:block>
 
@@ -345,7 +345,7 @@
           </div>
         </div>
       </div>
-      <div th:replace="~{/fragments/footer::footer}"></div>
+      <div th:replace="~{fragments/footer}"></div>
     </div>
 
 

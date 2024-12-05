@@ -187,9 +187,7 @@ public class MasterController {
             
 	    		String content = masterNickname + "님이 '" + title + "'에 댓글을 달았습니다.";
 	    		String type = "reply";
-				log.info(123);
 	    		if(!masterEmail.equals(recieverEmail)) {
-					log.info(456);
 	    			notificationService.newNotiForUser(recieverEmail, content, type, seqno);
 	    		}
 	    		

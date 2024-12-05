@@ -40,6 +40,7 @@ public class OAuth2UserDetailsServiceImpl extends DefaultOAuth2UserService {
         String gender = null;
         String birthdate = null;
 
+
         // 제공자별 사용자 정보 매핑
         switch (provider) {
             case "naver":
