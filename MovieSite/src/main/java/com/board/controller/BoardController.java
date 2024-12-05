@@ -137,7 +137,6 @@ public class BoardController {
 				List<GenreEntity> genres = movie.getGenreList(genreNm);
 				// 해당 장르를 포함하고 있는 영화리스트를 가져온다.
 				
-				System.out.println("생일은" + memberDTO.getBirthdate());
 				List<Map<String,Object>> genreList = movie.findByGenreGetMovieList(genres,DataCalculate.calcAge(memberDTO.getBirthdate()),memberDTO);
 				favGenreList.put(genreNm, genreList);
 			}
@@ -146,16 +145,16 @@ public class BoardController {
 		model.addAttribute("favGenreList", favGenreList);
 		
 		//만장일치! 다들 이 영화 좋아해요
-		List<Map<String,Object>> topLikeList = like.getTopList(20);
+		List<Map<String,Object>> topLikeList = like.getTopList(20,memberDTO);
 		model.addAttribute("likes",topLikeList);
 		//요즘 인기 폭팔! 댓글 많은 영화
-		List<Map<String,Object>> topReplyList = reply.getTopList(20);
+		List<Map<String,Object>> topReplyList = reply.getTopList(20,memberDTO);
 		model.addAttribute("replies",topReplyList);
 		//이건 꼭 봐야해! 회원들이 가장 많이 본 영화
-		List<Map<String,Object>> topWatchList = watch.getTopList(20);
+		List<Map<String,Object>> topWatchList = watch.getTopList(20,memberDTO);
 		model.addAttribute("watches",topWatchList);
 		//오늘 대여 TOP 영화
-		List<Map<String,Object>> topRentList = rent.getTopList(20);
+		List<Map<String,Object>> topRentList = rent.getTopList(20,memberDTO);
 		model.addAttribute("rents",topRentList);
 		//무비두비에 새로 올라온 영화
 		List<Map<String,Object>> directList = movie.getDirectUploadList(6,memberDTO);
@@ -205,7 +204,6 @@ public class BoardController {
 		model.addAttribute("likes",likes);
 		//과거 대여
 		List<Map<String,Object>> pastRents = rent.getAllMyRent(email, "N");
-		log.info("pastRents : {}",pastRents);
 		model.addAttribute("pastRents",pastRents);
 		
 		// 숫자 포맷터 설정 (쉼표 추가)
@@ -368,7 +366,10 @@ public class BoardController {
        for(Map<String,Object> genre :genres) {
           String genreNm = (String)genre.get("name");
           List<GenreEntity> list = movie.getGenreList(genreNm);
-          List<MovieEntity> movies = list.stream().map(s->s.getMovieId()).collect(Collectors.toList());
+          int age = DataCalculate.calcAge(member.getBirthdate());
+          List<MovieEntity> movies = list.stream()
+          .filter(s->DataCalculate.calcIsAdult(s.getMovieId().getCertification(), age))
+          .map(s->s.getMovieId()).collect(Collectors.toList());
           recommandList.addAll(movies);
           break;
        }

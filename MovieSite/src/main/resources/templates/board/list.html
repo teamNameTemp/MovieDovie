@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
   <head>
-    <div th:replace="~{/fragments/header :: header}"></div>
+    <div th:replace="~{fragments/header}"></div>
 
     <title>Movie Design</title>
   </head>
@@ -272,11 +272,11 @@
 
     <!--replace 특정 템플릿 조각(프래그먼트)을 다른 위치에 삽입할 때 사용 -->
     <th:block th:if="${#strings.equals(role, 'USER')}">
-      <div th:replace="~{/fragments/nav/menubar::menubar}"></div>
+      <div th:replace="~{fragments/nav/menubar}"></div>
     </th:block>
     <th:block th:if="${#strings.equals(role, 'MASTER')}">
       <div
-        th:replace="~{/fragments/nav/masterBoardMenubar::masterBoardMenubar}"
+        th:replace="~{fragments/nav/masterBoardMenubar}"
       ></div>
     </th:block>
 
@@ -589,6 +589,6 @@
       </div>
     </div>
     <script src="/js/app.js"></script>
-    <div th:replace="~{/fragments/footer::footer}"></div>
+    <div th:replace="~{fragments/footer}"></div>
   </body>
 </html>

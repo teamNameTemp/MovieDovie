@@ -8,12 +8,14 @@ import java.util.Map;
 
 import org.springframework.stereotype.Service;
 
+import com.board.dto.MemberDTO;
 import com.board.entity.MemberEntity;
 import com.board.entity.WatchEntity;
 import com.board.entity.movie.MovieEntity;
 import com.board.entity.repository.MemberRepository;
 import com.board.entity.repository.WatchReopository;
 import com.board.entity.repository.movie.MovieRepository;
+import com.board.util.DataCalculate;
 import com.board.util.MovieMapper;
 
 import lombok.RequiredArgsConstructor;
@@ -100,18 +102,20 @@ public class WatchedServiceImpl implements WatchedService {
 	}
 
 	@Override
-	public List<Map<String, Object>> getTopList(int topCount) {
+	public List<Map<String, Object>> getTopList(int topCount,MemberDTO memberDTO) {
 		List<Map<String,Object>> data = new ArrayList<>();
-
+		int age = DataCalculate.calcAge(memberDTO.getBirthdate());
 		List<Map<String,Object>> topList = watch.findTopMoviesByWatchedCount(topCount);
 		for(Map<String,Object> d : topList) {
 			Long movieId = (Long)d.get("movieId");
 
 			MovieEntity movieE = movie.findById(movieId).get();
-			Map<String,Object> map = new HashMap<>();
-			map.put("info", movieE);
-			map.put("count", d.get("count"));
-			data.add(map);
+			if(DataCalculate.calcIsAdult(movieE.getCertification(), age)) {
+				Map<String,Object> map = new HashMap<>();
+				map.put("info", movieE);
+				map.put("count", d.get("count"));
+				data.add(map);
+			}
 		}
 		return data;
 	}

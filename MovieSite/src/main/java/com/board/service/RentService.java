@@ -6,6 +6,8 @@ import java.util.Map;
 
 import org.springframework.data.repository.query.Param;
 
+import com.board.dto.MemberDTO;
+
 public interface RentService {
 
 	public Long getMyAccumulatedPayment(String email);
@@ -39,7 +41,7 @@ public interface RentService {
 	//관리자 페이지 - 통계 : 올해 대여 TOP 회원 확인
 	public List<Object[]> findTopRenters();
 	
-	List<Map<String,Object>> getTopList(int topCount);
+	List<Map<String,Object>> getTopList(int topCount,MemberDTO memberDTO);
 	
 	//관리자 페이지 - 통계 : 월별 영화발매일 별 대여 건수 확인
 	public List<Object[]> RentCountByReleaseDateAndMonth(int year);

@@ -8,12 +8,14 @@ import java.util.Map;
 
 import org.springframework.stereotype.Service;
 
+import com.board.dto.MemberDTO;
 import com.board.entity.MemberEntity;
 import com.board.entity.ReplyEntity;
 import com.board.entity.movie.MovieEntity;
 import com.board.entity.repository.MemberRepository;
 import com.board.entity.repository.ReplyRepository;
 import com.board.entity.repository.movie.MovieRepository;
+import com.board.util.DataCalculate;
 
 import lombok.RequiredArgsConstructor;
 
@@ -74,17 +76,20 @@ public class ReplyServiceImpl implements ReplyService {
 	}
 
 	@Override
-	public List<Map<String,Object>> getTopList(int topCount) {
+	public List<Map<String,Object>> getTopList(int topCount,MemberDTO memberDTO) {
 		List<Map<String,Object>> data = new ArrayList<>();
 		List<Map<String,Object>> replys = replyRepository.findTopMoviesByReplyCount(topCount);
+		int age = DataCalculate.calcAge(memberDTO.getBirthdate());
 		for(Map<String,Object> d : replys) {
 			Long movieId = (Long)d.get("movieId");
 
 			MovieEntity movie = movieRepository.findById(movieId).get();
-			Map<String,Object> map = new HashMap<>();
-			map.put("info", movie);
-			map.put("count", d.get("count"));
-			data.add(map);
+			if(DataCalculate.calcIsAdult(movie.getCertification(), age)) {	
+				Map<String,Object> map = new HashMap<>();
+				map.put("info", movie);
+				map.put("count", d.get("count"));
+				data.add(map);
+			}
 		}
 		
 		return data;

@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
   <title>포인트 적립 내역</title>
-  <div th:replace="~{/fragments/header :: header}"></div>
+  <div th:replace="~{fragments/header}"></div>
 </head>
 <style>
 body {
@@ -76,7 +76,7 @@ body {
 } 
 </style>
 <body>
-  <div th:replace="~{/fragments/nav/menubar::menubar}"></div>
+  <div th:replace="~{fragments/nav/menubar}"></div>
 <div class="mileage-container">
   <br>
   <h2 class="title">포인트 적립/사용 내역</h2>
@@ -97,6 +97,6 @@ body {
     </div>
   </div>
 </div>
-<div th:replace="~{/fragments/footer :: footer}"></div>
+<div th:replace="~{fragments/footer}"></div>
 </body>
 </html>
