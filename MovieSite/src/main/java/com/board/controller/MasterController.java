@@ -235,6 +235,9 @@ public class MasterController {
 	    model.addAttribute("downgradeCount", stats.get("downgrade"));
 	    model.addAttribute("maintainCount", stats.get("maintain"));
 	    
+	    int currentYear = LocalDate.now().getYear();
+		model.addAttribute("currentYear", currentYear);
+	    
 	}
 	
 	@GetMapping("/dashboard")
