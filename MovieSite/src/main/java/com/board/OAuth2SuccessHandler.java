@@ -24,12 +24,19 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler{
 	
 	private final MemberService memberService;
 	private final FavGenreService favGenreService;
-	private final HttpSession session;
 	@Override
 	public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
 	Authentication authentication) throws IOException, ServletException {
+
+		HttpSession session = request.getSession(true);//세션 생성
 		String email = (String) session.getAttribute("email");
 		MemberDTO memberDTO = memberService.memberInfo(email);
+		
+		// 새로운 세션 생성
+		session.setMaxInactiveInterval(7200);
+		session.setAttribute("email", email);
+		
+		
 		log.debug("------------------------ OAuth2 로그인 성공 ------------------------");
 		
 		if(memberDTO.getLastpwdate() == null) {
