@@ -39,7 +39,7 @@ public class OAuth2UserDetailsServiceImpl extends DefaultOAuth2UserService {
         String phoneNumber = null;
         String gender = null;
         String birthdate = null;
-        String birthyear = null;
+
 
         // 제공자별 사용자 정보 매핑
         switch (provider) {

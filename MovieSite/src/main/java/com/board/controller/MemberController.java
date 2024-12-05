@@ -302,7 +302,7 @@ public void getTitle(){
         String os = System.getProperty("os.name").toLowerCase();
         String path;
         if (os.contains("win")) {
-            path = "c:\\Repository\\movidovie\\profile\\";
+            path = "c:\\Repository\\moviedovie\\profile\\";
         } else {
             path = "/home/tjdwn/Repository/moviedovie/profile";
         }

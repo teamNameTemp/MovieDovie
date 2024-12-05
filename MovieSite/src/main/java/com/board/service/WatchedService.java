@@ -3,6 +3,8 @@ package com.board.service;
 import java.util.List;
 import java.util.Map;
 
+import com.board.dto.MemberDTO;
+
 public interface WatchedService {
 	public void saveOrUpdate(String action, Long movieId, String email);
 
@@ -12,5 +14,5 @@ public interface WatchedService {
 	public List<Map<String,Object>> getAllWatchedByEmail(String email);
 
 	
-	List<Map<String,Object>> getTopList(int topCount);
+	List<Map<String,Object>> getTopList(int topCount,MemberDTO memberDTO);
 }

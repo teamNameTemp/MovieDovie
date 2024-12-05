@@ -1,7 +1,6 @@
 package com.board;
 
 import java.io.IOException;
-import java.util.Map;
 
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
@@ -37,7 +36,7 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler{
 			setDefaultTargetUrl("/member/modifyMemberInfoOauth"); //로그인 성공 후 이동할 경로
 		}
 		else{
-			if(favGenreService.getFavGenre() == null || favGenreService.getFavGenre().isEmpty()){
+			if(favGenreService.getFavGenre(memberDTO.getEmail()) == null || favGenreService.getFavGenre(memberDTO.getEmail()).isEmpty()){
 				setDefaultTargetUrl("/member/selectGenre");
 			}
 			else{

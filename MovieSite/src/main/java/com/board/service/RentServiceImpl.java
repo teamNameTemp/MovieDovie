@@ -14,6 +14,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.board.dto.MemberDTO;
 import com.board.entity.MemberEntity;
 import com.board.entity.MileageLogEntity;
 import com.board.entity.RentEntity;
@@ -247,22 +248,24 @@ public class RentServiceImpl implements RentService {
 	}
 
 	@Override
-	public List<Map<String, Object>> getTopList(int topCount) {
+	public List<Map<String, Object>> getTopList(int topCount,MemberDTO memberDTO) {
 		List<Map<String,Object>> data = new ArrayList<>();
 		LocalDateTime startOfToday = LocalDateTime.now().minusDays(6);
 		LocalDateTime endOfToday = LocalDateTime.now();
 		List<Map<String,Object>> rents = rentRepository.findByRecentWeekList(startOfToday, endOfToday);
-		
+		int age = DataCalculate.calcAge(memberDTO.getBirthdate());
 		int idx = topCount;
 		for(Map<String,Object> m : rents) {
 			if(idx==0)break;
 			Long movieId = (Long) m.get("movieId");
 			MovieEntity movie = movieRepositoty.findById(movieId).get();
-			Map<String,Object> map = new HashMap<>();
-			map.put("info", movie);
-			map.put("count", m.get("count"));
-			data.add(map);
-			idx--;
+			if(DataCalculate.calcIsAdult(movie.getCertification(), age)) {
+				Map<String,Object> map = new HashMap<>();
+				map.put("info", movie);
+				map.put("count", m.get("count"));
+				data.add(map);
+				idx--;
+			}
 		}
 		
 		return data;
